@@ -3,6 +3,16 @@ package fr.ralala.worktime.sql;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 /**
  *******************************************************************************
@@ -79,4 +89,75 @@ public class SqlHelper extends SQLiteOpenHelper implements SqlConstants {
                         final int newVersion) {
   }
 
+  // Copy to sdcard for debug use
+  public static void copyDatabase(final Context c, final String name,
+                                     final String folder) throws Exception{
+    final String databasePath = c.getDatabasePath(name).getPath();
+    final File f = new File(databasePath);
+    OutputStream myOutput = null;
+    InputStream myInput = null;
+    Log.d(SqlHelper.class.getSimpleName(), " db path " + databasePath);
+    Log.d(SqlHelper.class.getSimpleName(), " db exist " + f.exists());
+    Exception exception = null;
+    if (f.exists()) {
+      try {
+
+        final File directory = new File(folder);
+        if (!directory.exists())
+          directory.mkdir();
+        File out = new File(directory, new SimpleDateFormat("yyyyMMdd_hhmm", Locale.US).format(new Date()) + "_" + name);
+        myOutput = new FileOutputStream(out);
+        myInput = new FileInputStream(databasePath);
+
+        final byte[] buffer = new byte[1024];
+        int length;
+        while ((length = myInput.read(buffer)) > 0) {
+          myOutput.write(buffer, 0, length);
+        }
+
+        myOutput.flush();
+      } catch (final Exception e) {
+        exception = e;
+      } finally {
+        try {
+          if (myOutput != null)
+            myOutput.close();
+          if (myInput != null)
+            myInput.close();
+        } catch (final Exception e) {
+        }
+      }
+    }
+    if(exception != null) throw exception;
+  }
+
+  public static void loadDatabase(Context c, final String name, File in) throws Exception{
+    final String databasePath = c.getDatabasePath(name).getPath();
+    final File f = new File(databasePath);
+    InputStream myInput = null;
+    OutputStream myOutput = null;
+    Exception exception = null;
+    try {
+      myInput = new FileInputStream(in.getAbsolutePath());
+      String outFileName = f.getAbsolutePath();
+      myOutput = new FileOutputStream(outFileName);
+      byte[] buffer = new byte[1024];
+      int length;
+      while ((length = myInput.read(buffer))>0){
+        myOutput.write(buffer, 0, length);
+      }
+      myOutput.flush();
+    } catch (final Exception e) {
+      exception = e;
+    } finally {
+      try {
+        if (myOutput != null)
+          myOutput.close();
+        if (myInput != null)
+          myInput.close();
+      } catch (final Exception e) {
+      }
+    }
+    if(exception != null) throw exception;
+  }
 }

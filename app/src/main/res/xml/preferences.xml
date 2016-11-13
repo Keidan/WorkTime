@@ -19,4 +19,14 @@
             android:title="@string/pref_title_currency"
             android:inputType="text" />
     </PreferenceCategory>
+    <PreferenceCategory android:title="@string/pref_title_database" android:key="prefCatDatabase" >
+        <Preference
+            android:key="prefExport"
+            android:title="@string/pref_title_export"
+            android:summary="@string/pref_summary_export"/>
+        <Preference
+            android:key="prefImport"
+            android:summary="@string/pref_summary_import"
+            android:title="@string/pref_title_import"/>
+    </PreferenceCategory>
 </PreferenceScreen>

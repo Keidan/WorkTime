@@ -39,6 +39,23 @@ import fr.ralala.worktime.models.WorkTimeDay;
  */
 public class AndroidHelper {
 
+  public static void showConfirmDialog(final Context c, final String title,
+                                       String message, final android.view.View.OnClickListener yes,
+                                       final android.view.View.OnClickListener no) {
+    new AlertDialog.Builder(c)
+      .setTitle(title)
+      .setMessage(message)
+      .setIcon(android.R.drawable.ic_dialog_alert)
+      .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+        public void onClick(DialogInterface dialog, int whichButton) {
+          if(yes != null) yes.onClick(null);
+        }})
+      .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+        public void onClick(DialogInterface dialog, int whichButton) {
+          if(no != null) no.onClick(null);
+        }}).show();
+  }
+
   public static void openTimePicker(final Context c, final WorkTimeDay current, final TextView tv) {
     initTimeTextView(current, tv);
     TimePickerDialog timePicker = new TimePickerDialog(c, new TimePickerDialog.OnTimeSetListener() {
@@ -93,9 +110,9 @@ public class AndroidHelper {
     }
   }
 
-  public static void toast(final Context c, final String message) {
+  public static void toast(final Context c, final String message, final int timer) {
     /* Create a toast with the launcher icon */
-    Toast toast = Toast.makeText(c, message, Toast.LENGTH_SHORT);
+    Toast toast = Toast.makeText(c, message, timer);
     TextView tv = (TextView) toast.getView().findViewById(android.R.id.message);
     if (null!=tv) {
       Drawable drawable = c.getResources().getDrawable(R.mipmap.ic_launcher);
@@ -105,6 +122,18 @@ public class AndroidHelper {
       tv.setCompoundDrawablePadding(5);
     }
     toast.show();
+  }
+
+  public static void toast_long(final Context c, final int message) {
+    toast(c, c.getResources().getString(message), Toast.LENGTH_LONG);
+  }
+
+  public static void toast_long(final Context c, final String message) {
+    toast(c, message, Toast.LENGTH_LONG);
+  }
+
+  public static void toast(final Context c, final String message) {
+    toast(c, message, Toast.LENGTH_SHORT);
   }
 
   public static void toast(final Context c, final int message) {

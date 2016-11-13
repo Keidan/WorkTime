@@ -67,4 +67,14 @@
     <string name="pref_summary_currency">Symbol used for the currency</string>
     <string name="pref_title_hourly_rate">Hourly rate</string>
     <string name="pref_summary_hourly_rate">Amount used for the hourly rate</string>
+    <string name="pref_title_database">Database</string>
+    <string name="pref_title_export">Export</string>
+    <string name="pref_summary_export">Export the database\nAndroid 6 users: Go to settings -> applications -> WorkTime -> Permissions -> Activate storage.</string>
+    <string name="pref_summary_import">Import the database\nAndroid 6 users: Go to settings -> applications -> WorkTime -> Permissions -> Activate storage.</string>
+    <string name="pref_title_import">Import</string>
+    <string name="chooser_long_press_message">Long press to select the file or the directory</string>
+    <string name="use_folder">Use this folder</string>
+    <string name="use_file">Use this file</string>
+    <string name="export_success">Export success</string>
+    <string name="import_success">Import success</string>
 </resources>

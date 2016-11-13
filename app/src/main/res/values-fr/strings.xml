@@ -62,5 +62,15 @@
     <string name="pref_summary_currency">Symbole utilis\u00E9 pour la devise</string>
     <string name="pref_title_hourly_rate">Taux horaire</string>
     <string name="pref_summary_hourly_rate">Montant utilis\u00E9 pour le taux horaire</string>
+    <string name="pref_title_database">Base de donn\u00E9es</string>
+    <string name="pref_title_export">Exportation</string>
+    <string name="pref_summary_export">Exporter la base de donn\u00E9es\nAndroid 6 utilisateurs: Acc\u00E9dez aux param\u00E8tres -> applications -> WorkTime -> Autorisations -> Activez le stockage.</string>
+    <string name="pref_summary_import">Importer la base de donn\u00E9es\nAndroid 6 utilisateurs: Acc\u00E9dez aux param\u00E8tres -> applications -> WorkTime -> Autorisations -> Activez le stockage.</string>
+    <string name="pref_title_import">Importation</string>
+    <string name="chooser_long_press_message">Appuyez longuement sur pour s\u00E9lectionner le fichier ou le r\u00E9pertoire</string>
+    <string name="use_folder">Utilisez ce dossier</string>
+    <string name="use_file">Utilisez ce fichier</string>
+    <string name="export_success">Exportation r\u00E9ussie</string>
+    <string name="import_success">Importation r\u00E9ussie</string>
 
 </resources>
