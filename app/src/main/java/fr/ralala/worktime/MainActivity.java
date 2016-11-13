@@ -76,7 +76,7 @@ public class MainActivity extends RuntimePermissionsActivity implements Navigati
 
   @Override
   public void onPermissionsGranted(final int requestCode) {
-    AndroidHelper.toast_long(this, R.string.permissions_read_ext_storage_done);
+    //AndroidHelper.toast_long(this, R.string.permissions_read_ext_storage_done);
   }
 
   public void onResume() {

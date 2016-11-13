@@ -79,5 +79,4 @@
     <string name="import_success">Import success</string>
     <string name="permissions">Permissions</string>
     <string name="permissions_read_ext_storage">The import/export functions need the external storage read/write access permissions</string>
-    <string name="permissions_read_ext_storage_done">Permissions received</string>
 </resources>

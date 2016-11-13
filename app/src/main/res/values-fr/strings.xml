@@ -74,6 +74,5 @@
     <string name="import_success">Importation r\u00E9ussie</string>
     <string name="permissions">Permissions</string>
     <string name="permissions_read_ext_storage">Les fonctions d\'import/export ont besoin des autorisations d\'acc\u00E8s en lecture/\u00E9criture au stockage externe</string>
-    <string name="permissions_read_ext_storage_done">Autorisations re\u00E7ues</string>
 
 </resources>
