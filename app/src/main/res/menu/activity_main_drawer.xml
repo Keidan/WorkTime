@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_home"
+            android:checked="true"
+            android:icon="@mipmap/ic_home"
+            android:title="@string/work_time"/>
+        <item
+            android:id="@+id/nav_profile"
+            android:icon="@mipmap/ic_profile"
+            android:title="@string/profile"/>
+        <item
+            android:id="@+id/nav_public_holidays"
+            android:icon="@mipmap/ic_public_holidays"
+            android:title="@string/public_holidays"/>
+        <item
+            android:id="@+id/nav_export"
+            android:icon="@mipmap/ic_export"
+            android:title="@string/export"/>
+        <item
+            android:id="@+id/nav_settings"
+            android:icon="@mipmap/ic_settings"
+            android:title="@string/settings"/>
+    </group>
+</menu>
+

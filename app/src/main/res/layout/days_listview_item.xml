@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    android:id="@+id/llDay"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="fill_parent"
+    android:layout_width="fill_parent">
+
+    <TextView
+        android:id="@+id/tvDay"
+        android:typeface="monospace"
+        android:textSize="@dimen/main_list_text_size"
+        android:layout_width="16dp"
+        android:gravity="center"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"/>
+    <TextView
+        android:id="@+id/tvStart"
+        android:typeface="monospace"
+        android:textSize="@dimen/main_list_text_size"
+        android:layout_width="16dp"
+        android:gravity="center"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"/>
+    <TextView
+        android:id="@+id/tvEnd"
+        android:typeface="monospace"
+        android:textSize="@dimen/main_list_text_size"
+        android:layout_width="16dp"
+        android:gravity="center"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"/>
+    <TextView
+        android:id="@+id/tvPause"
+        android:typeface="monospace"
+        android:textSize="@dimen/main_list_text_size"
+        android:layout_width="16dp"
+        android:gravity="center"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"/>
+    <TextView
+        android:id="@+id/tvTotal"
+        android:typeface="monospace"
+        android:textSize="@dimen/main_list_text_size"
+        android:layout_width="16dp"
+        android:gravity="center"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"/>
+    <TextView
+        android:id="@+id/tvOver"
+        android:typeface="monospace"
+        android:textSize="@dimen/main_list_text_size"
+        android:layout_width="16dp"
+        android:gravity="center"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"/>
+</LinearLayout>

@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:animateLayoutChanges="true">
+
+
+    <LinearLayout
+        android:id="@+id/llTitle"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:paddingBottom="5dp">
+
+        <ImageButton
+            android:src="@mipmap/ic_previous"
+            android:layout_width="25dp"
+            android:layout_height="match_parent"
+            android:id="@+id/btPreviousMonth"/>
+
+        <LinearLayout
+            android:id="@+id/llYearMonth"
+            android:orientation="horizontal"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+
+            <TextView
+                android:text="@string/empty"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/tvMonth"
+                android:layout_weight="1"
+                android:layout_marginBottom="5dp"/>
+
+            <TextView
+                android:text="@string/empty"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/tvYear"
+                android:textSize="18dp"
+                android:layout_weight="1"/>
+        </LinearLayout>
+
+        <ImageButton
+            android:src="@mipmap/ic_next"
+            android:layout_width="25dp"
+            android:layout_height="match_parent"
+            android:id="@+id/btNextMonth"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/llDetail"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/llTitle"
+        android:layout_alignParentStart="true">
+        <ImageView
+            android:layout_width="25dp"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/ic_public_holidays"/>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:text="@string/work_days"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/tvWorkDays"
+                android:layout_weight="1"/>
+            <TextView
+                android:text="@string/monthly_hours"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/tvMonthlyHours"
+                android:layout_weight="1"/>
+            <TextView
+                android:text="@string/monthly_pay"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/tvMonthlyPay"
+                android:layout_weight="1"/>
+        </LinearLayout>
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/llHeader"
+        android:layout_marginTop="5dp"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="24dp"
+        android:layout_below="@+id/llDetail"
+        android:background="#3c3f41"
+        android:layout_alignParentStart="true">
+
+        <ImageView
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp"
+            android:layout_width="16dp"
+            android:layout_gravity="center"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/ic_sun"
+            android:layout_weight="1"/>
+        <ImageView
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp"
+            android:layout_width="16dp"
+            android:layout_gravity="center"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/ic_down"
+            android:layout_weight="1"/>
+        <ImageView
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp"
+            android:layout_width="16dp"
+            android:layout_gravity="center"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/ic_up"
+            android:layout_weight="1"/>
+        <ImageView
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp"
+            android:layout_width="16dp"
+            android:layout_gravity="center"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/ic_lunch"
+            android:layout_weight="1"/>
+        <ImageView
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp"
+            android:layout_width="16dp"
+            android:layout_gravity="center"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/ic_clock_white"
+            android:layout_weight="1"/>
+        <ImageView
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp"
+            android:layout_width="16dp"
+            android:layout_gravity="center"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/ic_clock_red"
+            android:layout_weight="1"/>
+    </LinearLayout>
+    <ListView
+        android:id="@+id/days"
+        android:layout_below="@+id/llHeader"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"/>
+
+</RelativeLayout>

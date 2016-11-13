@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:paddingBottom="@dimen/activity_vertical_margin"
+            android:paddingLeft="@dimen/activity_horizontal_margin"
+            android:paddingRight="@dimen/activity_horizontal_margin"
+            android:paddingTop="@dimen/activity_vertical_margin" >
+
+
+    <android.support.percent.PercentRelativeLayout
+        android:id="@+id/prl"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <RelativeLayout
+            android:id="@+id/rl"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/tvDay"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/app_title"
+                android:textSize="22sp"
+                android:textStyle="bold"
+                android:textColor="@android:color/darker_gray"
+                android:paddingBottom="25dp"/>
+            <ImageView
+                android:id="@+id/ivDelete"
+                android:layout_gravity="end"
+                android:layout_width="48dp"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/ic_delete"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"/>
+
+            <TextView
+                android:id="@+id/tvName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/name"
+                android:padding="3dp"
+                android:visibility="gone"/>
+            <EditText
+                android:id="@+id/etName"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_toEndOf="@+id/tvName"
+                android:padding="3dp"
+                android:inputType="textCapSentences"
+                android:visibility="gone"/>
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/tvProfile"
+            android:layout_below="@+id/rl"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/profile"
+            android:padding="3dp"/>
+        <Spinner
+            android:id="@+id/spProfile"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/rl"
+            android:layout_toEndOf="@+id/tvProfile"
+            android:padding="3dp"/>
+
+        <TextView
+            android:id="@+id/tvType"
+            android:layout_below="@+id/tvProfile"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/type"
+            android:padding="3dp"/>
+
+        <Spinner
+            android:id="@+id/spType"
+            android:layout_below="@+id/tvProfile"
+            android:layout_toEndOf="@+id/tvType"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="3dp"/>
+
+        <TextView
+            android:id="@+id/tvLblStart"
+            android:layout_below="@+id/tvType"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/start"
+            app:layout_widthPercent="40%"
+            android:padding="3dp"/>
+        <View
+            android:id="@+id/space1"
+            android:layout_below="@+id/tvType"
+            android:layout_toEndOf="@+id/tvLblStart"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_widthPercent="10%"
+            android:padding="3dp" />
+        <TextView
+            android:id="@+id/tvLblEnd"
+            android:layout_below="@+id/tvType"
+            android:layout_toEndOf="@+id/space1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/end"
+            app:layout_widthPercent="40%"
+            android:padding="3dp"/>
+
+        <TextView
+            android:id="@+id/tvStart"
+            android:layout_below="@+id/tvLblStart"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="@color/gray"
+            android:text="@string/default_hours"
+            app:layout_widthPercent="40%"
+            android:padding="3dp"/>
+        <View
+            android:id="@+id/space2"
+            android:layout_below="@+id/tvLblStart"
+            android:layout_toEndOf="@+id/tvStart"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_widthPercent="10%"
+            android:padding="3dp" />
+        <TextView
+            android:id="@+id/tvEnd"
+            android:layout_below="@+id/tvLblEnd"
+            android:layout_toEndOf="@+id/space2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="@color/gray"
+            android:text="@string/default_hours"
+            app:layout_widthPercent="40%"
+            android:padding="3dp"/>
+
+        <TextView
+            android:id="@+id/tvLblPause"
+            android:layout_below="@+id/tvStart"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/pause"
+            app:layout_widthPercent="40%"
+            android:padding="3dp"/>
+        <View
+            android:id="@+id/space3"
+            android:layout_below="@+id/tvStart"
+            android:layout_toEndOf="@+id/tvLblPause"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_widthPercent="10%"
+            android:padding="3dp" />
+        <TextView
+            android:id="@+id/tvLblAmount"
+            android:layout_below="@+id/tvEnd"
+            android:layout_toEndOf="@+id/space3"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/amount"
+            app:layout_widthPercent="40%"
+            android:padding="3dp"/>
+
+
+
+        <TextView
+            android:id="@+id/tvPause"
+            android:layout_below="@+id/tvLblPause"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="@color/gray"
+            android:text="@string/default_hours"
+            app:layout_widthPercent="40%"
+            android:padding="3dp"/>
+        <View
+            android:id="@+id/space4"
+            android:layout_below="@+id/space3"
+            android:layout_toEndOf="@+id/tvPause"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_widthPercent="10%"
+            android:padding="3dp" />
+        <EditText
+            android:id="@+id/tvAmount"
+            android:layout_below="@+id/tvLblAmount"
+            android:layout_toEndOf="@+id/space4"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="@color/gray"
+            android:text="@string/empty"
+            app:layout_widthPercent="40%"
+            android:padding="3dp"
+            android:inputType="numberDecimal"/>
+
+    </android.support.percent.PercentRelativeLayout>
+</ScrollView>

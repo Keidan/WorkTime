@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" android:key="prefScreen">
+    <PreferenceCategory android:title="@string/pref_title_settings" android:key="prefCatSettings" >
+        <fr.ralala.worktime.prefs.TimePreference
+            android:key="prefWorkTimeByDay"
+            android:title="@string/pref_title_work_time_by_day"
+            android:defaultValue="00:00"
+            android:summary="@string/pref_summary_work_time_by_day"/>
+        <EditTextPreference
+            android:key="prefAmountByHour"
+            android:defaultValue="0.0"
+            android:summary="@string/pref_summary_hourly_rate"
+            android:title="@string/pref_title_hourly_rate"
+            android:inputType="numberDecimal" />
+        <EditTextPreference
+            android:key="prefCurrency"
+            android:defaultValue="€"
+            android:summary="@string/pref_summary_currency"
+            android:title="@string/pref_title_currency"
+            android:inputType="text" />
+    </PreferenceCategory>
+</PreferenceScreen>

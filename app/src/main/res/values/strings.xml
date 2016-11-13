@@ -1,0 +1,70 @@
+<resources>
+    <string name="app_name" translatable="false">WorkTime</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="settings">Settings</string>
+    <string name="app_title" translatable="false">Work Time</string>
+    <string name="profile">Profile</string>
+    <string name="export">Export</string>
+    <string name="public_holidays">Public holidays</string>
+    <string name="sickness">Sickness</string>
+    <string name="holidays">Holidays</string>
+    <string name="unpaid">Unpaid</string>
+    <string name="monthly_ceiling">Monthly ceiling</string>
+    <string name="empty" translatable="false"></string>
+    <string name="work_time">Work time</string>
+    <string name="work_days">Work days</string>
+    <string name="monthly_hours">Monthly hours</string>
+    <string name="january">January</string>
+    <string name="february">February</string>
+    <string name="march">March</string>
+    <string name="april">April</string>
+    <string name="may">May</string>
+    <string name="june">June</string>
+    <string name="july">July</string>
+    <string name="august">August</string>
+    <string name="september">September</string>
+    <string name="october">October</string>
+    <string name="november">November</string>
+    <string name="december">December</string>
+    <string name="days_lower_case">days</string>
+    <string name="edit">Edit</string>
+    <string name="delete">Delete</string>
+    <string name="name">Name :</string>
+    <string name="date">Date :</string>
+    <string name="error">Error</string>
+    <string name="error_no_name">Name field cannot be empty</string>
+    <string name="ok">Ok</string>
+    <string name="cancel">Cancel</string>
+    <string name="day_monday_2lt">Mo</string>
+    <string name="day_tuesday_2lt">Tu</string>
+    <string name="day_wednesday_2lt">We</string>
+    <string name="day_thursday_2lt">Th</string>
+    <string name="day_friday_2lt">Fr</string>
+    <string name="day_saturday_2lt">Sa</string>
+    <string name="day_sunday_2lt">Su</string>
+    <string name="on_double_back_exit_text">Press once again to exit!</string>
+    <string name="type">Type :</string>
+    <string name="end">Departure :</string>
+    <string name="start">Arrival :</string>
+    <string name="pause">Pause</string>
+    <string name="at_work">At work</string>
+    <string name="default_hours" translatable="false">00:00</string>
+    <string name="amount">Amount</string>
+    <string name="error_invalid_start">Invalid departure time</string>
+    <string name="error_invalid_end">Invalid arrival time</string>
+    <string name="error_invalid_start_end">The departure and arrival times are invalid</string>
+    <string name="text_for">for</string>
+    <string name="at">at</string>
+    <string name="hours_lower_case">hour(s)</string>
+    <string name="monthly_pay">Monthly pay</string>
+    <string name="pref_title_settings">Settings</string>
+    <string name="pref_title_work_time_by_day">Work time by day</string>
+    <string name="pref_summary_work_time_by_day">Duration of working time per day</string>
+    <string name="pref_title_currency">Currency</string>
+    <string name="pref_summary_currency">Symbol used for the currency</string>
+    <string name="pref_title_hourly_rate">Hourly rate</string>
+    <string name="pref_summary_hourly_rate">Amount used for the hourly rate</string>
+</resources>
