@@ -24,7 +24,7 @@ public class SettingsActivity extends PreferenceActivity{
   public static final String       PREFS_KEY_CURRENCY             = "prefCurrency";
   public static final WorkTimeDay  PREFS_DEFAULT_WORKTIME_BY_DAY  = new WorkTimeDay(0, 0, 0, 8, 0);
   public static final double       PREFS_DEFAULT_AMOUNT_BY_HOUR   = 0.0;
-  public static final String       PREFS_DEFAULT_CURRENCY         = "€";
+  public static final String       PREFS_DEFAULT_CURRENCY         = "\u0024";
   private MyPreferenceFragment     prefFrag                       = null;
   private SharedPreferences        prefs                          = null;
 
