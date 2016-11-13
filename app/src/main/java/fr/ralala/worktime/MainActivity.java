@@ -1,18 +1,27 @@
 package fr.ralala.worktime;
 
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Process;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import fr.ralala.worktime.fragments.ExportFragment;
 import fr.ralala.worktime.fragments.MainFragment;
@@ -29,8 +38,8 @@ import fr.ralala.worktime.prefs.SettingsActivity;
  *
  *******************************************************************************
  */
-public class MainActivity extends AppCompatActivity
-  implements NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends RuntimePermissionsActivity implements NavigationView.OnNavigationItemSelectedListener {
+  private static final int PERMISSIONS_REQUEST = 30;
   private static final int BACK_TIME_DELAY = 2000;
   private static long lastBackPressed = -1;
   private boolean viewIsAtHome = false;
@@ -60,7 +69,14 @@ public class MainActivity extends AppCompatActivity
     app = MainApplication.getApp(this);
     if(!app.openSql(drawer)) finish();
 
+    super.requestAppPermissions(new
+        String[]{Manifest.permission.READ_EXTERNAL_STORAGE,
+        Manifest.permission.WRITE_EXTERNAL_STORAGE}, R.string.permissions_read_ext_storage , PERMISSIONS_REQUEST);
+  }
 
+  @Override
+  public void onPermissionsGranted(final int requestCode) {
+    AndroidHelper.toast_long(this, R.string.permissions_read_ext_storage_done);
   }
 
   public void onResume() {
