@@ -49,8 +49,8 @@ public class TimePreference extends DialogPreference {
   @Override
   protected void onBindDialogView(View v) {
     super.onBindDialogView(v);
-    picker.setCurrentHour(lastHour);
-    picker.setCurrentMinute(lastMinute);
+    picker.setHour(lastHour);
+    picker.setMinute(lastMinute);
   }
 
   @Override
@@ -58,8 +58,8 @@ public class TimePreference extends DialogPreference {
     super.onDialogClosed(positiveResult);
 
     if (positiveResult) {
-      lastHour=picker.getCurrentHour();
-      lastMinute=picker.getCurrentMinute();
+      lastHour=picker.getHour();
+      lastMinute=picker.getMinute();
 
       String time=String.valueOf(lastHour)+":"+String.valueOf(lastMinute);
 
@@ -76,7 +76,7 @@ public class TimePreference extends DialogPreference {
 
   @Override
   protected void onSetInitialValue(boolean restoreValue, Object defaultValue) {
-    String time=null;
+    String time;
 
     if (restoreValue) {
       if (defaultValue==null)

@@ -90,7 +90,7 @@ public class AndroidHelper {
   }
 
 
-  public static final void forcePopupMenuIcons(final PopupMenu popup) {
+  public static void forcePopupMenuIcons(final PopupMenu popup) {
     try {
       Field[] fields = popup.getClass().getDeclaredFields();
       for (Field field : fields) {

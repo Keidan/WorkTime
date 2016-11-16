@@ -2,10 +2,8 @@ package fr.ralala.worktime.models;
 
 
 
-import android.util.Log;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -39,16 +37,6 @@ public class DaysFactory {
     return days;
   }
 
-  public boolean isHolidays(Calendar currentDate) {
-    WorkTimeDay wtd = new WorkTimeDay();
-    for(DayEntry de : days) {
-      wtd.fromCalendar(currentDate);
-      if((de.getType() == DayType.HOLIDAY) && de.matchSimpleDate(wtd))
-        return true;
-    }
-    return false;
-  }
-
   public double checkForDayDateAndCopy(DayEntry current) {
     for(DayEntry de : days) {
       if(de.getDay().dateString().equals(current.getDay().dateString())) {
@@ -59,14 +47,6 @@ public class DaysFactory {
       }
     }
     return 0.0;
-  }
-
-  public String totalWorkTime(DayEntry current) {
-    for(DayEntry de : days) {
-      if(de.getDay().dateString().equals(current.getDay().dateString()))
-        return de.getWorkTime().timeString();
-    }
-    return "00:00";
   }
 
   public void remove(final DayEntry de) {

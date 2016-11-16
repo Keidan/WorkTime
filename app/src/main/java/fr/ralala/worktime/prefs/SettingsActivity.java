@@ -1,27 +1,19 @@
 package fr.ralala.worktime.prefs;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
-import android.preference.PreferenceManager;
 import android.util.Log;
 
 import java.io.File;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
 import fr.ralala.worktime.AndroidHelper;
-import fr.ralala.worktime.MainActivity;
-import fr.ralala.worktime.MainApplication;
 import fr.ralala.worktime.R;
 import fr.ralala.worktime.chooser.FileChooser;
 import fr.ralala.worktime.chooser.FileChooserActivity;
@@ -47,12 +39,10 @@ public class SettingsActivity extends PreferenceActivity implements Preference.O
   public static final double       PREFS_DEFAULT_AMOUNT_BY_HOUR   = 0.0;
   public static final String       PREFS_DEFAULT_CURRENCY         = "\u0024";
   private MyPreferenceFragment     prefFrag                       = null;
-  private SharedPreferences        prefs                          = null;
 
   @Override
   public void onCreate(final Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
     prefFrag = new MyPreferenceFragment();
     getFragmentManager().beginTransaction()
       .replace(android.R.id.content, prefFrag).commit();
@@ -107,7 +97,7 @@ public class SettingsActivity extends PreferenceActivity implements Preference.O
         String file = data.getStringExtra(FileChooserActivity.FILECHOOSER_SELECTION_KEY);
         try {
           SqlHelper.loadDatabase(this, SqlHelper.DB_NAME, new File(file));
-          AndroidHelper.toast(this, getString(R.string.import_success));;
+          AndroidHelper.toast(this, getString(R.string.import_success));
         } catch(Exception e) {
           AndroidHelper.toast_long(this, getString(R.string.error) + ": " + e.getMessage());
           Log.e(getClass().getSimpleName(), "Error: " + e.getMessage(), e);
@@ -119,8 +109,7 @@ public class SettingsActivity extends PreferenceActivity implements Preference.O
   private void myStartActivity(Map<String, String> extra, Class<?> c, int code) {
     final Intent i = new Intent(getApplicationContext(), c);
     Set<String> keysSet = extra.keySet();
-    for(Iterator<String> keys = keysSet.iterator(); keys.hasNext();) {
-      String key = keys.next();
+    for(String key : keysSet) {
       i.putExtra(key, extra.get(key));
     }
     startActivityForResult(i, code);

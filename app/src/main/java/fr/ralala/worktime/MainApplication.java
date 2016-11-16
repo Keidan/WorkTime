@@ -3,10 +3,8 @@ package fr.ralala.worktime;
 import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.support.design.widget.Snackbar;
-import android.util.Log;
 import android.view.View;
 
 import fr.ralala.worktime.models.DaysFactory;
@@ -30,18 +28,12 @@ public class MainApplication extends Application {
   private final PublicHolidaysFactory publicHolidaysFactory;
   private final ProfilesFactory profilesFactory;
   private final DaysFactory daysFactory;
-  private WorkTimeDay legalWorkTimeByDay = null;
-  private double amountByHour = 0.0;
   private SqlFactory sql = null;
-  private String currency = "";
 
   public MainApplication() {
     publicHolidaysFactory = new PublicHolidaysFactory();
     profilesFactory = new ProfilesFactory();
     daysFactory = new DaysFactory();
-    legalWorkTimeByDay = SettingsActivity.PREFS_DEFAULT_WORKTIME_BY_DAY;
-    currency = SettingsActivity.PREFS_DEFAULT_CURRENCY;
-    amountByHour = SettingsActivity.PREFS_DEFAULT_AMOUNT_BY_HOUR;
   }
 
 

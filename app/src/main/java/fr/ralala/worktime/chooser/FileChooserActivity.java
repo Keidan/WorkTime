@@ -126,11 +126,6 @@ public class FileChooserActivity extends FileChooser implements ISelectionHandle
 
   private boolean isMountedSdcard() {
     final String state = Environment.getExternalStorageState();
-    if (Environment.MEDIA_MOUNTED.equals(state))
-      return true;
-    else if (Environment.MEDIA_MOUNTED_READ_ONLY.equals(state))
-      return true;
-    else
-      return false;
+    return (Environment.MEDIA_MOUNTED.equals(state) || Environment.MEDIA_MOUNTED_READ_ONLY.equals(state));
   }
 }

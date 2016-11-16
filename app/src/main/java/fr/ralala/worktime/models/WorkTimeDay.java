@@ -98,7 +98,7 @@ public class WorkTimeDay {
     return String.format(Locale.US, "%02d/%02d/%04d", day, month, year);
   }
 
-  public boolean match(WorkTimeDay wtd) {
+  protected boolean match(WorkTimeDay wtd) {
     return day == wtd.day && month == wtd.month && year == wtd.year && hours == wtd.hours && minutes == wtd.minutes;
   }
 
@@ -134,7 +134,7 @@ public class WorkTimeDay {
     return hours;
   }
 
-  public void setHours(int hours) {
+  protected void setHours(int hours) {
     this.hours = hours;
   }
 
@@ -142,7 +142,7 @@ public class WorkTimeDay {
     return minutes;
   }
 
-  public void setMinutes(int minutes) {
+  protected void setMinutes(int minutes) {
     this.minutes = minutes;
   }
 }

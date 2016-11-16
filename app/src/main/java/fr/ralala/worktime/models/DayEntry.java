@@ -130,10 +130,6 @@ public class DayEntry {
     return day;
   }
 
-  public void setDay(WorkTimeDay day) {
-    this.day.copy(day);
-  }
-
   public WorkTimeDay getStart() {
     return start;
   }

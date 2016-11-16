@@ -59,7 +59,7 @@ public class FileChooser extends AppCompatActivity implements AdapterView.OnItem
     public boolean onItemLongClick(
         final AdapterView<?> parent, final View v, final int position, final long id) {
       final Option o = adapter.getItem(position);
-      if (o.getPath() == null)
+      if (o == null || o.getPath() == null)
         return false;
       boolean folder = false;
       if (o.getData().equalsIgnoreCase("folder"))
@@ -114,7 +114,7 @@ public class FileChooser extends AppCompatActivity implements AdapterView.OnItem
     if (b != null && b.containsKey(FILECHOOSER_FILE_FILTER_KEY))
       fileFilter = b.getString(FILECHOOSER_FILE_FILTER_KEY);
     if (b != null && b.containsKey(FILECHOOSER_DEFAULT_DIR))
-      defaultDir = new File(b.getString(FILECHOOSER_DEFAULT_DIR));
+      defaultDir = new File(""+b.getString(FILECHOOSER_DEFAULT_DIR));
     if (b != null && b.containsKey(FILECHOOSER_USER_MESSAGE))
       userMessage = b.getString(FILECHOOSER_USER_MESSAGE);
     if(confirmTitle == null) confirmTitle = "title";
@@ -144,7 +144,7 @@ public class FileChooser extends AppCompatActivity implements AdapterView.OnItem
         }
       }
     } catch (final Exception e) {
-
+      Log.e(getClass().getSimpleName(), "Exception : " + e.getMessage(), e);
     }
     Collections.sort(dir);
     if(!fls.isEmpty()){
@@ -175,7 +175,7 @@ public class FileChooser extends AppCompatActivity implements AdapterView.OnItem
   public void onItemClick(final AdapterView<?> l, final View v,
       final int position, final long id) {
     final Option o = adapter.getItem(position);
-    if (o.getPath() == null)
+    if (o == null || o.getPath() == null)
       return;
     if (o.getData().equalsIgnoreCase("folder")
         || o.getData().equalsIgnoreCase("parent directory")) {

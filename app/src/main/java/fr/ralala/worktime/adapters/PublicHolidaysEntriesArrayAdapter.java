@@ -1,6 +1,7 @@
 package fr.ralala.worktime.adapters;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.PopupMenu;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -58,8 +59,8 @@ public class PublicHolidaysEntriesArrayAdapter extends ArrayAdapter<DayEntry> {
   }
 
   @Override
-  public View getView(final int position, final View convertView,
-                      final ViewGroup parent) {
+  public @NonNull View getView(final int position, final View convertView,
+                               @NonNull final ViewGroup parent) {
     View v = convertView;
     ViewHolder holder;
     if (v == null) {

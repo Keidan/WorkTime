@@ -149,7 +149,6 @@ public class MainActivity extends RuntimePermissionsActivity implements Navigati
         viewIsAtHome = false;
         break;
       case R.id.nav_settings:
-        title = getString(R.string.settings);
         viewIsAtHome = false;
         startActivity(new Intent(this, SettingsActivity.class));
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

@@ -34,14 +34,6 @@ public class ProfilesFactory {
     return profiles;
   }
 
-  public boolean hasProfile(final String name) {
-    for(DayEntry de : profiles) {
-      if(de.getName().equals(name))
-        return true;
-    }
-    return false;
-  }
-
   public void remove(final DayEntry de) {
     profiles.remove(de);
     sql.removeProfile(de);

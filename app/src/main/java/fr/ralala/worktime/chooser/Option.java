@@ -20,7 +20,7 @@ public class Option implements Comparable<Option> {
   private String path;
   private Drawable icon;
 
-  public Option(final String n, final String d, final String p, final Drawable i) {
+  protected Option(final String n, final String d, final String p, final Drawable i) {
     name = n;
     data = d;
     path = p;
@@ -35,16 +35,12 @@ public class Option implements Comparable<Option> {
     return data;
   }
 
-  public String getPath() {
+  protected String getPath() {
     return path;
   }
 
   public Drawable getIcon() {
     return icon;
-  }
-
-  public boolean isValid() {
-    return name != null && path != null;
   }
 
   @SuppressLint("DefaultLocale")

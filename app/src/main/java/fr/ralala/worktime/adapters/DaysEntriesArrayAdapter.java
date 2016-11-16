@@ -2,6 +2,7 @@ package fr.ralala.worktime.adapters;
 
 import android.content.Context;
 import android.graphics.Typeface;
+import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -63,8 +64,8 @@ public class DaysEntriesArrayAdapter extends ArrayAdapter<DayEntry> {
   }
 
   @Override
-  public View getView(final int position, final View convertView,
-                      final ViewGroup parent) {
+  public @NonNull View getView(final int position, final View convertView,
+                      @NonNull final ViewGroup parent) {
     View v = convertView;
     ViewHolder holder;
     final DayEntry t = items.get(position);

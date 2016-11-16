@@ -43,14 +43,6 @@ public class PublicHolidaysFactory {
     return false;
   }
 
-  public boolean hasPublicHolidayName(final String name) {
-    for(DayEntry de : publicHolidays) {
-      if(de.getName().equals(name))
-        return true;
-    }
-    return false;
-  }
-
   public void remove(final DayEntry de) {
     publicHolidays.remove(de);
     sql.removePublicHoliday(de);

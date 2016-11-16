@@ -32,10 +32,10 @@ public class SelectionHandler {
     handler = new IncomingHandler(this);
   }
 
-  static class IncomingHandler extends Handler {
+  private static class IncomingHandler extends Handler {
     private SelectionHandler adaptee = null;
 
-    public IncomingHandler(final SelectionHandler adaptee) {
+    IncomingHandler(final SelectionHandler adaptee) {
       this.adaptee = adaptee;
     }
 
@@ -43,7 +43,7 @@ public class SelectionHandler {
     public void handleMessage(final Message msg) {
       adaptee.handleMessage(msg);
     }
-  };
+  }
 
   public void compute(final ISelectionHandler action, final Object userObject) {
     progress = ProgressDialog.show(ctx, "", "Loading...", true);
@@ -55,7 +55,7 @@ public class SelectionHandler {
         ctx.runOnUiThread(new Runnable() {
           @Override
           public void run() {
-            Message msg = null;
+            Message msg;
             status = action.doCompute(userObject);
             if (status == ErrorStatus.CANCEL) {
               msg = handler.obtainMessage(MSG_CANCEL, action);
@@ -78,8 +78,8 @@ public class SelectionHandler {
     })).start();
   }
 
-  public void handleMessage(final Message msg) {
-    ISelectionHandler action = null;
+  private void handleMessage(final Message msg) {
+    ISelectionHandler action;
     switch (msg.what) {
       case MSG_ERR:
         action = (ISelectionHandler) msg.obj;

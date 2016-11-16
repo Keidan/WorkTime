@@ -2,7 +2,6 @@ package fr.ralala.worktime.fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -195,10 +194,10 @@ public class MainFragment extends Fragment implements View.OnClickListener, Adap
     long hrs = ((legalTime - minutes) / 60);
     String monthlyHours = getString(R.string.monthly_hours) + ": " +
       String.format(Locale.US, "%d:%02d", hours + calendar.get(Calendar.HOUR),
-        calendar.get(Calendar.MINUTE)) + "/" + String.format("%02d:%02d", hrs, mins) + " " + getString(R.string.hours_lower_case) ;
+        calendar.get(Calendar.MINUTE)) + "/" + String.format(Locale.US, "%02d:%02d", hrs, mins) + " " + getString(R.string.hours_lower_case) ;
     tvMonthlyHours.setText(monthlyHours);
     /* init total pay label */
-    tvMonthlyPay.setText(getString(R.string.monthly_pay) + ": " + String.format("%.02f", totalPay) + app.getCurrency());
+    tvMonthlyPay.setText(getString(R.string.monthly_pay) + ": " + String.format(Locale.US, "%.02f", totalPay) + app.getCurrency());
 
     lvAdapter.notifyDataSetChanged();
   }

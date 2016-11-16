@@ -4,6 +4,7 @@ import java.util.List;
 
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,7 +29,7 @@ public class FileArrayAdapter extends ArrayAdapter<Option> {
   private final int          id;
   private final List<Option> items;
 
-  public FileArrayAdapter(final Context context, final int textViewResourceId,
+  protected FileArrayAdapter(final Context context, final int textViewResourceId,
       final List<Option> objects) {
     super(context, textViewResourceId, objects);
     c = context;
@@ -42,8 +43,8 @@ public class FileArrayAdapter extends ArrayAdapter<Option> {
   }
 
   @Override
-  public View getView(final int position, final View convertView,
-      final ViewGroup parent) {
+  public @NonNull View getView(final int position, final View convertView,
+               @NonNull final ViewGroup parent) {
     View v = convertView;
     if (v == null) {
       final LayoutInflater vi = (LayoutInflater) c

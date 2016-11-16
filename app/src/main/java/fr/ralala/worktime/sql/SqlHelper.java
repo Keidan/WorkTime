@@ -125,6 +125,7 @@ public class SqlHelper extends SQLiteOpenHelper implements SqlConstants {
           if (myInput != null)
             myInput.close();
         } catch (final Exception e) {
+          Log.e(SqlHelper.class.getSimpleName(), "Exception: " + e.getMessage(), e);
         }
       }
     }
@@ -156,6 +157,7 @@ public class SqlHelper extends SQLiteOpenHelper implements SqlConstants {
         if (myInput != null)
           myInput.close();
       } catch (final Exception e) {
+        Log.e(SqlHelper.class.getSimpleName(), "Exception: " + e.getMessage(), e);
       }
     }
     if(exception != null) throw exception;

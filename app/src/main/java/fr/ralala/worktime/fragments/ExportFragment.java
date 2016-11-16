@@ -22,9 +22,10 @@ public class ExportFragment extends Fragment {
   @Override
   public View onCreateView(final LayoutInflater inflater,
                            final ViewGroup container, final Bundle savedInstanceState) {
-    final ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.content_export, container, false);
+    /*final ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.content_export, container, false);
 
-    return rootView;
+    return rootView;*/
+    return inflater.inflate(R.layout.content_export, container, false);
   }
 
 }
