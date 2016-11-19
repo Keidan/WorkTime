@@ -2,11 +2,17 @@ package fr.ralala.worktime;
 
 import android.app.Activity;
 import android.app.TimePickerDialog;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
+import android.os.Parcelable;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.PopupMenu;
 import android.view.LayoutInflater;
@@ -22,7 +28,10 @@ import android.widget.Toast;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.text.DateFormatSymbols;
+import java.util.List;
 import java.util.Locale;
+import java.util.Stack;
 
 import fr.ralala.worktime.models.DayEntry;
 import fr.ralala.worktime.models.DayType;
@@ -38,6 +47,69 @@ import fr.ralala.worktime.models.WorkTimeDay;
  *******************************************************************************
  */
 public class AndroidHelper {
+
+  public static void sentMailTo(final Activity activity, String mailto, Uri attachment, String subject, String body, String senderMsg) {
+    Intent i = new Intent(Intent.ACTION_SEND);
+    i.setType("*/*");
+    if(attachment != null) {
+      ContentResolver cR = activity.getContentResolver();
+      i.setType(cR.getType(attachment));
+      i.putExtra(Intent.EXTRA_STREAM, attachment);
+    }
+    i.putExtra(Intent.EXTRA_EMAIL, new String[] { mailto });
+    i.putExtra(Intent.EXTRA_SUBJECT, subject == null ? "" : subject);
+    i.putExtra(Intent.EXTRA_TEXT, body == null ? "" : body);
+
+    activity.startActivity(createEmailOnlyChooserIntent(activity, i, mailto, senderMsg));
+  }
+
+  public static Intent createEmailOnlyChooserIntent(final Activity activity, Intent source,
+                                                    String mailto,
+                                             CharSequence chooserTitle) {
+    Stack<Intent> intents = new Stack<>();
+    Intent i = new Intent(Intent.ACTION_SENDTO, Uri.fromParts("mailto", mailto, null));
+    List<ResolveInfo> activities = activity.getPackageManager().queryIntentActivities(i, 0);
+
+    for(ResolveInfo ri : activities) {
+      Intent target = new Intent(source);
+      target.setPackage(ri.activityInfo.packageName);
+      intents.add(target);
+    }
+
+    if(!intents.isEmpty()) {
+      Intent chooserIntent = Intent.createChooser(intents.remove(0),
+        chooserTitle);
+      chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS,
+        intents.toArray(new Parcelable[intents.size()]));
+
+      return chooserIntent;
+    } else {
+      return Intent.createChooser(source, chooserTitle);
+    }
+  }
+
+  public static String getMonthString(int month) {
+    String[] months = new DateFormatSymbols().getMonths();
+    return months[month].substring(0, 1).toUpperCase() + months[month].substring(1);
+  }
+
+  public static void snack(final Activity activity, int resId) {
+    snack(activity, activity.getString(resId));
+  }
+
+  public static void snack(final Activity activity, String msg) {
+    final View cl = activity.findViewById(R.id.coordinatorLayout);
+    final Snackbar snackbar = Snackbar
+      .make(cl, msg, Snackbar.LENGTH_LONG);
+    snackbar.setAction(R.string.snack_hide, new View.OnClickListener() {
+      @Override
+      public void onClick(View view) {
+        snackbar.dismiss();
+      }
+    });
+
+    snackbar.show();
+  }
 
   public static void showConfirmDialog(final Context c, final String title,
                                        String message, final android.view.View.OnClickListener yes,
