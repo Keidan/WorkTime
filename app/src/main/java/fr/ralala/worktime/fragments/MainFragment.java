@@ -158,6 +158,8 @@ public class MainFragment extends Fragment implements View.OnClickListener, Adap
     int wDays = 0;
     long hours = 0L;
     long minutes = 0L;
+    long overTime = 0L;
+    long overMinutes = 0L;
     int currentDay = currentDate.get(Calendar.DAY_OF_MONTH);
     double totalPay = 0.0;
     /* loop for each days in the month */
@@ -177,6 +179,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, Adap
       WorkTimeDay wt = de.getWorkTime();
       hours += wt.getHours();
       minutes += wt.getMinutes();
+      overTime += de.getOverTimeMs(app);
       lvAdapter.add(de);
     }
     /* reload work day label */
@@ -188,13 +191,18 @@ public class MainFragment extends Fragment implements View.OnClickListener, Adap
     Calendar calendar = Calendar.getInstance();
     calendar.setTimeZone(TimeZone.getTimeZone("GMT"));
     calendar.setTime(new Date(TimeUnit.MINUTES.toMillis(minutes)));
+    Calendar calendar2 = Calendar.getInstance();
+    calendar2.setTimeZone(TimeZone.getTimeZone("GMT"));
+    calendar2.setTime(new Date(overTime));
     /* substract legal working time */
     long legalTime = app.getLegalWorkTimeByDay().toLongTime() * wDays;
     long mins = legalTime % 60;
     long hrs = ((legalTime - minutes) / 60);
     String monthlyHours = getString(R.string.monthly_hours) + ": " +
-      String.format(Locale.US, "%d:%02d", hours + calendar.get(Calendar.HOUR),
-        calendar.get(Calendar.MINUTE)) + "/" + String.format(Locale.US, "%02d:%02d", hrs, mins) + " " + getString(R.string.hours_lower_case) ;
+      String.format(Locale.US, "%d:%02d/%d:%02d (%s%d:%02d)",
+        hours + calendar.get(Calendar.HOUR), calendar.get(Calendar.MINUTE),
+        hrs, mins, calendar2.get(Calendar.HOUR) > 0 ? "+" : "", calendar2.get(Calendar.HOUR), calendar2.get(Calendar.MINUTE));
+
     tvMonthlyHours.setText(monthlyHours);
     /* init total pay label */
     tvMonthlyPay.setText(getString(R.string.monthly_pay) + ": " + String.format(Locale.US, "%.02f", totalPay) + app.getCurrency());

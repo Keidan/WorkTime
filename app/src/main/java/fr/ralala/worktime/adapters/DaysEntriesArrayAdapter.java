@@ -145,21 +145,18 @@ public class DaysEntriesArrayAdapter extends ArrayAdapter<DayEntry> {
           holder.tvOver.setTypeface(Typeface.MONOSPACE, Typeface.NORMAL);
         }
         else {
-          long diffInMs = t.getWorkTime().getTimeMs() - app.getLegalWorkTimeByDay().getTimeMs();
-          Calendar cal_ = Calendar.getInstance();
-          cal_.setTimeZone(TimeZone.getTimeZone("GMT"));
-          cal_.setTime(new Date(diffInMs));
-          if(diffInMs == 0L) {
+          long overtime = t.getOverTimeMs(app);
+          WorkTimeDay wtd = t.getOverTime(overtime);
+          if(overtime == 0) {
             holder.tvOver.setText("-");
             holder.tvOver.setTypeface(Typeface.MONOSPACE, Typeface.NORMAL);
           } else {
             holder.tvOver.setTypeface(Typeface.MONOSPACE, Typeface.BOLD);
-            if (diffInMs < 0) {
+            if (overtime < 0) {
               holder.tvOver.setTextColor(c.getResources().getColor(android.R.color.holo_red_dark, null));
             } else
               holder.tvOver.setTextColor(c.getResources().getColor(android.R.color.holo_green_dark, null));
-            holder.tvOver.setText(String.format(Locale.US, "%02d:%02d",
-              TimeUnit.MILLISECONDS.toHours(diffInMs), cal_.get(Calendar.MINUTE)));
+            holder.tvOver.setText(wtd.timeString());
           }
         }
       }

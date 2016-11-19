@@ -6,9 +6,11 @@ import android.util.Log;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
+import fr.ralala.worktime.MainApplication;
 import fr.ralala.worktime.R;
 
 /**
@@ -45,6 +47,21 @@ public class DayEntry {
   public double getWorkTimePay() {
     return getAmountByHour() * Double.parseDouble(
       String.valueOf(getWorkTime().getHours()) + "." + String.valueOf(getWorkTime().getMinutes()));
+  }
+
+  public long getOverTimeMs(MainApplication app) {
+    return getWorkTime().getTimeMs() - app.getLegalWorkTimeByDay().getTimeMs();
+  }
+
+  public WorkTimeDay getOverTime(long diffInMs) {
+    Calendar cal_ = Calendar.getInstance();
+    cal_.setTimeZone(TimeZone.getTimeZone("GMT"));
+    cal_.setTime(new Date(diffInMs));
+    return new WorkTimeDay(0, 0, 0, (int)TimeUnit.MILLISECONDS.toHours(diffInMs), cal_.get(Calendar.MINUTE));
+  }
+
+  public WorkTimeDay getOverTime(MainApplication app) {
+    return getOverTime(getOverTimeMs(app));
   }
 
   public WorkTimeDay getWorkTime() {
