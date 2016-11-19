@@ -39,6 +39,10 @@ import fr.ralala.worktime.prefs.SettingsActivity;
  *******************************************************************************
  */
 public class MainActivity extends RuntimePermissionsActivity implements NavigationView.OnNavigationItemSelectedListener {
+  private static final int IDX_HOME = 0;
+  private static final int IDX_PROFILE = 1;
+  private static final int IDX_PUBLIC_HOLYDAY = 2;
+  private static final int IDX_EXPORT = 3;
   private static final int PERMISSIONS_REQUEST = 30;
   private static final int BACK_TIME_DELAY = 2000;
   private static long lastBackPressed = -1;
@@ -87,11 +91,11 @@ public class MainActivity extends RuntimePermissionsActivity implements Navigati
       ft.attach(fragment);
       ft.commit();
       if(ProfileFragment.class.isInstance(fragment))
-        navigationView.getMenu().getItem(1).setChecked(true); /* select profile title */
+        navigationView.getMenu().getItem(IDX_PROFILE).setChecked(true); /* select profile title */
       else if(PublicHolidaysFragment.class.isInstance(fragment))
-        navigationView.getMenu().getItem(2).setChecked(true); /* select public holidays title */
+        navigationView.getMenu().getItem(IDX_PUBLIC_HOLYDAY).setChecked(true); /* select public holidays title */
       else if(ExportFragment.class.isInstance(fragment))
-        navigationView.getMenu().getItem(3).setChecked(true); /* select export title */
+        navigationView.getMenu().getItem(IDX_EXPORT).setChecked(true); /* select export title */
 
     }
   }
@@ -109,7 +113,7 @@ public class MainActivity extends RuntimePermissionsActivity implements Navigati
     }
     if (!viewIsAtHome) { //if the current view is not the News fragment
       displayView(R.id.nav_home); //display the home fragment
-      navigationView.getMenu().getItem(0).setChecked(true); /* select home title */
+      navigationView.getMenu().getItem(IDX_HOME).setChecked(true); /* select home title */
     } else {
       //moveTaskToBack(true);  //If view is in News fragment, exit application
       if (lastBackPressed + BACK_TIME_DELAY > System.currentTimeMillis()) {
