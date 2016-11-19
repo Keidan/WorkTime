@@ -6,7 +6,10 @@ import android.os.Environment;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
+import android.support.v4.app.NavUtils;
+import android.support.v7.app.AppCompatDelegate;
 import android.util.Log;
+import android.view.MenuItem;
 
 import java.io.File;
 import java.util.HashMap;
@@ -39,6 +42,7 @@ public class SettingsActivity extends PreferenceActivity implements Preference.O
   public static final double       PREFS_DEFAULT_AMOUNT_BY_HOUR   = 0.0;
   public static final String       PREFS_DEFAULT_CURRENCY         = "\u0024";
   private MyPreferenceFragment     prefFrag                       = null;
+  private AppCompatDelegate        mDelegate;
 
   @Override
   public void onCreate(final Bundle savedInstanceState) {
@@ -51,6 +55,27 @@ public class SettingsActivity extends PreferenceActivity implements Preference.O
       .setOnPreferenceClickListener(this);
     prefFrag.findPreference(PREFS_KEY_IMPORT)
       .setOnPreferenceClickListener(this);
+    android.support.v7.app.ActionBar actionBar = getDelegate().getSupportActionBar();
+    actionBar.setDisplayShowHomeEnabled(true);
+    actionBar.setDisplayHomeAsUpEnabled(true);
+  }
+
+  private AppCompatDelegate getDelegate() {
+    if (mDelegate == null) {
+      mDelegate = AppCompatDelegate.create(this, null);
+    }
+    return mDelegate;
+  }
+
+  @Override
+  public boolean onOptionsItemSelected(MenuItem item) {
+    switch (item.getItemId())
+    {
+      case android.R.id.home:
+        NavUtils.navigateUpFromSameTask(this);
+        return true;
+    }
+    return super.onOptionsItemSelected(item);
   }
 
 
