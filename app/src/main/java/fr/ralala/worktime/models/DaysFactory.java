@@ -37,13 +37,13 @@ public class DaysFactory {
     return days;
   }
 
+
   public double checkForDayDateAndCopy(DayEntry current) {
     for(DayEntry de : days) {
       if(de.getDay().dateString().equals(current.getDay().dateString())) {
         current.copy(de);
         // Calculate Pay
-        return de.getAmountByHour() * Double.parseDouble(
-          String.valueOf(de.getWorkTime().getHours()) + "." + String.valueOf(de.getWorkTime().getMinutes()));
+        return de.getWorkTimePay();
       }
     }
     return 0.0;

@@ -42,6 +42,11 @@ public class DayEntry {
     this(new WorkTimeDay().fromCalendar(day), type);
   }
 
+  public double getWorkTimePay() {
+    return getAmountByHour() * Double.parseDouble(
+      String.valueOf(getWorkTime().getHours()) + "." + String.valueOf(getWorkTime().getMinutes()));
+  }
+
   public WorkTimeDay getWorkTime() {
     Calendar c = Calendar.getInstance();
     c.setTimeZone(TimeZone.getTimeZone("GMT"));
