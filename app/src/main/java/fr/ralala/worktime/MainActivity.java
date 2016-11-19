@@ -3,25 +3,16 @@ package fr.ralala.worktime;
 
 import android.Manifest;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Process;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
-import android.view.View;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import fr.ralala.worktime.fragments.ExportFragment;
 import fr.ralala.worktime.fragments.MainFragment;
@@ -71,7 +62,7 @@ public class MainActivity extends RuntimePermissionsActivity implements Navigati
     displayView(R.id.nav_home);
     /* load SQL */
     app = MainApplication.getApp(this);
-    if(!app.openSql(drawer)) finish();
+    if(!app.openSql(this)) finish();
 
     super.requestAppPermissions(new
         String[]{Manifest.permission.READ_EXTERNAL_STORAGE,
