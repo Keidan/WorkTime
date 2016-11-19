@@ -20,6 +20,7 @@
         android:paddingBottom="5dp">
 
         <ImageButton
+            android:contentDescription="@string/empty"
             android:src="@mipmap/ic_previous"
             android:layout_width="25dp"
             android:layout_height="match_parent"
@@ -45,11 +46,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/tvYear"
-                android:textSize="18dp"
+                android:textSize="18sp"
                 android:layout_weight="1"/>
         </LinearLayout>
 
         <ImageButton
+            android:contentDescription="@string/empty"
             android:src="@mipmap/ic_next"
             android:layout_width="25dp"
             android:layout_height="match_parent"
@@ -64,6 +66,7 @@
         android:layout_below="@+id/llTitle"
         android:layout_alignParentStart="true">
         <ImageView
+            android:contentDescription="@string/empty"
             android:layout_width="25dp"
             android:layout_height="wrap_content"
             android:src="@mipmap/ic_public_holidays"/>
@@ -106,6 +109,7 @@
         android:layout_alignParentStart="true">
 
         <ImageView
+            android:contentDescription="@string/empty"
             android:layout_marginBottom="5dp"
             android:layout_marginTop="5dp"
             android:layout_width="16dp"
@@ -114,6 +118,7 @@
             android:src="@mipmap/ic_sun"
             android:layout_weight="1"/>
         <ImageView
+            android:contentDescription="@string/empty"
             android:layout_marginBottom="5dp"
             android:layout_marginTop="5dp"
             android:layout_width="16dp"
@@ -122,6 +127,7 @@
             android:src="@mipmap/ic_down"
             android:layout_weight="1"/>
         <ImageView
+            android:contentDescription="@string/empty"
             android:layout_marginBottom="5dp"
             android:layout_marginTop="5dp"
             android:layout_width="16dp"
@@ -130,6 +136,7 @@
             android:src="@mipmap/ic_up"
             android:layout_weight="1"/>
         <ImageView
+            android:contentDescription="@string/empty"
             android:layout_marginBottom="5dp"
             android:layout_marginTop="5dp"
             android:layout_width="16dp"
@@ -138,6 +145,7 @@
             android:src="@mipmap/ic_lunch"
             android:layout_weight="1"/>
         <ImageView
+            android:contentDescription="@string/empty"
             android:layout_marginBottom="5dp"
             android:layout_marginTop="5dp"
             android:layout_width="16dp"
@@ -146,6 +154,7 @@
             android:src="@mipmap/ic_clock_white"
             android:layout_weight="1"/>
         <ImageView
+            android:contentDescription="@string/empty"
             android:layout_marginBottom="5dp"
             android:layout_marginTop="5dp"
             android:layout_width="16dp"

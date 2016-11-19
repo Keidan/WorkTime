@@ -157,7 +157,7 @@ public class AndroidHelper {
     final TextView tvStart = (TextView)dialogView.findViewById(R.id.tvStart);
     final TextView tvEnd = (TextView)dialogView.findViewById(R.id.tvEnd);
     final TextView tvPause = (TextView)dialogView.findViewById(R.id.tvPause);
-    final EditText tvAmount = (EditText)dialogView.findViewById(R.id.tvAmount);
+    final EditText etAmount = (EditText)dialogView.findViewById(R.id.etAmount);
     final TextView tvName = (TextView)dialogView.findViewById(R.id.tvName);
     final EditText etName = (EditText)dialogView.findViewById(R.id.etName);
 
@@ -168,7 +168,7 @@ public class AndroidHelper {
         initTimeTextView(new WorkTimeDay(), tvStart);
         initTimeTextView(new WorkTimeDay(), tvEnd);
         initTimeTextView(new WorkTimeDay(), tvPause);
-        tvAmount.setText("0.00");
+        etAmount.setText("0.00");
         spType.setSelection(DayType.AT_WORK.value());
         etName.setText("");
         tvDay.setText(de.getDay().dateString());
@@ -246,7 +246,7 @@ public class AndroidHelper {
               initTimeTextView(de.getStart(), tvStart);
               initTimeTextView(de.getEnd(), tvEnd);
               initTimeTextView(de.getPause(), tvPause);
-              tvAmount.setText(String.format(Locale.US, "%.02f", de.getAmountByHour()).replaceAll(",", "."));
+              etAmount.setText(String.format(Locale.US, "%.02f", de.getAmountByHour()).replaceAll(",", "."));
               spType.setSelection(de.getType() == DayType.ERROR ? 0 : de.getType().value());
               etName.setText(de.getName());
               tvDay.setText(de.getDay().dateString());
@@ -265,10 +265,10 @@ public class AndroidHelper {
     initTimeTextView(de.getEnd(), tvEnd);
     initTimeTextView(de.getPause(), tvPause);
 
-    tvAmount.setTypeface(tvPause.getTypeface());
-    tvAmount.setTextSize(14);
-    tvAmount.setTextColor(tvPause.getTextColors());
-    tvAmount.setText(String.format(Locale.US, "%.02f",
+    etAmount.setTypeface(tvPause.getTypeface());
+    etAmount.setTextSize(14);
+    etAmount.setTextColor(tvPause.getTextColors());
+    etAmount.setText(String.format(Locale.US, "%.02f",
       de.getAmountByHour() != 0 ? de.getAmountByHour() : ((MainApplication)activity.getApplicationContext()).getAmountByHour()).replaceAll(",", "."));
 
     /* Init the common listener. */
@@ -277,7 +277,7 @@ public class AndroidHelper {
         /* Click on the Positive button (OK) */
         if(whichButton == DialogInterface.BUTTON_POSITIVE) {
           DayEntry newEntry = new DayEntry(de.getDay().toCalendar(), DayType.compute(activity, spType.getSelectedItem().toString()));
-          String s = tvAmount.getText().toString().trim();
+          String s = etAmount.getText().toString().trim();
           newEntry.setAmountByHour(s.isEmpty() ? 0.0 : Double.parseDouble(s));
           newEntry.setName(etName.getText().toString());
           newEntry.setEnd(tvEnd.getText().toString());

@@ -30,6 +30,7 @@
                 android:textColor="@android:color/darker_gray"
                 android:paddingBottom="25dp"/>
             <ImageView
+                android:contentDescription="@string/empty"
                 android:id="@+id/ivDelete"
                 android:layout_gravity="end"
                 android:layout_width="48dp"
@@ -44,7 +45,8 @@
                 android:layout_height="wrap_content"
                 android:text="@string/name"
                 android:padding="3dp"
-                android:visibility="gone"/>
+                android:visibility="gone"
+                android:labelFor="@+id/etName"/>
             <EditText
                 android:id="@+id/etName"
                 android:layout_width="match_parent"
@@ -164,7 +166,8 @@
             android:layout_height="wrap_content"
             android:text="@string/amount"
             app:layout_widthPercent="40%"
-            android:padding="3dp"/>
+            android:padding="3dp"
+            android:labelFor="@+id/etAmount"/>
 
 
 
@@ -186,7 +189,7 @@
             app:layout_widthPercent="10%"
             android:padding="3dp" />
         <EditText
-            android:id="@+id/tvAmount"
+            android:id="@+id/etAmount"
             android:layout_below="@+id/tvLblAmount"
             android:layout_toEndOf="@+id/space4"
             android:layout_width="0dp"
