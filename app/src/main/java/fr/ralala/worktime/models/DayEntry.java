@@ -80,24 +80,6 @@ public class DayEntry {
     return ret;
   }
 
-  public static String getMonthString(final Context c, final int month) {
-    switch (month) {
-      case Calendar.JANUARY: return c.getString(R.string.january);
-      case Calendar.FEBRUARY: return c.getString(R.string.february);
-      case Calendar.MARCH: return c.getString(R.string.march);
-      case Calendar.APRIL: return c.getString(R.string.april);
-      case Calendar.MAY: return c.getString(R.string.may);
-      case Calendar.JUNE: return c.getString(R.string.june);
-      case Calendar.JULY: return c.getString(R.string.july);
-      case Calendar.AUGUST: return c.getString(R.string.august);
-      case Calendar.SEPTEMBER: return c.getString(R.string.september);
-      case Calendar.OCTOBER: return c.getString(R.string.october);
-      case Calendar.NOVEMBER: return c.getString(R.string.november);
-      case Calendar.DECEMBER: return c.getString(R.string.december);
-    }
-    return c.getString(R.string.error);
-  }
-
   public static String getDayString2lt(final Context c, final int dayOfWeek) {
     switch (dayOfWeek) {
       case Calendar.MONDAY: return c.getString(R.string.day_monday_2lt);

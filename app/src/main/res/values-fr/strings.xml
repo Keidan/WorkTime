@@ -13,18 +13,6 @@
     <string name="work_time">Temps de travail</string>
     <string name="work_days">Jours de travail</string>
     <string name="monthly_hours">Heures mensuel</string>
-    <string name="april">Avril</string>
-    <string name="august">Aout</string>
-    <string name="december">D\u00E9cembre</string>
-    <string name="february">F\u00E9vrier</string>
-    <string name="january">Janvier</string>
-    <string name="july">Juillet</string>
-    <string name="june">Juin</string>
-    <string name="march">Mars</string>
-    <string name="may">Mai</string>
-    <string name="november">Novembre</string>
-    <string name="october">Octobre</string>
-    <string name="september">Septembre</string>
     <string name="days_lower_case">jours</string>
     <string name="edit">Editer</string>
     <string name="delete">Supprimer</string>
@@ -32,7 +20,6 @@
     <string name="date">Date :</string>
     <string name="error">Erreur</string>
     <string name="error_no_name">Le champ nom ne peut pas être vide</string>
-    <string name="ok">Ok</string>
     <string name="cancel">Annuler</string>
     <string name="day_monday_2lt">Lu</string>
     <string name="day_tuesday_2lt">Ma</string>
@@ -74,5 +61,15 @@
     <string name="import_success">Importation r\u00E9ussie</string>
     <string name="permissions">Permissions</string>
     <string name="permissions_read_ext_storage">Les fonctions d\'import/export ont besoin des autorisations d\'acc\u00E8s en lecture/\u00E9criture au stockage externe</string>
+    <string name="year">Ann\u00E9e :</string>
+    <string name="export_no_items">Aucun mois s\u00E9lectionn\u00E9 pour l\'exportation</string>
+    <string name="snack_hide">Masquer</string>
+    <string name="export_email_not_set">L\'adresse courriel n\'est pas d\u00E9finie</string>
+    <string name="pref_summary_export_mail">Adresse courriel utilis\u00E9e pour envoyer le fichier PDF export\u00E9</string>
+    <string name="pref_title_export_mail">Adresse e-mail</string>
+    <string name="email_sent_to">Courriel envoy\u00E9 \u00E0</string>
+    <string name="export_email_subject">WorkTime export</string>
+    <string name="export_email_body">La pi\u00E8ce jointe pdf contient un rapport pour les dates ci-dessous:</string>
+    <string name="export_email_senderMsg">Envoyer un courriel en utilisant :</string>
 
 </resources>

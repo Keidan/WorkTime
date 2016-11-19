@@ -98,6 +98,19 @@ public class WorkTimeDay {
     return String.format(Locale.US, "%02d/%02d/%04d", day, month, year);
   }
 
+  public boolean isWithinRange(final Date startDate, final Date endDate) {
+    Date testDate = toCalendar().getTime();
+    return !(testDate.before(startDate) || testDate.after(endDate));
+  }
+
+  public boolean isInMonth(int month) {
+    return getMonth() == month;
+  }
+
+  public boolean isInYear(int year) {
+    return getYear() == year;
+  }
+
   protected boolean match(WorkTimeDay wtd) {
     return day == wtd.day && month == wtd.month && year == wtd.year && hours == wtd.hours && minutes == wtd.minutes;
   }

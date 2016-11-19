@@ -1,11 +1,10 @@
 package fr.ralala.worktime;
 
+import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
-import android.support.design.widget.Snackbar;
-import android.view.View;
 
 import fr.ralala.worktime.models.DaysFactory;
 import fr.ralala.worktime.models.ProfilesFactory;
@@ -41,7 +40,7 @@ public class MainApplication extends Application {
     return (MainApplication) c.getApplicationContext();
   }
 
-  public boolean openSql(final View view) {
+  public boolean openSql(final Activity activity) {
     boolean ret = false;
     try {
       sql = new SqlFactory(this);
@@ -52,8 +51,7 @@ public class MainApplication extends Application {
       ret = true;
     } catch (final Exception e) {
       //AndroidHelper.showAlertDialog(this, R.string.error, getString(R.string.error) + ": " + e.getMessage());
-      Snackbar.make(view, getString(R.string.error) + ": " + e.getMessage(), Snackbar.LENGTH_LONG)
-        .setAction("Action", null).show();
+      AndroidHelper.snack(activity, getString(R.string.error) + ": " + e.getMessage());
     }
     return ret;
   }
@@ -88,6 +86,11 @@ public class MainApplication extends Application {
   public String getCurrency() {
     SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
     return prefs.getString(SettingsActivity.PREFS_KEY_CURRENCY, "€");
+  }
+
+  public String getEMail() {
+    SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+    return prefs.getString(SettingsActivity.PREFS_KEY_EMAIL, "");
   }
 
 }

@@ -148,7 +148,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, Adap
     int minDay = 1;
     int maxDay = currentDate.getActualMaximum(Calendar.DAY_OF_MONTH);
     /* init the top components */
-    String smonth = DayEntry.getMonthString(getContext(), month);
+    String smonth = AndroidHelper.getMonthString(month);
     final String ss_month = String.format(Locale.US, "%02d", month + 1);
     final String ss_maxDay = String.format(Locale.US, "%02d", maxDay);
     smonth += "\n01/" + ss_month + " - " + ss_maxDay + "/" + ss_month;

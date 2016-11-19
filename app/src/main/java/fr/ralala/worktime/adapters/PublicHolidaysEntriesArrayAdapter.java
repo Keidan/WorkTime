@@ -83,7 +83,7 @@ public class PublicHolidaysEntriesArrayAdapter extends ArrayAdapter<DayEntry> {
       if (holder.date != null) {
         Calendar cal = t.getDay().toCalendar();
         holder.date.setText(String.format(Locale.US, "%02d %s %04d",
-          cal.get(Calendar.DAY_OF_MONTH), DayEntry.getMonthString(c, cal.get(Calendar.MONTH)), cal.get(Calendar.YEAR)));
+          cal.get(Calendar.DAY_OF_MONTH), AndroidHelper.getMonthString(cal.get(Calendar.MONTH)), cal.get(Calendar.YEAR)));
       }
       /* Show the popup menu if the user click on the 3-dots item. */
       try {

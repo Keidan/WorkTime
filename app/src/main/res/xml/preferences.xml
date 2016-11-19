@@ -29,4 +29,12 @@
             android:summary="@string/pref_summary_import"
             android:title="@string/pref_title_import"/>
     </PreferenceCategory>
+    <PreferenceCategory android:title="@string/pref_title_export" android:key="prefCatExport" >
+        <EditTextPreference
+            android:key="prefExportMail"
+            android:defaultValue=""
+            android:summary="@string/pref_summary_export_mail"
+            android:title="@string/pref_title_export_mail"
+            android:inputType="textEmailAddress" />
+    </PreferenceCategory>
 </PreferenceScreen>

@@ -17,18 +17,6 @@
     <string name="work_time">Work time</string>
     <string name="work_days">Work days</string>
     <string name="monthly_hours">Monthly hours</string>
-    <string name="january">January</string>
-    <string name="february">February</string>
-    <string name="march">March</string>
-    <string name="april">April</string>
-    <string name="may">May</string>
-    <string name="june">June</string>
-    <string name="july">July</string>
-    <string name="august">August</string>
-    <string name="september">September</string>
-    <string name="october">October</string>
-    <string name="november">November</string>
-    <string name="december">December</string>
     <string name="days_lower_case">days</string>
     <string name="edit">Edit</string>
     <string name="delete">Delete</string>
@@ -36,7 +24,7 @@
     <string name="date">Date :</string>
     <string name="error">Error</string>
     <string name="error_no_name">Name field cannot be empty</string>
-    <string name="ok">Ok</string>
+    <string name="ok" translatable="false">OK</string>
     <string name="cancel">Cancel</string>
     <string name="day_monday_2lt">Mo</string>
     <string name="day_tuesday_2lt">Tu</string>
@@ -79,4 +67,14 @@
     <string name="import_success">Import success</string>
     <string name="permissions">Permissions</string>
     <string name="permissions_read_ext_storage">The import/export functions need the external storage read/write access permissions</string>
+    <string name="year">Year :</string>
+    <string name="export_no_items">No selected months to export</string>
+    <string name="snack_hide">Hide</string>
+    <string name="export_email_not_set">The email address is not set</string>
+    <string name="pref_summary_export_mail">Email address used to send the exported PDF file</string>
+    <string name="pref_title_export_mail">Email address</string>
+    <string name="email_sent_to">Email sent to</string>
+    <string name="export_email_subject">WorkTime export</string>
+    <string name="export_email_body">The pdf attachment contain a report for the dates below:</string>
+    <string name="export_email_senderMsg">Send email using :</string>
 </resources>
