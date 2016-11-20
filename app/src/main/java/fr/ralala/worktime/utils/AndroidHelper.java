@@ -2,16 +2,13 @@ package fr.ralala.worktime.utils;
 
 import android.app.Activity;
 import android.app.TimePickerDialog;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.os.Parcelable;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.PopupMenu;
@@ -23,9 +20,7 @@ import android.widget.Toast;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.text.DateFormatSymbols;
-import java.util.List;
 import java.util.Locale;
-import java.util.Stack;
 
 import fr.ralala.worktime.R;
 import fr.ralala.worktime.models.WorkTimeDay;
@@ -42,43 +37,14 @@ import fr.ralala.worktime.models.WorkTimeDay;
 public class AndroidHelper {
 
   public static void sentMailTo(final Activity activity, String mailto, Uri attachment, String subject, String body, String senderMsg) {
-    Intent i = new Intent(Intent.ACTION_SEND);
-    i.setType("*/*");
-    if(attachment != null) {
-      ContentResolver cR = activity.getContentResolver();
-      i.setType(cR.getType(attachment));
-      i.putExtra(Intent.EXTRA_STREAM, attachment);
-    }
-    i.putExtra(Intent.EXTRA_EMAIL, new String[] { mailto });
-    i.putExtra(Intent.EXTRA_SUBJECT, subject == null ? "" : subject);
-    i.putExtra(Intent.EXTRA_TEXT, body == null ? "" : body);
-
-    activity.startActivity(createEmailOnlyChooserIntent(activity, i, mailto, senderMsg));
-  }
-
-  public static Intent createEmailOnlyChooserIntent(final Activity activity, Intent source,
-                                                    String mailto,
-                                             CharSequence chooserTitle) {
-    Stack<Intent> intents = new Stack<>();
-    Intent i = new Intent(Intent.ACTION_SENDTO, Uri.fromParts("mailto", mailto, null));
-    List<ResolveInfo> activities = activity.getPackageManager().queryIntentActivities(i, 0);
-
-    for(ResolveInfo ri : activities) {
-      Intent target = new Intent(source);
-      target.setPackage(ri.activityInfo.packageName);
-      intents.add(target);
-    }
-
-    if(!intents.isEmpty()) {
-      Intent chooserIntent = Intent.createChooser(intents.remove(0),
-        chooserTitle);
-      chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS,
-        intents.toArray(new Parcelable[intents.size()]));
-
-      return chooserIntent;
-    } else {
-      return Intent.createChooser(source, chooserTitle);
-    }
+    Intent emailIntent = new Intent(Intent.ACTION_SEND);
+    emailIntent .setType("application/excel");
+    String to[] = {mailto};
+    emailIntent .putExtra(Intent.EXTRA_EMAIL, to);
+    emailIntent .putExtra(Intent.EXTRA_STREAM, attachment);
+    emailIntent .putExtra(Intent.EXTRA_SUBJECT, subject == null ? "" : subject);
+    emailIntent.putExtra(Intent.EXTRA_TEXT, body == null ? "" : body);
+    activity.startActivity(Intent.createChooser(emailIntent , senderMsg));
   }
 
   public static String getMonthString(int month) {

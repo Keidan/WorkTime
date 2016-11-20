@@ -73,8 +73,14 @@
     <string name="export_email_not_set">The email address is not set</string>
     <string name="pref_summary_export_mail">Email address used to send the exported file</string>
     <string name="pref_title_export_mail">Email address</string>
-    <string name="email_sent_to">Email sent to</string>
+    <string name="email_sent_to">The file is also stored into the public download directory</string>
     <string name="export_email_subject">WorkTime export</string>
-    <string name="export_email_body">The attachment contain a report for the dates below:</string>
+    <string name="export_email_body">The attachment contain a report for the selected work time</string>
     <string name="export_email_senderMsg">Send email using :</string>
+    <string name="overtime">Overtime</string>
+    <string name="hour_in">Arriving time</string>
+    <string name="hour_out">Départure time</string>
+    <string name="break_time">Break time</string>
+    <string name="wage">Wage</string>
+    <string name="total">Total</string>
 </resources>

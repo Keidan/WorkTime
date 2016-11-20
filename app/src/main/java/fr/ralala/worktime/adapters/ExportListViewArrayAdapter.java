@@ -112,6 +112,8 @@ public class ExportListViewArrayAdapter extends ArrayAdapter<ExportListViewArray
   }
 
   public static class ExportEntry {
+    public int month;
+    public int year;
     public String text;
     public String info;
   }

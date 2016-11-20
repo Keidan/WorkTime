@@ -1,8 +1,11 @@
 package fr.ralala.worktime.fragments;
 
 
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,7 +15,9 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Spinner;
 
+import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -26,6 +31,8 @@ import fr.ralala.worktime.R;
 import fr.ralala.worktime.adapters.ExportListViewArrayAdapter;
 import fr.ralala.worktime.models.DayEntry;
 import fr.ralala.worktime.models.WorkTimeDay;
+import fr.ralala.worktime.utils.ExcelHelper;
+import jxl.write.WritableSheet;
 
 /**
  *******************************************************************************
@@ -92,14 +99,59 @@ public class ExportFragment extends Fragment implements AdapterView.OnItemSelect
       AndroidHelper.snack(getActivity(), R.string.export_email_not_set);
       return;
     }
-    boolean sent = false;
+    try {
+      File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS),
+        getString(R.string.app_name) + "_" + entries.get(0).year + ".xls");
+      ExcelHelper excel = new ExcelHelper(getActivity(), file);
+      for(int idx = 0; idx < entries.size(); ++idx) {
+        ExportListViewArrayAdapter.ExportEntry ee = entries.get(idx);
+        WritableSheet sheet = excel.createSheet(AndroidHelper.getMonthString(ee.month), idx);
+        int row = 0, column = 0;
+        excel.createHorizontalHeader(sheet, row, column, new String[]{
+          getString(R.string.date).replaceAll(" :", ""), // A -> 65
+          getString(R.string.type).replaceAll(" :", ""), // B -> 66
+          getString(R.string.hour_in),                   // C -> 67
+          getString(R.string.hour_out),                  // D -> 68
+          getString(R.string.break_time),                // E -> 69
+          getString(R.string.overtime),                  // F -> 70
+          getString(R.string.wage),                      // G -> 71
+        });
+        List<DayEntry> works = app.getDaysFactory().list();
+        column = 0;
+        row++;
+        for (DayEntry de : works) {
+          if (!de.getDay().isInMonth(ee.month + 1) || !de.getDay().isInYear(ee.year)) continue;
+          excel.addLabel(sheet, row, column+0, de.getDay().dateString(), false);
+          excel.addLabel(sheet, row, column+1, de.getType().string(getActivity()), false);
+          excel.addLabel(sheet, row, column+2, de.getStart().timeString(), false);
+          excel.addLabel(sheet, row, column+3, de.getEnd().timeString(), false);
+          excel.addLabel(sheet, row, column+4, de.getPause().timeString(), false);
+          excel.addLabel(sheet, row, column+5, de.getOverTime(app).timeString(), false);
+          excel.addLabel(sheet, row++, column+6, String.format(Locale.US, "%.02f", de.getWorkTimePay()), false);
+        }
+        /*column = 1;
+        excel.addLabel(sheet, row, column++, getString(R.string.total), true);
+        for (int i = 0; i < 5; ++i) {
+          char c = (char) (67 + i);
+          StringBuilder sb = new StringBuilder();
+          sb.append("SUM(").append(c).append(1).append(":").append(c).append(row - 1).append(")");
+          excel.addFormula(sheet, row, column++, sb);
+        }*/
+      }
 
-    if(!sent) return;
-    AndroidHelper.sentMailTo(getActivity(), email, null,
-      getString(R.string.export_email_subject),
-      getString(R.string.export_email_body),
-      getString(R.string.export_email_senderMsg));
-    AndroidHelper.snack(getActivity(), getString(R.string.email_sent_to) + " " + email);
+      excel.write();
+      Uri uri = Uri.fromFile(file);
+      AndroidHelper.sentMailTo(getActivity(), email, uri,
+        getString(R.string.export_email_subject),
+        getString(R.string.export_email_body),
+        getString(R.string.export_email_senderMsg));
+      AndroidHelper.snack(getActivity(), getString(R.string.email_sent_to) + " " + email);
+      //if(file.exists()) file.delete();
+    } catch(Exception e) {
+      Log.e(getClass().getSimpleName(), "Exception: " + e.getMessage(), e);
+      AndroidHelper.snack(getActivity(), getString(R.string.error) + ": " + e.getMessage());
+      return;
+    }
   }
 
   @Override
@@ -140,6 +192,8 @@ public class ExportFragment extends Fragment implements AdapterView.OnItemSelect
       ExportListViewArrayAdapter.ExportEntry ee = new ExportListViewArrayAdapter.ExportEntry();
       ee.text = AndroidHelper.getMonthString(i);
       ee.info = info;
+      ee.month = i;
+      ee.year = year;
       lvAdapter.add(ee);
     }
   }
