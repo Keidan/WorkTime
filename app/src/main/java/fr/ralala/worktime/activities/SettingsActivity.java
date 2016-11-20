@@ -1,4 +1,4 @@
-package fr.ralala.worktime.prefs;
+package fr.ralala.worktime.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -16,11 +16,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import fr.ralala.worktime.AndroidHelper;
+import fr.ralala.worktime.utils.AndroidHelper;
 import fr.ralala.worktime.R;
-import fr.ralala.worktime.chooser.FileChooser;
-import fr.ralala.worktime.chooser.FileChooserActivity;
-import fr.ralala.worktime.models.WorkTimeDay;
+import fr.ralala.worktime.activities.AbstractFileChooserActivity;
+import fr.ralala.worktime.activities.FileChooserActivity;
 import fr.ralala.worktime.sql.SqlHelper;
 
 /**
@@ -82,21 +81,21 @@ public class SettingsActivity extends PreferenceActivity implements Preference.O
   public boolean onPreferenceClick(final Preference preference) {
     if (preference.equals(prefFrag.findPreference(PREFS_KEY_EXPORT))) {
       Map<String, String> extra = new HashMap<>();
-      extra.put(FileChooser.FILECHOOSER_TYPE_KEY, "" + FileChooser.FILECHOOSER_TYPE_DIRECTORY_ONLY);
-      extra.put(FileChooser.FILECHOOSER_TITLE_KEY, getString(R.string.pref_title_export));
-      extra.put(FileChooser.FILECHOOSER_MESSAGE_KEY, getString(R.string.use_folder) + ":? ");
-      extra.put(FileChooser.FILECHOOSER_DEFAULT_DIR, Environment
+      extra.put(AbstractFileChooserActivity.FILECHOOSER_TYPE_KEY, "" + AbstractFileChooserActivity.FILECHOOSER_TYPE_DIRECTORY_ONLY);
+      extra.put(AbstractFileChooserActivity.FILECHOOSER_TITLE_KEY, getString(R.string.pref_title_export));
+      extra.put(AbstractFileChooserActivity.FILECHOOSER_MESSAGE_KEY, getString(R.string.use_folder) + ":? ");
+      extra.put(AbstractFileChooserActivity.FILECHOOSER_DEFAULT_DIR, Environment
         .getExternalStorageDirectory().getAbsolutePath());
-      extra.put(FileChooser.FILECHOOSER_SHOW_KEY, "" + FileChooser.FILECHOOSER_SHOW_DIRECTORY_ONLY);
+      extra.put(AbstractFileChooserActivity.FILECHOOSER_SHOW_KEY, "" + AbstractFileChooserActivity.FILECHOOSER_SHOW_DIRECTORY_ONLY);
       myStartActivity(extra, FileChooserActivity.class, FileChooserActivity.FILECHOOSER_SELECTION_TYPE_DIRECTORY);
     } else if (preference.equals(prefFrag.findPreference(PREFS_KEY_IMPORT))) {
       Map<String, String> extra = new HashMap<>();
-      extra.put(FileChooser.FILECHOOSER_TYPE_KEY, "" + FileChooser.FILECHOOSER_TYPE_FILE_AND_DIRECTORY);
-      extra.put(FileChooser.FILECHOOSER_TITLE_KEY, getString(R.string.pref_title_import));
-      extra.put(FileChooser.FILECHOOSER_MESSAGE_KEY, getString(R.string.use_file) + ":? ");
-      extra.put(FileChooser.FILECHOOSER_DEFAULT_DIR, Environment
+      extra.put(AbstractFileChooserActivity.FILECHOOSER_TYPE_KEY, "" + AbstractFileChooserActivity.FILECHOOSER_TYPE_FILE_AND_DIRECTORY);
+      extra.put(AbstractFileChooserActivity.FILECHOOSER_TITLE_KEY, getString(R.string.pref_title_import));
+      extra.put(AbstractFileChooserActivity.FILECHOOSER_MESSAGE_KEY, getString(R.string.use_file) + ":? ");
+      extra.put(AbstractFileChooserActivity.FILECHOOSER_DEFAULT_DIR, Environment
         .getExternalStorageDirectory().getAbsolutePath());
-      extra.put(FileChooser.FILECHOOSER_SHOW_KEY, "" + FileChooser.FILECHOOSER_SHOW_FILE_AND_DIRECTORY);
+      extra.put(AbstractFileChooserActivity.FILECHOOSER_SHOW_KEY, "" + AbstractFileChooserActivity.FILECHOOSER_SHOW_FILE_AND_DIRECTORY);
       myStartActivity(extra, FileChooserActivity.class, FileChooserActivity.FILECHOOSER_SELECTION_TYPE_FILE);
     }
     return true;

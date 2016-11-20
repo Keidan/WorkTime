@@ -10,8 +10,9 @@ import fr.ralala.worktime.models.DaysFactory;
 import fr.ralala.worktime.models.ProfilesFactory;
 import fr.ralala.worktime.models.PublicHolidaysFactory;
 import fr.ralala.worktime.models.WorkTimeDay;
-import fr.ralala.worktime.prefs.SettingsActivity;
+import fr.ralala.worktime.activities.SettingsActivity;
 import fr.ralala.worktime.sql.SqlFactory;
+import fr.ralala.worktime.utils.AndroidHelper;
 
 /**
  *******************************************************************************

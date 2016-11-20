@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" android:key="prefScreen">
     <PreferenceCategory android:title="@string/pref_title_settings" android:key="prefCatSettings" >
-        <fr.ralala.worktime.prefs.TimePreference
+        <fr.ralala.worktime.dialogs.TimePreferenceDialog
             android:key="prefWorkTimeByDay"
             android:title="@string/pref_title_work_time_by_day"
             android:defaultValue="00:00"

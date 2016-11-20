@@ -15,7 +15,7 @@ import android.widget.TextView;
 import java.util.List;
 import java.util.Locale;
 
-import fr.ralala.worktime.AndroidHelper;
+import fr.ralala.worktime.utils.AndroidHelper;
 import fr.ralala.worktime.MainApplication;
 import fr.ralala.worktime.R;
 import fr.ralala.worktime.models.DayEntry;

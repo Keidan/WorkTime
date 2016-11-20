@@ -20,7 +20,7 @@ import java.util.Locale;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
-import fr.ralala.worktime.AndroidHelper;
+import fr.ralala.worktime.utils.AndroidHelper;
 import fr.ralala.worktime.MainApplication;
 import fr.ralala.worktime.R;
 import fr.ralala.worktime.adapters.ExportListViewArrayAdapter;

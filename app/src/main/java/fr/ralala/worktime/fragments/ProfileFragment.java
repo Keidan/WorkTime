@@ -9,7 +9,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
-import fr.ralala.worktime.AndroidHelper;
+import fr.ralala.worktime.dialogs.DayEntryDialog;
+import fr.ralala.worktime.utils.AndroidHelper;
 import fr.ralala.worktime.MainApplication;
 import fr.ralala.worktime.R;
 import fr.ralala.worktime.adapters.ProfilesEntriesArrayAdapter;
@@ -27,7 +28,7 @@ import fr.ralala.worktime.models.WorkTimeDay;
  *
  *******************************************************************************
  */
-public class ProfileFragment  extends Fragment implements SimpleEntriesArrayAdapterMenuListener<DayEntry>, View.OnClickListener, AndroidHelper.DayEntryDialogSuccessListener {
+public class ProfileFragment  extends Fragment implements SimpleEntriesArrayAdapterMenuListener<DayEntry>, View.OnClickListener, DayEntryDialog.DayEntryDialogSuccessListener {
 
   private ProfilesEntriesArrayAdapter adapter = null;
   private MainApplication app = null;
@@ -60,12 +61,12 @@ public class ProfileFragment  extends Fragment implements SimpleEntriesArrayAdap
 
   @Override
   public void onClick(View view) {
-    AndroidHelper.openDayEntryDialog(getActivity(), app, new DayEntry(WorkTimeDay.now(), DayType.AT_WORK), false, this);
+    new DayEntryDialog(getActivity(), app, new DayEntry(WorkTimeDay.now(), DayType.AT_WORK), false, this).open();
   }
 
 
   public boolean onMenuEdit(DayEntry de) {
-    AndroidHelper.openDayEntryDialog(getActivity(), app, de, false, this);
+    new DayEntryDialog(getActivity(), app, de, false, this).open();
     return true;
   }
 

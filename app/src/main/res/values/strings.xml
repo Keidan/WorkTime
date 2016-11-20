@@ -71,10 +71,10 @@
     <string name="export_no_items">No selected months to export</string>
     <string name="snack_hide">Hide</string>
     <string name="export_email_not_set">The email address is not set</string>
-    <string name="pref_summary_export_mail">Email address used to send the exported PDF file</string>
+    <string name="pref_summary_export_mail">Email address used to send the exported file</string>
     <string name="pref_title_export_mail">Email address</string>
     <string name="email_sent_to">Email sent to</string>
     <string name="export_email_subject">WorkTime export</string>
-    <string name="export_email_body">The pdf attachment contain a report for the dates below:</string>
+    <string name="export_email_body">The attachment contain a report for the dates below:</string>
     <string name="export_email_senderMsg">Send email using :</string>
 </resources>

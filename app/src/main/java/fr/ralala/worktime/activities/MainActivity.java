@@ -1,4 +1,4 @@
-package fr.ralala.worktime;
+package fr.ralala.worktime.activities;
 
 
 import android.Manifest;
@@ -14,11 +14,13 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
+import fr.ralala.worktime.MainApplication;
+import fr.ralala.worktime.R;
 import fr.ralala.worktime.fragments.ExportFragment;
 import fr.ralala.worktime.fragments.MainFragment;
 import fr.ralala.worktime.fragments.ProfileFragment;
 import fr.ralala.worktime.fragments.PublicHolidaysFragment;
-import fr.ralala.worktime.prefs.SettingsActivity;
+import fr.ralala.worktime.utils.AndroidHelper;
 
 /**
  *******************************************************************************

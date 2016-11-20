@@ -1,4 +1,4 @@
-package fr.ralala.worktime.prefs;
+package fr.ralala.worktime.dialogs;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -18,7 +18,7 @@ import fr.ralala.worktime.R;
  *
  *******************************************************************************
  */
-public class TimePreference extends DialogPreference {
+public class TimePreferenceDialog extends DialogPreference {
   private int lastHour=0;
   private int lastMinute=0;
   private TimePicker picker=null;
@@ -33,7 +33,7 @@ public class TimePreference extends DialogPreference {
     return(Integer.parseInt(split[1]));
   }
 
-  public TimePreference(Context ctxt, AttributeSet attrs) {
+  public TimePreferenceDialog(Context ctxt, AttributeSet attrs) {
     super(ctxt, attrs);
     setPositiveButtonText(ctxt.getString(R.string.ok));
     setNegativeButtonText(ctxt.getString(R.string.cancel));

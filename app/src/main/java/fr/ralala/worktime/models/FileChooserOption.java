@@ -1,4 +1,4 @@
-package fr.ralala.worktime.chooser;
+package fr.ralala.worktime.models;
 
 import java.util.Locale;
 
@@ -14,13 +14,13 @@ import android.graphics.drawable.Drawable;
  *
  *******************************************************************************
  */
-public class Option implements Comparable<Option> {
+public class FileChooserOption implements Comparable<FileChooserOption> {
   private String name;
   private String data;
   private String path;
   private Drawable icon;
 
-  protected Option(final String n, final String d, final String p, final Drawable i) {
+  public FileChooserOption(final String n, final String d, final String p, final Drawable i) {
     name = n;
     data = d;
     path = p;
@@ -35,7 +35,7 @@ public class Option implements Comparable<Option> {
     return data;
   }
 
-  protected String getPath() {
+  public String getPath() {
     return path;
   }
 
@@ -45,7 +45,7 @@ public class Option implements Comparable<Option> {
 
   @SuppressLint("DefaultLocale")
   @Override
-  public int compareTo(final Option o) {
+  public int compareTo(final FileChooserOption o) {
     if (this.name != null)
       return this.name.toLowerCase(Locale.getDefault()).compareTo(
           o.getName().toLowerCase());

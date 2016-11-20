@@ -1,4 +1,4 @@
-package fr.ralala.worktime.chooser;
+package fr.ralala.worktime.activities;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -7,9 +7,7 @@ import java.util.List;
 import java.util.StringTokenizer;
 
 
-import android.app.ListActivity;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -17,7 +15,9 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ListView;
 
-import fr.ralala.worktime.AndroidHelper;
+import fr.ralala.worktime.adapters.FileChooserArrayAdapter;
+import fr.ralala.worktime.models.FileChooserOption;
+import fr.ralala.worktime.utils.AndroidHelper;
 import fr.ralala.worktime.R;
 
 /**
@@ -29,7 +29,7 @@ import fr.ralala.worktime.R;
  *
  *******************************************************************************
  */
-public class FileChooser extends AppCompatActivity implements AdapterView.OnItemClickListener{
+public abstract class AbstractFileChooserActivity extends AppCompatActivity implements AdapterView.OnItemClickListener{
   public static final String FILECHOOSER_TYPE_KEY = "type";
   public static final String FILECHOOSER_TITLE_KEY = "title";
   public static final String FILECHOOSER_MESSAGE_KEY = "message";
@@ -45,7 +45,7 @@ public class FileChooser extends AppCompatActivity implements AdapterView.OnItem
   public static final String FILECHOOSER_FILE_FILTER_ALL = "*";
   protected File currentDir = null;
   protected File defaultDir = null;
-  private FileArrayAdapter adapter = null;
+  private FileChooserArrayAdapter adapter = null;
   private String confirmMessage = null;
   private String confirmTitle = null;
   private String userMessage = null;
@@ -58,7 +58,7 @@ public class FileChooser extends AppCompatActivity implements AdapterView.OnItem
     @Override
     public boolean onItemLongClick(
         final AdapterView<?> parent, final View v, final int position, final long id) {
-      final Option o = adapter.getItem(position);
+      final FileChooserOption o = adapter.getItem(position);
       if (o == null || o.getPath() == null)
         return false;
       boolean folder = false;
@@ -76,7 +76,7 @@ public class FileChooser extends AppCompatActivity implements AdapterView.OnItem
     }
   };
   
-  private void confirm(final Option o) {
+  private void confirm(final FileChooserOption o) {
     final android.view.View.OnClickListener yes = new android.view.View.OnClickListener() {
       @Override
       public void onClick(
@@ -131,15 +131,15 @@ public class FileChooser extends AppCompatActivity implements AdapterView.OnItem
   protected void fill(final File f) {
     final File[] dirs = f.listFiles();
     this.setTitle(f.getAbsolutePath());
-    final List<Option> dir = new ArrayList<>();
-    final List<Option> fls = new ArrayList<>();
+    final List<FileChooserOption> dir = new ArrayList<>();
+    final List<FileChooserOption> fls = new ArrayList<>();
     try {
       for (final File ff : dirs) {
         if (ff.isDirectory())
-          dir.add(new Option(ff.getName(), "Folder", ff.getAbsolutePath(), getResources().getDrawable(R.mipmap.ic_folder)));
+          dir.add(new FileChooserOption(ff.getName(), "Folder", ff.getAbsolutePath(), getResources().getDrawable(R.mipmap.ic_folder)));
         else if(show != FILECHOOSER_SHOW_DIRECTORY_ONLY) {
           if(isFiltered(ff))
-            fls.add(new Option(ff.getName(), "File Size: " + ff.length(), ff
+            fls.add(new FileChooserOption(ff.getName(), "File Size: " + ff.length(), ff
                 .getAbsolutePath(), getResources().getDrawable(R.mipmap.ic_file)));
         }
       }
@@ -153,9 +153,9 @@ public class FileChooser extends AppCompatActivity implements AdapterView.OnItem
     }
     dir.add(
         0,
-        new Option("..", "Parent Directory", f.getParent(), getResources().getDrawable(R.mipmap.ic_folder)));
+        new FileChooserOption("..", "Parent Directory", f.getParent(), getResources().getDrawable(R.mipmap.ic_folder)));
     // if(adapter == null) {
-    adapter = new FileArrayAdapter(FileChooser.this, R.layout.file_view, dir);
+    adapter = new FileChooserArrayAdapter(AbstractFileChooserActivity.this, R.layout.file_view, dir);
     listview.setAdapter(adapter);
     // } else
     // adapter.reload(dir);
@@ -174,7 +174,7 @@ public class FileChooser extends AppCompatActivity implements AdapterView.OnItem
   @Override
   public void onItemClick(final AdapterView<?> l, final View v,
       final int position, final long id) {
-    final Option o = adapter.getItem(position);
+    final FileChooserOption o = adapter.getItem(position);
     if (o == null || o.getPath() == null)
       return;
     if (o.getData().equalsIgnoreCase("folder")
@@ -185,7 +185,7 @@ public class FileChooser extends AppCompatActivity implements AdapterView.OnItem
       confirm(o);
   }
 
-  protected void onFileSelected(final Option opt) {
+  protected void onFileSelected(final FileChooserOption opt) {
   }
 
   public String getUserMessage() {

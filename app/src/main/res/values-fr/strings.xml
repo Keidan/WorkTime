@@ -65,11 +65,11 @@
     <string name="export_no_items">Aucun mois s\u00E9lectionn\u00E9 pour l\'exportation</string>
     <string name="snack_hide">Masquer</string>
     <string name="export_email_not_set">L\'adresse courriel n\'est pas d\u00E9finie</string>
-    <string name="pref_summary_export_mail">Adresse courriel utilis\u00E9e pour envoyer le fichier PDF export\u00E9</string>
+    <string name="pref_summary_export_mail">Adresse courriel utilisée pour envoyer le fichier exporté</string>
     <string name="pref_title_export_mail">Adresse e-mail</string>
     <string name="email_sent_to">Courriel envoy\u00E9 \u00E0</string>
     <string name="export_email_subject">WorkTime export</string>
-    <string name="export_email_body">La pi\u00E8ce jointe pdf contient un rapport pour les dates ci-dessous:</string>
+    <string name="export_email_body">La pièce jointe contient un rapport pour les dates ci-dessous:</string>
     <string name="export_email_senderMsg">Envoyer un courriel en utilisant :</string>
 
 </resources>

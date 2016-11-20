@@ -1,4 +1,4 @@
-package fr.ralala.worktime;
+package fr.ralala.worktime.activities;
 
 import android.content.Intent;
 import android.content.pm.PackageManager;

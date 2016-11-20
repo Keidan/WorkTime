@@ -19,7 +19,8 @@ import java.util.Locale;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
-import fr.ralala.worktime.AndroidHelper;
+import fr.ralala.worktime.dialogs.DayEntryDialog;
+import fr.ralala.worktime.utils.AndroidHelper;
 import fr.ralala.worktime.MainApplication;
 import fr.ralala.worktime.R;
 import fr.ralala.worktime.adapters.DaysEntriesArrayAdapter;
@@ -36,7 +37,7 @@ import fr.ralala.worktime.models.WorkTimeDay;
  *
  *******************************************************************************
  */
-public class MainFragment extends Fragment implements View.OnClickListener, AdapterView.OnItemClickListener, AndroidHelper.DayEntryDialogSuccessListener {
+public class MainFragment extends Fragment implements View.OnClickListener, AdapterView.OnItemClickListener, DayEntryDialog.DayEntryDialogSuccessListener {
 
   private ImageButton btPreviousMonth = null;
   private ImageButton btNextMonth = null;
@@ -130,7 +131,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, Adap
   @Override
   public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
     DayEntry de = lvAdapter.getItem(i);
-    AndroidHelper.openDayEntryDialog(getActivity(), app, de, true, this);
+    new DayEntryDialog(getActivity(), app, de, true, this).open();
   }
 
   public void onClick(final View v) {

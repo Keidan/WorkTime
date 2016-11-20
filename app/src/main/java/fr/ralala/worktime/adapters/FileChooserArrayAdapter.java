@@ -1,4 +1,4 @@
-package fr.ralala.worktime.chooser;
+package fr.ralala.worktime.adapters;
 
 import java.util.List;
 
@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import fr.ralala.worktime.R;
+import fr.ralala.worktime.models.FileChooserOption;
 
 /**
  *******************************************************************************
@@ -23,14 +24,14 @@ import fr.ralala.worktime.R;
  *
  *******************************************************************************
  */
-public class FileArrayAdapter extends ArrayAdapter<Option> {
+public class FileChooserArrayAdapter extends ArrayAdapter<FileChooserOption> {
 
   private final Context      c;
   private final int          id;
-  private final List<Option> items;
+  private final List<FileChooserOption> items;
 
-  protected FileArrayAdapter(final Context context, final int textViewResourceId,
-      final List<Option> objects) {
+  public FileChooserArrayAdapter(final Context context, final int textViewResourceId,
+                                    final List<FileChooserOption> objects) {
     super(context, textViewResourceId, objects);
     c = context;
     id = textViewResourceId;
@@ -38,7 +39,7 @@ public class FileArrayAdapter extends ArrayAdapter<Option> {
   }
 
   @Override
-  public Option getItem(final int i) {
+  public FileChooserOption getItem(final int i) {
     return items.get(i);
   }
 
@@ -51,7 +52,7 @@ public class FileArrayAdapter extends ArrayAdapter<Option> {
           .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
       v = vi.inflate(id, null);
     }
-    final Option o = items.get(position);
+    final FileChooserOption o = items.get(position);
     if (o != null) {
       final ImageView i1 = (ImageView) v.findViewById(R.id.icon);
       final TextView t1 = (TextView) v.findViewById(R.id.name);
