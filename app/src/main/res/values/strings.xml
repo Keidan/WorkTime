@@ -60,6 +60,10 @@
     <string name="pref_summary_export">Export the database</string>
     <string name="pref_summary_import">Import the database</string>
     <string name="pref_title_import">Import</string>
+    <string name="pref_summary_export_mail">Email address used to send the exported file</string>
+    <string name="pref_title_export_mail">Email address</string>
+    <string name="pref_summary_export_mail_enable">Send a mail after the file export</string>
+    <string name="pref_title_export_mail_enable">Activate email on export</string>
     <string name="chooser_long_press_message">Long press to select the file or the directory</string>
     <string name="use_folder">Use this folder</string>
     <string name="use_file">Use this file</string>
@@ -71,9 +75,8 @@
     <string name="export_no_items">No selected months to export</string>
     <string name="snack_hide">Hide</string>
     <string name="export_email_not_set">The email address is not set</string>
-    <string name="pref_summary_export_mail">Email address used to send the exported file</string>
-    <string name="pref_title_export_mail">Email address</string>
-    <string name="email_sent_to">The file is also stored into the public download directory</string>
+    <string name="email_sent_to_with_mail">The file is also stored into the public download directory</string>>
+    <string name="email_sent_to_without_mail">The file is stored into the public download directory</string>
     <string name="export_email_subject">WorkTime export</string>
     <string name="export_email_body">The attachment contain a report for the selected work time</string>
     <string name="export_email_senderMsg">Send email using :</string>
@@ -83,4 +86,7 @@
     <string name="break_time">Break time</string>
     <string name="wage">Wage</string>
     <string name="total">Total</string>
+    <string name="the_file_exists_part_1">The file</string>
+    <string name="the_file_exists_part_2">already exists. Do you want to replace the existing file?d</string>
+    <string name="confirm">Confirm</string>
 </resources>

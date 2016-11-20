@@ -1,6 +1,7 @@
 package fr.ralala.worktime.fragments;
 
 
+import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -25,6 +26,7 @@ import java.util.Locale;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
+import fr.ralala.worktime.models.DayType;
 import fr.ralala.worktime.utils.AndroidHelper;
 import fr.ralala.worktime.MainApplication;
 import fr.ralala.worktime.R;
@@ -89,19 +91,34 @@ public class ExportFragment extends Fragment implements AdapterView.OnItemSelect
 
   @Override
   public void onClick(View v) {
-    List<ExportListViewArrayAdapter.ExportEntry> entries = lvAdapter.getCheckedItems();
+    final List<ExportListViewArrayAdapter.ExportEntry> entries = lvAdapter.getCheckedItems();
     if(entries.isEmpty()) {
       AndroidHelper.snack(getActivity(), R.string.export_no_items);
       return;
     }
     final String email = app.getEMail();
-    if(email.isEmpty()) {
+    if(app.isExportMailEnabled() && email.isEmpty()) {
       AndroidHelper.snack(getActivity(), R.string.export_email_not_set);
       return;
     }
+
+    final File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS),
+      getString(R.string.app_name) + "_" + entries.get(0).year + ".xls");
+    if(file.exists()) {
+      AndroidHelper.showConfirmDialog(getActivity(), getString(R.string.confirm),
+        getString(R.string.the_file_exists_part_1) + " " + file.getName() + " " + getString(R.string.the_file_exists_part_2),
+        new View.OnClickListener() {
+          @Override
+          public void onClick(View view) {
+            exportXLS(entries, email, file);
+          }
+        }, null);
+    } else
+      exportXLS(entries, email, file);
+  }
+
+  private void exportXLS(List<ExportListViewArrayAdapter.ExportEntry> entries, String email, File file) {
     try {
-      File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS),
-        getString(R.string.app_name) + "_" + entries.get(0).year + ".xls");
       ExcelHelper excel = new ExcelHelper(getActivity(), file);
       for(int idx = 0; idx < entries.size(); ++idx) {
         ExportListViewArrayAdapter.ExportEntry ee = entries.get(idx);
@@ -122,7 +139,7 @@ public class ExportFragment extends Fragment implements AdapterView.OnItemSelect
         for (DayEntry de : works) {
           if (!de.getDay().isInMonth(ee.month + 1) || !de.getDay().isInYear(ee.year)) continue;
           excel.addLabel(sheet, row, column+0, de.getDay().dateString(), false);
-          excel.addLabel(sheet, row, column+1, de.getType().string(getActivity()), false);
+          excel.addLabel(sheet, row, column+1, de.getType() != DayType.AT_WORK ? de.getType().string(getActivity()) : "", false);
           excel.addLabel(sheet, row, column+2, de.getStart().timeString(), false);
           excel.addLabel(sheet, row, column+3, de.getEnd().timeString(), false);
           excel.addLabel(sheet, row, column+4, de.getPause().timeString(), false);
@@ -141,11 +158,14 @@ public class ExportFragment extends Fragment implements AdapterView.OnItemSelect
 
       excel.write();
       Uri uri = Uri.fromFile(file);
-      AndroidHelper.sentMailTo(getActivity(), email, uri,
-        getString(R.string.export_email_subject),
-        getString(R.string.export_email_body),
-        getString(R.string.export_email_senderMsg));
-      AndroidHelper.snack(getActivity(), getString(R.string.email_sent_to) + " " + email);
+      if(app.isExportMailEnabled()) {
+        AndroidHelper.sentMailTo(getActivity(), email, uri,
+          getString(R.string.export_email_subject),
+          getString(R.string.export_email_body),
+          getString(R.string.export_email_senderMsg));
+        AndroidHelper.snack(getActivity(), getString(R.string.email_sent_to_with_mail) + " " + email);
+      } else
+        AndroidHelper.snack(getActivity(), getString(R.string.email_sent_to_without_mail));
       //if(file.exists()) file.delete();
     } catch(Exception e) {
       Log.e(getClass().getSimpleName(), "Exception: " + e.getMessage(), e);

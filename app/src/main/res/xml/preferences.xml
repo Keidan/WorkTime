@@ -30,7 +30,13 @@
             android:title="@string/pref_title_import"/>
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/pref_title_export" android:key="prefCatExport" >
+        <CheckBoxPreference
+            android:key="prefExportMailEnable"
+            android:defaultValue="true"
+            android:summary="@string/pref_summary_export_mail_enable"
+            android:title="@string/pref_title_export_mail_enable" />
         <EditTextPreference
+            android:enabled="true"
             android:key="prefExportMail"
             android:defaultValue=""
             android:summary="@string/pref_summary_export_mail"

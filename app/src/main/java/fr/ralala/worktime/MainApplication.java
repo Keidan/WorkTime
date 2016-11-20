@@ -94,4 +94,8 @@ public class MainApplication extends Application {
     return prefs.getString(SettingsActivity.PREFS_KEY_EMAIL, "");
   }
 
+  public boolean isExportMailEnabled() {
+    SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+    return prefs.getBoolean(SettingsActivity.PREFS_KEY_EMAIL_ENABLE, true);
+  }
 }

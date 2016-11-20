@@ -54,6 +54,10 @@
     <string name="pref_summary_export">Exporter la base de donn\u00E9es</string>
     <string name="pref_summary_import">Importer la base de donn\u00E9es</string>
     <string name="pref_title_import">Importation</string>
+    <string name="pref_summary_export_mail_enable">Envoyer un courriel apr\u00E8s l\'exportation du fichier</string>
+    <string name="pref_title_export_mail_enable">Activer le courrier \u00E9lectronique \u00E0 l\'exportation</string>
+    <string name="pref_summary_export_mail">Adresse courriel utilisée pour envoyer le fichier exporté</string>
+    <string name="pref_title_export_mail">Adresse e-mail</string>
     <string name="chooser_long_press_message">Appuyez longuement sur pour s\u00E9lectionner le fichier ou le r\u00E9pertoire</string>
     <string name="use_folder">Utilisez ce dossier</string>
     <string name="use_file">Utilisez ce fichier</string>
@@ -65,9 +69,8 @@
     <string name="export_no_items">Aucun mois s\u00E9lectionn\u00E9 pour l\'exportation</string>
     <string name="snack_hide">Masquer</string>
     <string name="export_email_not_set">L\'adresse courriel n\'est pas d\u00E9finie</string>
-    <string name="pref_summary_export_mail">Adresse courriel utilisée pour envoyer le fichier exporté</string>
-    <string name="pref_title_export_mail">Adresse e-mail</string>
-    <string name="email_sent_to">Le fichier est \u00E9galement stock\u00E9 dans le r\u00E9pertoire de t\u00E9l\u00E9chargement public</string>
+    <string name="email_sent_to_with_mail">Le fichier est \u00E9galement stock\u00E9 dans le r\u00E9pertoire de t\u00E9l\u00E9chargement public</string>>
+    <string name="email_sent_to_without_mail">Le fichier est stock\u00E9 dans le r\u00E9pertoire de t\u00E9l\u00E9chargement public</string>
     <string name="export_email_subject">WorkTime export</string>
     <string name="export_email_body">La pi\u00E8ce jointe contient un rapport avec le temps de travail selectionn\u00E9</string>
     <string name="export_email_senderMsg">Envoyer un courriel en utilisant :</string>
@@ -77,5 +80,8 @@
     <string name="break_time">Temps de pause</string>
     <string name="wage">Salaire</string>
     <string name="total">Total</string>
+    <string name="the_file_exists_part_1">Le fichier</string>
+    <string name="the_file_exists_part_2">existe d\u00E9j\u00E0. Voulez-vous remplacer le fichier existant?</string>
+    <string name="confirm">Confirmation</string>
 
 </resources>

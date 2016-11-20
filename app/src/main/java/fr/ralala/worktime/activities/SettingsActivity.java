@@ -3,6 +3,7 @@ package fr.ralala.worktime.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
+import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
@@ -16,6 +17,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import fr.ralala.worktime.MainApplication;
 import fr.ralala.worktime.utils.AndroidHelper;
 import fr.ralala.worktime.R;
 import fr.ralala.worktime.activities.AbstractFileChooserActivity;
@@ -38,6 +40,7 @@ public class SettingsActivity extends PreferenceActivity implements Preference.O
   public static final String       PREFS_KEY_EXPORT               = "prefExport";
   public static final String       PREFS_KEY_IMPORT               = "prefImport";
   public static final String       PREFS_KEY_EMAIL                = "prefExportMail";
+  public static final String       PREFS_KEY_EMAIL_ENABLE         = "prefExportMailEnable";
 
   private MyPreferenceFragment     prefFrag                       = null;
   private AppCompatDelegate        mDelegate;
@@ -49,13 +52,15 @@ public class SettingsActivity extends PreferenceActivity implements Preference.O
     getFragmentManager().beginTransaction()
       .replace(android.R.id.content, prefFrag).commit();
     getFragmentManager().executePendingTransactions();
-    prefFrag.findPreference(PREFS_KEY_EXPORT)
-      .setOnPreferenceClickListener(this);
-    prefFrag.findPreference(PREFS_KEY_IMPORT)
-      .setOnPreferenceClickListener(this);
     android.support.v7.app.ActionBar actionBar = getDelegate().getSupportActionBar();
     actionBar.setDisplayShowHomeEnabled(true);
     actionBar.setDisplayHomeAsUpEnabled(true);
+
+    MainApplication app = (MainApplication)getApplicationContext();
+    prefFrag.findPreference(PREFS_KEY_EMAIL).setEnabled(app.isExportMailEnabled());
+    prefFrag.findPreference(PREFS_KEY_EMAIL_ENABLE).setOnPreferenceClickListener(this);
+    prefFrag.findPreference(PREFS_KEY_EXPORT).setOnPreferenceClickListener(this);
+    prefFrag.findPreference(PREFS_KEY_IMPORT).setOnPreferenceClickListener(this);
   }
 
   private AppCompatDelegate getDelegate() {
@@ -97,6 +102,9 @@ public class SettingsActivity extends PreferenceActivity implements Preference.O
         .getExternalStorageDirectory().getAbsolutePath());
       extra.put(AbstractFileChooserActivity.FILECHOOSER_SHOW_KEY, "" + AbstractFileChooserActivity.FILECHOOSER_SHOW_FILE_AND_DIRECTORY);
       myStartActivity(extra, FileChooserActivity.class, FileChooserActivity.FILECHOOSER_SELECTION_TYPE_FILE);
+    } else if (preference.equals(prefFrag.findPreference(PREFS_KEY_EMAIL_ENABLE))) {
+      Preference p = prefFrag.findPreference(PREFS_KEY_EMAIL);
+      prefFrag.findPreference(PREFS_KEY_EMAIL).setEnabled(!p.isEnabled());
     }
     return true;
   }

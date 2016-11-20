@@ -90,6 +90,17 @@ public class WorkTimeDay {
     return c;
   }
 
+  public static Date fromTime(int hours, int minutes) {
+    Calendar c = Calendar.getInstance();
+    c.setTimeZone(TimeZone.getTimeZone("GMT"));
+    c.set(Calendar.YEAR, 1970);
+    c.set(Calendar.MONTH, 0);
+    c.set(Calendar.DAY_OF_MONTH, 1);
+    c.set(Calendar.HOUR_OF_DAY, hours);
+    c.set(Calendar.MINUTE, minutes);
+    return c.getTime();
+  }
+
   public String timeString() {
     return String.format(Locale.US, "%02d:%02d", hours, minutes);
   }
