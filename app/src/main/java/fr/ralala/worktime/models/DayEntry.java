@@ -2,11 +2,9 @@ package fr.ralala.worktime.models;
 
 
 import android.content.Context;
-import android.util.Log;
 
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Locale;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
@@ -65,13 +63,16 @@ public class DayEntry {
   }
 
   public WorkTimeDay getWorkTime() {
-    Calendar c = Calendar.getInstance();
-    c.setTimeZone(TimeZone.getTimeZone("GMT"));
     long st = TimeUnit.HOURS.toMillis(start.getHours()) + TimeUnit.MINUTES.toMillis(start.getMinutes());
     long ed = TimeUnit.HOURS.toMillis(end.getHours()) + TimeUnit.MINUTES.toMillis(end.getMinutes());
     long p = TimeUnit.HOURS.toMillis(pause.getHours()) + TimeUnit.MINUTES.toMillis(pause.getMinutes());
+    long time = ((ed - st) - p);
+    WorkTimeDay wtd = new WorkTimeDay();
+    if(time == 0) return wtd;
+    Calendar c = Calendar.getInstance();
+    c.setTimeZone(TimeZone.getTimeZone("GMT"));
     c.setTime(new Date((ed - st) - p));
-    return new WorkTimeDay().fromCalendar(c);
+    return wtd.fromCalendar(c);
   }
 
   public void copy(DayEntry de) {
