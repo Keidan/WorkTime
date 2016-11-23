@@ -112,19 +112,10 @@ public class MainFragment extends Fragment implements View.OnClickListener, Adap
   }
 
   public void dialogAddEntry(final DayEntry oldEntry, final DayEntry newEntry) {
-    if(oldEntry.getName().isEmpty() || !oldEntry.match(newEntry)) {
-      //Log.d(getClass().getSimpleName(), "Remove old entry");
+    if(oldEntry.getName().isEmpty() || !oldEntry.match(newEntry))
       app.getDaysFactory().remove(oldEntry);
-    }
-    if(newEntry.getStart().isValidTime()) {
-      /*Log.d(getClass().getSimpleName(), "Add new entry");
-      Log.d(getClass().getSimpleName(), "Entry Name: " + newEntry.getName());
-      Log.d(getClass().getSimpleName(), "Entry Day: " + newEntry.getDay().toString());
-      Log.d(getClass().getSimpleName(), "Entry Start: " + newEntry.getStart().toString());
-      Log.d(getClass().getSimpleName(), "Entry End: " + newEntry.getEnd().toString());
-      Log.d(getClass().getSimpleName(), "Entry Pause: " + newEntry.getPause().toString());*/
+    if(newEntry.getStart().isValidTime())
       app.getDaysFactory().add(newEntry);
-    }
     updateDate();
   }
 
@@ -160,7 +151,6 @@ public class MainFragment extends Fragment implements View.OnClickListener, Adap
     long hours = 0L;
     long minutes = 0L;
     long overTime = 0L;
-    long overMinutes = 0L;
     int currentDay = currentDate.get(Calendar.DAY_OF_MONTH);
     double totalPay = 0.0;
     /* loop for each days in the month */
@@ -180,7 +170,8 @@ public class MainFragment extends Fragment implements View.OnClickListener, Adap
       WorkTimeDay wt = de.getWorkTime();
       hours += wt.getHours();
       minutes += wt.getMinutes();
-      overTime += de.getOverTimeMs(app);
+      if(de.getType() == DayType.AT_WORK)
+        overTime += de.getOverTimeMs(app);
       lvAdapter.add(de);
     }
     /* reload work day label */
@@ -189,20 +180,20 @@ public class MainFragment extends Fragment implements View.OnClickListener, Adap
     tvWorkDays.setText(workDays);
 
     /* reload the monthly hours label */
-    Calendar calendar = Calendar.getInstance();
-    calendar.setTimeZone(TimeZone.getTimeZone("GMT"));
-    calendar.setTime(new Date(TimeUnit.MINUTES.toMillis(minutes)));
-    Calendar calendar2 = Calendar.getInstance();
-    calendar2.setTimeZone(TimeZone.getTimeZone("GMT"));
-    calendar2.setTime(new Date(overTime));
+    Calendar monthly_hours = Calendar.getInstance();
+    monthly_hours.setTimeZone(TimeZone.getTimeZone("GMT"));
+    monthly_hours.setTime(new Date(TimeUnit.MINUTES.toMillis(minutes)));
+    Calendar over_hours = Calendar.getInstance();
+    over_hours.setTimeZone(TimeZone.getTimeZone("GMT"));
+    over_hours.setTime(new Date(overTime));
     /* substract legal working time */
     long legalTime = app.getLegalWorkTimeByDay().toLongTime() * wDays;
     long mins = legalTime % 60;
     long hrs = ((legalTime - minutes) / 60);
     String monthlyHours = getString(R.string.monthly_hours) + ": " +
       String.format(Locale.US, "%d:%02d/%d:%02d (%s%d:%02d)",
-        hours + calendar.get(Calendar.HOUR), calendar.get(Calendar.MINUTE),
-        hrs, mins, calendar2.get(Calendar.HOUR) > 0 ? "+" : "", calendar2.get(Calendar.HOUR), calendar2.get(Calendar.MINUTE));
+        hours + monthly_hours.get(Calendar.HOUR), monthly_hours.get(Calendar.MINUTE),
+        hrs, mins, over_hours.get(Calendar.HOUR) > 0 ? "+" : "", over_hours.get(Calendar.HOUR), over_hours.get(Calendar.MINUTE));
 
     tvMonthlyHours.setText(monthlyHours);
     /* init total pay label */
