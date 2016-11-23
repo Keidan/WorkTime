@@ -19,6 +19,7 @@ import java.util.Locale;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
+import fr.ralala.worktime.activities.MainActivity;
 import fr.ralala.worktime.dialogs.DayEntryDialog;
 import fr.ralala.worktime.utils.AndroidHelper;
 import fr.ralala.worktime.MainApplication;
@@ -27,6 +28,7 @@ import fr.ralala.worktime.adapters.DaysEntriesArrayAdapter;
 import fr.ralala.worktime.models.DayEntry;
 import fr.ralala.worktime.models.DayType;
 import fr.ralala.worktime.models.WorkTimeDay;
+import fr.ralala.worktime.utils.SwipeDetector;
 
 /**
  *******************************************************************************
@@ -37,7 +39,7 @@ import fr.ralala.worktime.models.WorkTimeDay;
  *
  *******************************************************************************
  */
-public class MainFragment extends Fragment implements View.OnClickListener, AdapterView.OnItemClickListener, DayEntryDialog.DayEntryDialogSuccessListener {
+public class MainFragment extends Fragment implements View.OnClickListener, AdapterView.OnItemClickListener, DayEntryDialog.DayEntryDialogSuccessListener, SwipeDetector.SwipeDetectorListener {
 
   private ImageButton btPreviousMonth = null;
   private ImageButton btNextMonth = null;
@@ -58,7 +60,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, Adap
   public View onCreateView(final LayoutInflater inflater,
                            final ViewGroup container, final Bundle savedInstanceState) {
     final ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.content_main, container, false);
-
+    ((MainActivity)getActivity()).getSwipeDetector().setSwipeDetectorListener(this);
     app = MainApplication.getApp(getActivity());
     currentDate = Calendar.getInstance();
     currentDate.setTimeZone(TimeZone.getTimeZone("GMT"));
@@ -200,6 +202,15 @@ public class MainFragment extends Fragment implements View.OnClickListener, Adap
     tvMonthlyPay.setText(getString(R.string.monthly_pay) + ": " + String.format(Locale.US, "%.02f", totalPay) + app.getCurrency());
 
     lvAdapter.notifyDataSetChanged();
+  }
+
+
+  public void leftToRightSwipe() {
+    btNextMonth.callOnClick();
+  }
+
+  public void rightToLeftSwipe() {
+    btPreviousMonth.callOnClick();
   }
 
 }

@@ -13,6 +13,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 
 import fr.ralala.worktime.MainApplication;
 import fr.ralala.worktime.R;
@@ -21,6 +22,7 @@ import fr.ralala.worktime.fragments.MainFragment;
 import fr.ralala.worktime.fragments.ProfileFragment;
 import fr.ralala.worktime.fragments.PublicHolidaysFragment;
 import fr.ralala.worktime.utils.AndroidHelper;
+import fr.ralala.worktime.utils.SwipeDetector;
 
 /**
  *******************************************************************************
@@ -43,6 +45,7 @@ public class MainActivity extends RuntimePermissionsActivity implements Navigati
   private MainApplication app = null;
   private NavigationView navigationView = null;
   private Fragment fragment = null;
+  private SwipeDetector swipeDetector = null;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +53,7 @@ public class MainActivity extends RuntimePermissionsActivity implements Navigati
     setContentView(R.layout.activity_main);
     Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
     setSupportActionBar(toolbar);
+    swipeDetector = new SwipeDetector(this);
 
     DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
     ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -69,6 +73,10 @@ public class MainActivity extends RuntimePermissionsActivity implements Navigati
     super.requestAppPermissions(new
         String[]{Manifest.permission.READ_EXTERNAL_STORAGE,
         Manifest.permission.WRITE_EXTERNAL_STORAGE}, R.string.permissions_read_ext_storage , PERMISSIONS_REQUEST);
+  }
+
+  public SwipeDetector getSwipeDetector() {
+    return swipeDetector;
   }
 
   @Override
@@ -124,6 +132,12 @@ public class MainActivity extends RuntimePermissionsActivity implements Navigati
   public boolean onNavigationItemSelected(MenuItem item) {
     displayView(item.getItemId());
     return true;
+  }
+
+  @Override
+  public boolean dispatchTouchEvent(MotionEvent ev){
+    super.dispatchTouchEvent(ev);
+    return swipeDetector.onTouchEvent(ev);
   }
 
   public void displayView(int viewId) {
