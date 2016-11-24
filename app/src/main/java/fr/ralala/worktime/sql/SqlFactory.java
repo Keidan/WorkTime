@@ -39,10 +39,6 @@ public class SqlFactory implements SqlConstants {
     bdd.close();
   }
 
-  public SQLiteDatabase getBDD() {
-    return bdd;
-  }
-
   public long insertProfile(final DayEntry de) {
     final ContentValues values = new ContentValues();
     values.put(COL_PROFILES_NAME, de.getName());

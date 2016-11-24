@@ -17,7 +17,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
-import java.util.concurrent.TimeUnit;
 
 import fr.ralala.worktime.activities.MainActivity;
 import fr.ralala.worktime.dialogs.DayEntryDialog;

@@ -131,7 +131,7 @@ public class WorkTimeDay {
     return getYear() == year;
   }
 
-  protected boolean match(WorkTimeDay wtd) {
+  public boolean match(WorkTimeDay wtd) {
     return day == wtd.day && month == wtd.month && year == wtd.year && hours == wtd.hours && minutes == wtd.minutes;
   }
 
@@ -167,7 +167,7 @@ public class WorkTimeDay {
     return hours;
   }
 
-  protected void setHours(int hours) {
+  public void setHours(int hours) {
     this.hours = hours;
   }
 
@@ -175,7 +175,7 @@ public class WorkTimeDay {
     return minutes;
   }
 
-  protected void setMinutes(int minutes) {
+  public void setMinutes(int minutes) {
     this.minutes = minutes;
   }
 }

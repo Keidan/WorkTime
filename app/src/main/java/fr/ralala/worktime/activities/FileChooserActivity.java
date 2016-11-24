@@ -5,7 +5,6 @@ import java.io.File;
 import fr.ralala.worktime.R;
 import fr.ralala.worktime.models.FileChooserOption;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -171,7 +170,7 @@ public class FileChooserActivity extends AbstractFileChooserActivity {
 
     private FileChooserActivity adaptee = null;
 
-    public IncomingHandler(FileChooserActivity adaptee) {
+    private IncomingHandler(FileChooserActivity adaptee) {
       this.adaptee = adaptee;
     }
 

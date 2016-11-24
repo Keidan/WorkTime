@@ -10,5 +10,4 @@
         android:id="@+id/list"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"/>
-        app:srcCompat="@mipmap/ic_plus_white"/>
 </FrameLayout>

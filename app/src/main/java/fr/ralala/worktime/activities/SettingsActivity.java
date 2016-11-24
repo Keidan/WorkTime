@@ -3,7 +3,6 @@ package fr.ralala.worktime.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
-import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
@@ -20,8 +19,6 @@ import java.util.Set;
 import fr.ralala.worktime.MainApplication;
 import fr.ralala.worktime.utils.AndroidHelper;
 import fr.ralala.worktime.R;
-import fr.ralala.worktime.activities.AbstractFileChooserActivity;
-import fr.ralala.worktime.activities.FileChooserActivity;
 import fr.ralala.worktime.sql.SqlHelper;
 
 /**

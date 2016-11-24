@@ -4,6 +4,7 @@ import java.util.Locale;
 
 import android.annotation.SuppressLint;
 import android.graphics.drawable.Drawable;
+import android.support.annotation.NonNull;
 
 /**
  *******************************************************************************
@@ -45,7 +46,7 @@ public class FileChooserOption implements Comparable<FileChooserOption> {
 
   @SuppressLint("DefaultLocale")
   @Override
-  public int compareTo(final FileChooserOption o) {
+  public int compareTo(@NonNull final FileChooserOption o) {
     if (this.name != null)
       return this.name.toLowerCase(Locale.getDefault()).compareTo(
           o.getName().toLowerCase());

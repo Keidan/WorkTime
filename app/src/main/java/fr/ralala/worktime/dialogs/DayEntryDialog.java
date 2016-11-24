@@ -34,8 +34,7 @@ public class DayEntryDialog implements View.OnClickListener, AdapterView.OnItemS
 
   private Activity activity = null;
   private MainApplication app = null;
-  private View dialogView = null;
-  private TextView tvProfile = null;
+
   private Spinner spProfile = null;
   private Spinner spType = null;
   private TextView tvDay = null;
@@ -44,7 +43,6 @@ public class DayEntryDialog implements View.OnClickListener, AdapterView.OnItemS
   private TextView tvEnd = null;
   private TextView tvPause = null;
   private EditText etAmount = null;
-  private TextView tvName = null;
   private EditText etName = null;
   private DayEntry de = null;
   private boolean displayProfile = false;
@@ -72,10 +70,10 @@ public class DayEntryDialog implements View.OnClickListener, AdapterView.OnItemS
     //dialogBuilder.setTitle(R.string.work_days);
     /* prepare the inflater and set the new content */
     LayoutInflater inflater = activity.getLayoutInflater();
-    dialogView = inflater.inflate(R.layout.content_day_dialog_box, null);
+    View dialogView = inflater.inflate(R.layout.content_day_dialog_box, null);
     dialogBuilder.setView(dialogView);
     /* Get the components */
-    tvProfile = (TextView)dialogView.findViewById(R.id.tvProfile);
+    TextView tvProfile = (TextView)dialogView.findViewById(R.id.tvProfile);
     spProfile = (Spinner)dialogView.findViewById(R.id.spProfile);
     spType = (Spinner)dialogView.findViewById(R.id.spType);
     tvDay = (TextView)dialogView.findViewById(R.id.tvDay);
@@ -84,7 +82,7 @@ public class DayEntryDialog implements View.OnClickListener, AdapterView.OnItemS
     tvEnd = (TextView)dialogView.findViewById(R.id.tvEnd);
     tvPause = (TextView)dialogView.findViewById(R.id.tvPause);
     etAmount = (EditText)dialogView.findViewById(R.id.etAmount);
-    tvName = (TextView)dialogView.findViewById(R.id.tvName);
+    TextView tvName = (TextView)dialogView.findViewById(R.id.tvName);
     etName = (EditText)dialogView.findViewById(R.id.etName);
 
         /* add click listener for the delete function */
@@ -162,10 +160,10 @@ public class DayEntryDialog implements View.OnClickListener, AdapterView.OnItemS
     return this;
   }
 
-  public DayEntryDialog close() {
+  /*public DayEntryDialog close() {
     alertDialog.dismiss();
     return this;
-  }
+  }*/
 
   public void onClick(DialogInterface dialog, int whichButton) {
         /* Click on the Positive button (OK) */
@@ -202,7 +200,7 @@ public class DayEntryDialog implements View.OnClickListener, AdapterView.OnItemS
       AndroidHelper.initTimeTextView(new WorkTimeDay(), tvStart);
       AndroidHelper.initTimeTextView(new WorkTimeDay(), tvEnd);
       AndroidHelper.initTimeTextView(new WorkTimeDay(), tvPause);
-      etAmount.setText("0.00");
+      etAmount.setText(activity.getString(R.string.zero));
       spType.setSelection(DayType.AT_WORK.value());
       etName.setText("");
       tvDay.setText(de.getDay().dateString());

@@ -1,7 +1,6 @@
 package fr.ralala.worktime.fragments;
 
 
-import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -18,7 +17,6 @@ import android.widget.Spinner;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -138,7 +136,7 @@ public class ExportFragment extends Fragment implements AdapterView.OnItemSelect
         row++;
         for (DayEntry de : works) {
           if (!de.getDay().isInMonth(ee.month + 1) || !de.getDay().isInYear(ee.year)) continue;
-          excel.addLabel(sheet, row, column+0, de.getDay().dateString(), false);
+          excel.addLabel(sheet, row, column, de.getDay().dateString(), false);
           excel.addLabel(sheet, row, column+1, de.getType() != DayType.AT_WORK ? de.getType().string(getActivity()) : "", false);
           excel.addLabel(sheet, row, column+2, de.getStart().timeString(), false);
           excel.addLabel(sheet, row, column+3, de.getEnd().timeString(), false);
@@ -170,7 +168,6 @@ public class ExportFragment extends Fragment implements AdapterView.OnItemSelect
     } catch(Exception e) {
       Log.e(getClass().getSimpleName(), "Exception: " + e.getMessage(), e);
       AndroidHelper.snack(getActivity(), getString(R.string.error) + ": " + e.getMessage());
-      return;
     }
   }
 
