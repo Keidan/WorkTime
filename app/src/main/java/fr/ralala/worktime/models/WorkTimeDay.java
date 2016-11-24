@@ -50,6 +50,26 @@ public class WorkTimeDay {
     minutes = wtd.minutes;
   }
 
+  public WorkTimeDay fromTimeUsingCalendar(long time) {
+    year = month = day = 0;
+    Calendar ctime = Calendar.getInstance();
+    ctime.setTimeZone(TimeZone.getTimeZone("GMT"));
+    ctime.setTime(new Date(time));
+    hours = ctime.get(Calendar.HOUR);
+    minutes = ctime.get(Calendar.MINUTE);
+    return this;
+  }
+
+  public WorkTimeDay fromTimeUsingCalendar(long hours, long minutes) {
+    year = month = day = 0;
+    Calendar ctime = Calendar.getInstance();
+    ctime.setTimeZone(TimeZone.getTimeZone("GMT"));
+    ctime.setTime(new Date(TimeUnit.MINUTES.toMillis(minutes)));
+    this.hours = (int)(hours + ctime.get(Calendar.HOUR));
+    this.minutes = ctime.get(Calendar.MINUTE);
+    return this;
+  }
+
   public long toLongTime() {
     return hours * 60 + minutes;
   }
@@ -88,17 +108,6 @@ public class WorkTimeDay {
     c.set(Calendar.HOUR_OF_DAY, hours);
     c.set(Calendar.MINUTE, minutes);
     return c;
-  }
-
-  public static Date fromTime(int hours, int minutes) {
-    Calendar c = Calendar.getInstance();
-    c.setTimeZone(TimeZone.getTimeZone("GMT"));
-    c.set(Calendar.YEAR, 1970);
-    c.set(Calendar.MONTH, 0);
-    c.set(Calendar.DAY_OF_MONTH, 1);
-    c.set(Calendar.HOUR_OF_DAY, hours);
-    c.set(Calendar.MINUTE, minutes);
-    return c.getTime();
   }
 
   public String timeString() {

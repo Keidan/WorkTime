@@ -150,9 +150,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, Adap
     tvYear.setText(String.valueOf(currentDate.get(Calendar.YEAR)));
 
     int wDays = 0;
-    long hours = 0L;
-    long minutes = 0L;
-    long overTime = 0L;
+    long hours = 0L, minutes = 0L, overTime = 0L;
     int currentDay = currentDate.get(Calendar.DAY_OF_MONTH);
     double totalPay = 0.0;
     /* loop for each days in the month */
@@ -182,20 +180,15 @@ public class MainFragment extends Fragment implements View.OnClickListener, Adap
     tvWorkDays.setText(workDays);
 
     /* reload the monthly hours label */
-    Calendar monthly_hours = Calendar.getInstance();
-    monthly_hours.setTimeZone(TimeZone.getTimeZone("GMT"));
-    monthly_hours.setTime(new Date(TimeUnit.MINUTES.toMillis(minutes)));
-    Calendar over_hours = Calendar.getInstance();
-    over_hours.setTimeZone(TimeZone.getTimeZone("GMT"));
-    over_hours.setTime(new Date(overTime));
+    WorkTimeDay monthly_hours = new WorkTimeDay().fromTimeUsingCalendar(hours, minutes);
+    WorkTimeDay over_hours = new WorkTimeDay().fromTimeUsingCalendar(overTime);
     /* substract legal working time */
-    long legalTime = app.getLegalWorkTimeByDay().toLongTime() * wDays;
-    long mins = legalTime % 60;
-    long hrs = ((legalTime - minutes) / 60);
+    WorkTimeDay wtdEstimatedMonthlyHours = app.getEstimatedMonthlyHours(wDays);
     String monthlyHours = getString(R.string.monthly_hours) + ": " +
       String.format(Locale.US, "%d:%02d/%d:%02d (%s%d:%02d)",
-        hours + monthly_hours.get(Calendar.HOUR), monthly_hours.get(Calendar.MINUTE),
-        hrs, mins, over_hours.get(Calendar.HOUR) > 0 ? "+" : "", over_hours.get(Calendar.HOUR), over_hours.get(Calendar.MINUTE));
+        monthly_hours.getHours(), monthly_hours.getHours(),
+        wtdEstimatedMonthlyHours.getHours(), wtdEstimatedMonthlyHours.getMinutes(),
+        over_hours.getHours() > 0 ? "+" : "", over_hours.getHours(), over_hours.getMinutes());
 
     tvMonthlyHours.setText(monthlyHours);
     /* init total pay label */

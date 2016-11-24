@@ -6,6 +6,9 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
+import java.util.Calendar;
+import java.util.Locale;
+
 import fr.ralala.worktime.models.DaysFactory;
 import fr.ralala.worktime.models.ProfilesFactory;
 import fr.ralala.worktime.models.PublicHolidaysFactory;
@@ -97,5 +100,12 @@ public class MainApplication extends Application {
   public boolean isExportMailEnabled() {
     SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
     return prefs.getBoolean(SettingsActivity.PREFS_KEY_EMAIL_ENABLE, true);
+  }
+
+  public WorkTimeDay getEstimatedMonthlyHours(int wDays) {
+    long time = getLegalWorkTimeByDay().toLongTime() * wDays;
+    int mins = (int)(time % 60L);
+    int hrs = (int)(time / 60L);
+    return new WorkTimeDay(0, 0, 0, hrs, mins);
   }
 }
