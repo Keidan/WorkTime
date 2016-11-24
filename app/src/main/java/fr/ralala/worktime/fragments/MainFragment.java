@@ -185,7 +185,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, Adap
     WorkTimeDay wtdEstimatedMonthlyHours = app.getEstimatedMonthlyHours(wDays);
     String monthlyHours = getString(R.string.monthly_hours) + ": " +
       String.format(Locale.US, "%d:%02d/%d:%02d (%s%d:%02d)",
-        monthly_hours.getHours(), monthly_hours.getHours(),
+        monthly_hours.getHours(), monthly_hours.getMinutes(),
         wtdEstimatedMonthlyHours.getHours(), wtdEstimatedMonthlyHours.getMinutes(),
         over_hours.getHours() > 0 ? "+" : "", over_hours.getHours(), over_hours.getMinutes());
 
