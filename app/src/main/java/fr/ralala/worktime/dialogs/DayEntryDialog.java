@@ -218,7 +218,7 @@ public class DayEntryDialog implements View.OnClickListener, AdapterView.OnItemS
 
   @Override
   public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-    if(spProfilesAdapter != null && view.equals(spProfile)) {
+    if(spProfilesAdapter != null) {
       String name = spProfilesAdapter.getItem(i);
       if(name != null && !name.isEmpty()) {
         DayEntry de = app.getProfilesFactory().getByName(name);
