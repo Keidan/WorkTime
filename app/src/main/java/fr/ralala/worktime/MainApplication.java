@@ -6,9 +6,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
-import java.util.Calendar;
-import java.util.Locale;
-
 import fr.ralala.worktime.models.DaysFactory;
 import fr.ralala.worktime.models.ProfilesFactory;
 import fr.ralala.worktime.models.PublicHolidaysFactory;
