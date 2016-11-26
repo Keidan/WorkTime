@@ -164,7 +164,7 @@
             android:layout_toEndOf="@+id/space3"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="@string/amount"
+            android:text="@string/wage"
             app:layout_widthPercent="40%"
             android:padding="3dp"
             android:labelFor="@+id/etAmount"/>

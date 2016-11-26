@@ -199,7 +199,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, Adap
 
     tvMonthlyHours.setText(monthlyHours);
 
-    monthDetailsDialog.reloadDetails(month, currentDate.get(Calendar.YEAR), weekMin, weekMax, totalPay);
+    monthDetailsDialog.reloadDetails(month, currentDate.get(Calendar.YEAR), weekMin, weekMax);
     lvAdapter.notifyDataSetChanged();
   }
 

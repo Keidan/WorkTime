@@ -40,14 +40,12 @@
     <string name="pause">Pause</string>
     <string name="at_work">At work</string>
     <string name="default_hours" translatable="false">00:00</string>
-    <string name="amount">Amount</string>
     <string name="error_invalid_start">Invalid departure time</string>
     <string name="error_invalid_end">Invalid arrival time</string>
     <string name="error_invalid_start_end">The departure and arrival times are invalid</string>
     <string name="text_for">for</string>
     <string name="at">at</string>
     <string name="hours_lower_case">hour(s)</string>
-    <string name="monthly_pay">Monthly pay</string>
     <string name="pref_title_settings">Settings</string>
     <string name="pref_title_work_time_by_day">Work time by day</string>
     <string name="pref_summary_work_time_by_day">Duration of working time per day</string>

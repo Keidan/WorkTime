@@ -34,14 +34,12 @@
     <string name="start">Arriv\u00E9e :</string>
     <string name="pause">Pause</string>
     <string name="at_work">Au travail</string>
-    <string name="amount">Montant</string>
     <string name="error_invalid_start">Heure de d\u00E9part non valide</string>
     <string name="error_invalid_end">Heure d\'arriv\u00E9e non valide</string>
     <string name="error_invalid_start_end">Les horaires de d\u00E9part et d\'arriv\u00E9e sont invalides</string>
     <string name="text_for">pour</string>
     <string name="at">\u00E0</string>
     <string name="hours_lower_case">heure(s)</string>
-    <string name="monthly_pay">Salaire mensuel</string>
     <string name="pref_title_settings">Param\u00E8tres</string>
     <string name="pref_title_work_time_by_day">Temps de travail par jour</string>
     <string name="pref_summary_work_time_by_day">Dur\u00E9e du temps de travail par jour</string>

@@ -46,6 +46,18 @@ public class DaysFactory {
     }
     return wDays;
   }
+
+
+  public double getWageFromWeek(int week) {
+    double wage = 0.0;
+    for(DayEntry de : days) {
+      if(de.getDay().isInWeek(week)) {
+        wage += de.getWorkTimePay();
+      }
+    }
+    return wage;
+  }
+
   public WorkTimeDay getWorkTimeDayFromWeek(int week) {
     long hours = 0L, minutes = 0L;
     for(DayEntry de : days) {

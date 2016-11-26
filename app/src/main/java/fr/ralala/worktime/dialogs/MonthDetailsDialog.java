@@ -13,7 +13,6 @@ import java.util.Locale;
 
 import fr.ralala.worktime.MainApplication;
 import fr.ralala.worktime.R;
-import fr.ralala.worktime.models.DayEntry;
 import fr.ralala.worktime.models.WorkTimeDay;
 import fr.ralala.worktime.utils.AndroidHelper;
 
@@ -30,7 +29,6 @@ public class MonthDetailsDialog implements DialogInterface.OnClickListener {
 
   private Activity activity = null;
   private MainApplication app = null;
-  private DayEntry de = null;
   private AlertDialog alertDialog = null;
 
 
@@ -39,7 +37,8 @@ public class MonthDetailsDialog implements DialogInterface.OnClickListener {
     this.app = app;
   }
 
-  public void reloadDetails(int month, int year, int wMin, int wMax, double totalPay) {
+  public void reloadDetails(int month, int year, int wMin, int wMax) {
+    final String currency = app.getCurrency();
     Resources r = activity.getResources();
     /* Crete the dialog builder and set the title */
     AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(activity);
@@ -60,17 +59,20 @@ public class MonthDetailsDialog implements DialogInterface.OnClickListener {
     WorkTimeDay wtdTotalOverHours = new WorkTimeDay();
     /* Get the components */
     int row = 0;
+    double totalWage = 0.0f;
     for(int w = wMin; w <= wMax; ++w, ++row) {
       WorkTimeDay wtdWorkTimeFromWeek =  app.getDaysFactory().getWorkTimeDayFromWeek(w);
       WorkTimeDay wtdEstimatedHours = app.getEstimatedHours(app.getDaysFactory().getWorkDayFromWeek(w));
       WorkTimeDay wtdOver  = wtdWorkTimeFromWeek.clone().delTime(wtdEstimatedHours);
+      double wage = app.getDaysFactory().getWageFromWeek(w);
+      totalWage += wage;
       addRow(r, gl, row, w,
         wtdWorkTimeFromWeek.timeString(),
-        wtdOver.timeString());
+        wtdOver.timeString(), wage, currency);
       wtdTotalWorkTime.addTime(wtdWorkTimeFromWeek.clone());
       wtdTotalOverHours.addTime(wtdOver.clone());
     }
-    addRow(r, gl, row, -1, wtdTotalWorkTime.timeString(), wtdTotalOverHours.timeString());
+    addRow(r, gl, row, -1, wtdTotalWorkTime.timeString(), wtdTotalOverHours.timeString(), totalWage, currency);
 
     /* attach the listeners and init the default values */
     dialogBuilder.setPositiveButton(R.string.ok, this);
@@ -78,9 +80,9 @@ public class MonthDetailsDialog implements DialogInterface.OnClickListener {
     alertDialog = dialogBuilder.create();
   }
 
-  private void addRow(Resources r, GridLayout gl, int row, int week, String wt, String ot) {
+  private void addRow(Resources r, GridLayout gl, int row, int week, String wt, String ot, double wage, String currency) {
     GridLayout.LayoutParams param;
-    for(int j = 0; j < 5; ++j) {
+    for(int j = 0; j < 6; ++j) {
       TextView tvWeek = new TextView(activity);
       param =new GridLayout.LayoutParams();
       param.height = GridLayout.LayoutParams.WRAP_CONTENT;
@@ -108,8 +110,10 @@ public class MonthDetailsDialog implements DialogInterface.OnClickListener {
       else if (j == 3)
           tvWeek.setText(ot);
       else if (j == 4) {
-          tvWeek.setText(")");
+          tvWeek.setText(") ");
           tvWeek.setGravity(Gravity.START);
+      } else if (j == 5) {
+        tvWeek.setText(String.format(Locale.US, "%.02f%s", wage, currency));
       }
       gl.addView(tvWeek);
     }
@@ -127,9 +131,9 @@ public class MonthDetailsDialog implements DialogInterface.OnClickListener {
 
   public void onClick(DialogInterface dialog, int whichButton) {
         /* Click on the Positive button (OK) */
-    if(whichButton == DialogInterface.BUTTON_POSITIVE) {
+    /*if(whichButton == DialogInterface.BUTTON_POSITIVE) {
 
-    }
+    }*/
     dialog.dismiss();
   }
 
