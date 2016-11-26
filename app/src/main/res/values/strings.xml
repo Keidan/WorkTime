@@ -37,7 +37,7 @@
     <string name="type">Type :</string>
     <string name="end">Departure :</string>
     <string name="start">Arrival :</string>
-    <string name="pause">Pause</string>
+    <string name="pause">Break :</string>
     <string name="at_work">At work</string>
     <string name="default_hours" translatable="false">00:00</string>
     <string name="error_invalid_start">Invalid departure time</string>
@@ -82,7 +82,7 @@
     <string name="hour_in">Arriving time</string>
     <string name="hour_out">Départure time</string>
     <string name="break_time">Break time</string>
-    <string name="wage">Wage</string>
+    <string name="wage">Wage :</string>
     <string name="total">Total</string>
     <string name="the_file_exists_part_1">The file</string>
     <string name="the_file_exists_part_2">already exists. Do you want to replace the existing file?d</string>

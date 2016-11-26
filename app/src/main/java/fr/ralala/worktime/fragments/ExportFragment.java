@@ -129,7 +129,7 @@ public class ExportFragment extends Fragment implements AdapterView.OnItemSelect
           getString(R.string.hour_out),                  // D -> 68
           getString(R.string.break_time),                // E -> 69
           getString(R.string.overtime),                  // F -> 70
-          getString(R.string.wage),                      // G -> 71
+          getString(R.string.wage).replaceAll(" :", ""),                      // G -> 71
         });
         List<DayEntry> works = app.getDaysFactory().list();
         column = 0;
