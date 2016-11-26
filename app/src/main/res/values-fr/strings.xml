@@ -83,5 +83,7 @@
     <string name="the_file_exists_part_1">Le fichier</string>
     <string name="the_file_exists_part_2">existe d\u00E9j\u00E0. Voulez-vous remplacer le fichier existant?</string>
     <string name="confirm">Confirmation</string>
+    <string name="details_title">D\u00E9tails</string>
+    <string name="week_letter">S</string>
 
 </resources>

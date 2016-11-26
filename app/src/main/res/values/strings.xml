@@ -90,4 +90,6 @@
     <string name="the_file_exists_part_2">already exists. Do you want to replace the existing file?d</string>
     <string name="confirm">Confirm</string>
     <string name="zero" translatable="false">0.00</string>
+    <string name="details_title">Details</string>
+    <string name="week_letter">W</string>
 </resources>

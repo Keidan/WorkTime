@@ -8,6 +8,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import fr.ralala.worktime.MainApplication;
 import fr.ralala.worktime.sql.SqlFactory;
 
 /**
@@ -37,6 +38,25 @@ public class DaysFactory {
     return days;
   }
 
+
+  public int getWorkDayFromWeek(int week) {
+    int wDays = 0;
+    for(DayEntry de : days) {
+      if(de.getDay().isInWeek(week)) ++wDays;
+    }
+    return wDays;
+  }
+  public WorkTimeDay getWorkTimeDayFromWeek(int week) {
+    long hours = 0L, minutes = 0L;
+    for(DayEntry de : days) {
+      if(de.getDay().isInWeek(week)) {
+        WorkTimeDay wt = de.getWorkTime();
+        hours += wt.getHours();
+        minutes += wt.getMinutes();
+      }
+    }
+    return new WorkTimeDay().fromTimeUsingCalendar(hours, minutes);
+  }
 
   public double checkForDayDateAndCopy(DayEntry current) {
     for(DayEntry de : days) {

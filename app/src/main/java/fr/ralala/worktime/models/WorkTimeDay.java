@@ -34,11 +34,41 @@ public class WorkTimeDay {
     this.minutes = minutes;
   }
 
+
+  public WorkTimeDay delTime(WorkTimeDay wtd) {
+    long ms = getTimeMs() - wtd.getTimeMs();
+    long h = TimeUnit.MILLISECONDS.toHours(ms);
+    long m = TimeUnit.MILLISECONDS.toMinutes(ms) - (h * 60);
+    hours = (int)h;
+    minutes = (int)m;
+    return this;
+  }
+
+
+  public WorkTimeDay addTime(WorkTimeDay wtd) {
+    long ms = wtd.getTimeMs() + getTimeMs();
+    long h = TimeUnit.MILLISECONDS.toHours(ms);
+    long m = TimeUnit.MILLISECONDS.toMinutes(ms) - (h * 60);
+    hours = (int)h;
+    minutes = (int)m;
+    return this;
+  }
+
   public static WorkTimeDay now() {
     WorkTimeDay wtd = new WorkTimeDay();
     Calendar now = wtd.toCalendar();
     now.setTime(new Date());
     wtd.fromCalendar(now);
+    return wtd;
+  }
+
+  public WorkTimeDay clone() {
+    WorkTimeDay wtd = new WorkTimeDay();
+    wtd.day = day;
+    wtd.month = month;
+    wtd.year = year;
+    wtd.hours = hours;
+    wtd.minutes = minutes;
     return wtd;
   }
 
@@ -68,6 +98,10 @@ public class WorkTimeDay {
     this.hours = (int)(hours + ctime.get(Calendar.HOUR));
     this.minutes = ctime.get(Calendar.MINUTE);
     return this;
+  }
+
+  public boolean isInWeek(int week) {
+    return toCalendar().get(Calendar.WEEK_OF_YEAR) == week;
   }
 
   public long toLongTime() {

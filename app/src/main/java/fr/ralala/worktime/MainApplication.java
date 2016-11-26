@@ -99,7 +99,7 @@ public class MainApplication extends Application {
     return prefs.getBoolean(SettingsActivity.PREFS_KEY_EMAIL_ENABLE, true);
   }
 
-  public WorkTimeDay getEstimatedMonthlyHours(int wDays) {
+  public WorkTimeDay getEstimatedHours(int wDays) {
     long time = getLegalWorkTimeByDay().toLongTime() * wDays;
     int mins = (int)(time % 60L);
     int hrs = (int)(time / 60L);

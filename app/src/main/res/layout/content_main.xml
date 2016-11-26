@@ -59,7 +59,7 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/llDetail"
+        android:id="@+id/llDetails"
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -88,12 +88,6 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/tvMonthlyHours"
                 android:layout_weight="1"/>
-            <TextView
-                android:text="@string/monthly_pay"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/tvMonthlyPay"
-                android:layout_weight="1"/>
         </LinearLayout>
     </LinearLayout>
 
@@ -104,7 +98,7 @@
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="24dp"
-        android:layout_below="@+id/llDetail"
+        android:layout_below="@+id/llDetails"
         android:background="#3c3f41"
         android:layout_alignParentStart="true">
 

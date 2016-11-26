@@ -20,6 +20,7 @@ import java.util.TimeZone;
 
 import fr.ralala.worktime.activities.MainActivity;
 import fr.ralala.worktime.dialogs.DayEntryDialog;
+import fr.ralala.worktime.dialogs.MonthDetailsDialog;
 import fr.ralala.worktime.utils.AndroidHelper;
 import fr.ralala.worktime.MainApplication;
 import fr.ralala.worktime.R;
@@ -42,18 +43,18 @@ public class MainFragment extends Fragment implements View.OnClickListener, Adap
 
   private ImageButton btPreviousMonth = null;
   private ImageButton btNextMonth = null;
-  private LinearLayout llDetail = null;
+  private LinearLayout llDetails = null;
   private TextView tvMonth = null;
   private TextView tvYear = null;
   private TextView tvWorkDays = null;
   private TextView tvMonthlyHours = null;
-  private TextView tvMonthlyPay = null;
   private Calendar currentDate = null;
   private DaysEntriesArrayAdapter lvAdapter = null;
   private ListView days = null;
   private MainApplication app = null;
   private boolean isScrollingUp = false;
   private int lastFirstVisibleItem = 0;
+  private MonthDetailsDialog monthDetailsDialog = null;
 
   @Override
   public View onCreateView(final LayoutInflater inflater,
@@ -65,16 +66,18 @@ public class MainFragment extends Fragment implements View.OnClickListener, Adap
     currentDate.setTimeZone(TimeZone.getTimeZone("GMT"));
     currentDate.setTime(new Date());
 
-    llDetail = (LinearLayout) rootView.findViewById(R.id.llDetail);
+    monthDetailsDialog = new MonthDetailsDialog(getActivity(), app);
+
+    llDetails = (LinearLayout) rootView.findViewById(R.id.llDetails);
     btPreviousMonth = (ImageButton) rootView.findViewById(R.id.btPreviousMonth);
     btNextMonth = (ImageButton) rootView.findViewById(R.id.btNextMonth);
     tvMonth = (TextView) rootView.findViewById(R.id.tvMonth);
     tvYear = (TextView) rootView.findViewById(R.id.tvYear);
     tvWorkDays = (TextView) rootView.findViewById(R.id.tvWorkDays);
     tvMonthlyHours = (TextView) rootView.findViewById(R.id.tvMonthlyHours);
-    tvMonthlyPay = (TextView) rootView.findViewById(R.id.tvMonthlyPay);
     days = (ListView) rootView.findViewById(R.id.days);
 
+    llDetails.setOnClickListener(this);
     btPreviousMonth.setOnClickListener(this);
     btNextMonth.setOnClickListener(this);
 
@@ -96,12 +99,12 @@ public class MainFragment extends Fragment implements View.OnClickListener, Adap
           }
           /* change the visibility if 5% of the list is displayed or hidden */
           int k = (int)(lvAdapter.getCount()*(5.0f/100.0f));
-          if(!isScrollingUp && currentFirstVisibleItem > k && llDetail.getVisibility() == View.VISIBLE)
-            llDetail.setVisibility(View.GONE);
-          else if(isScrollingUp && currentFirstVisibleItem < k && llDetail.getVisibility() == View.GONE)
-            llDetail.setVisibility(View.VISIBLE);
-          else if(currentFirstVisibleItem == 0 && llDetail.getVisibility() != View.VISIBLE)
-            llDetail.setVisibility(View.VISIBLE);
+          if(!isScrollingUp && currentFirstVisibleItem > k && llDetails.getVisibility() == View.VISIBLE)
+            llDetails.setVisibility(View.GONE);
+          else if(isScrollingUp && currentFirstVisibleItem < k && llDetails.getVisibility() == View.GONE)
+            llDetails.setVisibility(View.VISIBLE);
+          else if(currentFirstVisibleItem == 0 && llDetails.getVisibility() != View.VISIBLE)
+            llDetails.setVisibility(View.VISIBLE);
           /* store previous item */
           lastFirstVisibleItem = currentFirstVisibleItem;
         }
@@ -129,10 +132,13 @@ public class MainFragment extends Fragment implements View.OnClickListener, Adap
   public void onClick(final View v) {
     if(v.equals(btPreviousMonth)) {
       currentDate.add(Calendar.MONTH, -1);
+      updateDate();
     } else if(v.equals(btNextMonth)) {
       currentDate.add(Calendar.MONTH, 1);
+      updateDate();
+    } else if(v.equals(llDetails)) {
+      monthDetailsDialog.open();
     }
-    updateDate();
   }
 
   private void updateDate() {
@@ -148,8 +154,9 @@ public class MainFragment extends Fragment implements View.OnClickListener, Adap
     tvMonth.setText(smonth);
     tvYear.setText(String.valueOf(currentDate.get(Calendar.YEAR)));
 
+    int weekMin = -1, weekMax = -1;
     int wDays = 0;
-    long hours = 0L, minutes = 0L, overTime = 0L;
+    long hours = 0L, minutes = 0L;
     int currentDay = currentDate.get(Calendar.DAY_OF_MONTH);
     double totalPay = 0.0;
     /* loop for each days in the month */
@@ -169,9 +176,12 @@ public class MainFragment extends Fragment implements View.OnClickListener, Adap
       WorkTimeDay wt = de.getWorkTime();
       hours += wt.getHours();
       minutes += wt.getMinutes();
-      if(de.getType() == DayType.AT_WORK)
-        overTime += de.getOverTimeMs(app);
       lvAdapter.add(de);
+      int week = currentDate.get(Calendar.WEEK_OF_YEAR);
+      if(weekMax == -1 || weekMax != week) {
+        weekMax = week;
+        if(weekMin == -1) weekMin = week;
+      }
     }
     /* reload work day label */
     currentDate.set(Calendar.DAY_OF_MONTH, currentDay);
@@ -180,18 +190,16 @@ public class MainFragment extends Fragment implements View.OnClickListener, Adap
 
     /* reload the monthly hours label */
     WorkTimeDay monthly_hours = new WorkTimeDay().fromTimeUsingCalendar(hours, minutes);
-    WorkTimeDay over_hours = new WorkTimeDay().fromTimeUsingCalendar(overTime);
     /* substract legal working time */
-    WorkTimeDay wtdEstimatedMonthlyHours = app.getEstimatedMonthlyHours(wDays);
+    WorkTimeDay wtdEstimatedMonthlyHours = app.getEstimatedHours(wDays);
     String monthlyHours = getString(R.string.monthly_hours) + ": " +
       String.format(Locale.US, "%d:%02d/%d:%02d",
         monthly_hours.getHours(), monthly_hours.getMinutes(),
         wtdEstimatedMonthlyHours.getHours(), wtdEstimatedMonthlyHours.getMinutes());
 
     tvMonthlyHours.setText(monthlyHours);
-    /* init total pay label */
-    tvMonthlyPay.setText(getString(R.string.monthly_pay) + ": " + String.format(Locale.US, "%.02f", totalPay) + app.getCurrency());
 
+    monthDetailsDialog.reloadDetails(month, currentDate.get(Calendar.YEAR), weekMin, weekMax, totalPay);
     lvAdapter.notifyDataSetChanged();
   }
 
