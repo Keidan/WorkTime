@@ -111,7 +111,7 @@ public class WorkTimeDay {
   }
 
   public String timeString() {
-    return String.format(Locale.US, "%02d:%02d", hours, minutes);
+    return ((hours < 0) ? "-" : "") + String.format(Locale.US, "%02d:%02d", Math.abs(hours), minutes);
   }
 
   public String dateString() {
