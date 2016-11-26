@@ -3,6 +3,7 @@ package fr.ralala.worktime.adapters;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.support.annotation.NonNull;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -107,21 +108,21 @@ public class DaysEntriesArrayAdapter extends ArrayAdapter<DayEntry> {
           DayEntry.getDayString2lt(c, cal.get(Calendar.DAY_OF_WEEK)));
       }
       if (holder.tvStart != null) {
-        if (!t.getStart().isValidTime())
+        if (!t.getStart().isValidTime() && !t.getEnd().isValidTime())
           holder.tvStart.setText("-");
         else {
           holder.tvStart.setText(t.getStart().timeString());
         }
       }
       if (holder.tvEnd != null) {
-        if (!t.getEnd().isValidTime())
+        if (!t.getStart().isValidTime() && !t.getEnd().isValidTime())
           holder.tvEnd.setText("-");
         else {
           holder.tvEnd.setText(t.getEnd().timeString());
         }
       }
       if (holder.tvPause != null) {
-        if (t.getPause().getHours() == 0 && t.getPause().getMinutes() == 0)
+        if (!t.getStart().isValidTime() && !t.getEnd().isValidTime())
           holder.tvPause.setText("-");
         else {
           holder.tvPause.setText(t.getPause().timeString());
@@ -136,9 +137,10 @@ public class DaysEntriesArrayAdapter extends ArrayAdapter<DayEntry> {
       }
       if (holder.tvOver != null) {
         MainApplication app = MainApplication.getApp(c);
-        if(!t.getStart().isValidTime() || !t.getEnd().isValidTime() || !t.getPause().isValidTime()) {
+        if(!t.getStart().isValidTime() && !t.getEnd().isValidTime()) {
           holder.tvOver.setText("-");
           holder.tvOver.setTypeface(Typeface.MONOSPACE, Typeface.NORMAL);
+          holder.tvOver.setGravity(Gravity.CENTER);
         }
         else {
           long overtime = t.getOverTimeMs(app);
@@ -146,12 +148,15 @@ public class DaysEntriesArrayAdapter extends ArrayAdapter<DayEntry> {
           if(overtime == 0) {
             holder.tvOver.setText("-");
             holder.tvOver.setTypeface(Typeface.MONOSPACE, Typeface.NORMAL);
+            holder.tvOver.setGravity(Gravity.CENTER);
           } else {
             holder.tvOver.setTypeface(Typeface.MONOSPACE, Typeface.BOLD);
+            holder.tvOver.setGravity(Gravity.END);
             if (overtime < 0) {
               holder.tvOver.setTextColor(c.getResources().getColor(android.R.color.holo_red_dark, null));
-            } else
+            } else {
               holder.tvOver.setTextColor(c.getResources().getColor(android.R.color.holo_green_dark, null));
+            }
             holder.tvOver.setText(wtd.timeString());
           }
         }
