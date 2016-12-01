@@ -32,7 +32,7 @@
     <string name="type">Type :</string>
     <string name="end">D\u00E9part :</string>
     <string name="start">Arriv\u00E9e :</string>
-    <string name="pause">Pause</string>
+    <string name="pause">Pause :</string>
     <string name="at_work">Au travail</string>
     <string name="error_invalid_start">Heure de d\u00E9part non valide</string>
     <string name="error_invalid_end">Heure d\'arriv\u00E9e non valide</string>
@@ -56,6 +56,8 @@
     <string name="pref_title_export_mail_enable">Activer le courrier \u00E9lectronique \u00E0 l\'exportation</string>
     <string name="pref_summary_export_mail">Adresse courriel utilisée pour envoyer le fichier exporté</string>
     <string name="pref_title_export_mail">Adresse e-mail</string>
+    <string name="pref_summary_hide_wage">Masquer les entrées des salaires</string>
+    <string name="pref_title_hide_wage">Masquer le salaire</string>
     <string name="chooser_long_press_message">Appuyez longuement sur pour s\u00E9lectionner le fichier ou le r\u00E9pertoire</string>
     <string name="use_folder">Utilisez ce dossier</string>
     <string name="use_file">Utilisez ce fichier</string>
@@ -76,7 +78,7 @@
     <string name="hour_in">Heure d\'arriv\u00E9e</string>
     <string name="hour_out">Heure de d\u00E9part</string>
     <string name="break_time">Temps de pause</string>
-    <string name="wage">Salaire</string>
+    <string name="wage">Salaire :</string>
     <string name="total">Total</string>
     <string name="the_file_exists_part_1">Le fichier</string>
     <string name="the_file_exists_part_2">existe d\u00E9j\u00E0. Voulez-vous remplacer le fichier existant?</string>

@@ -10,6 +10,7 @@ import android.widget.AdapterView;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -43,7 +44,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, Adap
 
   private ImageButton btPreviousMonth = null;
   private ImageButton btNextMonth = null;
-  private LinearLayout llDetails = null;
+  private RelativeLayout rlDetails = null;
   private TextView tvMonth = null;
   private TextView tvYear = null;
   private TextView tvWorkDays = null;
@@ -68,7 +69,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, Adap
 
     monthDetailsDialog = new MonthDetailsDialog(getActivity(), app);
 
-    llDetails = (LinearLayout) rootView.findViewById(R.id.llDetails);
+    rlDetails = (RelativeLayout) rootView.findViewById(R.id.rlDetails);
     btPreviousMonth = (ImageButton) rootView.findViewById(R.id.btPreviousMonth);
     btNextMonth = (ImageButton) rootView.findViewById(R.id.btNextMonth);
     tvMonth = (TextView) rootView.findViewById(R.id.tvMonth);
@@ -77,7 +78,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, Adap
     tvMonthlyHours = (TextView) rootView.findViewById(R.id.tvMonthlyHours);
     days = (ListView) rootView.findViewById(R.id.days);
 
-    llDetails.setOnClickListener(this);
+    rlDetails.setOnClickListener(this);
     btPreviousMonth.setOnClickListener(this);
     btNextMonth.setOnClickListener(this);
 
@@ -99,12 +100,12 @@ public class MainFragment extends Fragment implements View.OnClickListener, Adap
           }
           /* change the visibility if 5% of the list is displayed or hidden */
           int k = (int)(lvAdapter.getCount()*(5.0f/100.0f));
-          if(!isScrollingUp && currentFirstVisibleItem > k && llDetails.getVisibility() == View.VISIBLE)
-            llDetails.setVisibility(View.GONE);
-          else if(isScrollingUp && currentFirstVisibleItem < k && llDetails.getVisibility() == View.GONE)
-            llDetails.setVisibility(View.VISIBLE);
-          else if(currentFirstVisibleItem == 0 && llDetails.getVisibility() != View.VISIBLE)
-            llDetails.setVisibility(View.VISIBLE);
+          if(!isScrollingUp && currentFirstVisibleItem > k && rlDetails.getVisibility() == View.VISIBLE)
+            rlDetails.setVisibility(View.GONE);
+          else if(isScrollingUp && currentFirstVisibleItem < k && rlDetails.getVisibility() == View.GONE)
+            rlDetails.setVisibility(View.VISIBLE);
+          else if(currentFirstVisibleItem == 0 && rlDetails.getVisibility() != View.VISIBLE)
+            rlDetails.setVisibility(View.VISIBLE);
           /* store previous item */
           lastFirstVisibleItem = currentFirstVisibleItem;
         }
@@ -136,7 +137,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, Adap
     } else if(v.equals(btNextMonth)) {
       currentDate.add(Calendar.MONTH, 1);
       updateDate();
-    } else if(v.equals(llDetails)) {
+    } else if(v.equals(rlDetails)) {
       monthDetailsDialog.open();
     }
   }

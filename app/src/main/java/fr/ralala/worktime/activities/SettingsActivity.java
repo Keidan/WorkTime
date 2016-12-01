@@ -38,6 +38,8 @@ public class SettingsActivity extends PreferenceActivity implements Preference.O
   public static final String       PREFS_KEY_IMPORT               = "prefImport";
   public static final String       PREFS_KEY_EMAIL                = "prefExportMail";
   public static final String       PREFS_KEY_EMAIL_ENABLE         = "prefExportMailEnable";
+  public static final String       PREFS_KEY_EXPORT_HIDE_WAGE     = "prefExportHideWage";
+  public static final String       PREFS_KEY_HIDE_WAGE            = "prefHideWage";
 
   private MyPreferenceFragment     prefFrag                       = null;
   private AppCompatDelegate        mDelegate;

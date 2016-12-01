@@ -122,15 +122,26 @@ public class ExportFragment extends Fragment implements AdapterView.OnItemSelect
         ExportListViewArrayAdapter.ExportEntry ee = entries.get(idx);
         WritableSheet sheet = excel.createSheet(AndroidHelper.getMonthString(ee.month), idx);
         int row = 0, column = 0;
-        excel.createHorizontalHeader(sheet, row, column, new String[]{
-          getString(R.string.date).replaceAll(" :", ""), // A -> 65
-          getString(R.string.type).replaceAll(" :", ""), // B -> 66
-          getString(R.string.hour_in),                   // C -> 67
-          getString(R.string.hour_out),                  // D -> 68
-          getString(R.string.break_time),                // E -> 69
-          getString(R.string.overtime),                  // F -> 70
-          getString(R.string.wage),                      // G -> 71
-        });
+
+        excel.createHorizontalHeader(sheet, row, column, !app.isExportHideWage() ?
+          new String[]{
+            getString(R.string.date).replaceAll(" :", ""), // A -> 65
+            getString(R.string.type).replaceAll(" :", ""), // B -> 66
+            getString(R.string.hour_in),                   // C -> 67
+            getString(R.string.hour_out),                  // D -> 68
+            getString(R.string.break_time),                // E -> 69
+            getString(R.string.overtime),                  // F -> 70
+            getString(R.string.wage).replaceAll(" :", ""),                      // G -> 71
+          } :
+          new String[]{
+            getString(R.string.date).replaceAll(" :", ""), // A -> 65
+            getString(R.string.type).replaceAll(" :", ""), // B -> 66
+            getString(R.string.hour_in),                   // C -> 67
+            getString(R.string.hour_out),                  // D -> 68
+            getString(R.string.break_time),                // E -> 69
+            getString(R.string.overtime),                  // F -> 70
+          }
+        );
         List<DayEntry> works = app.getDaysFactory().list();
         column = 0;
         row++;
@@ -142,7 +153,8 @@ public class ExportFragment extends Fragment implements AdapterView.OnItemSelect
           excel.addLabel(sheet, row, column+3, de.getEnd().timeString(), false);
           excel.addLabel(sheet, row, column+4, de.getPause().timeString(), false);
           excel.addLabel(sheet, row, column+5, de.getOverTime(app).timeString(), false);
-          excel.addLabel(sheet, row++, column+6, String.format(Locale.US, "%.02f", de.getWorkTimePay()), false);
+          if(!app.isExportHideWage())
+            excel.addLabel(sheet, row++, column+6, String.format(Locale.US, "%.02f", de.getWorkTimePay()), false);
         }
         /*column = 1;
         excel.addLabel(sheet, row, column++, getString(R.string.total), true);
@@ -202,10 +214,15 @@ public class ExportFragment extends Fragment implements AdapterView.OnItemSelect
       Calendar calendar = Calendar.getInstance();
       calendar.setTimeZone(TimeZone.getTimeZone("GMT"));
       calendar.setTime(new Date(TimeUnit.MINUTES.toMillis(minutes)));
-      String info = String.format(locale, "%02d:%02d %s (%.02f %s)",
-        hours + calendar.get(Calendar.HOUR), calendar.get(Calendar.MINUTE),
-        getString(R.string.hours_lower_case),
-        pay, app.getCurrency());
+      String info = !app.isExportHideWage() ?
+        String.format(locale, "%02d:%02d %s (%.02f %s)",
+          hours + calendar.get(Calendar.HOUR), calendar.get(Calendar.MINUTE),
+          getString(R.string.hours_lower_case),
+          pay, app.getCurrency())
+        :
+        String.format(locale, "%02d:%02d %s",
+          hours + calendar.get(Calendar.HOUR), calendar.get(Calendar.MINUTE),
+          getString(R.string.hours_lower_case)) ;
       ExportListViewArrayAdapter.ExportEntry ee = new ExportListViewArrayAdapter.ExportEntry();
       ee.text = AndroidHelper.getMonthString(i);
       ee.info = info;

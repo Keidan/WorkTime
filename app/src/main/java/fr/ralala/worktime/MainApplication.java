@@ -99,6 +99,16 @@ public class MainApplication extends Application {
     return prefs.getBoolean(SettingsActivity.PREFS_KEY_EMAIL_ENABLE, true);
   }
 
+  public boolean isHideWage() {
+    SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+    return prefs.getBoolean(SettingsActivity.PREFS_KEY_HIDE_WAGE, false);
+  }
+
+  public boolean isExportHideWage() {
+    SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+    return prefs.getBoolean(SettingsActivity.PREFS_KEY_EXPORT_HIDE_WAGE, false);
+  }
+
   public WorkTimeDay getEstimatedHours(int wDays) {
     long time = getLegalWorkTimeByDay().toLongTime() * wDays;
     int mins = (int)(time % 60L);

@@ -112,7 +112,7 @@ public class MonthDetailsDialog implements DialogInterface.OnClickListener {
       else if (j == 4) {
           tvWeek.setText(") ");
           tvWeek.setGravity(Gravity.START);
-      } else if (j == 5) {
+      } else if (!app.isHideWage() && j == 5) {
         tvWeek.setText(String.format(Locale.US, "%.02f%s", wage, currency));
       }
       gl.addView(tvWeek);

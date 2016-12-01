@@ -18,6 +18,11 @@
             android:summary="@string/pref_summary_currency"
             android:title="@string/pref_title_currency"
             android:inputType="text" />
+        <CheckBoxPreference
+            android:key="prefHideWage"
+            android:defaultValue="false"
+            android:summary="@string/pref_summary_hide_wage"
+            android:title="@string/pref_title_hide_wage" />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/pref_title_database" android:key="prefCatDatabase" >
         <Preference
@@ -42,5 +47,10 @@
             android:summary="@string/pref_summary_export_mail"
             android:title="@string/pref_title_export_mail"
             android:inputType="textEmailAddress" />
+        <CheckBoxPreference
+            android:key="prefExportHideWage"
+            android:defaultValue="false"
+            android:summary="@string/pref_summary_hide_wage"
+            android:title="@string/pref_title_hide_wage" />
     </PreferenceCategory>
 </PreferenceScreen>

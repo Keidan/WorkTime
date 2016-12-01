@@ -58,21 +58,26 @@
             android:id="@+id/btNextMonth"/>
     </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/llDetails"
+    <RelativeLayout
+        android:id="@+id/rlDetails"
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/llTitle"
         android:layout_alignParentStart="true">
         <ImageView
+            android:id="@+id/ic_public_holidays"
             android:contentDescription="@string/empty"
+            android:layout_centerVertical="true"
+            android:layout_alignParentStart="true"
             android:layout_width="25dp"
             android:layout_height="wrap_content"
             android:src="@mipmap/ic_public_holidays"/>
 
         <LinearLayout
+            android:id="@+id/ll_sub_details"
             android:orientation="vertical"
+            android:layout_toEndOf="@+id/ic_public_holidays"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
 
@@ -89,7 +94,13 @@
                 android:id="@+id/tvMonthlyHours"
                 android:layout_weight="1"/>
         </LinearLayout>
-    </LinearLayout>
+        <ImageView
+            android:layout_alignParentEnd="true"
+            android:contentDescription="@string/empty"
+            android:layout_width="25dp"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/ic_expand"/>
+    </RelativeLayout>
 
 
     <LinearLayout
@@ -98,7 +109,7 @@
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="24dp"
-        android:layout_below="@+id/llDetails"
+        android:layout_below="@+id/rlDetails"
         android:background="#3c3f41"
         android:layout_alignParentStart="true">
 
