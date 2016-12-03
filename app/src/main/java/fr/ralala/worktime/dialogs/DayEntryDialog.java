@@ -85,7 +85,10 @@ public class DayEntryDialog implements View.OnClickListener, AdapterView.OnItemS
     TextView tvName = (TextView)dialogView.findViewById(R.id.tvName);
     etName = (EditText)dialogView.findViewById(R.id.etName);
 
-        /* add click listener for the delete function */
+    boolean hw = app.isHideWage();
+    etAmount.setVisibility(hw ? View.INVISIBLE : View.VISIBLE);
+    dialogView.findViewById(R.id.tvLblAmount).setVisibility(hw ? View.INVISIBLE : View.VISIBLE);
+    /* add click listener for the delete function */
     ivDelete.setOnClickListener(this);
     /* add click listener for the time picker */
     tvStart.setOnClickListener(this);
@@ -143,12 +146,13 @@ public class DayEntryDialog implements View.OnClickListener, AdapterView.OnItemS
     AndroidHelper.initTimeTextView(de.getEnd(), tvEnd);
     AndroidHelper.initTimeTextView(de.getPause(), tvPause);
 
-    etAmount.setTypeface(tvPause.getTypeface());
-    etAmount.setTextSize(14);
-    etAmount.setTextColor(tvPause.getTextColors());
-    etAmount.setText(String.format(Locale.US, "%.02f",
-      de.getAmountByHour() != 0 ? de.getAmountByHour() : ((MainApplication)activity.getApplicationContext()).getAmountByHour()).replaceAll(",", "."));
-
+    if(!app.isHideWage()) {
+      etAmount.setTypeface(tvPause.getTypeface());
+      etAmount.setTextSize(14);
+      etAmount.setTextColor(tvPause.getTextColors());
+      etAmount.setText(String.format(Locale.US, "%.02f",
+        de.getAmountByHour() != 0 ? de.getAmountByHour() : ((MainApplication) activity.getApplicationContext()).getAmountByHour()).replaceAll(",", "."));
+    }
     /* attach the listeners and init the default values */
     dialogBuilder.setPositiveButton(R.string.ok, this);
     dialogBuilder.setNegativeButton(R.string.cancel, this);
