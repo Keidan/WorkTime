@@ -144,6 +144,10 @@ public class WorkTimeDay {
     return c;
   }
 
+  public static String timeString(int hours, int minutes) {
+    return ((hours < 0) ? "-" : "") + String.format(Locale.US, "%02d:%02d", Math.abs(hours), minutes);
+  }
+
   public String timeString() {
     return ((hours < 0) ? "-" : "") + String.format(Locale.US, "%02d:%02d", Math.abs(hours), minutes);
   }

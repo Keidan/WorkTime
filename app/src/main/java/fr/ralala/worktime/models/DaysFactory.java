@@ -39,9 +39,10 @@ public class DaysFactory {
   }
 
 
-  public int getWorkDayFromWeek(int week) {
+  public int getWorkDayFromWeek(int week, boolean onlyAtWork) {
     int wDays = 0;
     for(DayEntry de : days) {
+      if(onlyAtWork && de.getType() != DayType.AT_WORK) continue;
       if(de.getDay().isInWeek(week)) ++wDays;
     }
     return wDays;
@@ -61,12 +62,13 @@ public class DaysFactory {
   public WorkTimeDay getWorkTimeDayFromWeek(int week) {
     long hours = 0L, minutes = 0L;
     for(DayEntry de : days) {
-      if(de.getDay().isInWeek(week)) {
+      if(de.getDay().isInWeek(week) && de.getType() == DayType.AT_WORK) {
         WorkTimeDay wt = de.getWorkTime();
         hours += wt.getHours();
         minutes += wt.getMinutes();
       }
     }
+    if(hours == 0 && minutes == 0) return new WorkTimeDay();
     return new WorkTimeDay().fromTimeUsingCalendar(hours, minutes);
   }
 

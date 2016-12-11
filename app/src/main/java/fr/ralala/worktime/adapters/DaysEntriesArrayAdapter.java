@@ -108,28 +108,28 @@ public class DaysEntriesArrayAdapter extends ArrayAdapter<DayEntry> {
           DayEntry.getDayString2lt(c, cal.get(Calendar.DAY_OF_WEEK)));
       }
       if (holder.tvStart != null) {
-        if (!t.getStart().isValidTime() && !t.getEnd().isValidTime())
+        if (t.getType() != DayType.AT_WORK || (!t.getStart().isValidTime() && !t.getEnd().isValidTime()))
           holder.tvStart.setText("-");
         else {
           holder.tvStart.setText(t.getStart().timeString());
         }
       }
       if (holder.tvEnd != null) {
-        if (!t.getStart().isValidTime() && !t.getEnd().isValidTime())
+        if (t.getType() != DayType.AT_WORK || (!t.getStart().isValidTime() && !t.getEnd().isValidTime()))
           holder.tvEnd.setText("-");
         else {
           holder.tvEnd.setText(t.getEnd().timeString());
         }
       }
       if (holder.tvPause != null) {
-        if (!t.getStart().isValidTime() && !t.getEnd().isValidTime())
+        if (t.getType() != DayType.AT_WORK || (!t.getStart().isValidTime() && !t.getEnd().isValidTime()))
           holder.tvPause.setText("-");
         else {
           holder.tvPause.setText(t.getPause().timeString());
         }
       }
       if (holder.tvTotal != null) {
-        if(!t.getStart().isValidTime() || !t.getEnd().isValidTime())
+        if(t.getType() != DayType.AT_WORK || (!t.getStart().isValidTime() || !t.getEnd().isValidTime()))
           holder.tvTotal.setText("-");
         else {
           holder.tvTotal.setText(t.getWorkTime().timeString());
@@ -137,7 +137,7 @@ public class DaysEntriesArrayAdapter extends ArrayAdapter<DayEntry> {
       }
       if (holder.tvOver != null) {
         MainApplication app = MainApplication.getApp(c);
-        if(!t.getStart().isValidTime() && !t.getEnd().isValidTime()) {
+        if(t.getType() != DayType.AT_WORK || (!t.getStart().isValidTime() && !t.getEnd().isValidTime())) {
           holder.tvOver.setText("-");
           holder.tvOver.setTypeface(Typeface.MONOSPACE, Typeface.NORMAL);
           holder.tvOver.setGravity(Gravity.CENTER);

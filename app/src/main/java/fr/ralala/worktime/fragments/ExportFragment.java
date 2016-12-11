@@ -149,12 +149,22 @@ public class ExportFragment extends Fragment implements AdapterView.OnItemSelect
           if (!de.getDay().isInMonth(ee.month + 1) || !de.getDay().isInYear(ee.year)) continue;
           excel.addLabel(sheet, row, column, de.getDay().dateString(), false);
           excel.addLabel(sheet, row, column+1, de.getType() != DayType.AT_WORK ? de.getType().string(getActivity()) : "", false);
-          excel.addLabel(sheet, row, column+2, de.getStart().timeString(), false);
-          excel.addLabel(sheet, row, column+3, de.getEnd().timeString(), false);
-          excel.addLabel(sheet, row, column+4, de.getPause().timeString(), false);
-          excel.addLabel(sheet, row, column+5, de.getOverTime(app).timeString(), false);
-          if(!app.isExportHideWage())
-            excel.addLabel(sheet, row++, column+6, String.format(Locale.US, "%.02f", de.getWorkTimePay()), false);
+          double wage = .0f;
+          if(de.getType() != DayType.AT_WORK) {
+            excel.addLabel(sheet, row, column + 2, WorkTimeDay.timeString(0, 0), false);
+            excel.addLabel(sheet, row, column + 3, WorkTimeDay.timeString(0, 0), false);
+            excel.addLabel(sheet, row, column + 4, WorkTimeDay.timeString(0, 0), false);
+            excel.addLabel(sheet, row, column + 5, WorkTimeDay.timeString(0, 0), false);
+          } else {
+            excel.addLabel(sheet, row, column + 2, de.getStart().timeString(), false);
+            excel.addLabel(sheet, row, column + 3, de.getEnd().timeString(), false);
+            excel.addLabel(sheet, row, column + 4, de.getPause().timeString(), false);
+            excel.addLabel(sheet, row, column + 5, de.getOverTime(app).timeString(), false);
+            if (!app.isExportHideWage())
+              wage = de.getWorkTimePay();
+          }
+          if (!app.isExportHideWage())
+            excel.addLabel(sheet, row++, column + 6, String.format(Locale.US, "%.02f", wage), false);
         }
         /*column = 1;
         excel.addLabel(sheet, row, column++, getString(R.string.total), true);

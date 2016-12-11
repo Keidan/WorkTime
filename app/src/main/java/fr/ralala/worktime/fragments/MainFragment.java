@@ -175,8 +175,10 @@ public class MainFragment extends Fragment implements View.OnClickListener, Adap
       /* reload data if the current day is already inserted */
       totalPay += app.getDaysFactory().checkForDayDateAndCopy(de);
       WorkTimeDay wt = de.getWorkTime();
-      hours += wt.getHours();
-      minutes += wt.getMinutes();
+      if(de.getType() == DayType.AT_WORK) {
+        hours += wt.getHours();
+        minutes += wt.getMinutes();
+      }
       lvAdapter.add(de);
       int week = currentDate.get(Calendar.WEEK_OF_YEAR);
       if(weekMax == -1 || weekMax != week) {

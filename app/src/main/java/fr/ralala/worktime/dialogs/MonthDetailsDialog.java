@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.res.Resources;
 import android.graphics.Typeface;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.Gravity;
 import android.widget.GridLayout;
 import android.widget.TextView;
@@ -62,7 +63,7 @@ public class MonthDetailsDialog implements DialogInterface.OnClickListener {
     double totalWage = 0.0f;
     for(int w = wMin; w <= wMax; ++w, ++row) {
       WorkTimeDay wtdWorkTimeFromWeek =  app.getDaysFactory().getWorkTimeDayFromWeek(w);
-      WorkTimeDay wtdEstimatedHours = app.getEstimatedHours(app.getDaysFactory().getWorkDayFromWeek(w));
+      WorkTimeDay wtdEstimatedHours = app.getEstimatedHours(app.getDaysFactory().getWorkDayFromWeek(w, true));
       WorkTimeDay wtdOver  = wtdWorkTimeFromWeek.clone().delTime(wtdEstimatedHours);
       double wage = app.getDaysFactory().getWageFromWeek(w);
       totalWage += wage;
