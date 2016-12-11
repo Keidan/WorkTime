@@ -207,8 +207,11 @@ public class DayEntryDialog implements View.OnClickListener, AdapterView.OnItemS
       etAmount.setText(activity.getString(R.string.zero));
       spType.setSelection(DayType.AT_WORK.value());
       etName.setText("");
-      tvDay.setText(de.getDay().dateString());
+      WorkTimeDay day = de.getDay();
+      tvDay.setText(day.dateString());
       if (displayProfile) spProfile.setSelection(0);
+      de.reset();
+      de.setDay(day);
     }
     else if(v.equals(tvStart))
       AndroidHelper.openTimePicker(activity, de.getStart(), tvStart);
@@ -232,6 +235,9 @@ public class DayEntryDialog implements View.OnClickListener, AdapterView.OnItemS
           spType.setSelection(de.getType() == DayType.ERROR ? 0 : de.getType().value());
           etName.setText(de.getName());
           tvDay.setText(de.getDay().dateString());
+          WorkTimeDay day = this.de.getDay();
+          this.de.copy(de);
+          this.de.setDay(day);
         }
       }
     }

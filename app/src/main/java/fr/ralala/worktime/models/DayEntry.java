@@ -85,6 +85,16 @@ public class DayEntry {
     amountByHour = de.amountByHour;
   }
 
+  public void reset() {
+    type = DayType.ERROR;
+    name = "";
+    day = new WorkTimeDay();
+    start = new WorkTimeDay();
+    end = new WorkTimeDay();
+    pause = new WorkTimeDay();
+    amountByHour = 0.0;
+  }
+
   public boolean match(DayEntry de) {
     return day.match(de.day) && start.match(de.start) && end.match(de.end) && pause.match(de.pause) &&
       type == de.type && amountByHour == de.amountByHour;
@@ -129,6 +139,10 @@ public class DayEntry {
 
   public void setEnd(String end) {
     this.end.copy(parseTime(end));
+  }
+
+  public void setDay(WorkTimeDay day) {
+    this.day = day;
   }
 
   public WorkTimeDay getDay() {
