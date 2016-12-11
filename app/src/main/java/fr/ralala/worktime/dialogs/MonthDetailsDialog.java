@@ -5,7 +5,6 @@ import android.content.DialogInterface;
 import android.content.res.Resources;
 import android.graphics.Typeface;
 import android.support.v7.app.AlertDialog;
-import android.util.Log;
 import android.view.Gravity;
 import android.widget.GridLayout;
 import android.widget.TextView;
