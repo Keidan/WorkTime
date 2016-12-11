@@ -89,12 +89,14 @@ public class DaysEntriesArrayAdapter extends ArrayAdapter<DayEntry> {
       int bg = c.getResources().getColor(android.R.color.transparent, null);
       if (t.matchSimpleDate(today))
         bg = c.getResources().getColor(R.color.green, null);
-      else if (cal.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY)
+      else if (cal.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY && t.getType() != DayType.PUBLIC_HOLIDAY)
         bg = c.getResources().getColor(R.color.blue_1, null);
-      else if (cal.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY)
+      else if (cal.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY && t.getType() != DayType.PUBLIC_HOLIDAY)
         bg = c.getResources().getColor(R.color.blue_2, null);
-      else if (t.getType() == DayType.HOLIDAY || t.getType() == DayType.PUBLIC_HOLIDAY)
+      else if (t.getType() == DayType.HOLIDAY)
         bg = c.getResources().getColor(R.color.purple, null);
+      else if (t.getType() == DayType.PUBLIC_HOLIDAY)
+        bg = c.getResources().getColor(R.color.purple2, null);
       else if (t.getType() == DayType.UNPAID)
         bg = c.getResources().getColor(R.color.red, null);
       else if (t.getType() == DayType.SICKNESS)

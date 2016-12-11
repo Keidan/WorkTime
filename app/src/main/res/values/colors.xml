@@ -10,6 +10,7 @@
     <color name="gray">#c8bababa</color>
     <color name="green">#c8b1ffc2</color>
     <color name="purple">#c8e0b1ff</color>
+    <color name="purple2">#c6b884ff</color>
     <color name="blue_1">#c88ee8ff</color>
     <color name="blue_2">#c800ccff</color>
 </resources>
