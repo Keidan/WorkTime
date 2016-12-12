@@ -50,6 +50,10 @@ public class DayEntryDialog implements View.OnClickListener, AdapterView.OnItemS
   private ArrayAdapter<String> spProfilesAdapter = null;
   private AlertDialog alertDialog = null;
 
+  private WorkTimeDay wtdStart = null;
+  private WorkTimeDay wtdEnd = null;
+  private WorkTimeDay wtdPause = null;
+
 
   public interface DayEntryDialogSuccessListener {
     void dialogAddEntry(final DayEntry oldEntry, final DayEntry newEntry);
@@ -61,7 +65,14 @@ public class DayEntryDialog implements View.OnClickListener, AdapterView.OnItemS
     this.de = de;
     this.displayProfile = displayProfile;
     this.listener = listener;
+    refreshStartEndPause(de);
     init();
+  }
+
+  private void refreshStartEndPause(DayEntry de) {
+    wtdStart = de.getStart().clone();
+    wtdEnd = de.getEnd().clone();
+    wtdPause = de.getPause().clone();
   }
 
   private void init() {
@@ -201,24 +212,21 @@ public class DayEntryDialog implements View.OnClickListener, AdapterView.OnItemS
   public void onClick(final View v) {
     if(v.equals(ivDelete)) {
       /* add click listener for the delete function */
-      AndroidHelper.initTimeTextView(new WorkTimeDay(), tvStart);
-      AndroidHelper.initTimeTextView(new WorkTimeDay(), tvEnd);
-      AndroidHelper.initTimeTextView(new WorkTimeDay(), tvPause);
+      AndroidHelper.initTimeTextView(wtdStart = new WorkTimeDay(), tvStart);
+      AndroidHelper.initTimeTextView(wtdEnd = new WorkTimeDay(), tvEnd);
+      AndroidHelper.initTimeTextView(wtdPause = new WorkTimeDay(), tvPause);
       etAmount.setText(activity.getString(R.string.zero));
       spType.setSelection(DayType.AT_WORK.value());
       etName.setText("");
-      WorkTimeDay day = de.getDay();
-      tvDay.setText(day.dateString());
+      tvDay.setText(de.getDay().dateString());
       if (displayProfile) spProfile.setSelection(0);
-      de.reset();
-      de.setDay(day);
     }
     else if(v.equals(tvStart))
-      AndroidHelper.openTimePicker(activity, de.getStart(), tvStart);
+      AndroidHelper.openTimePicker(activity, wtdStart, tvStart);
     else if(v.equals(tvEnd))
-      AndroidHelper.openTimePicker(activity, de.getEnd(), tvEnd);
+      AndroidHelper.openTimePicker(activity, wtdEnd, tvEnd);
     else if(v.equals(tvPause))
-      AndroidHelper.openTimePicker(activity, de.getPause(), tvPause);
+      AndroidHelper.openTimePicker(activity, wtdPause, tvPause);
   }
 
   @Override
@@ -235,9 +243,7 @@ public class DayEntryDialog implements View.OnClickListener, AdapterView.OnItemS
           spType.setSelection(de.getType() == DayType.ERROR ? 0 : de.getType().value());
           etName.setText(de.getName());
           tvDay.setText(de.getDay().dateString());
-          WorkTimeDay day = this.de.getDay();
-          this.de.copy(de);
-          this.de.setDay(day);
+          refreshStartEndPause(de);
         }
       }
     }
