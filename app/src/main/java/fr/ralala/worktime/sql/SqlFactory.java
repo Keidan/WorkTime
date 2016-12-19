@@ -150,7 +150,7 @@ public class SqlFactory implements SqlConstants {
     Collections.sort(list, new Comparator<DayEntry>() {
       @Override
       public int compare(final DayEntry lhs, final DayEntry rhs) {
-        return lhs.getDay().compareTo(rhs.getDay());
+        return lhs.getName().compareTo(rhs.getName());
       }
     });
     return list;
