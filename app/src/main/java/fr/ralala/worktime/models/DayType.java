@@ -35,8 +35,8 @@ public enum DayType {
   public static DayType compute(int value) {
     switch (value) {
       case 0: return DayType.AT_WORK;
-      case 1: return DayType.PUBLIC_HOLIDAY;
-      case 2: return DayType.HOLIDAY;
+      case 1: return DayType.HOLIDAY;
+      case 2: return DayType.PUBLIC_HOLIDAY;
       case 3: return DayType.SICKNESS;
       case 4: return DayType.UNPAID;
       default: return DayType.ERROR;
