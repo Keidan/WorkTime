@@ -60,7 +60,7 @@ public class MonthDetailsDialog implements DialogInterface.OnClickListener {
     /* Get the components */
     int row = 0;
     double totalWage = 0.0f;
-    for(int w = wMin; w <= wMax; ++w, ++row) {
+    for(int w = (wMin == 52 ? 1 : wMin); w <= wMax; ++w, ++row) {
       WorkTimeDay wtdWorkTimeFromWeek =  app.getDaysFactory().getWorkTimeDayFromWeek(w);
       WorkTimeDay wtdEstimatedHours = app.getEstimatedHours(app.getDaysFactory().getWorkDayFromWeek(w, true));
       WorkTimeDay wtdOver  = wtdWorkTimeFromWeek.clone().delTime(wtdEstimatedHours);
