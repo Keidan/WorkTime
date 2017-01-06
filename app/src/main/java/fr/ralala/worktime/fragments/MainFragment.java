@@ -156,12 +156,12 @@ public class MainFragment extends Fragment implements View.OnClickListener, Adap
     tvYear.setText(String.valueOf(currentDate.get(Calendar.YEAR)));
 
     int weekMin = -1, weekMax = -1;
-    int wDays = 0;
+    int wDays = 0, realwDays = 0;
     long hours = 0L, minutes = 0L;
     int currentDay = currentDate.get(Calendar.DAY_OF_MONTH);
     double totalPay = 0.0;
     /* loop for each days in the month */
-    for(int day = minDay; day <= maxDay; day++) {
+    for(int day = minDay; day <= maxDay; ++day) {
       currentDate.set(Calendar.DAY_OF_MONTH, day);
       DayEntry de = new DayEntry(currentDate, DayType.ERROR);
       de.setAmountByHour(app.getAmountByHour()); /* set default amount */
@@ -169,11 +169,13 @@ public class MainFragment extends Fragment implements View.OnClickListener, Adap
       if(app.getPublicHolidaysFactory().isPublicHolidays(de.getDay()))
         de.setType(DayType.PUBLIC_HOLIDAY);
       int now = currentDate.get(Calendar.DAY_OF_WEEK);
-      /* count working day */
-      if(now != Calendar.SUNDAY && now != Calendar.SATURDAY && !app.getPublicHolidaysFactory().isPublicHolidays(de.getDay()))
-        wDays++;
       /* reload data if the current day is already inserted */
       totalPay += app.getDaysFactory().checkForDayDateAndCopy(de);
+      /* count working day */
+      if(now != Calendar.SUNDAY && now != Calendar.SATURDAY && !app.getPublicHolidaysFactory().isPublicHolidays(de.getDay())) {
+        ++wDays;
+        if(de.getType() == DayType.AT_WORK) ++realwDays;
+      }
       WorkTimeDay wt = de.getWorkTime();
       if(de.getType() == DayType.AT_WORK) {
         hours += wt.getHours();
@@ -188,7 +190,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, Adap
     }
     /* reload work day label */
     currentDate.set(Calendar.DAY_OF_MONTH, currentDay);
-    String workDays = getString(R.string.work_days) + ": " + String.format(Locale.US, "%02d", wDays) + " " + getString(R.string.days_lower_case);
+    String workDays = getString(R.string.work_days) + ": " + String.format(Locale.US, "%02d/%02d", realwDays, wDays) + " " + getString(R.string.days_lower_case);
     tvWorkDays.setText(workDays);
 
     /* reload the monthly hours label */
