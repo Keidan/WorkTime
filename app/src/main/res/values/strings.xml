@@ -2,6 +2,12 @@
     <string name="app_name" translatable="false">WorkTime</string>
     <string name="app_key" translatable="false">YOUR_APP_KEY_HERE</string>
 
+    <string name="changelog_full_title">Change Log</string>
+    <string name="changelog_title">What\'s New</string>
+    <string name="changelog_ok_button">OK</string>
+    <string name="changelog_show_full">more&#8230;</string>
+    <string name="background_color">black</string>
+
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
@@ -105,4 +111,7 @@
     <string name="data_transfer">Data transfers</string>
     <string name="error_no_files">No file found !</string>
     <string name="box_select_db_file">Select</string>
+    <string name="pref_title_infos">Information</string>
+    <string name="pref_changelog_title">Changelog</string>
+    <string name="pref_changelog_summary">Click to display the application changelog.</string>
 </resources>

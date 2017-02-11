@@ -7,11 +7,14 @@ import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatDelegate;
+import android.util.Log;
 import android.view.MenuItem;
 
 
 import fr.ralala.worktime.MainApplication;
 import fr.ralala.worktime.R;
+import fr.ralala.worktime.changelog.ChangeLog;
+import fr.ralala.worktime.changelog.ChangeLogIds;
 
 /**
  *******************************************************************************
@@ -31,9 +34,12 @@ public class SettingsActivity extends PreferenceActivity implements Preference.O
   public static final String       PREFS_KEY_EMAIL_ENABLE         = "prefExportMailEnable";
   public static final String       PREFS_KEY_EXPORT_HIDE_WAGE     = "prefExportHideWage";
   public static final String       PREFS_KEY_HIDE_WAGE            = "prefHideWage";
+  public static final String       PREFS_KEY_CHANGELOG            = "prefChangelog";
+  public static final String       PREFS_KEY_VERSION              = "prefVersion";
 
   private MyPreferenceFragment     prefFrag                       = null;
   private AppCompatDelegate        mDelegate;
+  private ChangeLog changeLog = null;
 
   @Override
   public void onCreate(final Bundle savedInstanceState) {
@@ -45,11 +51,28 @@ public class SettingsActivity extends PreferenceActivity implements Preference.O
     android.support.v7.app.ActionBar actionBar = getDelegate().getSupportActionBar();
     actionBar.setDisplayShowHomeEnabled(true);
     actionBar.setDisplayHomeAsUpEnabled(true);
+    changeLog = new ChangeLog(
+      new ChangeLogIds(
+        R.raw.changelog,
+        R.string.changelog_ok_button,
+        R.string.background_color,
+        R.string.changelog_title,
+        R.string.changelog_full_title,
+        R.string.changelog_show_full), this);
 
     MainApplication app = (MainApplication)getApplicationContext();
     prefFrag.findPreference(PREFS_KEY_EMAIL).setEnabled(app.isExportMailEnabled());
     prefFrag.findPreference(PREFS_KEY_EMAIL_ENABLE).setOnPreferenceClickListener(this);
     prefFrag.findPreference(PREFS_KEY_IMPORT_EXPORT).setOnPreferenceClickListener(this);
+    prefFrag.findPreference(PREFS_KEY_VERSION).setTitle(
+      getResources().getString(R.string.app_name));
+    try {
+      prefFrag.findPreference(PREFS_KEY_VERSION).setSummary(getPackageManager().getPackageInfo(getPackageName(), 0).versionName);
+    } catch (final Exception e) {
+      Log.e(getClass().getSimpleName(), "Exception: " + e.getMessage(), e);
+      prefFrag.findPreference(PREFS_KEY_VERSION).setSummary(e.getMessage());
+    }
+    prefFrag.findPreference(PREFS_KEY_CHANGELOG).setOnPreferenceClickListener(this);
   }
 
   private AppCompatDelegate getDelegate() {
@@ -78,6 +101,8 @@ public class SettingsActivity extends PreferenceActivity implements Preference.O
     } else if (preference.equals(prefFrag.findPreference(PREFS_KEY_EMAIL_ENABLE))) {
       Preference p = prefFrag.findPreference(PREFS_KEY_EMAIL);
       prefFrag.findPreference(PREFS_KEY_EMAIL).setEnabled(!p.isEnabled());
+    } else if (preference.equals(prefFrag.findPreference(PREFS_KEY_CHANGELOG))) {
+      changeLog.getFullLogDialog().show();
     }
     return true;
   }

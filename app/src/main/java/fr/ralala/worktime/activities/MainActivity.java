@@ -17,6 +17,8 @@ import android.view.MotionEvent;
 
 import fr.ralala.worktime.MainApplication;
 import fr.ralala.worktime.R;
+import fr.ralala.worktime.changelog.ChangeLog;
+import fr.ralala.worktime.changelog.ChangeLogIds;
 import fr.ralala.worktime.fragments.ExportFragment;
 import fr.ralala.worktime.fragments.MainFragment;
 import fr.ralala.worktime.fragments.ProfileFragment;
@@ -76,6 +78,16 @@ public class MainActivity extends RuntimePermissionsActivity implements Navigati
       Manifest.permission.INTERNET,
     };
     super.requestAppPermissions(perms, R.string.permissions_read_ext_storage , PERMISSIONS_REQUEST);
+    ChangeLog changeLog = new ChangeLog(
+      new ChangeLogIds(
+        R.raw.changelog,
+        R.string.changelog_ok_button,
+        R.string.background_color,
+        R.string.changelog_title,
+        R.string.changelog_full_title,
+        R.string.changelog_show_full), this);
+    if(changeLog.firstRun())
+      changeLog.getLogDialog().show();
   }
 
   public SwipeDetector getSwipeDetector() {

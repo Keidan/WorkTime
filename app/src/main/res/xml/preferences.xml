@@ -49,4 +49,18 @@
             android:summary="@string/pref_summary_hide_wage"
             android:title="@string/pref_title_hide_wage" />
     </PreferenceCategory>
+    <PreferenceCategory android:title="@string/pref_title_infos" >
+        <Preference
+            android:key="prefChangelog"
+            android:title="@string/pref_changelog_title"
+            android:summary="@string/pref_changelog_summary">
+        </Preference>
+        <Preference
+            android:key="prefVersion"
+            android:enabled="false"
+            android:selectable="false"
+            android:persistent="false"
+            android:shouldDisableView="false" >
+        </Preference>
+    </PreferenceCategory>
 </PreferenceScreen>

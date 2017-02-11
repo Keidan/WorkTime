@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="changelog_full_title">Journal des changements</string>
+    <string name="changelog_title">Quoi de neuf</string>
+    <string name="changelog_ok_button">OK</string>
+    <string name="changelog_show_full">plus&#8230;</string>
+    <string name="background_color">black</string>
     <string name="navigation_drawer_close">Fermer le tiroir de navigation</string>
     <string name="navigation_drawer_open">Ouvrir le tiroir de navigation</string>
     <string name="settings">Param\u00E8tres</string>
@@ -97,4 +102,7 @@
     <string name="data_transfer">Transfert des donn\u00E9es</string>
     <string name="error_no_files">Pas de fichier trouv\u00E9</string>
     <string name="box_select_db_file">S\u00E9lection</string>
+    <string name="pref_title_infos">Informations</string>
+    <string name="pref_changelog_title">Changelog</string>
+    <string name="pref_changelog_summary">Cliquez pour afficher le fichier changelog de l\'application.</string>
 </resources>
