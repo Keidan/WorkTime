@@ -105,7 +105,7 @@ public class SqlHelper extends SQLiteOpenHelper implements SqlConstants {
         final File directory = new File(folder);
         if (!directory.exists())
           directory.mkdir();
-        File out = new File(directory, new SimpleDateFormat("yyyyMMdd_hhmm", Locale.US).format(new Date()) + "_" + name);
+        File out = new File(directory, new SimpleDateFormat("yyyyMMdd_hhmma", Locale.US).format(new Date()) + "_" + name);
         myOutput = new FileOutputStream(out);
         myInput = new FileInputStream(databasePath);
 
