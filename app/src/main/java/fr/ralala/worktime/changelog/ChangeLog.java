@@ -19,8 +19,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
-import org.kei.android.atk.utils.fx.Fx;
-
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -29,7 +27,6 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.graphics.Color;
 import android.preference.PreferenceManager;
 import android.util.Log;
-import android.view.ContextThemeWrapper;
 import android.webkit.WebView;
 
 public class ChangeLog {
@@ -142,8 +139,7 @@ public class ChangeLog {
         ids.getStringBackgroundColor())));
     wv.loadDataWithBaseURL(null, this.getLog(full), "text/html", "UTF-8", null);
 
-    final AlertDialog.Builder builder = new AlertDialog.Builder(
-        new ContextThemeWrapper(this.context, Fx.getCurrentThemeId(context)));
+    final AlertDialog.Builder builder = new AlertDialog.Builder(context);
     builder
         .setTitle(
             context.getResources().getString(
