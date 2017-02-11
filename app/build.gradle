@@ -11,9 +11,9 @@ dependencies {
     compile 'com.android.support:design:23.4.0'
     compile 'com.android.support:percent:23.0.0'
     testCompile 'junit:junit:4.12'
-    compile files('libs/jxl.jar')
     compile 'com.squareup.okhttp:okhttp:2.7.5'
     compile 'com.squareup.okhttp3:okhttp:3.5.0'
+    compile files('libs/poi-3.15.jar')
 }
 
 
