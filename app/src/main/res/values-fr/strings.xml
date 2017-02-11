@@ -4,7 +4,6 @@
     <string name="changelog_title">Quoi de neuf</string>
     <string name="changelog_ok_button">OK</string>
     <string name="changelog_show_full">plus&#8230;</string>
-    <string name="background_color">black</string>
     <string name="navigation_drawer_close">Fermer le tiroir de navigation</string>
     <string name="navigation_drawer_open">Ouvrir le tiroir de navigation</string>
     <string name="settings">Param\u00E8tres</string>
