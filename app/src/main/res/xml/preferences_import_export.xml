@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" android:key="prefScreenImportExport">
+    <PreferenceCategory android:title="@string/pref_title_export" android:key="prefCatDatabaseExport" >
+        <Preference
+            android:key="prefExportFromDevice"
+            android:title="@string/pref_title_device"
+            android:summary="@string/pref_summary_export_to_device"/>
+        <Preference
+            android:key="prefExportFromDropbox"
+            android:summary="@string/pref_summary_export_to_dropbox"
+            android:title="@string/pref_title_dropbox"/>
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/pref_title_import" android:key="prefCatDatabaseImport" >
+        <Preference
+            android:key="prefImportFromDevice"
+            android:title="@string/pref_title_device"
+            android:summary="@string/pref_summary_import_from_device"/>
+        <Preference
+            android:key="prefImportFromDropbox"
+            android:summary="@string/pref_summary_import_from_dropbox"
+            android:title="@string/pref_title_dropbox"/>
+    </PreferenceCategory>
+
+</PreferenceScreen>

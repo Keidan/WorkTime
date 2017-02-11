@@ -11,7 +11,7 @@ package fr.ralala.worktime.sql;
  */
 public interface SqlConstants {
   int    VERSION_BDD                = 1;
-  String DB_NAME                    = "work_time.db";
+  String DB_NAME                    = "work_time.sqlite3";
   String TABLE_PUBLIC_HOLIDAYS      = "public_holidays";
   String TABLE_DAYS                 = "days";
   String TABLE_PROFILES             = "profiles";

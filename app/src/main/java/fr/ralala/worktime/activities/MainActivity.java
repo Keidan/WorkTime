@@ -70,9 +70,12 @@ public class MainActivity extends RuntimePermissionsActivity implements Navigati
     app = MainApplication.getApp(this);
     if(!app.openSql(this)) finish();
 
-    super.requestAppPermissions(new
-        String[]{Manifest.permission.READ_EXTERNAL_STORAGE,
-        Manifest.permission.WRITE_EXTERNAL_STORAGE}, R.string.permissions_read_ext_storage , PERMISSIONS_REQUEST);
+    String[] perms = new String[]{
+      Manifest.permission.READ_EXTERNAL_STORAGE,
+      Manifest.permission.WRITE_EXTERNAL_STORAGE,
+      Manifest.permission.INTERNET,
+    };
+    super.requestAppPermissions(perms, R.string.permissions_read_ext_storage , PERMISSIONS_REQUEST);
   }
 
   public SwipeDetector getSwipeDetector() {
@@ -82,6 +85,7 @@ public class MainActivity extends RuntimePermissionsActivity implements Navigati
   @Override
   public void onPermissionsGranted(final int requestCode) {
     //AndroidHelper.toast_long(this, R.string.permissions_read_ext_storage_done);
+
   }
 
   public void onResume() {

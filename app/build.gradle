@@ -1,35 +1,5 @@
 apply plugin: 'com.android.application'
 
-android {
-    signingConfigs {
-        config {
-            keyAlias 'MyAndroidKey'
-            keyPassword 'myKeyPassword'
-            storeFile file('android.jks')
-            storePassword 'myStorePassword'
-        }
-    }
-    compileSdkVersion 23
-    buildToolsVersion "23.0.3"
-    defaultConfig {
-        applicationId "fr.ralala.worktime"
-        minSdkVersion 23
-        targetSdkVersion 23
-        versionCode 1
-        versionName "1.0"
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-    }
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.config
-        }
-        debug {
-            signingConfig signingConfigs.config
-        }
-    }
-}
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
@@ -42,4 +12,59 @@ dependencies {
     compile 'com.android.support:percent:23.0.0'
     testCompile 'junit:junit:4.12'
     compile files('libs/jxl.jar')
+    compile 'com.squareup.okhttp:okhttp:2.7.5'
+    compile 'com.squareup.okhttp3:okhttp:3.5.0'
+}
+
+
+android {
+    defaultConfig {
+        applicationId "fr.ralala.worktime"
+        minSdkVersion 23
+        targetSdkVersion 23
+        versionCode 2
+        versionName "1.2"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+    signingConfigs {
+        config {
+            keyAlias 'MyAndroidKey'
+            keyPassword 'myKeyPassword'
+            storeFile file('android.jks')
+            storePassword 'myStorePassword'
+        }
+    }
+    compileSdkVersion 23
+    buildToolsVersion "23.0.3"
+    buildTypes {
+        release {
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.config
+        }
+        debug {
+            // to debug ProGuard rules
+            minifyEnabled true
+            signingConfig signingConfigs.config
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules-debug.pro'
+        }
+    }
+
+    packagingOptions {
+        exclude 'META-INF/DEPENDENCIES.txt'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/NOTICE.txt'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/DEPENDENCIES'
+        exclude 'META-INF/notice.txt'
+        exclude 'META-INF/license.txt'
+        exclude 'META-INF/dependencies.txt'
+        exclude 'META-INF/LGPL2.1'
+    }
+
+    lintOptions {
+        disable 'InvalidPackage'
+    }
 }

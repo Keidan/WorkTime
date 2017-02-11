@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name" translatable="false">WorkTime</string>
+    <string name="app_key" translatable="false">YOUR_APP_KEY_HERE</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -54,9 +55,11 @@
     <string name="pref_title_hourly_rate">Hourly rate</string>
     <string name="pref_summary_hourly_rate">Amount used for the hourly rate</string>
     <string name="pref_title_database">Database</string>
+    <string name="pref_title_import_export">Import/Export</string>
+    <string name="pref_summary_import_export">Import/Export the database</string>
+    <string name="pref_title_device">Device</string>
+    <string name="pref_title_dropbox">Dropbox</string>
     <string name="pref_title_export">Export</string>
-    <string name="pref_summary_export">Export the database</string>
-    <string name="pref_summary_import">Import the database</string>
     <string name="pref_title_import">Import</string>
     <string name="pref_summary_export_mail">Email address used to send the exported file</string>
     <string name="pref_title_export_mail">Email address</string>
@@ -64,13 +67,17 @@
     <string name="pref_title_export_mail_enable">Activate email on export</string>
     <string name="pref_summary_hide_wage">Hide the wages entries</string>
     <string name="pref_title_hide_wage">Hide wage</string>
+    <string name="pref_summary_export_to_device">Export the database to the device.</string>
+    <string name="pref_summary_export_to_dropbox">Export the database to dropbox</string>
+    <string name="pref_summary_import_from_device">Import the database from the device</string>
+    <string name="pref_summary_import_from_dropbox">Import the database from dropbox</string>
     <string name="chooser_long_press_message">Long press to select the file or the directory</string>
     <string name="use_folder">Use this folder</string>
     <string name="use_file">Use this file</string>
     <string name="export_success">Export success</string>
     <string name="import_success">Import success</string>
     <string name="permissions">Permissions</string>
-    <string name="permissions_read_ext_storage">The import/export functions need the external storage read/write access permissions</string>
+    <string name="permissions_read_ext_storage">The import/export functions need the external storage read/write and internet(dropbox) access permissions</string>
     <string name="year">Year :</string>
     <string name="export_no_items">No selected months to export</string>
     <string name="snack_hide">Hide</string>
@@ -92,5 +99,10 @@
     <string name="zero" translatable="false">0.00</string>
     <string name="details_title">Details</string>
     <string name="week_letter">W</string>
-
+    <string name="error_dropbox_upload">Unable to upload the file</string>
+    <string name="error_dropbox_download">Unable to download the file</string>
+    <string name="error_dropbox_list_directory">Unable to get the files list</string>
+    <string name="data_transfer">Data transfers</string>
+    <string name="error_no_files">No file found !</string>
+    <string name="box_select_db_file">Select</string>
 </resources>

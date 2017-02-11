@@ -90,15 +90,15 @@ public class SqlHelper extends SQLiteOpenHelper implements SqlConstants {
   }
 
   // Copy to sdcard for debug use
-  public static void copyDatabase(final Context c, final String name,
+  public static String copyDatabase(final Context c, final String name,
                                      final String folder) throws Exception{
     final String databasePath = c.getDatabasePath(name).getPath();
     final File f = new File(databasePath);
     OutputStream myOutput = null;
     InputStream myInput = null;
-    Log.d(SqlHelper.class.getSimpleName(), " db path " + databasePath);
-    Log.d(SqlHelper.class.getSimpleName(), " db exist " + f.exists());
+    Log.d(SqlHelper.class.getSimpleName(), " db path " + databasePath + ", exist " + f.exists());
     Exception exception = null;
+    String output = null;
     if (f.exists()) {
       try {
 
@@ -116,6 +116,7 @@ public class SqlHelper extends SQLiteOpenHelper implements SqlConstants {
         }
 
         myOutput.flush();
+        output = out.getAbsolutePath();
       } catch (final Exception e) {
         exception = e;
       } finally {
@@ -130,6 +131,7 @@ public class SqlHelper extends SQLiteOpenHelper implements SqlConstants {
       }
     }
     if(exception != null) throw exception;
+    return output;
   }
 
   public static void loadDatabase(Context c, final String name, File in) throws Exception{

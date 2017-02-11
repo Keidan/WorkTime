@@ -48,23 +48,29 @@
     <string name="pref_title_hourly_rate">Taux horaire</string>
     <string name="pref_summary_hourly_rate">Montant utilis\u00E9 pour le taux horaire</string>
     <string name="pref_title_database">Base de donn\u00E9es</string>
+    <string name="pref_title_import_export">Importation/Exportation</string>
     <string name="pref_title_export">Exportation</string>
-    <string name="pref_summary_export">Exporter la base de donn\u00E9es</string>
-    <string name="pref_summary_import">Importer la base de donn\u00E9es</string>
     <string name="pref_title_import">Importation</string>
+    <string name="pref_title_device">P\u00E9riph\u00E9rique</string>
+    <string name="pref_title_dropbox">Dropbox</string>
+    <string name="pref_summary_import_export">Importer/Exporter la base de donn\u00E9es</string>
     <string name="pref_summary_export_mail_enable">Envoyer un courriel apr\u00E8s l\'exportation du fichier</string>
     <string name="pref_title_export_mail_enable">Activer le courrier \u00E9lectronique \u00E0 l\'exportation</string>
-    <string name="pref_summary_export_mail">Adresse courriel utilisée pour envoyer le fichier exporté</string>
+    <string name="pref_summary_export_mail">Adresse courriel utilisée pour envoyer le fichier export\u00E9</string>
     <string name="pref_title_export_mail">Adresse e-mail</string>
     <string name="pref_summary_hide_wage">Masquer les entrées des salaires</string>
     <string name="pref_title_hide_wage">Masquer le salaire</string>
+    <string name="pref_summary_export_to_device">Exporter la base de donn\u00E9es vers le p\u00E9riph\u00E9rique.</string>
+    <string name="pref_summary_export_to_dropbox">Exporter la base de donn\u00E9es vers  dropbox.</string>
+    <string name="pref_summary_import_from_device">Importer la base de donn\u00E9es depuis le p\u00E9riph\u00E9rique.</string>
+    <string name="pref_summary_import_from_dropbox">Import la base de donn\u00E9es depuis dropbox.</string>
     <string name="chooser_long_press_message">Appuyez longuement sur pour s\u00E9lectionner le fichier ou le r\u00E9pertoire</string>
     <string name="use_folder">Utilisez ce dossier</string>
     <string name="use_file">Utilisez ce fichier</string>
     <string name="export_success">Exportation r\u00E9ussie</string>
     <string name="import_success">Importation r\u00E9ussie</string>
     <string name="permissions">Permissions</string>
-    <string name="permissions_read_ext_storage">Les fonctions d\'import/export ont besoin des autorisations d\'acc\u00E8s en lecture/\u00E9criture au stockage externe</string>
+    <string name="permissions_read_ext_storage">Les fonctions d\'import/export ont besoin des autorisations d\'acc\u00E8s en lecture/\u00E9criture au stockage externe et l\'acc\u00E8s internet pour dropbox</string>
     <string name="year">Ann\u00E9e :</string>
     <string name="export_no_items">Aucun mois s\u00E9lectionn\u00E9 pour l\'exportation</string>
     <string name="snack_hide">Masquer</string>
@@ -85,5 +91,10 @@
     <string name="confirm">Confirmation</string>
     <string name="details_title">D\u00E9tails</string>
     <string name="week_letter">S</string>
-
+    <string name="error_dropbox_upload">Impossible d\'uploader le fichier</string>
+    <string name="error_dropbox_download">Impossible de t\u00E9l\u00E9chareger le fichier</string>
+    <string name="error_dropbox_list_directory">Impossible de r\u00E9cup\u00E9rer la list des fichiers</string>
+    <string name="data_transfer">Transfert des donn\u00E9es</string>
+    <string name="error_no_files">Pas de fichier trouv\u00E9</string>
+    <string name="box_select_db_file">S\u00E9lection</string>
 </resources>

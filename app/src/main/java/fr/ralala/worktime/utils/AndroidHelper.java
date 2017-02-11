@@ -13,13 +13,17 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.PopupMenu;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import java.io.File;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.text.DateFormatSymbols;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 import fr.ralala.worktime.R;
@@ -118,6 +122,48 @@ public class AndroidHelper {
         }
       });
     alertDialog.show();
+  }
+
+  private static class ListItem {
+    public String name;
+    public String value;
+
+    public ListItem(final String name, final String value) {
+      this.name = name;
+      this.value = value;
+    }
+
+    public String toString() {
+      return name;
+    }
+  }
+
+  public static void showAlertDialog(final Context c, final int title, List<String> list, final android.view.View.OnClickListener yes) {
+    AlertDialog.Builder builder = new AlertDialog.Builder(c);
+    builder.setTitle(c.getResources().getString(title));
+    builder.setIcon(android.R.drawable.ic_dialog_alert);
+    List<ListItem> items = new ArrayList<>();
+    for(String s : list)
+      items.add(new ListItem(new File(s).getName(), s));
+    final ArrayAdapter<ListItem> arrayAdapter = new ArrayAdapter<>(c, android.R.layout.select_dialog_singlechoice, items);
+    builder.setNegativeButton(c.getString(R.string.cancel), new DialogInterface.OnClickListener() {
+      @Override
+      public void onClick(DialogInterface dialog, int which) {
+        dialog.dismiss();
+      }
+    });
+
+    builder.setAdapter(arrayAdapter, new DialogInterface.OnClickListener() {
+      @Override
+      public void onClick(DialogInterface dialog, int which) {
+        dialog.dismiss();
+        ListItem li = arrayAdapter.getItem(which);
+        TextView tv = new TextView(c);
+        tv.setText(li.value);
+        if(yes != null) yes.onClick(tv);
+      }
+    });
+    builder.show();
   }
 
 
