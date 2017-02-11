@@ -41,18 +41,23 @@ public class DaysFactory {
 
   public int getWorkDayFromWeek(int week, boolean onlyAtWork) {
     int wDays = 0;
+    int prevMonth = -1;
     for(DayEntry de : days) {
       if(onlyAtWork && de.getType() != DayType.AT_WORK) continue;
-      if(de.getDay().isInWeek(week)) ++wDays;
+      if(de.getDay().isInWeek(week))
+        if(prevMonth == -1 || prevMonth == de.getDay().getMonth()) {
+          ++wDays;
+          prevMonth = de.getDay().getMonth();
+        }
     }
     return wDays;
   }
 
 
-  public double getWageFromWeek(int week) {
+  public double getWageFromWeek(int week, int month) {
     double wage = 0.0;
     for(DayEntry de : days) {
-      if(de.getDay().isInWeek(week)) {
+      if(de.getDay().isInWeek(week) && de.getDay().isInMonth(month)) {
         wage += de.getWorkTimePay();
       }
     }
@@ -61,15 +66,19 @@ public class DaysFactory {
 
   public WorkTimeDay getWorkTimeDayFromWeek(int week) {
     long hours = 0L, minutes = 0L;
+    int prevMonth = -1;
     for(DayEntry de : days) {
       if(de.getDay().isInWeek(week) && de.getType() == DayType.AT_WORK) {
-        WorkTimeDay wt = de.getWorkTime();
-        hours += wt.getHours();
-        minutes += wt.getMinutes();
+        if(prevMonth == -1 || prevMonth == de.getDay().getMonth()) {
+          WorkTimeDay wt = de.getWorkTime();
+          hours += wt.getHours();
+          minutes += wt.getMinutes();
+          prevMonth = de.getDay().getMonth();
+        }
       }
     }
     if(hours == 0 && minutes == 0) return new WorkTimeDay();
-    return new WorkTimeDay().fromTimeUsingCalendar(hours, minutes);
+    return new WorkTimeDay().fromTimeUsingCalendar(hours, minutes, prevMonth == -1 ? 0 : prevMonth);
   }
 
   public double checkForDayDateAndCopy(DayEntry current) {

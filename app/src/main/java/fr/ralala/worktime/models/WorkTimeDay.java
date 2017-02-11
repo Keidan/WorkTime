@@ -91,12 +91,17 @@ public class WorkTimeDay {
   }
 
   public WorkTimeDay fromTimeUsingCalendar(long hours, long minutes) {
+    return fromTimeUsingCalendar(hours, minutes, 0);
+  }
+
+  public WorkTimeDay fromTimeUsingCalendar(long hours, long minutes, int month) {
     year = month = day = 0;
     Calendar ctime = Calendar.getInstance();
     ctime.setTimeZone(TimeZone.getTimeZone("GMT"));
     ctime.setTime(new Date(TimeUnit.MINUTES.toMillis(minutes)));
     this.hours = (int)(hours + ctime.get(Calendar.HOUR));
     this.minutes = ctime.get(Calendar.MINUTE);
+    this.month = month;
     return this;
   }
 

@@ -64,7 +64,7 @@ public class MonthDetailsDialog implements DialogInterface.OnClickListener {
       WorkTimeDay wtdWorkTimeFromWeek =  app.getDaysFactory().getWorkTimeDayFromWeek(w);
       WorkTimeDay wtdEstimatedHours = app.getEstimatedHours(app.getDaysFactory().getWorkDayFromWeek(w, true));
       WorkTimeDay wtdOver  = wtdWorkTimeFromWeek.clone().delTime(wtdEstimatedHours);
-      double wage = app.getDaysFactory().getWageFromWeek(w);
+      double wage = app.getDaysFactory().getWageFromWeek(w, wtdWorkTimeFromWeek.getMonth());
       totalWage += wage;
       addRow(r, gl, row, w,
         wtdWorkTimeFromWeek.timeString(),
