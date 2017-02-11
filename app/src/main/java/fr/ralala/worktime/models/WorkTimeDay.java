@@ -80,16 +80,6 @@ public class WorkTimeDay {
     minutes = wtd.minutes;
   }
 
-  public WorkTimeDay fromTimeUsingCalendar(long time) {
-    year = month = day = 0;
-    Calendar ctime = Calendar.getInstance();
-    ctime.setTimeZone(TimeZone.getTimeZone("GMT"));
-    ctime.setTime(new Date(time));
-    hours = ctime.get(Calendar.HOUR);
-    minutes = ctime.get(Calendar.MINUTE);
-    return this;
-  }
-
   public WorkTimeDay fromTimeUsingCalendar(long hours, long minutes) {
     return fromTimeUsingCalendar(hours, minutes, 0);
   }
@@ -103,6 +93,15 @@ public class WorkTimeDay {
     this.minutes = ctime.get(Calendar.MINUTE);
     this.month = month;
     return this;
+  }
+
+  public static WorkTimeDay fromTimeString(String time) {
+    WorkTimeDay wtd = new WorkTimeDay();
+    String [] sp = time.split(":");
+    if(sp.length != 2) throw new ArrayIndexOutOfBoundsException("Invalid time format");
+    wtd.hours = Integer.parseInt(sp[0]);
+    wtd.minutes = Integer.parseInt(sp[1]);
+    return wtd;
   }
 
   public boolean isInWeek(int week) {

@@ -15,6 +15,8 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Spinner;
 
+import org.apache.poi.ss.usermodel.Sheet;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -32,7 +34,6 @@ import fr.ralala.worktime.adapters.ExportListViewArrayAdapter;
 import fr.ralala.worktime.models.DayEntry;
 import fr.ralala.worktime.models.WorkTimeDay;
 import fr.ralala.worktime.utils.ExcelHelper;
-import jxl.write.WritableSheet;
 
 /**
  *******************************************************************************
@@ -120,28 +121,19 @@ public class ExportFragment extends Fragment implements AdapterView.OnItemSelect
       ExcelHelper excel = new ExcelHelper(getActivity(), file);
       for(int idx = 0; idx < entries.size(); ++idx) {
         ExportListViewArrayAdapter.ExportEntry ee = entries.get(idx);
-        WritableSheet sheet = excel.createSheet(AndroidHelper.getMonthString(ee.month), idx);
+        Sheet sheet = excel.createSheet(AndroidHelper.getMonthString(ee.month));
         int row = 0, column = 0;
 
-        excel.createHorizontalHeader(sheet, row, column, !app.isExportHideWage() ?
-          new String[]{
-            getString(R.string.date).replaceAll(" :", ""), // A -> 65
-            getString(R.string.type).replaceAll(" :", ""), // B -> 66
-            getString(R.string.hour_in),                   // C -> 67
-            getString(R.string.hour_out),                  // D -> 68
-            getString(R.string.break_time),                // E -> 69
-            getString(R.string.overtime),                  // F -> 70
-            getString(R.string.wage).replaceAll(" :", ""),                      // G -> 71
-          } :
-          new String[]{
-            getString(R.string.date).replaceAll(" :", ""), // A -> 65
-            getString(R.string.type).replaceAll(" :", ""), // B -> 66
-            getString(R.string.hour_in),                   // C -> 67
-            getString(R.string.hour_out),                  // D -> 68
-            getString(R.string.break_time),                // E -> 69
-            getString(R.string.overtime),                  // F -> 70
-          }
-        );
+        List<String> headers = new ArrayList<>();
+        headers.add(getString(R.string.date).replaceAll(" :", "")); // A -> 65
+        headers.add(getString(R.string.type).replaceAll(" :", "")); // B -> 66
+        headers.add(getString(R.string.hour_in)); // C -> 67
+        headers.add(getString(R.string.hour_out)); // D -> 68
+        headers.add(getString(R.string.break_time)); // E -> 69
+        headers.add(getString(R.string.overtime)); // F -> 70
+        if(!app.isExportHideWage())
+          headers.add(getString(R.string.wage).replaceAll(" :", "")); // G -> 71
+        excel.createHorizontalHeader(sheet, row, column, headers.toArray(new String[]{}));
         List<DayEntry> works = app.getDaysFactory().list();
         column = 0;
         row++;
@@ -150,30 +142,32 @@ public class ExportFragment extends Fragment implements AdapterView.OnItemSelect
           excel.addLabel(sheet, row, column, de.getDay().dateString(), false);
           excel.addLabel(sheet, row, column+1, de.getType() != DayType.AT_WORK ? de.getType().string(getActivity()) : "", false);
           double wage = .0f;
+          int column_offset= 2;
           if(de.getType() != DayType.AT_WORK) {
-            excel.addLabel(sheet, row, column + 2, WorkTimeDay.timeString(0, 0), false);
-            excel.addLabel(sheet, row, column + 3, WorkTimeDay.timeString(0, 0), false);
-            excel.addLabel(sheet, row, column + 4, WorkTimeDay.timeString(0, 0), false);
-            excel.addLabel(sheet, row, column + 5, WorkTimeDay.timeString(0, 0), false);
+            excel.addTime(sheet, row, column + (column_offset++), WorkTimeDay.timeString(0, 0), false);
+            excel.addTime(sheet, row, column + (column_offset++), WorkTimeDay.timeString(0, 0), false);
+            excel.addTime(sheet, row, column + (column_offset++), WorkTimeDay.timeString(0, 0), false);
+            excel.addTime(sheet, row, column + (column_offset++), WorkTimeDay.timeString(0, 0), false);
           } else {
-            excel.addLabel(sheet, row, column + 2, de.getStart().timeString(), false);
-            excel.addLabel(sheet, row, column + 3, de.getEnd().timeString(), false);
-            excel.addLabel(sheet, row, column + 4, de.getPause().timeString(), false);
-            excel.addLabel(sheet, row, column + 5, de.getOverTime(app).timeString(), false);
+            excel.addTime(sheet, row, column + (column_offset++), de.getStart().timeString(), false);
+            excel.addTime(sheet, row, column + (column_offset++), de.getEnd().timeString(), false);
+            excel.addTime(sheet, row, column + (column_offset++), de.getPause().timeString(), false);
+            excel.addTime(sheet, row, column + (column_offset++), de.getOverTime(app).timeString(), false);
             if (!app.isExportHideWage())
-              wage = de.getWorkTimePay();
+              wage = de.getWorkTimePay(app.getAmountByHour());
           }
           if (!app.isExportHideWage())
-            excel.addLabel(sheet, row++, column + 6, String.format(Locale.US, "%.02f", wage), false);
+            excel.addNumber(sheet, row++, column + (column_offset++), wage, false);
         }
-        /*column = 1;
+        column = 4;
         excel.addLabel(sheet, row, column++, getString(R.string.total), true);
-        for (int i = 0; i < 5; ++i) {
-          char c = (char) (67 + i);
+        int length = (!app.isExportHideWage() ? 2 : 1);
+        for (int i = 0; i < length; ++i) {
+          char c = (char) (70 + i);
           StringBuilder sb = new StringBuilder();
-          sb.append("SUM(").append(c).append(1).append(":").append(c).append(row - 1).append(")");
-          excel.addFormula(sheet, row, column++, sb);
-        }*/
+          sb.append("SUM(").append(c).append(2).append(":").append(c).append(row).append(")");
+          excel.addFormula(sheet, row, column++, sb, true, i < length - 1 ? true : false);
+        }
       }
 
       excel.write();
