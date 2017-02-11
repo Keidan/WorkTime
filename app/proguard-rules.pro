@@ -20,6 +20,7 @@
 
 -dontwarn okio.**
 -dontwarn okhttp3.**
+-dontwarn org.apache.poi.**
 -dontwarn com.google.appengine.**
 -dontwarn javax.servlet.**
 
