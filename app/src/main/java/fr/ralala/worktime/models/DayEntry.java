@@ -42,9 +42,15 @@ public class DayEntry {
     this(new WorkTimeDay().fromCalendar(day), type);
   }
 
-  public double getWorkTimePay() {
-    return getAmountByHour() * Double.parseDouble(
+  public double getWorkTimePay(double defAmount) {
+    double amount = getAmountByHour();
+    if(amount == 0 && defAmount != -1) amount = defAmount;
+    return amount * Double.parseDouble(
       String.valueOf(getWorkTime().getHours()) + "." + String.valueOf(getWorkTime().getMinutes()));
+  }
+
+  public double getWorkTimePay() {
+    return getWorkTimePay(-1);
   }
 
   public long getOverTimeMs(MainApplication app) {

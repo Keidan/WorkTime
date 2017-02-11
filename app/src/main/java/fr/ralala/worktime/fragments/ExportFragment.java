@@ -215,7 +215,7 @@ public class ExportFragment extends Fragment implements AdapterView.OnItemSelect
       List<DayEntry> works = app.getDaysFactory().list();
       for(DayEntry de : works) {
         if(!de.getDay().isInMonth(i+1) || !de.getDay().isInYear(year)) continue;
-        pay += de.getWorkTimePay();
+        pay += de.getWorkTimePay(app.getAmountByHour());
         WorkTimeDay wt = de.getWorkTime();
         hours += wt.getHours();
         minutes += wt.getMinutes();

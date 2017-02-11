@@ -185,7 +185,8 @@ public class DayEntryDialog implements View.OnClickListener, AdapterView.OnItemS
     if(whichButton == DialogInterface.BUTTON_POSITIVE) {
       DayEntry newEntry = new DayEntry(de.getDay().toCalendar(), DayType.compute(activity, spType.getSelectedItem().toString()));
       String s = etAmount.getText().toString().trim();
-      newEntry.setAmountByHour(s.isEmpty() ? 0.0 : Double.parseDouble(s));
+      if(s.equals(activity.getString(R.string.zero))) s = "";
+      newEntry.setAmountByHour(s.isEmpty() ? app.getAmountByHour() : Double.parseDouble(s));
       newEntry.setName(etName.getText().toString());
       newEntry.setEnd(tvEnd.getText().toString());
       newEntry.setStart(tvStart.getText().toString());
