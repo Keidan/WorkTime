@@ -96,7 +96,6 @@ public class SettingsImportExportActivity extends PreferenceActivity implements 
     dialog.dismiss();
     String message = result.getName() + " size " + result.getSize() + " modified " +
       DateFormat.getDateTimeInstance().format(result.getClientModified());
-    AndroidHelper.toast(this, message);
     AndroidHelper.toast(SettingsImportExportActivity.this, getString(R.string.export_success));
     Log.i(getClass().getSimpleName(), message);
     safeRemove();
