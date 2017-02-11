@@ -95,7 +95,7 @@
     <string name="export_email_senderMsg">Send email using :</string>
     <string name="overtime">Overtime</string>
     <string name="hour_in">Arriving time</string>
-    <string name="hour_out">Départure time</string>
+    <string name="hour_out">Departure time</string>
     <string name="break_time">Break time</string>
     <string name="wage">Wage :</string>
     <string name="total">Total</string>
