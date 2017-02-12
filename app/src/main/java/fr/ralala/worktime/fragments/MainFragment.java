@@ -8,7 +8,6 @@ import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -138,6 +137,15 @@ public class MainFragment extends Fragment implements View.OnClickListener, Adap
       currentDate.add(Calendar.MONTH, 1);
       updateDate();
     } else if(v.equals(rlDetails)) {
+      Calendar cMin = (Calendar)currentDate.clone();
+      Calendar cMax = (Calendar)currentDate.clone();
+      cMin.set(Calendar.DAY_OF_MONTH, 1);
+      cMax.set(Calendar.DAY_OF_MONTH, cMax.getActualMaximum(Calendar.DAY_OF_MONTH));
+      monthDetailsDialog.reloadDetails(
+        cMin.get(Calendar.MONTH),
+        currentDate.get(Calendar.YEAR),
+        cMin.get(Calendar.WEEK_OF_YEAR),
+        cMax.get(Calendar.WEEK_OF_YEAR));
       monthDetailsDialog.open();
     }
   }
@@ -203,8 +211,6 @@ public class MainFragment extends Fragment implements View.OnClickListener, Adap
         wtdEstimatedMonthlyHours.getHours(), wtdEstimatedMonthlyHours.getMinutes());
 
     tvMonthlyHours.setText(monthlyHours);
-
-    monthDetailsDialog.reloadDetails(month, currentDate.get(Calendar.YEAR), weekMin, weekMax);
     lvAdapter.notifyDataSetChanged();
   }
 

@@ -58,13 +58,13 @@ public class MonthDetailsDialog implements DialogInterface.OnClickListener {
     WorkTimeDay wtdTotalWorkTime = new WorkTimeDay();
     WorkTimeDay wtdTotalOverHours = new WorkTimeDay();
     /* Get the components */
-    int row = 0;
+    int row = 0, fixmonth = month + 1;
     double totalWage = 0.0f;
     for(int w = (wMin == 52 ? 1 : wMin); w <= wMax; ++w, ++row) {
-      WorkTimeDay wtdWorkTimeFromWeek =  app.getDaysFactory().getWorkTimeDayFromWeek(w);
-      WorkTimeDay wtdEstimatedHours = app.getEstimatedHours(app.getDaysFactory().getWorkDayFromWeek(w, true));
+      WorkTimeDay wtdWorkTimeFromWeek =  app.getDaysFactory().getWorkTimeDayFromWeek(w, fixmonth);
+      WorkTimeDay wtdEstimatedHours = app.getEstimatedHours(app.getDaysFactory().getWorkDayFromWeek(w, fixmonth, true));
       WorkTimeDay wtdOver  = wtdWorkTimeFromWeek.clone().delTime(wtdEstimatedHours);
-      double wage = app.getDaysFactory().getWageFromWeek(w, wtdWorkTimeFromWeek.getMonth());
+      double wage = app.getDaysFactory().getWageFromWeek(w, fixmonth);
       totalWage += wage;
       addRow(r, gl, row, w,
         wtdWorkTimeFromWeek.timeString(),

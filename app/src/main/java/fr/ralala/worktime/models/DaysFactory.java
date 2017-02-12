@@ -1,14 +1,13 @@
 package fr.ralala.worktime.models;
 
 
-
-
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.TimeZone;
 
-import fr.ralala.worktime.MainApplication;
 import fr.ralala.worktime.sql.SqlFactory;
 
 /**
@@ -39,16 +38,12 @@ public class DaysFactory {
   }
 
 
-  public int getWorkDayFromWeek(int week, boolean onlyAtWork) {
+  public int getWorkDayFromWeek(int week, int month, boolean onlyAtWork) {
     int wDays = 0;
-    int prevMonth = -1;
     for(DayEntry de : days) {
       if(onlyAtWork && de.getType() != DayType.AT_WORK) continue;
-      if(de.getDay().isInWeek(week))
-        if(prevMonth == -1 || prevMonth == de.getDay().getMonth()) {
-          ++wDays;
-          prevMonth = de.getDay().getMonth();
-        }
+      if(de.getDay().isInWeek(week) && month == de.getDay().getMonth())
+        ++wDays;
     }
     return wDays;
   }
@@ -64,21 +59,23 @@ public class DaysFactory {
     return wage;
   }
 
-  public WorkTimeDay getWorkTimeDayFromWeek(int week) {
+  public WorkTimeDay getWorkTimeDayFromWeek(int week, int month) {
     long hours = 0L, minutes = 0L;
-    int prevMonth = -1;
+    Calendar ctime = Calendar.getInstance();
+    ctime.setTimeZone(TimeZone.getTimeZone("GMT"));
+    ctime.set(Calendar.WEEK_OF_YEAR, week);
+    ctime.set(Calendar.MONTH, month);
     for(DayEntry de : days) {
-      if(de.getDay().isInWeek(week) && de.getType() == DayType.AT_WORK) {
-        if(prevMonth == -1 || prevMonth == de.getDay().getMonth()) {
-          WorkTimeDay wt = de.getWorkTime();
-          hours += wt.getHours();
-          minutes += wt.getMinutes();
-          prevMonth = de.getDay().getMonth();
-        }
+      WorkTimeDay d = de.getDay();
+      if(de.getType() == DayType.AT_WORK && d.getMonth() == month && d.getYear() == ctime.get(Calendar.YEAR) &&
+        (d.getDay() >= 1 && d.getDay() <= ctime.getActualMaximum(Calendar.DAY_OF_MONTH) && d.isInWeek(week))) {
+        WorkTimeDay wt = de.getWorkTime();
+        hours += wt.getHours();
+        minutes += wt.getMinutes();
       }
     }
     if(hours == 0 && minutes == 0) return new WorkTimeDay();
-    return new WorkTimeDay().fromTimeUsingCalendar(hours, minutes, prevMonth == -1 ? 0 : prevMonth);
+    return new WorkTimeDay().fromTimeUsingCalendar(hours, minutes, month);
   }
 
   public double checkForDayDateAndCopy(DayEntry current) {
