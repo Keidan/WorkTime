@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Map;
 import java.util.TimeZone;
 
 import fr.ralala.worktime.activities.MainActivity;
@@ -137,15 +138,9 @@ public class MainFragment extends Fragment implements View.OnClickListener, Adap
       currentDate.add(Calendar.MONTH, 1);
       updateDate();
     } else if(v.equals(rlDetails)) {
-      Calendar cMin = (Calendar)currentDate.clone();
-      Calendar cMax = (Calendar)currentDate.clone();
-      cMin.set(Calendar.DAY_OF_MONTH, 1);
-      cMax.set(Calendar.DAY_OF_MONTH, cMax.getActualMaximum(Calendar.DAY_OF_MONTH));
       monthDetailsDialog.reloadDetails(
-        cMin.get(Calendar.MONTH),
-        currentDate.get(Calendar.YEAR),
-        cMin.get(Calendar.WEEK_OF_YEAR),
-        cMax.get(Calendar.WEEK_OF_YEAR));
+        currentDate.get(Calendar.MONTH),
+        currentDate.get(Calendar.YEAR));
       monthDetailsDialog.open();
     }
   }
@@ -163,10 +158,12 @@ public class MainFragment extends Fragment implements View.OnClickListener, Adap
     tvMonth.setText(smonth);
     tvYear.setText(String.valueOf(currentDate.get(Calendar.YEAR)));
 
-    int weekMin = -1, weekMax = -1;
     int wDays = 0, realwDays = 0;
-    long hours = 0L, minutes = 0L;
     int currentDay = currentDate.get(Calendar.DAY_OF_MONTH);
+    /* get first week */
+    currentDate.set(Calendar.DAY_OF_MONTH, 1);
+    int firstWeek = currentDate.get(Calendar.WEEK_OF_YEAR);
+    WorkTimeDay wtdTotalWorkTime = new WorkTimeDay();
     double totalPay = 0.0;
     /* loop for each days in the month */
     for(int day = minDay; day <= maxDay; ++day) {
@@ -184,30 +181,25 @@ public class MainFragment extends Fragment implements View.OnClickListener, Adap
         ++wDays;
         if(de.getType() == DayType.AT_WORK) ++realwDays;
       }
-      WorkTimeDay wt = de.getWorkTime();
-      if(de.getType() == DayType.AT_WORK) {
-        hours += wt.getHours();
-        minutes += wt.getMinutes();
-      }
       lvAdapter.add(de);
-      int week = currentDate.get(Calendar.WEEK_OF_YEAR);
-      if(weekMax == -1 || weekMax != week) {
-        weekMax = week;
-        if(weekMin == -1) weekMin = week;
-      }
+    }
+    Map<String, DayEntry> map = app.getDaysFactory().toDaysMap();
+    int min = (firstWeek == 52 ? 1 : firstWeek);
+    for(int w = min; w <= min + 6; ++w) {
+      WorkTimeDay wtdWorkTimeFromWeek =  app.getDaysFactory().getWorkTimeDayFromWeek(map, w, currentDate.get(Calendar.MONTH), currentDate.get(Calendar.YEAR));
+      if(wtdWorkTimeFromWeek.isValidTime())
+        wtdTotalWorkTime.addTime(wtdWorkTimeFromWeek);
     }
     /* reload work day label */
     currentDate.set(Calendar.DAY_OF_MONTH, currentDay);
     String workDays = getString(R.string.work_days) + ": " + String.format(Locale.US, "%02d/%02d", realwDays, wDays) + " " + getString(R.string.days_lower_case);
     tvWorkDays.setText(workDays);
 
-    /* reload the monthly hours label */
-    WorkTimeDay monthly_hours = new WorkTimeDay().fromTimeUsingCalendar(hours, minutes);
     /* substract legal working time */
     WorkTimeDay wtdEstimatedMonthlyHours = app.getEstimatedHours(wDays);
     String monthlyHours = getString(R.string.monthly_hours) + ": " +
       String.format(Locale.US, "%d:%02d/%d:%02d",
-        monthly_hours.getHours(), monthly_hours.getMinutes(),
+        wtdTotalWorkTime.getHours(), wtdTotalWorkTime.getMinutes(),
         wtdEstimatedMonthlyHours.getHours(), wtdEstimatedMonthlyHours.getMinutes());
 
     tvMonthlyHours.setText(monthlyHours);

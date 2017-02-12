@@ -5,7 +5,10 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 import java.util.TimeZone;
 
 import fr.ralala.worktime.sql.SqlFactory;
@@ -37,45 +40,30 @@ public class DaysFactory {
     return days;
   }
 
-
-  public int getWorkDayFromWeek(int week, int month, boolean onlyAtWork) {
-    int wDays = 0;
-    for(DayEntry de : days) {
-      if(onlyAtWork && de.getType() != DayType.AT_WORK) continue;
-      if(de.getDay().isInWeek(week) && month == de.getDay().getMonth())
-        ++wDays;
-    }
-    return wDays;
-  }
-
-
-  public double getWageFromWeek(int week, int month) {
-    double wage = 0.0;
-    for(DayEntry de : days) {
-      if(de.getDay().isInWeek(week) && de.getDay().isInMonth(month)) {
-        wage += de.getWorkTimePay();
-      }
-    }
-    return wage;
-  }
-
-  public WorkTimeDay getWorkTimeDayFromWeek(int week, int month) {
-    long hours = 0L, minutes = 0L;
+  public WorkTimeDay getWorkTimeDayFromWeek(Map<String, DayEntry> map, int week, int month, int year) {
+    WorkTimeDay ret = new WorkTimeDay();
     Calendar ctime = Calendar.getInstance();
     ctime.setTimeZone(TimeZone.getTimeZone("GMT"));
-    ctime.set(Calendar.WEEK_OF_YEAR, week);
+    ctime.setFirstDayOfWeek(Calendar.MONDAY);
+    ctime.set(Calendar.YEAR, year);
     ctime.set(Calendar.MONTH, month);
-    for(DayEntry de : days) {
-      WorkTimeDay d = de.getDay();
-      if(de.getType() == DayType.AT_WORK && d.getMonth() == month && d.getYear() == ctime.get(Calendar.YEAR) &&
-        (d.getDay() >= 1 && d.getDay() <= ctime.getActualMaximum(Calendar.DAY_OF_MONTH) && d.isInWeek(week))) {
-        WorkTimeDay wt = de.getWorkTime();
-        hours += wt.getHours();
-        minutes += wt.getMinutes();
+    ctime.set(Calendar.DAY_OF_MONTH, 1);
+    int maxDay = ctime.getMaximum(Calendar.DATE);
+    Map<Integer, WorkTimeDay> weeks = new HashMap<>();
+    for(int day = 1; day <= maxDay; ++day) {
+      ctime.set(Calendar.DAY_OF_MONTH, day);
+      DayEntry de = map.get(String.format(Locale.US, "%02d/%02d/%04d", ctime.get(Calendar.DAY_OF_MONTH), ctime.get(Calendar.MONTH) + 1, ctime.get(Calendar.YEAR)));
+      if(de != null && de.getType() == DayType.AT_WORK && week == ctime.get(Calendar.WEEK_OF_YEAR)) {
+        ret.addTime(de.getWorkTime());
       }
     }
-    if(hours == 0 && minutes == 0) return new WorkTimeDay();
-    return new WorkTimeDay().fromTimeUsingCalendar(hours, minutes, month);
+    return ret;
+  }
+
+  public Map<String, DayEntry> toDaysMap() {
+    Map<String, DayEntry> map = new HashMap<>();
+    for(DayEntry de : days) map.put(de.getDay().dateString(), de);
+    return map;
   }
 
   public double checkForDayDateAndCopy(DayEntry current) {

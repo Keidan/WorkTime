@@ -9,10 +9,19 @@ import android.view.Gravity;
 import android.widget.GridLayout;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.TimeZone;
 
 import fr.ralala.worktime.MainApplication;
 import fr.ralala.worktime.R;
+import fr.ralala.worktime.models.DayEntry;
+import fr.ralala.worktime.models.DayType;
 import fr.ralala.worktime.models.WorkTimeDay;
 import fr.ralala.worktime.utils.AndroidHelper;
 
@@ -31,13 +40,19 @@ public class MonthDetailsDialog implements DialogInterface.OnClickListener {
   private MainApplication app = null;
   private AlertDialog alertDialog = null;
 
+  private class Item {
+    WorkTimeDay w = new WorkTimeDay();
+    int wDays = 0;
+    double wage = 0.0;
+  }
+
 
   public MonthDetailsDialog(final Activity activity, final MainApplication app) {
     this.activity = activity;
     this.app = app;
   }
 
-  public void reloadDetails(int month, int year, int wMin, int wMax) {
+  public void reloadDetails(int month, int year) {
     final String currency = app.getCurrency();
     Resources r = activity.getResources();
     /* Crete the dialog builder and set the title */
@@ -58,19 +73,44 @@ public class MonthDetailsDialog implements DialogInterface.OnClickListener {
     WorkTimeDay wtdTotalWorkTime = new WorkTimeDay();
     WorkTimeDay wtdTotalOverHours = new WorkTimeDay();
     /* Get the components */
-    int row = 0, fixmonth = month + 1;
+    int row = 0;
     double totalWage = 0.0f;
-    for(int w = (wMin == 52 ? 1 : wMin); w <= wMax; ++w, ++row) {
-      WorkTimeDay wtdWorkTimeFromWeek =  app.getDaysFactory().getWorkTimeDayFromWeek(w, fixmonth);
-      WorkTimeDay wtdEstimatedHours = app.getEstimatedHours(app.getDaysFactory().getWorkDayFromWeek(w, fixmonth, true));
-      WorkTimeDay wtdOver  = wtdWorkTimeFromWeek.clone().delTime(wtdEstimatedHours);
-      double wage = app.getDaysFactory().getWageFromWeek(w, fixmonth);
-      totalWage += wage;
+    Calendar ctime = Calendar.getInstance();
+    ctime.setTimeZone(TimeZone.getTimeZone("GMT"));
+    ctime.setFirstDayOfWeek(Calendar.MONDAY);
+    ctime.set(Calendar.YEAR, year);
+    ctime.set(Calendar.MONTH, month);
+    ctime.set(Calendar.DAY_OF_MONTH, 1);
+    Map<String, DayEntry> map = app.getDaysFactory().toDaysMap();
+    int maxDay = ctime.getMaximum(Calendar.DATE);
+    Map<Integer, Item> weeks = new HashMap<>();
+    for(int day = 1; day <= maxDay; ++day) {
+      ctime.set(Calendar.DAY_OF_MONTH, day);
+      DayEntry de = map.get(String.format(Locale.US, "%02d/%02d/%04d", ctime.get(Calendar.DAY_OF_MONTH), ctime.get(Calendar.MONTH) + 1, ctime.get(Calendar.YEAR)));
+      if(de != null && de.getType() == DayType.AT_WORK) {
+        Item i;
+        if (!weeks.containsKey(ctime.get(Calendar.WEEK_OF_YEAR)))
+          weeks.put(ctime.get(Calendar.WEEK_OF_YEAR), new Item());
+        i = weeks.get(ctime.get(Calendar.WEEK_OF_YEAR));
+
+        i.w.addTime(de.getWorkTime());
+        ++i.wDays;
+        i.wage += de.getWorkTimePay();
+      }
+    }
+    List<Integer> keys = new ArrayList<>(weeks.keySet());
+    Collections.sort(keys);
+    for(int idx = 0; idx < keys.size();++idx, ++row) {
+      Integer w = keys.get(idx);
+      Item i = weeks.get(w);
+      WorkTimeDay wtdEstimatedHours = app.getEstimatedHours(i.wDays);
+      WorkTimeDay wtdOver = i.w.clone().delTime(wtdEstimatedHours);
+      totalWage += i.wage;
       addRow(r, gl, row, w,
-        wtdWorkTimeFromWeek.timeString(),
-        wtdOver.timeString(), wage, currency);
-      wtdTotalWorkTime.addTime(wtdWorkTimeFromWeek.clone());
-      wtdTotalOverHours.addTime(wtdOver.clone());
+        i.w.timeString(),
+        wtdOver.timeString(), i.wage, currency);
+      wtdTotalWorkTime.addTime(i.w);
+      wtdTotalOverHours.addTime(wtdOver);
     }
     addRow(r, gl, row, -1, wtdTotalWorkTime.timeString(), wtdTotalOverHours.timeString(), totalWage, currency);
 

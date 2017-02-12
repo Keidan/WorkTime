@@ -111,9 +111,9 @@ public class MainApplication extends Application {
   }
 
   public WorkTimeDay getEstimatedHours(int wDays) {
-    long time = getLegalWorkTimeByDay().toLongTime() * wDays;
-    int mins = (int)(time % 60L);
-    int hrs = (int)(time / 60L);
-    return new WorkTimeDay(0, 0, 0, hrs, mins);
+    WorkTimeDay w = new WorkTimeDay();
+    for(int i = 1; i <= wDays; ++i)
+      w.addTime(getLegalWorkTimeByDay());
+    return w;
   }
 }
