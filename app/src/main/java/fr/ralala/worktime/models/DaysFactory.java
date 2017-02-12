@@ -49,7 +49,6 @@ public class DaysFactory {
     ctime.set(Calendar.MONTH, month);
     ctime.set(Calendar.DAY_OF_MONTH, 1);
     int maxDay = ctime.getMaximum(Calendar.DATE);
-    Map<Integer, WorkTimeDay> weeks = new HashMap<>();
     for(int day = 1; day <= maxDay; ++day) {
       ctime.set(Calendar.DAY_OF_MONTH, day);
       DayEntry de = map.get(String.format(Locale.US, "%02d/%02d/%04d", ctime.get(Calendar.DAY_OF_MONTH), ctime.get(Calendar.MONTH) + 1, ctime.get(Calendar.YEAR)));

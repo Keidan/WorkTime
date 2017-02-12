@@ -23,8 +23,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.TimeZone;
-import java.util.concurrent.TimeUnit;
 
 import fr.ralala.worktime.models.DayType;
 import fr.ralala.worktime.utils.AndroidHelper;
@@ -198,34 +198,36 @@ public class ExportFragment extends Fragment implements AdapterView.OnItemSelect
 
   private void reload(int year) {
     lvAdapter.clear();
-    Calendar cal = Calendar.getInstance();
-    cal.setTimeZone(TimeZone.getTimeZone("GMT"));
-    cal.set(Calendar.YEAR, year);
     Locale locale = getResources().getConfiguration().locale;
+    Map<String, DayEntry> map = app.getDaysFactory().toDaysMap();
+    Calendar ctime = Calendar.getInstance();
+    ctime.setTimeZone(TimeZone.getTimeZone("GMT"));
+    ctime.setFirstDayOfWeek(Calendar.MONDAY);
+    ctime.set(Calendar.YEAR, year);
     for(int i = 0; i < 12; ++i) {
-      cal.set(Calendar.MONTH, i);
-      long hours = 0, minutes = 0;
+
+      WorkTimeDay total = new WorkTimeDay();
       double pay = 0;
-      List<DayEntry> works = app.getDaysFactory().list();
-      for(DayEntry de : works) {
-        if(!de.getDay().isInMonth(i+1) || !de.getDay().isInYear(year)) continue;
-        pay += de.getWorkTimePay(app.getAmountByHour());
-        WorkTimeDay wt = de.getWorkTime();
-        hours += wt.getHours();
-        minutes += wt.getMinutes();
+      ctime.set(Calendar.MONTH, i);
+      ctime.set(Calendar.DAY_OF_MONTH, 1);
+      int maxDay = ctime.getMaximum(Calendar.DATE);
+      for(int day = 1; day <= maxDay; ++day) {
+        ctime.set(Calendar.DAY_OF_MONTH, day);
+        DayEntry de = map.get(String.format(Locale.US, "%02d/%02d/%04d", ctime.get(Calendar.DAY_OF_MONTH), ctime.get(Calendar.MONTH) + 1, ctime.get(Calendar.YEAR)));
+        if(de != null && de.getType() == DayType.AT_WORK) {
+          pay += de.getWorkTimePay(app.getAmountByHour());
+          total.addTime(de.getWorkTime());
+        }
       }
-      if(hours == 0 && minutes == 0) continue;
-      Calendar calendar = Calendar.getInstance();
-      calendar.setTimeZone(TimeZone.getTimeZone("GMT"));
-      calendar.setTime(new Date(TimeUnit.MINUTES.toMillis(minutes)));
+      if(!total.isValidTime()) continue;
       String info = !app.isExportHideWage() ?
         String.format(locale, "%02d:%02d %s (%.02f %s)",
-          hours + calendar.get(Calendar.HOUR), calendar.get(Calendar.MINUTE),
+          total.getHours(), total.getMinutes(),
           getString(R.string.hours_lower_case),
           pay, app.getCurrency())
         :
         String.format(locale, "%02d:%02d %s",
-          hours + calendar.get(Calendar.HOUR), calendar.get(Calendar.MINUTE),
+          total.getHours(), total.getMinutes(),
           getString(R.string.hours_lower_case)) ;
       ExportListViewArrayAdapter.ExportEntry ee = new ExportListViewArrayAdapter.ExportEntry();
       ee.text = AndroidHelper.getMonthString(i);
