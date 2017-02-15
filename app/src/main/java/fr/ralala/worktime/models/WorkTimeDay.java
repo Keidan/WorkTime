@@ -26,6 +26,11 @@ public class WorkTimeDay {
   public WorkTimeDay() {
   }
 
+  public WorkTimeDay(long ms) {
+    this(0, 0, 0, 0, 0);
+    fromTimeMS(ms);
+  }
+
   public WorkTimeDay(int year, int month, int day, int hours, int minutes) {
     this.year = year;
     this.month = month;
@@ -34,24 +39,19 @@ public class WorkTimeDay {
     this.minutes = minutes;
   }
 
+  public WorkTimeDay fromTimeMS(long ms) {
+    hours = (int)TimeUnit.MILLISECONDS.toHours(ms);
+    minutes = (int)(TimeUnit.MILLISECONDS.toMinutes(ms) - (hours * 60));
+    return this;
+  }
 
   public WorkTimeDay delTime(WorkTimeDay wtd) {
-    long ms = getTimeMs() - wtd.getTimeMs();
-    long h = TimeUnit.MILLISECONDS.toHours(ms);
-    long m = TimeUnit.MILLISECONDS.toMinutes(ms) - (h * 60);
-    hours = (int)h;
-    minutes = (int)m;
-    return this;
+    return fromTimeMS(getTimeMs() - wtd.getTimeMs());
   }
 
 
   public WorkTimeDay addTime(WorkTimeDay wtd) {
-    long ms = wtd.getTimeMs() + getTimeMs();
-    long h = TimeUnit.MILLISECONDS.toHours(ms);
-    long m = TimeUnit.MILLISECONDS.toMinutes(ms) - (h * 60);
-    hours = (int)h;
-    minutes = (int)m;
-    return this;
+    return fromTimeMS(getTimeMs() + wtd.getTimeMs());
   }
 
   public static WorkTimeDay now() {
@@ -78,38 +78,6 @@ public class WorkTimeDay {
     year = wtd.year;
     hours = wtd.hours;
     minutes = wtd.minutes;
-  }
-
-  public WorkTimeDay fromTimeUsingCalendar(long hours, long minutes) {
-    return fromTimeUsingCalendar(hours, minutes, 0);
-  }
-
-  public WorkTimeDay fromTimeUsingCalendar(long hours, long minutes, int month) {
-    year = month = day = 0;
-    Calendar ctime = Calendar.getInstance();
-    ctime.setTimeZone(TimeZone.getTimeZone("GMT"));
-    ctime.setTime(new Date(TimeUnit.MINUTES.toMillis(minutes)));
-    this.hours = (int)(hours + ctime.get(Calendar.HOUR));
-    this.minutes = ctime.get(Calendar.MINUTE);
-    this.month = month;
-    return this;
-  }
-
-  public static WorkTimeDay fromTimeString(String time) {
-    WorkTimeDay wtd = new WorkTimeDay();
-    String [] sp = time.split(":");
-    if(sp.length != 2) throw new ArrayIndexOutOfBoundsException("Invalid time format");
-    wtd.hours = Integer.parseInt(sp[0]);
-    wtd.minutes = Integer.parseInt(sp[1]);
-    return wtd;
-  }
-
-  public boolean isInWeek(int week) {
-    return toCalendar().get(Calendar.WEEK_OF_YEAR) == week;
-  }
-
-  public long toLongTime() {
-    return hours * 60 + minutes;
   }
 
   public String toString() {
@@ -149,20 +117,15 @@ public class WorkTimeDay {
   }
 
   public static String timeString(int hours, int minutes) {
-    return ((hours < 0) ? "-" : "") + String.format(Locale.US, "%02d:%02d", Math.abs(hours), minutes);
+    return ((hours < 0 || minutes < 0) ? "-" : "") + String.format(Locale.US, "%02d:%02d", Math.abs(hours), Math.abs(minutes));
   }
 
   public String timeString() {
-    return ((hours < 0) ? "-" : "") + String.format(Locale.US, "%02d:%02d", Math.abs(hours), minutes);
+    return timeString(hours, minutes);
   }
 
   public String dateString() {
     return String.format(Locale.US, "%02d/%02d/%04d", day, month, year);
-  }
-
-  public boolean isWithinRange(final Date startDate, final Date endDate) {
-    Date testDate = toCalendar().getTime();
-    return !(testDate.before(startDate) || testDate.after(endDate));
   }
 
   public boolean isInMonth(int month) {

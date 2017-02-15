@@ -4,9 +4,6 @@ package fr.ralala.worktime.models;
 import android.content.Context;
 
 import java.util.Calendar;
-import java.util.Date;
-import java.util.TimeZone;
-import java.util.concurrent.TimeUnit;
 
 import fr.ralala.worktime.MainApplication;
 import fr.ralala.worktime.R;
@@ -58,10 +55,7 @@ public class DayEntry {
   }
 
   public WorkTimeDay getOverTime(long diffInMs) {
-    Calendar cal_ = Calendar.getInstance();
-    cal_.setTimeZone(TimeZone.getTimeZone("GMT"));
-    cal_.setTime(new Date(diffInMs));
-    return new WorkTimeDay(0, 0, 0, (int)TimeUnit.MILLISECONDS.toHours(diffInMs), cal_.get(Calendar.MINUTE));
+    return new WorkTimeDay(diffInMs);
   }
 
   public WorkTimeDay getOverTime(MainApplication app) {
@@ -69,16 +63,10 @@ public class DayEntry {
   }
 
   public WorkTimeDay getWorkTime() {
-    long st = TimeUnit.HOURS.toMillis(start.getHours()) + TimeUnit.MINUTES.toMillis(start.getMinutes());
-    long ed = TimeUnit.HOURS.toMillis(end.getHours()) + TimeUnit.MINUTES.toMillis(end.getMinutes());
-    long p = TimeUnit.HOURS.toMillis(pause.getHours()) + TimeUnit.MINUTES.toMillis(pause.getMinutes());
-    long time = ((ed - st) - p);
-    WorkTimeDay wtd = new WorkTimeDay();
-    if(time == 0) return wtd;
-    Calendar c = Calendar.getInstance();
-    c.setTimeZone(TimeZone.getTimeZone("GMT"));
-    c.setTime(new Date((ed - st) - p));
-    return wtd.fromCalendar(c);
+    WorkTimeDay w = end.clone();
+    w.delTime(start.clone());
+    w.delTime(pause.clone());
+    return w;
   }
 
   public void copy(DayEntry de) {
