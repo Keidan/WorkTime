@@ -100,6 +100,8 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
     fab.setOnClickListener(this);
     refreshStartEndPause(de);
 
+    if(displayProfile)
+      setTitle(date);
     TextView tvProfile = (TextView)findViewById(R.id.tvProfile);
     spProfile = (Spinner)findViewById(R.id.spProfile);
     spType = (Spinner)findViewById(R.id.spType);
@@ -281,7 +283,6 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
           etAmount.setText(String.format(Locale.US, "%.02f", de.getAmountByHour()).replaceAll(",", "."));
           spType.setSelection(de.getType() == DayType.ERROR ? 0 : de.getType().value());
           etName.setText(de.getName());
-          setTitle(de.getDay().dateString());
           refreshStartEndPause(de);
         }
       }
