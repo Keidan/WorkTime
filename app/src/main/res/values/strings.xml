@@ -44,19 +44,16 @@
     <string name="day_sunday_2lt">Su</string>
     <string name="on_double_back_exit_text">Press once again to exit!</string>
     <string name="type">Type :</string>
-    <string name="end">Departure :</string>
-    <string name="start">Arrival :</string>
-
     <string name="end_afternoon">Afternoon departure:</string>
     <string name="end_morning">Matin departure:</string>
     <string name="start_afternoon">Afternoon arrival:</string>
     <string name="start_morning">Matin arrival:</string>
-    <string name="pause">Break :</string>
     <string name="at_work">At work</string>
     <string name="default_hours" translatable="false">00:00</string>
     <string name="error_invalid_start">Invalid departure time</string>
     <string name="error_invalid_end">Invalid arrival time</string>
-    <string name="error_invalid_start_end">The departure and arrival times are invalid</string>
+    <string name="error_invalid_start_end_morning">The morning departure and arrival times are invalid</string>
+    <string name="error_invalid_start_end_afternoon">The afternoon departure and arrival times are invalid</string>
     <string name="text_for">for</string>
     <string name="at">at</string>
     <string name="hours_lower_case">hour(s)</string>
