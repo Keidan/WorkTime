@@ -164,11 +164,6 @@ public class MonthDetailsDialog implements DialogInterface.OnClickListener {
     return this;
   }
 
-  /*public DayEntryDialog close() {
-    alertDialog.dismiss();
-    return this;
-  }*/
-
   public void onClick(DialogInterface dialog, int whichButton) {
         /* Click on the Positive button (OK) */
     /*if(whichButton == DialogInterface.BUTTON_POSITIVE) {

@@ -110,28 +110,28 @@ public class DaysEntriesArrayAdapter extends ArrayAdapter<DayEntry> {
           DayEntry.getDayString2lt(c, cal.get(Calendar.DAY_OF_WEEK)));
       }
       if (holder.tvStart != null) {
-        if (t.getType() != DayType.AT_WORK || (!t.getStart().isValidTime() && !t.getEnd().isValidTime()))
+        if (isValid(t))
           holder.tvStart.setText("-");
         else {
-          holder.tvStart.setText(t.getStart().timeString());
+          holder.tvStart.setText(t.getStartMorning().timeString());
         }
       }
       if (holder.tvEnd != null) {
-        if (t.getType() != DayType.AT_WORK || (!t.getStart().isValidTime() && !t.getEnd().isValidTime()))
+        if (isValid(t))
           holder.tvEnd.setText("-");
         else {
-          holder.tvEnd.setText(t.getEnd().timeString());
+          holder.tvEnd.setText(t.getEndAfternoon().timeString());
         }
       }
       if (holder.tvPause != null) {
-        if (t.getType() != DayType.AT_WORK || (!t.getStart().isValidTime() && !t.getEnd().isValidTime()))
+        if (isValid(t))
           holder.tvPause.setText("-");
         else {
           holder.tvPause.setText(t.getPause().timeString());
         }
       }
       if (holder.tvTotal != null) {
-        if(t.getType() != DayType.AT_WORK || (!t.getStart().isValidTime() || !t.getEnd().isValidTime()))
+        if(isValid(t))
           holder.tvTotal.setText("-");
         else {
           holder.tvTotal.setText(t.getWorkTime().timeString());
@@ -139,7 +139,7 @@ public class DaysEntriesArrayAdapter extends ArrayAdapter<DayEntry> {
       }
       if (holder.tvOver != null) {
         MainApplication app = MainApplication.getApp(c);
-        if(t.getType() != DayType.AT_WORK || (!t.getStart().isValidTime() && !t.getEnd().isValidTime())) {
+        if(isValid(t)) {
           holder.tvOver.setText("-");
           holder.tvOver.setTypeface(Typeface.MONOSPACE, Typeface.NORMAL);
           holder.tvOver.setGravity(Gravity.CENTER);
@@ -165,6 +165,10 @@ public class DaysEntriesArrayAdapter extends ArrayAdapter<DayEntry> {
       }
     }
     return v;
+  }
+
+  private boolean isValid(DayEntry t) {
+    return (t.getType() != DayType.AT_WORK || (!t.getStartMorning().isValidTime() && !t.getEndAfternoon().isValidTime()));
   }
 
 }

@@ -9,14 +9,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
-import fr.ralala.worktime.dialogs.DayEntryDialog;
+import fr.ralala.worktime.activities.DayActivity;
+
 import fr.ralala.worktime.MainApplication;
 import fr.ralala.worktime.R;
 import fr.ralala.worktime.adapters.ProfilesEntriesArrayAdapter;
 import fr.ralala.worktime.adapters.SimpleEntriesArrayAdapterMenuListener;
 import fr.ralala.worktime.models.DayEntry;
-import fr.ralala.worktime.models.DayType;
-import fr.ralala.worktime.models.WorkTimeDay;
+
 
 /**
  *******************************************************************************
@@ -27,7 +27,7 @@ import fr.ralala.worktime.models.WorkTimeDay;
  *
  *******************************************************************************
  */
-public class ProfileFragment  extends Fragment implements SimpleEntriesArrayAdapterMenuListener<DayEntry>, View.OnClickListener, DayEntryDialog.DayEntryDialogSuccessListener {
+public class ProfileFragment  extends Fragment implements SimpleEntriesArrayAdapterMenuListener<DayEntry>, View.OnClickListener {
 
   private ProfilesEntriesArrayAdapter adapter = null;
   private MainApplication app = null;
@@ -47,25 +47,14 @@ public class ProfileFragment  extends Fragment implements SimpleEntriesArrayAdap
     return rootView;
   }
 
-  public void dialogAddEntry(final DayEntry oldEntry, final DayEntry newEntry) {
-    if(oldEntry.getName().isEmpty() || !oldEntry.match(newEntry)) {
-      app.getProfilesFactory().remove(oldEntry);
-      adapter.remove(oldEntry);
-    }
-    if(newEntry.getStart().isValidTime()) {
-      app.getProfilesFactory().add(newEntry);
-    }
-    adapter.notifyDataSetChanged();
-  }
-
   @Override
   public void onClick(View view) {
-    new DayEntryDialog(getActivity(), app, new DayEntry(WorkTimeDay.now(), DayType.AT_WORK), false, this).open();
+    DayActivity.startActivity(getActivity(), "null", false);
   }
 
 
   public boolean onMenuEdit(DayEntry de) {
-    new DayEntryDialog(getActivity(), app, de, false, this).open();
+    DayActivity.startActivity(getActivity(), de.getName(), false);
     return true;
   }
 

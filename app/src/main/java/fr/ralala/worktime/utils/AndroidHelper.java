@@ -18,6 +18,8 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.dropbox.core.v2.files.FileMetadata;
+
 import java.io.File;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -124,11 +126,11 @@ public class AndroidHelper {
     alertDialog.show();
   }
 
-  private static class ListItem {
+  private static class ListItem<T> {
     public String name;
-    public String value;
+    public T value;
 
-    public ListItem(final String name, final String value) {
+    public ListItem(final String name, final T value) {
       this.name = name;
       this.value = value;
     }
@@ -138,13 +140,20 @@ public class AndroidHelper {
     }
   }
 
-  public static void showAlertDialog(final Context c, final int title, List<String> list, final android.view.View.OnClickListener yes) {
+  public interface AlertDialogListListener<T> {
+    void onClick(T t);
+  }
+
+  public static <T> void showAlertDialog(final Context c, final int title, List<T> list, final AlertDialogListListener yes) {
     AlertDialog.Builder builder = new AlertDialog.Builder(c);
     builder.setTitle(c.getResources().getString(title));
     builder.setIcon(android.R.drawable.ic_dialog_alert);
     List<ListItem> items = new ArrayList<>();
-    for(String s : list)
-      items.add(new ListItem(new File(s).getName(), s));
+    for(T s : list) {
+      String ss = new File(s.toString()).getName().toString();
+      if(ss.endsWith("\"}")) ss = ss.substring(0, ss.length() - 2);
+      items.add(new ListItem<T>(ss, s));
+    }
     final ArrayAdapter<ListItem> arrayAdapter = new ArrayAdapter<>(c, android.R.layout.select_dialog_singlechoice, items);
     builder.setNegativeButton(c.getString(R.string.cancel), new DialogInterface.OnClickListener() {
       @Override
@@ -157,10 +166,7 @@ public class AndroidHelper {
       @Override
       public void onClick(DialogInterface dialog, int which) {
         dialog.dismiss();
-        ListItem li = arrayAdapter.getItem(which);
-        TextView tv = new TextView(c);
-        tv.setText(li.value);
-        if(yes != null) yes.onClick(tv);
+        if(yes != null) yes.onClick(arrayAdapter.getItem(which).value);
       }
     });
     builder.show();

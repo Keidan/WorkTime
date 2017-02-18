@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -33,30 +34,127 @@ public class SqlFactory implements SqlConstants {
 
   public void open() {
     bdd = helper.getWritableDatabase();
+
+    if(isTableExists(TABLE_PROFILES + "_v1")) {
+      Log.d(getClass().getSimpleName(), "TABLE_PROFILES found");
+      final List<DayEntry> listOld = readV1("profiles", 1, 5, 2, 3, 4, 6, 0);
+      final List<DayEntry> listNew = new ArrayList<>();
+      v1tov2(listOld, listNew);
+      Log.d(getClass().getSimpleName(), "delete table profiles");
+      bdd.delete(TABLE_PROFILES, null, null);
+      Log.d(getClass().getSimpleName(), "table profiles deleted");
+      for(DayEntry de : listNew)
+        insertProfile(de);
+      removeTable(TABLE_PROFILES + "_v1");
+    }
+    if(isTableExists(TABLE_DAYS + "_v1")) {
+      Log.d(getClass().getSimpleName(), "TABLE_DAYS found");
+      final List<DayEntry> listOld = readV1("days", 0, 4, 1, 2, 3, 5, -1);
+      final List<DayEntry> listNew = new ArrayList<>();
+      v1tov2(listOld, listNew);
+      Log.d(getClass().getSimpleName(), "delete table days");
+      bdd.delete(TABLE_DAYS, null, null);
+      Log.d(getClass().getSimpleName(), "table days deleted");
+      for(DayEntry de : listNew)
+        insertDay(de);
+      removeTable(TABLE_DAYS + "_v1");
+    }
+
   }
 
   public void close() {
     bdd.close();
   }
 
+  private void v1tov2(List<DayEntry> listOld, List<DayEntry> listNew) {
+    for(DayEntry de : listOld) {
+      final DayEntry d = new DayEntry(de.getDay(), de.getType());
+      d.copy(de);
+      WorkTimeDay start = de.getStartMorning();
+      WorkTimeDay end = de.getEndMorning();
+      WorkTimeDay pause = de.getStartAfternoon();
+
+      WorkTimeDay w = end.clone();
+      w.delTime(start.clone());
+      w.delTime(pause.clone());
+
+      long l = w.getTimeMs();
+
+      d.setStartMorning(start.timeString());
+      d.setEndMorning(new WorkTimeDay(start.getTimeMs() + l/2).timeString());
+      d.setStartAfternoon(new WorkTimeDay(d.getEndMorning().getTimeMs()+pause.getTimeMs()).timeString());
+      d.setEndAfternoon(end.timeString());
+      listNew.add(d);
+    }
+  }
+
+  private List<DayEntry> readV1(final String tablename_v1, final int c_current, final int c_type, final int c_start, final int c_end, final int c_pause, final int c_amount, final int c_name) {
+    final List<DayEntry> listProfiles = new ArrayList<>();
+    Cursor c = bdd.rawQuery("SELECT * FROM " + tablename_v1 + "_v1", null);
+    if (c.moveToFirst()) {
+      do {
+        String[] split = c.getString(c_current).split("/");
+        WorkTimeDay wtd = new WorkTimeDay();
+        wtd.setDay(Integer.parseInt(split[0]));
+        wtd.setMonth(Integer.parseInt(split[1]));
+        wtd.setYear(Integer.parseInt(split[2]));
+        final DayEntry de = new DayEntry(wtd, DayType.compute(c.getInt(c_type)));
+        de.setStartMorning(c.getString(c_start)); /* start */
+        de.setEndMorning(c.getString(c_end)); /* end */
+        de.setStartAfternoon(c.getString(c_pause)); /* pause */
+        String s = c.getString(c_amount);
+        if (s != null && !s.isEmpty())
+          de.setAmountByHour(Double.parseDouble(s));
+        if(c_name != -1)
+          de.setName(c.getString(c_name));
+
+        listProfiles.add(de);
+      } while (c.moveToNext());
+    }
+    c.close();
+    Collections.sort(listProfiles, new Comparator<DayEntry>() {
+      @Override
+      public int compare(final DayEntry lhs, final DayEntry rhs) {
+        return c_name != -1 ? lhs.getName().compareTo(rhs.getName()) : lhs.getDay().compareTo(rhs.getDay());
+      }
+    });
+    return listProfiles;
+  }
+
+  public boolean isTableExists(String tableName) {
+    Cursor cursor = bdd.rawQuery("select DISTINCT tbl_name from sqlite_master where tbl_name = '"+tableName+"'", null);
+    if(cursor!=null) {
+      if(cursor.getCount()>0) {
+        cursor.close();
+        return true;
+      }
+      cursor.close();
+    }
+    return false;
+  }
+
   public long insertProfile(final DayEntry de) {
     final ContentValues values = new ContentValues();
     values.put(COL_PROFILES_NAME, de.getName());
     values.put(COL_PROFILES_CURRENT, de.getDay().dateString());
-    values.put(COL_PROFILES_START, de.getStart().timeString());
-    values.put(COL_PROFILES_END, de.getEnd().timeString());
-    values.put(COL_PROFILES_PAUSE, de.getPause().timeString());
+    values.put(COL_PROFILES_START_MORNING, de.getStartMorning().timeString());
+    values.put(COL_PROFILES_END_MORNING, de.getEndMorning().timeString());
+    values.put(COL_PROFILES_START_AFTERNOON, de.getStartAfternoon().timeString());
+    values.put(COL_PROFILES_END_AFTERNOON, de.getEndAfternoon().timeString());
     values.put(COL_PROFILES_TYPE, de.getType().value());
     values.put(COL_PROFILES_AMOUNT, String.valueOf(de.getAmountByHour()));
     return bdd.insert(TABLE_PROFILES, null, values);
   }
 
   public long insertDay(final DayEntry de) {
+
+    Log.e(getClass().getSimpleName(), "de.getDay().dateString():"+de.getDay().dateString());
     final ContentValues values = new ContentValues();
     values.put(COL_DAYS_CURRENT, de.getDay().dateString());
-    values.put(COL_DAYS_START, de.getStart().timeString());
-    values.put(COL_DAYS_END, de.getEnd().timeString());
-    values.put(COL_DAYS_PAUSE, de.getPause().timeString());
+    values.put(COL_DAYS_START_MORNING, de.getStartMorning().timeString());
+    values.put(COL_DAYS_END_MORNING, de.getEndMorning().timeString());
+    values.put(COL_DAYS_START_AFTERNOON, de.getStartAfternoon().timeString());
+    values.put(COL_DAYS_END_AFTERNOON, de.getEndAfternoon().timeString());
     values.put(COL_DAYS_TYPE, de.getType().value());
     values.put(COL_DAYS_AMOUNT, String.valueOf(de.getAmountByHour()));
     return bdd.insert(TABLE_DAYS, null, values);
@@ -105,9 +203,10 @@ public class SqlFactory implements SqlConstants {
         wtd.setMonth(Integer.parseInt(split[1]));
         wtd.setYear(Integer.parseInt(split[2]));
         final DayEntry de = new DayEntry(wtd, DayType.compute(c.getInt(NUM_DAYS_TYPE)));
-        de.setStart(c.getString(NUM_DAYS_START));
-        de.setEnd(c.getString(NUM_DAYS_END));
-        de.setPause(c.getString(NUM_DAYS_PAUSE));
+        de.setStartMorning(c.getString(NUM_DAYS_START_MORNING));
+        de.setEndMorning(c.getString(NUM_DAYS_END_MORNING));
+        de.setStartAfternoon(c.getString(NUM_DAYS_START_AFTERNOON));
+        de.setEndAfternoon(c.getString(NUM_DAYS_END_AFTERNOON));
         String s = c.getString(NUM_DAYS_AMOUNT);
         if(s != null && !s.isEmpty())
           de.setAmountByHour(Double.parseDouble(s));
@@ -135,9 +234,10 @@ public class SqlFactory implements SqlConstants {
         wtd.setMonth(Integer.parseInt(split[1]));
         wtd.setYear(Integer.parseInt(split[2]));
         final DayEntry de = new DayEntry(wtd, DayType.compute(c.getInt(NUM_PROFILES_TYPE)));
-        de.setStart(c.getString(NUM_PROFILES_START));
-        de.setEnd(c.getString(NUM_PROFILES_END));
-        de.setPause(c.getString(NUM_PROFILES_PAUSE));
+        de.setStartMorning(c.getString(NUM_PROFILES_START_MORNING));
+        de.setEndMorning(c.getString(NUM_PROFILES_END_MORNING));
+        de.setStartAfternoon(c.getString(NUM_PROFILES_START_AFTERNOON));
+        de.setEndAfternoon(c.getString(NUM_PROFILES_END_AFTERNOON));
         String s = c.getString(NUM_PROFILES_AMOUNT);
         if(s != null && !s.isEmpty())
           de.setAmountByHour(Double.parseDouble(s));
@@ -166,6 +266,10 @@ public class SqlFactory implements SqlConstants {
 
   public int removeProfile(final DayEntry de) {
     return bdd.delete(TABLE_PROFILES, COL_PROFILES_NAME + " = \"" + de.getName() + "\"", null);
+  }
+
+  public void removeTable(final String tablename) {
+    bdd.execSQL("DROP TABLE IF EXISTS " + tablename + ";");
   }
 
   public void removeAll() {

@@ -85,9 +85,9 @@ public class ProfilesEntriesArrayAdapter extends ArrayAdapter<DayEntry> {
         holder.date.setText(!app.isHideWage() ?
           String.format(Locale.US,
             "%s %s %s -> %s %s %.02f%s/h",
-            t.getStart().timeString(),
+            t.getStartMorning().timeString(),
             c.getString(R.string.at),
-            t.getEnd().timeString(),
+            t.getEndAfternoon().timeString(),
             t.getWorkTime().timeString(),
             c.getString(R.string.text_for),
             t.getAmountByHour(),
@@ -95,9 +95,9 @@ public class ProfilesEntriesArrayAdapter extends ArrayAdapter<DayEntry> {
         :
           String.format(Locale.US,
             "%s %s %s -> %s",
-            t.getStart().timeString(),
+            t.getStartMorning().timeString(),
             c.getString(R.string.at),
-            t.getEnd().timeString(),
+            t.getEndAfternoon().timeString(),
             t.getWorkTime().timeString()));
       }
       /* Show the popup menu if the user click on the 3-dots item. */

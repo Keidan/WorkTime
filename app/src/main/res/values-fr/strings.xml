@@ -8,6 +8,7 @@
     <string name="navigation_drawer_open">Ouvrir le tiroir de navigation</string>
     <string name="settings">Param\u00E8tres</string>
     <string name="profile">Profil</string>
+    <string name="profile2">Profil:</string>
     <string name="export">Exportation</string>
     <string name="public_holidays">Jours f\u00E9ri\u00E9s</string>
     <string name="sickness">Maladie</string>
@@ -25,6 +26,7 @@
     <string name="error">Erreur</string>
     <string name="error_no_name">Le champ nom ne peut pas être vide</string>
     <string name="cancel">Annuler</string>
+    <string name="clear">Effacer</string>
     <string name="day_monday_2lt">Lu</string>
     <string name="day_tuesday_2lt">Ma</string>
     <string name="day_wednesday_2lt">Me</string>
@@ -34,13 +36,15 @@
     <string name="day_sunday_2lt">Di</string>
     <string name="on_double_back_exit_text">Appuyez une nouvelle fois pour quitter!</string>
     <string name="type">Type :</string>
-    <string name="end">D\u00E9part :</string>
-    <string name="start">Arriv\u00E9e :</string>
-    <string name="pause">Pause :</string>
+    <string name="end_afternoon">Ap. midi d\u00E9part :</string>
+    <string name="end_morning">Matin d\u00E9part :</string>
+    <string name="start_afternoon">Ap. midi arriv\u00E9e :</string>
+    <string name="start_morning">Matin arriv\u00E9e :</string>
     <string name="at_work">Au travail</string>
     <string name="error_invalid_start">Heure de d\u00E9part non valide</string>
     <string name="error_invalid_end">Heure d\'arriv\u00E9e non valide</string>
-    <string name="error_invalid_start_end">Les horaires de d\u00E9part et d\'arriv\u00E9e sont invalides</string>
+    <string name="error_invalid_start_end_morning">Les horaires de d\u00E9part et d\'arriv\u00E9e du matin sont invalides</string>
+    <string name="error_invalid_start_end_afternoon">Les horaires de d\u00E9part et d\'arriv\u00E9e de l\'apr\u00E8s midi sont invalides</string>
     <string name="text_for">pour</string>
     <string name="at">\u00E0</string>
     <string name="hours_lower_case">heure(s)</string>

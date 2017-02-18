@@ -14,6 +14,7 @@
     <string name="settings">Settings</string>
     <string name="app_title" translatable="false">Work Time</string>
     <string name="profile">Profile</string>
+    <string name="profile2">Profile:</string>
     <string name="export">Export</string>
     <string name="public_holidays">Public holidays</string>
     <string name="sickness">Sickness</string>
@@ -33,6 +34,7 @@
     <string name="error_no_name">Name field cannot be empty</string>
     <string name="ok" translatable="false">OK</string>
     <string name="cancel">Cancel</string>
+    <string name="clear">Clear</string>
     <string name="day_monday_2lt">Mo</string>
     <string name="day_tuesday_2lt">Tu</string>
     <string name="day_wednesday_2lt">We</string>
@@ -44,6 +46,11 @@
     <string name="type">Type :</string>
     <string name="end">Departure :</string>
     <string name="start">Arrival :</string>
+
+    <string name="end_afternoon">Afternoon departure:</string>
+    <string name="end_morning">Matin departure:</string>
+    <string name="start_afternoon">Afternoon arrival:</string>
+    <string name="start_morning">Matin arrival:</string>
     <string name="pause">Break :</string>
     <string name="at_work">At work</string>
     <string name="default_hours" translatable="false">00:00</string>
@@ -88,7 +95,7 @@
     <string name="export_no_items">No selected months to export</string>
     <string name="snack_hide">Hide</string>
     <string name="export_email_not_set">The email address is not set</string>
-    <string name="email_sent_to_with_mail">The file is also stored into the public download directory</string>>
+    <string name="email_sent_to_with_mail">The file is also stored into the public download directory</string>
     <string name="email_sent_to_without_mail">The file is stored into the public download directory</string>
     <string name="export_email_subject">WorkTime export</string>
     <string name="export_email_body">The attachment contain a report for the selected work time</string>

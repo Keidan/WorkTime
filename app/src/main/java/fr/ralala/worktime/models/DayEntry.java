@@ -20,17 +20,19 @@ import fr.ralala.worktime.R;
 public class DayEntry {
   private String name = "";
   private WorkTimeDay day = null;
-  private WorkTimeDay start = null;
-  private WorkTimeDay end = null;
-  private WorkTimeDay pause = null;
+  private WorkTimeDay startMorning = null;
+  private WorkTimeDay endMorning = null;
+  private WorkTimeDay startAfternoon = null;
+  private WorkTimeDay endAfternoon = null;
   private DayType type = DayType.ERROR;
   private double amountByHour = 0.0;
 
   public DayEntry(final WorkTimeDay day, final DayType type) {
     this.day = new WorkTimeDay();
-    this.start = new WorkTimeDay();
-    this.end = new WorkTimeDay();
-    this.pause = new WorkTimeDay();
+    this.startMorning = new WorkTimeDay();
+    this.endMorning = new WorkTimeDay();
+    this.startAfternoon = new WorkTimeDay();
+    this.endAfternoon = new WorkTimeDay();
     this.type = type;
     this.day.copy(day);
   }
@@ -63,24 +65,29 @@ public class DayEntry {
   }
 
   public WorkTimeDay getWorkTime() {
-    WorkTimeDay w = end.clone();
-    w.delTime(start.clone());
-    w.delTime(pause.clone());
-    return w;
+    WorkTimeDay wm = endMorning.clone();
+    wm.delTime(startMorning.clone());
+    WorkTimeDay wa = endAfternoon.clone();
+    wa.delTime(startAfternoon.clone());
+    WorkTimeDay wt = wm.clone();
+    wt.addTime(wa);
+    return wt;
   }
 
   public void copy(DayEntry de) {
     type = de.type;
     name = de.name;
     day.copy(de.day);
-    start.copy(de.start);
-    end.copy(de.end);
-    pause.copy(de.pause);
+    startMorning.copy(de.startMorning);
+    endMorning.copy(de.endMorning);
+    startAfternoon.copy(de.startAfternoon);
+    endAfternoon.copy(de.endAfternoon);
     amountByHour = de.amountByHour;
   }
 
   public boolean match(DayEntry de) {
-    return day.match(de.day) && start.match(de.start) && end.match(de.end) && pause.match(de.pause) &&
+    return day.match(de.day)  && startMorning.match(de.startMorning) && endMorning.match(de.endMorning)
+      && startAfternoon.match(de.startAfternoon) && endAfternoon.match(de.endAfternoon) &&
       type == de.type && amountByHour == de.amountByHour;
   }
 
@@ -113,32 +120,47 @@ public class DayEntry {
     return wtd;
   }
 
-  public void setStart(String start) {
-    this.start.copy(parseTime(start));
+  private WorkTimeDay parseDate(String time) {
+    WorkTimeDay wtd = new WorkTimeDay();
+    String split [] = time.split("/");
+    wtd.setDay(Integer.parseInt(split[0]));
+    wtd.setMonth(Integer.parseInt(split[1]));
+    wtd.setYear(Integer.parseInt(split[2]));
+    return wtd;
   }
 
-  public void setPause(String pause) {
-    this.pause.copy(parseTime(pause));
+  public void setStartMorning(String start) {
+    this.startMorning.copy(parseTime(start));
+  }
+  public void setStartAfternoon(String start) {
+    this.startAfternoon.copy(parseTime(start));
   }
 
-  public void setEnd(String end) {
-    this.end.copy(parseTime(end));
+  public void setEndMorning(String end) {
+    this.endMorning.copy(parseTime(end));
+  }
+  public void setEndAfternoon(String end) {
+    this.endAfternoon.copy(parseTime(end));
   }
 
-  public void setDay(WorkTimeDay day) {
-    this.day = day;
+  public void setDay(String day) {
+    this.day.copy(parseDate(day));
   }
-
   public WorkTimeDay getDay() {
     return day;
   }
 
-  public WorkTimeDay getStart() {
-    return start;
+  public WorkTimeDay getStartMorning() {
+    return startMorning;
+  }
+  public WorkTimeDay getStartAfternoon() {
+    return startAfternoon;
   }
 
   public WorkTimeDay getPause() {
-    return pause;
+    WorkTimeDay wp = startAfternoon.clone();
+    wp.delTime(endMorning.clone());
+    return wp;
   }
 
   public DayType getType() {
@@ -149,8 +171,11 @@ public class DayEntry {
     this.type = type;
   }
 
-  public WorkTimeDay getEnd() {
-    return end;
+  public WorkTimeDay getEndMorning() {
+    return endMorning;
+  }
+  public WorkTimeDay getEndAfternoon() {
+    return endAfternoon;
   }
 
   public String getName() {

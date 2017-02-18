@@ -113,6 +113,8 @@ public class MainActivity extends RuntimePermissionsActivity implements Navigati
         navigationView.getMenu().getItem(IDX_PUBLIC_HOLYDAY).setChecked(true); /* select public holidays title */
       else if(ExportFragment.class.isInstance(fragment))
         navigationView.getMenu().getItem(IDX_EXPORT).setChecked(true); /* select export title */
+      else if(MainFragment.class.isInstance(fragment))
+        navigationView.getMenu().getItem(IDX_HOME).setChecked(true); /* select home title */
 
     }
   }

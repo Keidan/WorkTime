@@ -1,7 +1,6 @@
 package fr.ralala.worktime.activities;
 
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -10,8 +9,6 @@ import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
 import android.util.Log;
-import android.view.View;
-import android.widget.TextView;
 
 import com.dropbox.core.v2.files.FileMetadata;
 import com.dropbox.core.v2.files.ListFolderResult;
@@ -48,9 +45,9 @@ import fr.ralala.worktime.dropbox.DropboxHelper;
  *******************************************************************************
  */
 public class SettingsImportExportActivity extends PreferenceActivity implements Preference.OnPreferenceClickListener, DropboxListener {
-  public static final String       PREFS_KEY_EXPORT_FROM_DEVICE               = "prefExportFromDevice";
+  public static final String       PREFS_KEY_EXPORT_TO_DEVICE                 = "prefExportToDevice";
   public static final String       PREFS_KEY_IMPORT_FROM_DEVICE               = "prefImportFromDevice";
-  public static final String       PREFS_KEY_EXPORT_FROM_DROPBOX              = "prefExportFromDropbox";
+  public static final String       PREFS_KEY_EXPORT_TO_DROPBOX                = "prefExportToDropbox";
   public static final String       PREFS_KEY_IMPORT_FROM_DROPBOX              = "prefImportFromDropbox";
   private static final String      PATH                                       = "";
 
@@ -69,9 +66,9 @@ public class SettingsImportExportActivity extends PreferenceActivity implements 
     getFragmentManager().executePendingTransactions();
 
     MainApplication app = (MainApplication)getApplicationContext();
-    prefFrag.findPreference(PREFS_KEY_EXPORT_FROM_DEVICE).setOnPreferenceClickListener(this);
+    prefFrag.findPreference(PREFS_KEY_EXPORT_TO_DEVICE).setOnPreferenceClickListener(this);
     prefFrag.findPreference(PREFS_KEY_IMPORT_FROM_DEVICE).setOnPreferenceClickListener(this);
-    prefFrag.findPreference(PREFS_KEY_EXPORT_FROM_DROPBOX).setOnPreferenceClickListener(this);
+    prefFrag.findPreference(PREFS_KEY_EXPORT_TO_DROPBOX).setOnPreferenceClickListener(this);
     prefFrag.findPreference(PREFS_KEY_IMPORT_FROM_DROPBOX).setOnPreferenceClickListener(this);
     dialog = buildProgress();
   }
@@ -97,9 +94,9 @@ public class SettingsImportExportActivity extends PreferenceActivity implements 
     String message = result.getName() + " size " + result.getSize() + " modified " +
       DateFormat.getDateTimeInstance().format(result.getClientModified());
     AndroidHelper.toast(SettingsImportExportActivity.this, getString(R.string.export_success));
-    Log.i(getClass().getSimpleName(), message);
     safeRemove();
   }
+
   @Override
   public void onDropboxUploadError(Exception e) {
     dialog.dismiss();
@@ -112,7 +109,7 @@ public class SettingsImportExportActivity extends PreferenceActivity implements 
   public void onDroptboxDownloadComplete(File result) {
     dialog.dismiss();
     try {
-      SqlHelper.loadDatabase(this, SqlHelper.DB_NAME, result);
+      loadDb(result);
     } catch(Exception e) {
       AndroidHelper.toast_long(this, getString(R.string.error) + ": " + e.getMessage());
       Log.e(getClass().getSimpleName(), "Error: " + e.getMessage(), e);
@@ -139,7 +136,21 @@ public class SettingsImportExportActivity extends PreferenceActivity implements 
         return m1.getName().compareTo(m2.getName());
       }
     });
-    computeAndLoad(list, true);
+    if (list.isEmpty())
+      AndroidHelper.toast_long(this, getString(R.string.error_no_files));
+    else {
+      computeAndLoad(list, new AndroidHelper.AlertDialogListListener<Metadata>() {
+        @Override
+        public void onClick(final Metadata m) {
+          try {
+            new DownloadFileTask(SettingsImportExportActivity.this, helper.getClient(), SettingsImportExportActivity.this).execute((FileMetadata)m);
+          } catch (Exception e) {
+            AndroidHelper.toast_long(SettingsImportExportActivity.this, getString(R.string.error) + ": " + e.getMessage());
+            Log.e(getClass().getSimpleName(), "Error: " + e.getMessage(), e);
+          }
+        }
+      });
+    }
   }
 
   @Override
@@ -151,7 +162,7 @@ public class SettingsImportExportActivity extends PreferenceActivity implements 
 
   @Override
   public boolean onPreferenceClick(final Preference preference) {
-    if (preference.equals(prefFrag.findPreference(PREFS_KEY_EXPORT_FROM_DROPBOX))) {
+    if (preference.equals(prefFrag.findPreference(PREFS_KEY_EXPORT_TO_DROPBOX))) {
       if(helper.connect(this, getString(R.string.app_key))) {
         dialog.show();
         try {
@@ -170,7 +181,7 @@ public class SettingsImportExportActivity extends PreferenceActivity implements 
         dialog.show();
         new ListFolderTask(helper.getClient(), this).execute(PATH);
       }
-    } else if (preference.equals(prefFrag.findPreference(PREFS_KEY_EXPORT_FROM_DEVICE))) {
+    } else if (preference.equals(prefFrag.findPreference(PREFS_KEY_EXPORT_TO_DEVICE))) {
       Map<String, String> extra = new HashMap<>();
       extra.put(AbstractFileChooserActivity.FILECHOOSER_TYPE_KEY, "" + AbstractFileChooserActivity.FILECHOOSER_TYPE_DIRECTORY_ONLY);
       extra.put(AbstractFileChooserActivity.FILECHOOSER_TITLE_KEY, getString(R.string.pref_title_export));
@@ -210,7 +221,6 @@ public class SettingsImportExportActivity extends PreferenceActivity implements 
       if (resultCode == RESULT_OK) {
         String file = data.getStringExtra(FileChooserActivity.FILECHOOSER_SELECTION_KEY);
         Log.d(getClass().getSimpleName(), "Selected file: '" + file + "'");
-        String lastFile = null;
         List<File> files = new ArrayList<>();
         for(File f : new File(file).listFiles()) {
           if(f.getName().endsWith(".sqlite3"))
@@ -222,46 +232,53 @@ public class SettingsImportExportActivity extends PreferenceActivity implements 
             return Long.valueOf(f1.lastModified()).compareTo(f2.lastModified()) ;
           }
         });
-        computeAndLoad(files, false);
+        computeAndLoad(files, new AndroidHelper.AlertDialogListListener<String>() {
+          @Override
+          public void onClick(String s) {
+            try {
+              loadDb(new File(s));
+            } catch (Exception e) {
+              AndroidHelper.toast_long(SettingsImportExportActivity.this, getString(R.string.error) + ": " + e.getMessage());
+              Log.e(getClass().getSimpleName(), "Error: " + e.getMessage(), e);
+            }
+          }
+        });
       }
     }
   }
 
-  private <T> void computeAndLoad(final List<T> list, final boolean delete) {
-    List<String> files = new ArrayList<>();
+  private void loadDb(File file) throws Exception{
+    SqlHelper.loadDatabase(SettingsImportExportActivity.this, SqlHelper.DB_NAME, file);
+    MainApplication app = MainApplication.getApp(SettingsImportExportActivity.this);
+    app.getDaysFactory().reload(app.getSql());
+    app.getProfilesFactory().reload(app.getSql());
+    app.getPublicHolidaysFactory().reload(app.getSql());
+    AndroidHelper.toast(SettingsImportExportActivity.this, getString(R.string.import_success));
+  }
+
+  private <T, V> void computeAndLoad(final List<T> list, AndroidHelper.AlertDialogListListener<V> yes) {
+    List<String> files = compute(list);
+    if(files.isEmpty())
+      AndroidHelper.toast_long(this, getString(R.string.error_no_files));
+    else {
+      AndroidHelper.showAlertDialog(this, R.string.box_select_db_file, files, yes);
+    }
+  }
+
+  private <T, V> List<V> compute(final List<T> list) {
+    List<V> files = new ArrayList<>();
     for(T t : list) {
       if(File.class.isInstance(t)) {
         File f = (File)t;
         if (f.getName().endsWith(".sqlite3"))
-          files.add(f.getAbsolutePath());
+          files.add((V)f);
       } else if(FileMetadata.class.isInstance(t)) {
         FileMetadata f = (FileMetadata)t;
-        File path = Environment.getExternalStoragePublicDirectory(
-          Environment.DIRECTORY_DOWNLOADS);
         if (f.getName().endsWith(".sqlite3"))
-          files.add(new File(path, f.getName()).getAbsolutePath());
+          files.add((V)f);
       }
     }
-    if(files.isEmpty())
-      AndroidHelper.toast_long(this, getString(R.string.error_no_files));
-    else {
-      AndroidHelper.showAlertDialog(this, R.string.box_select_db_file, files, new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-          TextView tv = (TextView) view;
-          File file = null;
-          try {
-            file = new File(tv.getText().toString());
-            SqlHelper.loadDatabase(SettingsImportExportActivity.this, SqlHelper.DB_NAME, file);
-            AndroidHelper.toast(SettingsImportExportActivity.this, getString(R.string.import_success));
-          } catch (Exception e) {
-            AndroidHelper.toast_long(SettingsImportExportActivity.this, getString(R.string.error) + ": " + e.getMessage());
-            Log.e(getClass().getSimpleName(), "Error: " + e.getMessage(), e);
-          }
-          if(delete && file != null) file.delete();
-        }
-      });
-    }
+    return files;
   }
 
   private void myStartActivity(Map<String, String> extra, Class<?> c, int code) {

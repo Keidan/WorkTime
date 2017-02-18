@@ -2,6 +2,7 @@ package fr.ralala.worktime.fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,8 +20,9 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.TimeZone;
 
+import fr.ralala.worktime.activities.DayActivity;
 import fr.ralala.worktime.activities.MainActivity;
-import fr.ralala.worktime.dialogs.DayEntryDialog;
+
 import fr.ralala.worktime.dialogs.MonthDetailsDialog;
 import fr.ralala.worktime.utils.AndroidHelper;
 import fr.ralala.worktime.MainApplication;
@@ -40,7 +42,7 @@ import fr.ralala.worktime.utils.SwipeDetector;
  *
  *******************************************************************************
  */
-public class MainFragment extends Fragment implements View.OnClickListener, AdapterView.OnItemClickListener, DayEntryDialog.DayEntryDialogSuccessListener, SwipeDetector.SwipeDetectorListener {
+public class MainFragment extends Fragment implements View.OnClickListener, AdapterView.OnItemClickListener, SwipeDetector.SwipeDetectorListener {
 
   private ImageButton btPreviousMonth = null;
   private ImageButton btNextMonth = null;
@@ -112,31 +114,23 @@ public class MainFragment extends Fragment implements View.OnClickListener, Adap
       }
     });
 
-    updateDate();
+    updateDates();
     return rootView;
-  }
-
-  public void dialogAddEntry(final DayEntry oldEntry, final DayEntry newEntry) {
-    if(oldEntry.getName().isEmpty() || !oldEntry.match(newEntry))
-      app.getDaysFactory().remove(oldEntry);
-    if(newEntry.getStart().isValidTime())
-      app.getDaysFactory().add(newEntry);
-    updateDate();
   }
 
   @Override
   public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
     DayEntry de = lvAdapter.getItem(i);
-    new DayEntryDialog(getActivity(), app, de, true, this).open();
+    DayActivity.startActivity(getActivity(), de.getDay().dateString(), true);
   }
 
   public void onClick(final View v) {
     if(v.equals(btPreviousMonth)) {
       currentDate.add(Calendar.MONTH, -1);
-      updateDate();
+      updateDates();
     } else if(v.equals(btNextMonth)) {
       currentDate.add(Calendar.MONTH, 1);
-      updateDate();
+      updateDates();
     } else if(v.equals(rlDetails)) {
       monthDetailsDialog.reloadDetails(
         currentDate.get(Calendar.MONTH),
@@ -145,7 +139,13 @@ public class MainFragment extends Fragment implements View.OnClickListener, Adap
     }
   }
 
-  private void updateDate() {
+  @Override
+  public void onResume() {
+    super.onResume();
+    updateDates();
+  }
+
+  private void updateDates() {
     lvAdapter.clear();
     int month = currentDate.get(Calendar.MONTH);
     int minDay = 1;

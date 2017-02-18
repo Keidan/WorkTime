@@ -2,11 +2,11 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" android:key="prefScreenImportExport">
     <PreferenceCategory android:title="@string/pref_title_export" android:key="prefCatDatabaseExport" >
         <Preference
-            android:key="prefExportFromDevice"
+            android:key="prefExportToDevice"
             android:title="@string/pref_title_device"
             android:summary="@string/pref_summary_export_to_device"/>
         <Preference
-            android:key="prefExportFromDropbox"
+            android:key="prefExportToDropbox"
             android:summary="@string/pref_summary_export_to_dropbox"
             android:title="@string/pref_title_dropbox"/>
     </PreferenceCategory>

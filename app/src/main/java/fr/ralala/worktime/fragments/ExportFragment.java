@@ -149,8 +149,8 @@ public class ExportFragment extends Fragment implements AdapterView.OnItemSelect
             excel.addTime(sheet, row, column + (column_offset++), WorkTimeDay.timeString(0, 0), false);
             excel.addTime(sheet, row, column + (column_offset++), WorkTimeDay.timeString(0, 0), false);
           } else {
-            excel.addTime(sheet, row, column + (column_offset++), de.getStart().timeString(), false);
-            excel.addTime(sheet, row, column + (column_offset++), de.getEnd().timeString(), false);
+            excel.addTime(sheet, row, column + (column_offset++), de.getStartMorning().timeString(), false);
+            excel.addTime(sheet, row, column + (column_offset++), de.getEndAfternoon().timeString(), false);
             excel.addTime(sheet, row, column + (column_offset++), de.getPause().timeString(), false);
             excel.addTime(sheet, row, column + (column_offset++), de.getOverTime(app).timeString(), false);
             if (!app.isExportHideWage())

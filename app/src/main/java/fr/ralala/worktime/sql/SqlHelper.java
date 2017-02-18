@@ -23,7 +23,7 @@ import java.util.Locale;
  *
  *******************************************************************************
  */
-public class SqlHelper extends SQLiteOpenHelper implements SqlConstants {
+  public class SqlHelper extends SQLiteOpenHelper implements SqlConstants {
 
   private static final String CREATE_BDD_PROFILES = "CREATE TABLE IF NOT EXISTS "
     + TABLE_PROFILES
@@ -32,11 +32,13 @@ public class SqlHelper extends SQLiteOpenHelper implements SqlConstants {
     + " TEXT NOT NULL, "
     + COL_PROFILES_CURRENT
     + " TEXT NOT NULL, "
-    + COL_PROFILES_START
+    + COL_PROFILES_START_MORNING
     + " TEXT NOT NULL, "
-    + COL_PROFILES_END
+    + COL_PROFILES_END_MORNING
     + " TEXT NOT NULL, "
-    + COL_PROFILES_PAUSE
+    + COL_PROFILES_START_AFTERNOON
+    + " TEXT NOT NULL, "
+    + COL_PROFILES_END_AFTERNOON
     + " TEXT NOT NULL, "
     + COL_PROFILES_TYPE
     + " TEXT NOT NULL, "
@@ -48,11 +50,13 @@ public class SqlHelper extends SQLiteOpenHelper implements SqlConstants {
     + " ("
     + COL_DAYS_CURRENT
     + " TEXT NOT NULL, "
-    + COL_DAYS_START
+    + COL_DAYS_START_MORNING
     + " TEXT NOT NULL, "
-    + COL_DAYS_END
+    + COL_DAYS_END_MORNING
     + " TEXT NOT NULL, "
-    + COL_DAYS_PAUSE
+    + COL_DAYS_START_AFTERNOON
+    + " TEXT NOT NULL, "
+    + COL_DAYS_END_AFTERNOON
     + " TEXT NOT NULL, "
     + COL_DAYS_TYPE
     + " TEXT NOT NULL, "
@@ -87,6 +91,13 @@ public class SqlHelper extends SQLiteOpenHelper implements SqlConstants {
   @Override
   public void onUpgrade(final SQLiteDatabase db, final int oldVersion,
                         final int newVersion) {
+
+    if(oldVersion == 1 && newVersion == 2) {
+      db.execSQL("ALTER TABLE " + TABLE_PROFILES + " RENAME TO " + TABLE_PROFILES + "_v1");
+      db.execSQL("ALTER TABLE " + TABLE_DAYS + " RENAME TO " + TABLE_DAYS + "_v1");
+      db.execSQL(CREATE_BDD_DAYS);
+      db.execSQL(CREATE_BDD_PROFILES);
+    }
   }
 
   // Copy to sdcard for debug use
