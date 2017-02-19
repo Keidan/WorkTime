@@ -8,7 +8,10 @@ import android.os.Environment;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
+import android.support.v4.app.NavUtils;
+import android.support.v7.app.AppCompatDelegate;
 import android.util.Log;
+import android.view.MenuItem;
 
 import com.dropbox.core.v2.files.FileMetadata;
 import com.dropbox.core.v2.files.ListFolderResult;
@@ -64,6 +67,10 @@ public class SettingsImportExportActivity extends PreferenceActivity implements 
     getFragmentManager().beginTransaction()
       .replace(android.R.id.content, prefFrag).commit();
     getFragmentManager().executePendingTransactions();
+    android.support.v7.app.ActionBar actionBar = AppCompatDelegate.create(this, null).getSupportActionBar();
+    actionBar.setDisplayShowHomeEnabled(true);
+    actionBar.setDisplayHomeAsUpEnabled(true);
+    AndroidHelper.openAnimation(this);
 
     MainApplication app = (MainApplication)getApplicationContext();
     prefFrag.findPreference(PREFS_KEY_EXPORT_TO_DEVICE).setOnPreferenceClickListener(this);
@@ -71,6 +78,23 @@ public class SettingsImportExportActivity extends PreferenceActivity implements 
     prefFrag.findPreference(PREFS_KEY_EXPORT_TO_DROPBOX).setOnPreferenceClickListener(this);
     prefFrag.findPreference(PREFS_KEY_IMPORT_FROM_DROPBOX).setOnPreferenceClickListener(this);
     dialog = buildProgress();
+  }
+
+  @Override
+  public void onBackPressed() {
+    super.onBackPressed();
+    AndroidHelper.closeAnimation(this);
+  }
+
+  @Override
+  public boolean onOptionsItemSelected(MenuItem item) {
+    switch (item.getItemId())
+    {
+      case android.R.id.home:
+        NavUtils.navigateUpFromSameTask(this);
+        return true;
+    }
+    return super.onOptionsItemSelected(item);
   }
 
   private ProgressDialog buildProgress() {

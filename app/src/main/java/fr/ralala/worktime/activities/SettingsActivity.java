@@ -15,6 +15,7 @@ import fr.ralala.worktime.MainApplication;
 import fr.ralala.worktime.R;
 import fr.ralala.worktime.changelog.ChangeLog;
 import fr.ralala.worktime.changelog.ChangeLogIds;
+import fr.ralala.worktime.utils.AndroidHelper;
 
 /**
  *******************************************************************************
@@ -51,6 +52,7 @@ public class SettingsActivity extends PreferenceActivity implements Preference.O
     android.support.v7.app.ActionBar actionBar = getDelegate().getSupportActionBar();
     actionBar.setDisplayShowHomeEnabled(true);
     actionBar.setDisplayHomeAsUpEnabled(true);
+    AndroidHelper.openAnimation(this);
     changeLog = new ChangeLog(
       new ChangeLogIds(
         R.raw.changelog,
@@ -73,6 +75,12 @@ public class SettingsActivity extends PreferenceActivity implements Preference.O
       prefFrag.findPreference(PREFS_KEY_VERSION).setSummary(e.getMessage());
     }
     prefFrag.findPreference(PREFS_KEY_CHANGELOG).setOnPreferenceClickListener(this);
+  }
+
+  @Override
+  public void onBackPressed() {
+    super.onBackPressed();
+    AndroidHelper.closeAnimation(this);
   }
 
   private AppCompatDelegate getDelegate() {

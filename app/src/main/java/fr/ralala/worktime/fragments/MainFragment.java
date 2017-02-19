@@ -6,6 +6,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ImageButton;
@@ -140,9 +142,19 @@ public class MainFragment extends Fragment implements View.OnClickListener, Adap
   }
 
   @Override
-  public void onResume() {
-    super.onResume();
-    updateDates();
+  public Animation onCreateAnimation(int transit, boolean enter, int nextAnim) {
+    Animation anim = AnimationUtils.loadAnimation(getActivity(), nextAnim);
+    anim.setAnimationListener(new Animation.AnimationListener() {
+      @Override
+      public void onAnimationStart(Animation animation) { }
+      @Override
+      public void onAnimationRepeat(Animation animation) { }
+      @Override
+      public void onAnimationEnd(Animation animation) {
+        updateDates();
+      }
+    });
+    return anim;
   }
 
   private void updateDates() {

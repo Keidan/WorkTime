@@ -104,6 +104,7 @@ public class MainActivity extends RuntimePermissionsActivity implements Navigati
     super.onResume();
     if(fragment != null) {
       final FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+      ft.setCustomAnimations(R.anim.fadein, R.anim.fadeout);
       ft.detach(fragment);
       ft.attach(fragment);
       ft.commit();
@@ -193,6 +194,8 @@ public class MainActivity extends RuntimePermissionsActivity implements Navigati
 
     if (fragment != null) {
       FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+      ft.setCustomAnimations(R.anim.fadein, R.anim.fadeout);
+
       ft.replace(R.id.content_frame, fragment);
       ft.commit();
     }

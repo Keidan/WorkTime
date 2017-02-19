@@ -14,6 +14,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.SparseIntArray;
 import android.view.View;
 
+import fr.ralala.worktime.utils.AndroidHelper;
+
 /**
  * Created by MG on 03-04-2016.
  * http://www.truiton.com/2016/04/obtaining-runtime-permissions-android-marshmallow-6-0/
@@ -24,7 +26,14 @@ public abstract class RuntimePermissionsActivity extends AppCompatActivity {
   @Override
   protected void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+    AndroidHelper.openAnimation(this);
     mErrorString = new SparseIntArray();
+  }
+
+  @Override
+  public void onBackPressed() {
+    super.onBackPressed();
+    AndroidHelper.closeAnimation(this);
   }
 
   @Override

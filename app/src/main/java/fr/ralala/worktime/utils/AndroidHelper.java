@@ -42,6 +42,13 @@ import fr.ralala.worktime.models.WorkTimeDay;
  */
 public class AndroidHelper {
 
+  public static void openAnimation(final Activity a) {
+    a.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+  }
+  public static void closeAnimation(final Activity a) {
+    a.overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+  }
+
   public static void sentMailTo(final Activity activity, String mailto, Uri attachment, String subject, String body, String senderMsg) {
     Intent emailIntent = new Intent(Intent.ACTION_SEND);
     emailIntent .setType("application/excel");

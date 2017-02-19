@@ -101,6 +101,7 @@ public abstract class AbstractFileChooserActivity extends AppCompatActivity impl
   public void onCreate(final Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.content_filechooser);
+    AndroidHelper.openAnimation(this);
     listview = (ListView)findViewById(R.id.list);
     Bundle b = getIntent().getExtras();
     if (b != null && b.containsKey(FILECHOOSER_TYPE_KEY))
@@ -125,6 +126,12 @@ public abstract class AbstractFileChooserActivity extends AppCompatActivity impl
     listview.setOnItemLongClickListener(longClick);
     listview.setOnItemClickListener(this);
     AndroidHelper.toast_long(this, R.string.chooser_long_press_message);
+  }
+
+  @Override
+  public void onBackPressed() {
+    super.onBackPressed();
+    AndroidHelper.closeAnimation(this);
   }
 
   @SuppressWarnings("deprecation")

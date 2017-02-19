@@ -69,6 +69,12 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
   }
 
   @Override
+  public void onBackPressed() {
+    super.onBackPressed();
+    AndroidHelper.closeAnimation(this);
+  }
+
+  @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     app = MainApplication.getApp(this);
@@ -76,6 +82,7 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
     android.support.v7.app.ActionBar actionBar = getDelegate().getSupportActionBar();
     actionBar.setDisplayShowHomeEnabled(true);
     actionBar.setDisplayHomeAsUpEnabled(true);
+    AndroidHelper.openAnimation(this);
     String date =  null;
     if(getIntent().getExtras() != null) {
       Bundle extras = getIntent().getExtras();
@@ -193,7 +200,7 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
   public boolean onOptionsItemSelected(final MenuItem item) {
     switch (item.getItemId()) {
       case android.R.id.home:
-        super.onBackPressed();
+        onBackPressed();
         return true;
       case R.id.action_cancel:
         if(displayProfile) {
