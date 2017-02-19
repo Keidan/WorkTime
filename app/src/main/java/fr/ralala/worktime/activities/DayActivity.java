@@ -3,7 +3,6 @@ package fr.ralala.worktime.activities;
 import android.content.Context;
 import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -93,7 +92,6 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
     List<DayEntry> days = displayProfile ? app.getDaysFactory().list() : app.getProfilesFactory().list();
     for(DayEntry de : days) {
       if((displayProfile && de.getDay().dateString().equals(date)) || (!displayProfile && de.getName().equals(date))) {
-        Log.e(getClass().getSimpleName(), "found de:"+de.getDay().dateString());
         this.de = de;
         break;
       }
@@ -214,7 +212,7 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
           setTitle(de.getDay().dateString());
           spProfile.setSelection(0);
         } else
-          finish();
+          onBackPressed();
         return true;
     }
     return false;

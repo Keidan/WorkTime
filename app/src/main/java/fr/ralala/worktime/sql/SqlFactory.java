@@ -135,7 +135,7 @@ public class SqlFactory implements SqlConstants {
 
   public long insertProfile(final DayEntry de) {
     final ContentValues values = new ContentValues();
-    values.put(COL_PROFILES_NAME, de.getName());
+    values.put(COL_PROFILES_NAME, de.getName().replaceAll("'", "\\'"));
     values.put(COL_PROFILES_CURRENT, de.getDay().dateString());
     values.put(COL_PROFILES_START_MORNING, de.getStartMorning().timeString());
     values.put(COL_PROFILES_END_MORNING, de.getEndMorning().timeString());
@@ -162,7 +162,7 @@ public class SqlFactory implements SqlConstants {
 
   public long insertPublicHoliday(final DayEntry de) {
     final ContentValues values = new ContentValues();
-    values.put(COL_PUBLIC_HOLIDAYS_NAME, de.getName());
+    values.put(COL_PUBLIC_HOLIDAYS_NAME, de.getName().replaceAll("'", "\\'"));
     values.put(COL_PUBLIC_HOLIDAYS_DATE, de.getDay().dateString());
     return bdd.insert(TABLE_PUBLIC_HOLIDAYS, null, values);
   }
@@ -178,7 +178,7 @@ public class SqlFactory implements SqlConstants {
         wtd.setMonth(Integer.parseInt(split[1]));
         wtd.setYear(Integer.parseInt(split[2]));
         final DayEntry de = new DayEntry(wtd, DayType.PUBLIC_HOLIDAY);
-        de.setName(c.getString(NUM_PUBLIC_HOLIDAYS_NAME));
+        de.setName(c.getString(NUM_PUBLIC_HOLIDAYS_NAME).replaceAll("\\'", "'"));
         list.add(de);
       } while (c.moveToNext());
     }
@@ -241,7 +241,7 @@ public class SqlFactory implements SqlConstants {
         String s = c.getString(NUM_PROFILES_AMOUNT);
         if(s != null && !s.isEmpty())
           de.setAmountByHour(Double.parseDouble(s));
-        de.setName(c.getString(NUM_PROFILES_NAME));
+        de.setName(c.getString(NUM_PROFILES_NAME).replaceAll("\\'", "'"));
 
         list.add(de);
       } while (c.moveToNext());
