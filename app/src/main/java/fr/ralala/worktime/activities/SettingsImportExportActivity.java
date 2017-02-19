@@ -167,6 +167,7 @@ public class SettingsImportExportActivity extends PreferenceActivity implements 
         @Override
         public void onClick(final Metadata m) {
           try {
+            dialog.show();
             new DownloadFileTask(SettingsImportExportActivity.this, helper.getClient(), SettingsImportExportActivity.this).execute((FileMetadata)m);
           } catch (Exception e) {
             AndroidHelper.toast_long(SettingsImportExportActivity.this, getString(R.string.error) + ": " + e.getMessage());
