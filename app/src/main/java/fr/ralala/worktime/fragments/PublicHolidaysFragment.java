@@ -9,10 +9,13 @@ import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ListView;
 
+import fr.ralala.worktime.activities.PublicHolidayActivity;
 import fr.ralala.worktime.utils.AndroidHelper;
 import fr.ralala.worktime.MainApplication;
 import fr.ralala.worktime.R;
@@ -55,7 +58,7 @@ public class PublicHolidaysFragment extends Fragment implements SimpleEntriesArr
   }
 
   public boolean onMenuEdit(DayEntry de) {
-    openDialog(de);
+    PublicHolidayActivity.startActivity(getActivity(), de.getName());
     return true;
   }
 
@@ -65,62 +68,24 @@ public class PublicHolidaysFragment extends Fragment implements SimpleEntriesArr
   }
 
   public void onClick(View view) {
-    openDialog(null);
+    PublicHolidayActivity.startActivity(getActivity(), "null");
   }
 
-  public void openDialog(final DayEntry de) {
-    /*Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-      .setAction("Action", null).show();*/
-    /* Crete the dialog builder and set the title */
-    AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getActivity());
-    dialogBuilder.setTitle(R.string.public_holidays);
-    /* prepare the inflater and set the new content */
-    LayoutInflater inflater = getActivity().getLayoutInflater();
-    final View dialogView = inflater.inflate(R.layout.content_public_holidays_dialog_box, null);
-    dialogBuilder.setView(dialogView);
-    /* Get the components */
-    final EditText tname = (EditText) dialogView.findViewById(R.id.etName);
-    final DatePicker tdate = (DatePicker) dialogView.findViewById(R.id.dpDate);
-    if(de != null) {
-      tname.setText(de.getName());
-      // set current date into datepicker
-      tdate.init(de.getDay().getYear(), de.getDay().getMonth() - 1, de.getDay().getDay(), null);
-    } else {
-      tname.setText("");
-      WorkTimeDay now = WorkTimeDay.now();
-      // set current date into datepicker
-      tdate.init(now.getYear(), now.getMonth() - 1, now.getDay(), null);
-    }
-    /* Init the common listener. */
-    final DialogInterface.OnClickListener ocl = new DialogInterface.OnClickListener(){
-      public void onClick(DialogInterface dialog, int whichButton) {
-        /* Click on the Positive button (OK) */
-        if(whichButton == DialogInterface.BUTTON_POSITIVE) {
-          final String name = tname.getText().toString().trim();
-          if(name.isEmpty()) {
-            AndroidHelper.showAlertDialog(getActivity(), R.string.error, R.string.error_no_name);
-            return;
-          }
-          WorkTimeDay wtd = new WorkTimeDay();
-          wtd.setDay(tdate.getDayOfMonth());
-          wtd.setMonth(tdate.getMonth() + 1);
-          wtd.setYear(tdate.getYear());
-          if(de != null) app.getPublicHolidaysFactory().remove(de); /* remove old entry */
-          DayEntry de = new DayEntry(wtd, DayType.PUBLIC_HOLIDAY);
-          de.setName(name);
-          app.getPublicHolidaysFactory().add(de);
-          //adapter.add(de);
-          adapter.notifyDataSetChanged();
-        }
-        dialog.dismiss();
+
+  @Override
+  public Animation onCreateAnimation(int transit, boolean enter, int nextAnim) {
+    Animation anim = AnimationUtils.loadAnimation(getActivity(), nextAnim);
+    anim.setAnimationListener(new Animation.AnimationListener() {
+      @Override
+      public void onAnimationStart(Animation animation) { }
+      @Override
+      public void onAnimationRepeat(Animation animation) { }
+      @Override
+      public void onAnimationEnd(Animation animation) {
+        adapter.notifyDataSetChanged();
       }
-    };
-    /* attach the listeners and init the default values */
-    dialogBuilder.setPositiveButton(R.string.ok, ocl);
-    dialogBuilder.setNegativeButton(R.string.cancel, ocl);
-    /* show the dialog */
-    AlertDialog alertDialog = dialogBuilder.create();
-    alertDialog.show();
+    });
+    return anim;
   }
 
 }
