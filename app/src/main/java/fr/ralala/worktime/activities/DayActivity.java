@@ -192,6 +192,9 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
   @Override
   public boolean onOptionsItemSelected(final MenuItem item) {
     switch (item.getItemId()) {
+      case android.R.id.home:
+        super.onBackPressed();
+        return true;
       case R.id.action_cancel:
         if(displayProfile) {
           AndroidHelper.initTimeTextView(wtdStartMorning = new WorkTimeDay(), tvStartMorning);
