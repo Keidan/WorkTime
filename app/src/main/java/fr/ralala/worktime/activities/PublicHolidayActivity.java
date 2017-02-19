@@ -52,13 +52,13 @@ public class PublicHolidayActivity extends AppCompatActivity implements View.OnC
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
+    AndroidHelper.openAnimation(this);
     super.onCreate(savedInstanceState);
     app = MainApplication.getApp(this);
     setContentView(R.layout.activity_public_holiday);
     android.support.v7.app.ActionBar actionBar = getDelegate().getSupportActionBar();
     actionBar.setDisplayShowHomeEnabled(true);
     actionBar.setDisplayHomeAsUpEnabled(true);
-    AndroidHelper.openAnimation(this);
     String name =  "";
     if(getIntent().getExtras() != null) {
       Bundle extras = getIntent().getExtras();

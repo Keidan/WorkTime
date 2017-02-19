@@ -75,13 +75,13 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
+    AndroidHelper.openAnimation(this);
     super.onCreate(savedInstanceState);
     app = MainApplication.getApp(this);
     setContentView(R.layout.activity_day);
     android.support.v7.app.ActionBar actionBar = getDelegate().getSupportActionBar();
     actionBar.setDisplayShowHomeEnabled(true);
     actionBar.setDisplayHomeAsUpEnabled(true);
-    AndroidHelper.openAnimation(this);
     String date =  null;
     if(getIntent().getExtras() != null) {
       Bundle extras = getIntent().getExtras();

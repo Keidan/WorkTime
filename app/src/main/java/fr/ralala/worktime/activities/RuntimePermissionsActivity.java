@@ -25,8 +25,8 @@ public abstract class RuntimePermissionsActivity extends AppCompatActivity {
 
   @Override
   protected void onCreate(@Nullable Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
     AndroidHelper.openAnimation(this);
+    super.onCreate(savedInstanceState);
     mErrorString = new SparseIntArray();
   }
 

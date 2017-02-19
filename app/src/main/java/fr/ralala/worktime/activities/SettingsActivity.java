@@ -44,6 +44,7 @@ public class SettingsActivity extends PreferenceActivity implements Preference.O
 
   @Override
   public void onCreate(final Bundle savedInstanceState) {
+    AndroidHelper.openAnimation(this);
     super.onCreate(savedInstanceState);
     prefFrag = new MyPreferenceFragment();
     getFragmentManager().beginTransaction()
@@ -52,7 +53,6 @@ public class SettingsActivity extends PreferenceActivity implements Preference.O
     android.support.v7.app.ActionBar actionBar = getDelegate().getSupportActionBar();
     actionBar.setDisplayShowHomeEnabled(true);
     actionBar.setDisplayHomeAsUpEnabled(true);
-    AndroidHelper.openAnimation(this);
     changeLog = new ChangeLog(
       new ChangeLogIds(
         R.raw.changelog,

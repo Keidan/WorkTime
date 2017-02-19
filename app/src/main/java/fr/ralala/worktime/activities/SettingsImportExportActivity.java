@@ -61,6 +61,7 @@ public class SettingsImportExportActivity extends PreferenceActivity implements 
 
   @Override
   public void onCreate(final Bundle savedInstanceState) {
+    AndroidHelper.openAnimation(this);
     super.onCreate(savedInstanceState);
     helper = DropboxHelper.helper();
     prefFrag = new MyPreferenceFragment();
@@ -70,7 +71,6 @@ public class SettingsImportExportActivity extends PreferenceActivity implements 
     android.support.v7.app.ActionBar actionBar = AppCompatDelegate.create(this, null).getSupportActionBar();
     actionBar.setDisplayShowHomeEnabled(true);
     actionBar.setDisplayHomeAsUpEnabled(true);
-    AndroidHelper.openAnimation(this);
 
     MainApplication app = (MainApplication)getApplicationContext();
     prefFrag.findPreference(PREFS_KEY_EXPORT_TO_DEVICE).setOnPreferenceClickListener(this);
