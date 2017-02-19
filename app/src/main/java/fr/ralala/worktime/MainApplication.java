@@ -6,6 +6,10 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
+import java.util.Calendar;
+import java.util.Date;
+import java.util.TimeZone;
+
 import fr.ralala.worktime.models.DaysFactory;
 import fr.ralala.worktime.models.ProfilesFactory;
 import fr.ralala.worktime.models.PublicHolidaysFactory;
@@ -29,6 +33,7 @@ public class MainApplication extends Application {
   private final ProfilesFactory profilesFactory;
   private final DaysFactory daysFactory;
   private SqlFactory sql = null;
+  private Calendar currentDate = null;
 
   public MainApplication() {
     publicHolidaysFactory = new PublicHolidaysFactory();
@@ -55,6 +60,15 @@ public class MainApplication extends Application {
       AndroidHelper.snack(activity, getString(R.string.error) + ": " + e.getMessage());
     }
     return ret;
+  }
+
+  public Calendar getCurrentDate() {
+    if(currentDate == null) {
+      currentDate = Calendar.getInstance();
+      currentDate.setTimeZone(TimeZone.getTimeZone("GMT"));
+      currentDate.setTime(new Date());
+    }
+    return currentDate;
   }
 
 

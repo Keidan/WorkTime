@@ -53,7 +53,6 @@ public class MainFragment extends Fragment implements View.OnClickListener, Adap
   private TextView tvYear = null;
   private TextView tvWorkDays = null;
   private TextView tvMonthlyHours = null;
-  private Calendar currentDate = null;
   private DaysEntriesArrayAdapter lvAdapter = null;
   private ListView days = null;
   private MainApplication app = null;
@@ -67,9 +66,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, Adap
     final ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.content_main, container, false);
     ((MainActivity)getActivity()).getSwipeDetector().setSwipeDetectorListener(this);
     app = MainApplication.getApp(getActivity());
-    currentDate = Calendar.getInstance();
-    currentDate.setTimeZone(TimeZone.getTimeZone("GMT"));
-    currentDate.setTime(new Date());
+    //app.getCurrentDate().setTime(new Date());
 
     monthDetailsDialog = new MonthDetailsDialog(getActivity(), app);
 
@@ -128,15 +125,15 @@ public class MainFragment extends Fragment implements View.OnClickListener, Adap
 
   public void onClick(final View v) {
     if(v.equals(btPreviousMonth)) {
-      currentDate.add(Calendar.MONTH, -1);
+      app.getCurrentDate().add(Calendar.MONTH, -1);
       updateDates();
     } else if(v.equals(btNextMonth)) {
-      currentDate.add(Calendar.MONTH, 1);
+      app.getCurrentDate().add(Calendar.MONTH, 1);
       updateDates();
     } else if(v.equals(rlDetails)) {
       monthDetailsDialog.reloadDetails(
-        currentDate.get(Calendar.MONTH),
-        currentDate.get(Calendar.YEAR));
+        app.getCurrentDate().get(Calendar.MONTH),
+        app.getCurrentDate().get(Calendar.YEAR));
       monthDetailsDialog.open();
     }
   }
@@ -159,33 +156,33 @@ public class MainFragment extends Fragment implements View.OnClickListener, Adap
 
   private void updateDates() {
     lvAdapter.clear();
-    int month = currentDate.get(Calendar.MONTH);
+    int month = app.getCurrentDate().get(Calendar.MONTH);
     int minDay = 1;
-    int maxDay = currentDate.getActualMaximum(Calendar.DAY_OF_MONTH);
+    int maxDay = app.getCurrentDate().getActualMaximum(Calendar.DAY_OF_MONTH);
     /* init the top components */
     String smonth = AndroidHelper.getMonthString(month);
     final String ss_month = String.format(Locale.US, "%02d", month + 1);
     final String ss_maxDay = String.format(Locale.US, "%02d", maxDay);
     smonth += "\n01/" + ss_month + " - " + ss_maxDay + "/" + ss_month;
     tvMonth.setText(smonth);
-    tvYear.setText(String.valueOf(currentDate.get(Calendar.YEAR)));
+    tvYear.setText(String.valueOf(app.getCurrentDate().get(Calendar.YEAR)));
 
     int wDays = 0, realwDays = 0;
-    int currentDay = currentDate.get(Calendar.DAY_OF_MONTH);
+    int currentDay = app.getCurrentDate().get(Calendar.DAY_OF_MONTH);
     /* get first week */
-    currentDate.set(Calendar.DAY_OF_MONTH, 1);
-    int firstWeek = currentDate.get(Calendar.WEEK_OF_YEAR);
+    app.getCurrentDate().set(Calendar.DAY_OF_MONTH, 1);
+    int firstWeek = app.getCurrentDate().get(Calendar.WEEK_OF_YEAR);
     WorkTimeDay wtdTotalWorkTime = new WorkTimeDay();
     double totalPay = 0.0;
     /* loop for each days in the month */
     for(int day = minDay; day <= maxDay; ++day) {
-      currentDate.set(Calendar.DAY_OF_MONTH, day);
-      DayEntry de = new DayEntry(currentDate, DayType.ERROR);
+      app.getCurrentDate().set(Calendar.DAY_OF_MONTH, day);
+      DayEntry de = new DayEntry(app.getCurrentDate(), DayType.ERROR);
       de.setAmountByHour(app.getAmountByHour()); /* set default amount */
       /* Force public holiday */
       if(app.getPublicHolidaysFactory().isPublicHolidays(de.getDay()))
         de.setType(DayType.PUBLIC_HOLIDAY);
-      int now = currentDate.get(Calendar.DAY_OF_WEEK);
+      int now = app.getCurrentDate().get(Calendar.DAY_OF_WEEK);
       /* reload data if the current day is already inserted */
       totalPay += app.getDaysFactory().checkForDayDateAndCopy(de);
       /* count working day */
@@ -198,12 +195,12 @@ public class MainFragment extends Fragment implements View.OnClickListener, Adap
     Map<String, DayEntry> map = app.getDaysFactory().toDaysMap();
     int min = (firstWeek == 52 ? 1 : firstWeek);
     for(int w = min; w <= min + 6; ++w) {
-      WorkTimeDay wtdWorkTimeFromWeek =  app.getDaysFactory().getWorkTimeDayFromWeek(map, w, currentDate.get(Calendar.MONTH), currentDate.get(Calendar.YEAR));
+      WorkTimeDay wtdWorkTimeFromWeek =  app.getDaysFactory().getWorkTimeDayFromWeek(map, w, app.getCurrentDate().get(Calendar.MONTH), app.getCurrentDate().get(Calendar.YEAR));
       if(wtdWorkTimeFromWeek.isValidTime())
         wtdTotalWorkTime.addTime(wtdWorkTimeFromWeek);
     }
     /* reload work day label */
-    currentDate.set(Calendar.DAY_OF_MONTH, currentDay);
+    app.getCurrentDate().set(Calendar.DAY_OF_MONTH, currentDay);
     String workDays = getString(R.string.work_days) + ": " + String.format(Locale.US, "%02d/%02d", realwDays, wDays) + " " + getString(R.string.days_lower_case);
     tvWorkDays.setText(workDays);
 
