@@ -1,5 +1,6 @@
 package fr.ralala.worktime.fragments;
 
+import android.app.DatePickerDialog;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -10,7 +11,9 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
+import android.widget.DatePicker;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -87,6 +90,23 @@ public class MainFragment extends Fragment implements View.OnClickListener, Adap
       getContext(), R.layout.days_listview_item, new ArrayList<DayEntry>());
     days.setAdapter(lvAdapter);
     days.setOnItemClickListener(this);
+
+    LinearLayout llYearMonth = (LinearLayout)rootView.findViewById(R.id.llYearMonth);
+    llYearMonth.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View view) {
+        AndroidHelper.openDatePicker(getActivity(), app.getCurrentDate(), new DatePickerDialog.OnDateSetListener() {
+          @Override
+          public void onDateSet(DatePicker view, int selectedYear, int selectedMonth, int selectedDay) {
+            Log.e("PLOP", "selectedYear:" + selectedYear + ", selectedMonth:" + selectedMonth + ", selectedDay:" + selectedDay);
+            app.getCurrentDate().set(Calendar.YEAR, selectedYear);
+            app.getCurrentDate().set(Calendar.MONTH, selectedMonth);
+            app.getCurrentDate().set(Calendar.DAY_OF_MONTH, selectedDay);
+            updateDates();
+          }
+        });
+      }
+    });
 
     days.setOnScrollListener(new AbsListView.OnScrollListener(){
       public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {

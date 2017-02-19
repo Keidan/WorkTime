@@ -1,6 +1,7 @@
 package fr.ralala.worktime.utils;
 
 import android.app.Activity;
+import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -18,13 +19,13 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
-import com.dropbox.core.v2.files.FileMetadata;
 
 import java.io.File;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.text.DateFormatSymbols;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
@@ -98,6 +99,11 @@ public class AndroidHelper {
         public void onClick(DialogInterface dialog, int whichButton) {
           if(no != null) no.onClick(null);
         }}).show();
+  }
+
+  public static void openDatePicker(final Context c, final Calendar current, DatePickerDialog.OnDateSetListener li) {
+    DatePickerDialog dpd = new DatePickerDialog(c, li, current.get(Calendar.YEAR), current.get(Calendar.MONTH), current.get(Calendar.DAY_OF_MONTH));
+    dpd.show();
   }
 
   public static void openTimePicker(final Context c, final WorkTimeDay current, final TextView tv) {

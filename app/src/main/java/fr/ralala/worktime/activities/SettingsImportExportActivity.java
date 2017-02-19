@@ -18,7 +18,6 @@ import com.dropbox.core.v2.files.ListFolderResult;
 import com.dropbox.core.v2.files.Metadata;
 
 import java.io.File;
-import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -115,8 +114,6 @@ public class SettingsImportExportActivity extends PreferenceActivity implements 
   @Override
   public void onDropboxUploadComplete(FileMetadata result) {
     dialog.dismiss();
-    String message = result.getName() + " size " + result.getSize() + " modified " +
-      DateFormat.getDateTimeInstance().format(result.getClientModified());
     AndroidHelper.toast(SettingsImportExportActivity.this, getString(R.string.export_success));
     safeRemove();
   }
