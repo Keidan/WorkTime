@@ -160,6 +160,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, Adap
 
   @Override
   public Animation onCreateAnimation(int transit, boolean enter, int nextAnim) {
+    if(nextAnim == 0) return super.onCreateAnimation(transit, enter, nextAnim);
     Animation anim = AnimationUtils.loadAnimation(getActivity(), nextAnim);
     anim.setAnimationListener(new Animation.AnimationListener() {
       @Override
