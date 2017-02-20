@@ -7,8 +7,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.DatePicker;
@@ -20,10 +18,8 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.Locale;
 import java.util.Map;
-import java.util.TimeZone;
 
 import fr.ralala.worktime.activities.DayActivity;
 import fr.ralala.worktime.activities.MainActivity;
@@ -132,8 +128,22 @@ public class MainFragment extends Fragment implements View.OnClickListener, Adap
         }
       }
     });
-
-    updateDates();
+    updateTop();
+    /* the effect without the code below is too ugly, in waits for a better solution */
+    new Thread() {
+      @Override
+      public void run() {
+        try {
+          sleep(50);
+        } catch (InterruptedException ie) { }
+        getActivity().runOnUiThread(new Runnable() {
+          @Override
+          public void run() {
+            updateDates();
+          }
+        });
+      }
+    }.start();
     return rootView;
   }
 
@@ -146,9 +156,11 @@ public class MainFragment extends Fragment implements View.OnClickListener, Adap
   public void onClick(final View v) {
     if(v.equals(btPreviousMonth)) {
       app.getCurrentDate().add(Calendar.MONTH, -1);
+      updateTop();
       updateDates();
     } else if(v.equals(btNextMonth)) {
       app.getCurrentDate().add(Calendar.MONTH, 1);
+      updateTop();
       updateDates();
     } else if(v.equals(rlDetails)) {
       monthDetailsDialog.reloadDetails(
@@ -158,35 +170,22 @@ public class MainFragment extends Fragment implements View.OnClickListener, Adap
     }
   }
 
-  @Override
-  public Animation onCreateAnimation(int transit, boolean enter, int nextAnim) {
-    if(nextAnim == 0) return super.onCreateAnimation(transit, enter, nextAnim);
-    Animation anim = AnimationUtils.loadAnimation(getActivity(), nextAnim);
-    anim.setAnimationListener(new Animation.AnimationListener() {
-      @Override
-      public void onAnimationStart(Animation animation) { }
-      @Override
-      public void onAnimationRepeat(Animation animation) { }
-      @Override
-      public void onAnimationEnd(Animation animation) {
-        updateDates();
-      }
-    });
-    return anim;
+  private void updateTop() {
+    /* init the top components */
+    int month = app.getCurrentDate().get(Calendar.MONTH);
+    String smonth = AndroidHelper.getMonthString(month);
+    final String ss_month = String.format(Locale.US, "%02d", month + 1);
+    final String ss_maxDay = String.format(Locale.US, "%02d", app.getCurrentDate().getActualMaximum(Calendar.DAY_OF_MONTH));
+    smonth += "\n01/" + ss_month + " - " + ss_maxDay + "/" + ss_month;
+    tvMonth.setText(smonth);
+    tvYear.setText(String.valueOf(app.getCurrentDate().get(Calendar.YEAR)));
+    tvYear.setText(String.valueOf(app.getCurrentDate().get(Calendar.YEAR)));
   }
 
   private void updateDates() {
     lvAdapter.clear();
-    int month = app.getCurrentDate().get(Calendar.MONTH);
     int minDay = 1;
     int maxDay = app.getCurrentDate().getActualMaximum(Calendar.DAY_OF_MONTH);
-    /* init the top components */
-    String smonth = AndroidHelper.getMonthString(month);
-    final String ss_month = String.format(Locale.US, "%02d", month + 1);
-    final String ss_maxDay = String.format(Locale.US, "%02d", maxDay);
-    smonth += "\n01/" + ss_month + " - " + ss_maxDay + "/" + ss_month;
-    tvMonth.setText(smonth);
-    tvYear.setText(String.valueOf(app.getCurrentDate().get(Calendar.YEAR)));
 
     int wDays = 0, realwDays = 0;
     int currentDay = app.getCurrentDate().get(Calendar.DAY_OF_MONTH);
