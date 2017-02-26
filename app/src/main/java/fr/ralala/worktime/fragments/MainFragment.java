@@ -2,6 +2,7 @@ package fr.ralala.worktime.fragments;
 
 import android.app.DatePickerDialog;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -66,6 +67,9 @@ public class MainFragment extends Fragment implements View.OnClickListener, Adap
     ((MainActivity)getActivity()).getSwipeDetector().setSwipeDetectorListener(this);
     app = MainApplication.getApp(getActivity());
     //app.getCurrentDate().setTime(new Date());
+    /* restore the scroll position value */
+    if(savedInstanceState != null && savedInstanceState.containsKey("lastFirstVisibleItem"))
+      lastFirstVisibleItem = savedInstanceState.getInt("lastFirstVisibleItem");
 
     monthDetailsDialog = new MonthDetailsDialog(getActivity(), app);
 
@@ -82,11 +86,18 @@ public class MainFragment extends Fragment implements View.OnClickListener, Adap
     btPreviousMonth.setOnClickListener(this);
     btNextMonth.setOnClickListener(this);
 
+    /* hide if the index is not a the begin of the list */
+    if(lastFirstVisibleItem > 0) {
+      isScrollingUp = true;
+      rlDetails.setVisibility(View.GONE);
+    }
+
+
     lvAdapter = new DaysEntriesArrayAdapter(
       getContext(), R.layout.days_listview_item, new ArrayList<DayEntry>());
     days.setAdapter(lvAdapter);
     days.setOnItemClickListener(this);
-
+    Log.e("PLOP", "lastFirstVisibleItem:"+lastFirstVisibleItem);
     LinearLayout llYearMonth = (LinearLayout)rootView.findViewById(R.id.llYearMonth);
     llYearMonth.setOnClickListener(new View.OnClickListener() {
       @Override
@@ -147,6 +158,22 @@ public class MainFragment extends Fragment implements View.OnClickListener, Adap
     return rootView;
   }
 
+
+  @Override
+  public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+    super.onActivityCreated(savedInstanceState);
+    /* restore the scroll position value */
+    if(savedInstanceState != null && savedInstanceState.containsKey("lastFirstVisibleItem"))
+      lastFirstVisibleItem = savedInstanceState.getInt("lastFirstVisibleItem");
+  }
+
+  @Override
+  public void onSaveInstanceState(Bundle outState) {
+    super.onSaveInstanceState(outState);
+    /* save the scroll position value */
+    outState.putInt("lastFirstVisibleItem", days.getFirstVisiblePosition());
+  }
+
   @Override
   public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
     DayEntry de = lvAdapter.getItem(i);
@@ -193,7 +220,6 @@ public class MainFragment extends Fragment implements View.OnClickListener, Adap
     app.getCurrentDate().set(Calendar.DAY_OF_MONTH, 1);
     int firstWeek = app.getCurrentDate().get(Calendar.WEEK_OF_YEAR);
     WorkTimeDay wtdTotalWorkTime = new WorkTimeDay();
-    double totalPay = 0.0;
     /* loop for each days in the month */
     for(int day = minDay; day <= maxDay; ++day) {
       app.getCurrentDate().set(Calendar.DAY_OF_MONTH, day);
@@ -204,7 +230,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, Adap
         de.setType(DayType.PUBLIC_HOLIDAY);
       int now = app.getCurrentDate().get(Calendar.DAY_OF_WEEK);
       /* reload data if the current day is already inserted */
-      totalPay += app.getDaysFactory().checkForDayDateAndCopy(de);
+      app.getDaysFactory().checkForDayDateAndCopy(de);
       /* count working day */
       if(now != Calendar.SUNDAY && now != Calendar.SATURDAY && !app.getPublicHolidaysFactory().isPublicHolidays(de.getDay())) {
         ++wDays;
@@ -233,6 +259,8 @@ public class MainFragment extends Fragment implements View.OnClickListener, Adap
 
     tvMonthlyHours.setText(monthlyHours);
     lvAdapter.notifyDataSetChanged();
+    /* restore the scroll position */
+    days.setSelection(lastFirstVisibleItem);
   }
 
 
