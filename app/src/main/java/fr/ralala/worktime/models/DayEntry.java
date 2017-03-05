@@ -24,21 +24,23 @@ public class DayEntry {
   private WorkTimeDay endMorning = null;
   private WorkTimeDay startAfternoon = null;
   private WorkTimeDay endAfternoon = null;
-  private DayType type = DayType.ERROR;
+  private DayType typeMorning = DayType.ERROR;
+  private DayType typeAfternoon = DayType.ERROR;
   private double amountByHour = 0.0;
 
-  public DayEntry(final WorkTimeDay day, final DayType type) {
+  public DayEntry(final WorkTimeDay day, final DayType typeMorning, final DayType typeAfternoon) {
     this.day = new WorkTimeDay();
     this.startMorning = new WorkTimeDay();
     this.endMorning = new WorkTimeDay();
     this.startAfternoon = new WorkTimeDay();
     this.endAfternoon = new WorkTimeDay();
-    this.type = type;
+    this.typeMorning = typeMorning;
+    this.typeAfternoon = typeAfternoon;
     this.day.copy(day);
   }
 
-  public DayEntry(final Calendar day, final DayType type) {
-    this(new WorkTimeDay().fromCalendar(day), type);
+  public DayEntry(final Calendar day, final DayType typeMorning, final DayType typeAfternoon) {
+    this(new WorkTimeDay().fromCalendar(day), typeMorning, typeAfternoon);
   }
 
   public double getWorkTimePay(double defAmount) {
@@ -65,17 +67,18 @@ public class DayEntry {
   }
 
   public WorkTimeDay getWorkTime() {
-    WorkTimeDay wm = endMorning.clone();
-    wm.delTime(startMorning.clone());
-    WorkTimeDay wa = endAfternoon.clone();
-    wa.delTime(startAfternoon.clone());
+    WorkTimeDay wm = getTypeMorning() == DayType.AT_WORK ? endMorning.clone() : new WorkTimeDay();
+    wm.delTime(getTypeMorning() == DayType.AT_WORK ? startMorning.clone() : new WorkTimeDay());
+    WorkTimeDay wa = getTypeAfternoon() == DayType.AT_WORK ? endAfternoon.clone() : new WorkTimeDay();
+    wa.delTime(getTypeAfternoon() == DayType.AT_WORK ? startAfternoon.clone() : new WorkTimeDay());
     WorkTimeDay wt = wm.clone();
     wt.addTime(wa);
     return wt;
   }
 
   public void copy(DayEntry de) {
-    type = de.type;
+    typeMorning = de.typeMorning;
+    typeAfternoon = de.typeAfternoon;
     name = de.name;
     day.copy(de.day);
     startMorning.copy(de.startMorning);
@@ -88,13 +91,13 @@ public class DayEntry {
   public boolean match(DayEntry de) {
     return day.match(de.day)  && startMorning.match(de.startMorning) && endMorning.match(de.endMorning)
       && startAfternoon.match(de.startAfternoon) && endAfternoon.match(de.endAfternoon) &&
-      type == de.type && amountByHour == de.amountByHour;
+      typeMorning == de.typeMorning && typeAfternoon == de.typeAfternoon && amountByHour == de.amountByHour;
   }
 
   public boolean matchSimpleDate(WorkTimeDay current) {
     boolean ret = (current.getMonth() == day.getMonth() && current.getDay() == day.getDay());
     /* simple holidays can change between each years */
-    if(ret && type == DayType.HOLIDAY)
+    if(ret && typeMorning == DayType.HOLIDAY && typeAfternoon == DayType.HOLIDAY)
       return current.getYear() == day.getYear();
     return ret;
   }
@@ -163,12 +166,20 @@ public class DayEntry {
     return wp;
   }
 
-  public DayType getType() {
-    return type;
+  public DayType getTypeMorning() {
+    return typeMorning;
   }
 
-  public void setType(DayType type) {
-    this.type = type;
+  public void setTypeMorning(DayType type) {
+    this.typeMorning = type;
+  }
+
+  public DayType getTypeAfternoon() {
+    return typeAfternoon;
+  }
+
+  public void setTypeAfternoon(DayType type) {
+    this.typeAfternoon = type;
   }
 
   public WorkTimeDay getEndMorning() {

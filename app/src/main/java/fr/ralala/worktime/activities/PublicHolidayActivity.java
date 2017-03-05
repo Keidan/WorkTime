@@ -73,7 +73,7 @@ public class PublicHolidayActivity extends AppCompatActivity implements View.OnC
       }
     }
     if(de == null) {
-      de = new DayEntry(WorkTimeDay.now(), DayType.ERROR);
+      de = new DayEntry(WorkTimeDay.now(), DayType.ERROR, DayType.ERROR);
       de.setName(name);
     }
     fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -128,7 +128,7 @@ public class PublicHolidayActivity extends AppCompatActivity implements View.OnC
       wtd.setMonth(tdate.getMonth() + 1);
       wtd.setYear(tdate.getYear());
       if(de != null) app.getPublicHolidaysFactory().remove(de); /* remove old entry */
-      DayEntry de = new DayEntry(wtd, DayType.PUBLIC_HOLIDAY);
+      DayEntry de = new DayEntry(wtd, DayType.PUBLIC_HOLIDAY, DayType.PUBLIC_HOLIDAY);
       de.setName(name);
       app.getPublicHolidaysFactory().add(de);
       onBackPressed();

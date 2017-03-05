@@ -3,6 +3,7 @@ package fr.ralala.worktime.adapters;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,6 +21,7 @@ import fr.ralala.worktime.R;
 import fr.ralala.worktime.models.DayEntry;
 import fr.ralala.worktime.models.DayType;
 import fr.ralala.worktime.models.WorkTimeDay;
+import fr.ralala.worktime.utils.AndroidHelper;
 
 /**
  * ******************************************************************************
@@ -86,23 +88,47 @@ public class DaysEntriesArrayAdapter extends ArrayAdapter<DayEntry> {
     if (t != null) {
 
       Calendar cal = t.getDay().toCalendar();
-      int bg = c.getResources().getColor(android.R.color.transparent, null);
-      if (t.matchSimpleDate(today))
-        bg = c.getResources().getColor(R.color.green, null);
-      else if (cal.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY && t.getType() != DayType.PUBLIC_HOLIDAY)
-        bg = c.getResources().getColor(R.color.blue_1, null);
-      else if (cal.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY && t.getType() != DayType.PUBLIC_HOLIDAY)
-        bg = c.getResources().getColor(R.color.blue_2, null);
-      else if (t.getType() == DayType.HOLIDAY)
-        bg = c.getResources().getColor(R.color.purple, null);
-      else if (t.getType() == DayType.PUBLIC_HOLIDAY)
-        bg = c.getResources().getColor(R.color.purple2, null);
-      else if (t.getType() == DayType.UNPAID)
-        bg = c.getResources().getColor(R.color.red, null);
-      else if (t.getType() == DayType.SICKNESS)
-        bg = c.getResources().getColor(R.color.orange, null);
+      int bg_morning;
+      int bg_afternoon;
+      if (t.matchSimpleDate(today)) {
+        bg_afternoon = bg_morning = c.getResources().getColor(R.color.green, null);
+      } else {
+        if (cal.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY && t.getTypeMorning() != DayType.PUBLIC_HOLIDAY)
+          bg_morning = c.getResources().getColor(R.color.blue_1, null);
+        else if (cal.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY && t.getTypeMorning() != DayType.PUBLIC_HOLIDAY)
+          bg_morning = c.getResources().getColor(R.color.blue_2, null);
+        else
+          bg_morning = (t.getTypeMorning() == DayType.HOLIDAY) ?
+            c.getResources().getColor(R.color.purple, null) :
+            (t.getTypeMorning() == DayType.PUBLIC_HOLIDAY) ?
+              c.getResources().getColor(R.color.purple2, null) :
+              (t.getTypeMorning() == DayType.UNPAID) ?
+                c.getResources().getColor(R.color.red, null) :
+                (t.getTypeMorning() == DayType.SICKNESS) ?
+                  c.getResources().getColor(R.color.orange, null) :
+                  c.getResources().getColor(android.R.color.transparent, null);
 
-      holder.llDay.setBackgroundColor(bg);
+        if (cal.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY && t.getTypeAfternoon() != DayType.PUBLIC_HOLIDAY)
+          bg_afternoon = c.getResources().getColor(R.color.blue_1, null);
+        else if (cal.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY && t.getTypeAfternoon() != DayType.PUBLIC_HOLIDAY)
+          bg_afternoon = c.getResources().getColor(R.color.blue_2, null);
+        else
+          bg_afternoon = (t.getTypeAfternoon() == DayType.HOLIDAY) ?
+            c.getResources().getColor(R.color.purple, null) :
+            (t.getTypeAfternoon() == DayType.PUBLIC_HOLIDAY) ?
+              c.getResources().getColor(R.color.purple2, null) :
+              (t.getTypeAfternoon() == DayType.UNPAID) ?
+                c.getResources().getColor(R.color.red, null) :
+                (t.getTypeAfternoon() == DayType.SICKNESS) ?
+                  c.getResources().getColor(R.color.orange, null) :
+                  c.getResources().getColor(android.R.color.transparent, null);
+      }
+      if(bg_morning == bg_afternoon) {
+        holder.llDay.setBackgroundColor(bg_morning);
+      } else {
+        AndroidHelper.applyLinearGradient(holder.llDay, bg_afternoon, bg_morning);
+      }
+
 
       /* Update the texts */
       if (holder.tvDay != null) {
@@ -110,28 +136,28 @@ public class DaysEntriesArrayAdapter extends ArrayAdapter<DayEntry> {
           DayEntry.getDayString2lt(c, cal.get(Calendar.DAY_OF_WEEK)));
       }
       if (holder.tvStart != null) {
-        if (isValid(t))
+        if (isNotValidMorning(t))
           holder.tvStart.setText("-");
         else {
           holder.tvStart.setText(t.getStartMorning().timeString());
         }
       }
       if (holder.tvEnd != null) {
-        if (isValid(t))
+        if (isNotValidAfternoon(t))
           holder.tvEnd.setText("-");
         else {
           holder.tvEnd.setText(t.getEndAfternoon().timeString());
         }
       }
       if (holder.tvPause != null) {
-        if (isValid(t))
+        if (isNotValidMorning(t) && isNotValidAfternoon(t))
           holder.tvPause.setText("-");
         else {
           holder.tvPause.setText(t.getPause().timeString());
         }
       }
       if (holder.tvTotal != null) {
-        if(isValid(t))
+        if(isNotValidMorning(t) && isNotValidAfternoon(t))
           holder.tvTotal.setText("-");
         else {
           holder.tvTotal.setText(t.getWorkTime().timeString());
@@ -139,7 +165,7 @@ public class DaysEntriesArrayAdapter extends ArrayAdapter<DayEntry> {
       }
       if (holder.tvOver != null) {
         MainApplication app = MainApplication.getApp(c);
-        if(isValid(t)) {
+        if(isNotValidMorning(t) && isNotValidAfternoon(t)) {
           holder.tvOver.setText("-");
           holder.tvOver.setTypeface(Typeface.MONOSPACE, Typeface.NORMAL);
           holder.tvOver.setGravity(Gravity.CENTER);
@@ -167,8 +193,11 @@ public class DaysEntriesArrayAdapter extends ArrayAdapter<DayEntry> {
     return v;
   }
 
-  private boolean isValid(DayEntry t) {
-    return (t.getType() != DayType.AT_WORK || (!t.getStartMorning().isValidTime() && !t.getEndAfternoon().isValidTime()));
+  private boolean isNotValidMorning(DayEntry t) {
+    return (t.getTypeMorning() != DayType.AT_WORK || (!t.getStartMorning().isValidTime() && !t.getEndMorning().isValidTime()));
+  }
+  private boolean isNotValidAfternoon(DayEntry t) {
+    return (t.getTypeAfternoon() != DayType.AT_WORK || (!t.getStartAfternoon().isValidTime() && !t.getEndAfternoon().isValidTime()));
   }
 
 }

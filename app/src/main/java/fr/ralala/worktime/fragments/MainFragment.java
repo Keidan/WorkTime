@@ -97,7 +97,6 @@ public class MainFragment extends Fragment implements View.OnClickListener, Adap
       getContext(), R.layout.days_listview_item, new ArrayList<DayEntry>());
     days.setAdapter(lvAdapter);
     days.setOnItemClickListener(this);
-    Log.e("PLOP", "lastFirstVisibleItem:"+lastFirstVisibleItem);
     LinearLayout llYearMonth = (LinearLayout)rootView.findViewById(R.id.llYearMonth);
     llYearMonth.setOnClickListener(new View.OnClickListener() {
       @Override
@@ -105,7 +104,6 @@ public class MainFragment extends Fragment implements View.OnClickListener, Adap
         AndroidHelper.openDatePicker(getActivity(), app.getCurrentDate(), new DatePickerDialog.OnDateSetListener() {
           @Override
           public void onDateSet(DatePicker view, int selectedYear, int selectedMonth, int selectedDay) {
-            Log.e("PLOP", "selectedYear:" + selectedYear + ", selectedMonth:" + selectedMonth + ", selectedDay:" + selectedDay);
             app.getCurrentDate().set(Calendar.YEAR, selectedYear);
             app.getCurrentDate().set(Calendar.MONTH, selectedMonth);
             app.getCurrentDate().set(Calendar.DAY_OF_MONTH, selectedDay);
@@ -214,7 +212,8 @@ public class MainFragment extends Fragment implements View.OnClickListener, Adap
     int minDay = 1;
     int maxDay = app.getCurrentDate().getActualMaximum(Calendar.DAY_OF_MONTH);
 
-    int wDays = 0, realwDays = 0;
+    int wDays = 0;
+    double realwDays = 0.0;
     int currentDay = app.getCurrentDate().get(Calendar.DAY_OF_MONTH);
     /* get first week */
     app.getCurrentDate().set(Calendar.DAY_OF_MONTH, 1);
@@ -223,18 +222,21 @@ public class MainFragment extends Fragment implements View.OnClickListener, Adap
     /* loop for each days in the month */
     for(int day = minDay; day <= maxDay; ++day) {
       app.getCurrentDate().set(Calendar.DAY_OF_MONTH, day);
-      DayEntry de = new DayEntry(app.getCurrentDate(), DayType.ERROR);
+      DayEntry de = new DayEntry(app.getCurrentDate(), DayType.ERROR, DayType.ERROR);
       de.setAmountByHour(app.getAmountByHour()); /* set default amount */
       /* Force public holiday */
-      if(app.getPublicHolidaysFactory().isPublicHolidays(de.getDay()))
-        de.setType(DayType.PUBLIC_HOLIDAY);
+      if(app.getPublicHolidaysFactory().isPublicHolidays(de.getDay())) {
+        de.setTypeMorning(DayType.PUBLIC_HOLIDAY);
+        de.setTypeAfternoon(DayType.PUBLIC_HOLIDAY);
+      }
       int now = app.getCurrentDate().get(Calendar.DAY_OF_WEEK);
       /* reload data if the current day is already inserted */
       app.getDaysFactory().checkForDayDateAndCopy(de);
       /* count working day */
       if(now != Calendar.SUNDAY && now != Calendar.SATURDAY && !app.getPublicHolidaysFactory().isPublicHolidays(de.getDay())) {
         ++wDays;
-        if(de.getType() == DayType.AT_WORK) ++realwDays;
+        if(de.getTypeMorning() == DayType.AT_WORK) realwDays += 0.5;
+        if(de.getTypeAfternoon() == DayType.AT_WORK) realwDays += 0.5;
       }
       lvAdapter.add(de);
     }
@@ -247,7 +249,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, Adap
     }
     /* reload work day label */
     app.getCurrentDate().set(Calendar.DAY_OF_MONTH, currentDay);
-    String workDays = getString(R.string.work_days) + ": " + String.format(Locale.US, "%02d/%02d", realwDays, wDays) + " " + getString(R.string.days_lower_case);
+    String workDays = getString(R.string.work_days) + ": " + String.format(Locale.US, "%02d.%02d/%02d", (int)realwDays, Integer.parseInt((""+realwDays).split("\\.")[1]), wDays) + " " + getString(R.string.days_lower_case);
     tvWorkDays.setText(workDays);
 
     /* substract legal working time */

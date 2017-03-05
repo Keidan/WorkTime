@@ -61,18 +61,35 @@
             android:padding="5dp"/>
 
         <TextView
-            android:id="@+id/tvType"
+            android:id="@+id/tvTypeMorning"
             android:layout_below="@+id/tvProfile"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/type"
+            android:text="@string/type_morning"
             android:layout_marginTop="10sp"
             android:padding="5dp"/>
 
         <Spinner
-            android:id="@+id/spType"
+            android:id="@+id/spTypeMorning"
             android:layout_below="@+id/tvProfile"
-            android:layout_toEndOf="@+id/tvType"
+            android:layout_toEndOf="@+id/tvTypeMorning"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10sp"
+            android:padding="5dp"/>
+        <TextView
+            android:id="@+id/tvTypeAfternoon"
+            android:layout_below="@+id/tvTypeMorning"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/type_afternoon"
+            android:layout_marginTop="10sp"
+            android:padding="5dp"/>
+
+        <Spinner
+            android:id="@+id/spTypeAfternoon"
+            android:layout_below="@+id/tvTypeMorning"
+            android:layout_toEndOf="@+id/tvTypeAfternoon"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10sp"
@@ -84,7 +101,7 @@
 
         <TextView
             android:id="@+id/tvLblStartMorning"
-            android:layout_below="@+id/tvType"
+            android:layout_below="@+id/tvTypeAfternoon"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="@string/start_morning"
@@ -93,7 +110,7 @@
             android:padding="5dp"/>
         <View
             android:id="@+id/space1"
-            android:layout_below="@+id/tvType"
+            android:layout_below="@+id/tvTypeAfternoon"
             android:layout_toEndOf="@+id/tvLblStartMorning"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -103,7 +120,7 @@
             android:layout_above="@+id/tvStartMorning"/>
         <TextView
             android:id="@+id/tvLblEndMorning"
-            android:layout_below="@+id/tvType"
+            android:layout_below="@+id/tvTypeAfternoon"
             android:layout_toEndOf="@+id/space1"
             android:layout_width="0dp"
             android:layout_height="wrap_content"

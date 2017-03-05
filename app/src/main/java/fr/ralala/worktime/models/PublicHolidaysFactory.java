@@ -37,7 +37,7 @@ public class PublicHolidaysFactory {
 
   public boolean isPublicHolidays(WorkTimeDay currentDate) {
     for(DayEntry de : publicHolidays) {
-      if((de.getType() == DayType.PUBLIC_HOLIDAY) && de.matchSimpleDate(currentDate))
+      if((de.getTypeMorning() == DayType.PUBLIC_HOLIDAY && de.getTypeAfternoon() == DayType.PUBLIC_HOLIDAY) && de.matchSimpleDate(currentDate))
         return true;
     }
     return false;

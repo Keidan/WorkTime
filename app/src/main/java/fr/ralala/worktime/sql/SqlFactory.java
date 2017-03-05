@@ -68,7 +68,7 @@ public class SqlFactory implements SqlConstants {
 
   private void v1tov2(List<DayEntry> listOld, List<DayEntry> listNew) {
     for(DayEntry de : listOld) {
-      final DayEntry d = new DayEntry(de.getDay(), de.getType());
+      final DayEntry d = new DayEntry(de.getDay(), de.getTypeMorning(), de.getTypeAfternoon());
       d.copy(de);
       WorkTimeDay start = de.getStartMorning();
       WorkTimeDay end = de.getEndMorning();
@@ -98,7 +98,7 @@ public class SqlFactory implements SqlConstants {
         wtd.setDay(Integer.parseInt(split[0]));
         wtd.setMonth(Integer.parseInt(split[1]));
         wtd.setYear(Integer.parseInt(split[2]));
-        final DayEntry de = new DayEntry(wtd, DayType.compute(c.getInt(c_type)));
+        final DayEntry de = new DayEntry(wtd, DayType.compute(c.getInt(c_type)), DayType.compute(c.getInt(c_type)));
         de.setStartMorning(c.getString(c_start)); /* start */
         de.setEndMorning(c.getString(c_end)); /* end */
         de.setStartAfternoon(c.getString(c_pause)); /* pause */
@@ -141,21 +141,19 @@ public class SqlFactory implements SqlConstants {
     values.put(COL_PROFILES_END_MORNING, de.getEndMorning().timeString());
     values.put(COL_PROFILES_START_AFTERNOON, de.getStartAfternoon().timeString());
     values.put(COL_PROFILES_END_AFTERNOON, de.getEndAfternoon().timeString());
-    values.put(COL_PROFILES_TYPE, de.getType().value());
+    values.put(COL_PROFILES_TYPE, de.getTypeMorning().value() + "|" + de.getTypeAfternoon().value());
     values.put(COL_PROFILES_AMOUNT, String.valueOf(de.getAmountByHour()));
     return bdd.insert(TABLE_PROFILES, null, values);
   }
 
   public long insertDay(final DayEntry de) {
-
-    Log.e(getClass().getSimpleName(), "de.getDay().dateString():"+de.getDay().dateString());
     final ContentValues values = new ContentValues();
     values.put(COL_DAYS_CURRENT, de.getDay().dateString());
     values.put(COL_DAYS_START_MORNING, de.getStartMorning().timeString());
     values.put(COL_DAYS_END_MORNING, de.getEndMorning().timeString());
     values.put(COL_DAYS_START_AFTERNOON, de.getStartAfternoon().timeString());
     values.put(COL_DAYS_END_AFTERNOON, de.getEndAfternoon().timeString());
-    values.put(COL_DAYS_TYPE, de.getType().value());
+    values.put(COL_DAYS_TYPE, de.getTypeMorning().value() + "|" + de.getTypeAfternoon().value());
     values.put(COL_DAYS_AMOUNT, String.valueOf(de.getAmountByHour()));
     return bdd.insert(TABLE_DAYS, null, values);
   }
@@ -177,7 +175,7 @@ public class SqlFactory implements SqlConstants {
         wtd.setDay(Integer.parseInt(split[0]));
         wtd.setMonth(Integer.parseInt(split[1]));
         wtd.setYear(Integer.parseInt(split[2]));
-        final DayEntry de = new DayEntry(wtd, DayType.PUBLIC_HOLIDAY);
+        final DayEntry de = new DayEntry(wtd, DayType.PUBLIC_HOLIDAY, DayType.PUBLIC_HOLIDAY);
         de.setName(c.getString(NUM_PUBLIC_HOLIDAYS_NAME).replaceAll("\\'", "'"));
         list.add(de);
       } while (c.moveToNext());
@@ -192,6 +190,15 @@ public class SqlFactory implements SqlConstants {
     return list;
   }
 
+  private int getInt(String s, int def) {
+    try {
+      Log.e("TEG", "s:" +s);
+      return Integer.parseInt(s);
+    } catch (Exception e) {
+      return def;
+    }
+  }
+
   public List<DayEntry> getDays() {
     final List<DayEntry> list = new ArrayList<>();
     final Cursor c = bdd.rawQuery("SELECT * FROM " + TABLE_DAYS, null);
@@ -202,7 +209,17 @@ public class SqlFactory implements SqlConstants {
         wtd.setDay(Integer.parseInt(split[0]));
         wtd.setMonth(Integer.parseInt(split[1]));
         wtd.setYear(Integer.parseInt(split[2]));
-        final DayEntry de = new DayEntry(wtd, DayType.compute(c.getInt(NUM_DAYS_TYPE)));
+        String types = c.getString(NUM_DAYS_TYPE);
+        DayType dta, dtb;
+        if(types != null && !types.isEmpty() && types.contains("|")) {
+          String [] sp = types.split("\\|");
+          dta = DayType.compute(getInt(sp[0], DayType.ERROR.value()));
+          dtb = DayType.compute(getInt(sp[1], DayType.ERROR.value()));
+        } else {
+          dta = DayType.compute(c.getInt(NUM_DAYS_TYPE));
+          dtb = DayType.compute(c.getInt(NUM_DAYS_TYPE));
+        }
+        final DayEntry de = new DayEntry(wtd, dta, dtb);
         de.setStartMorning(c.getString(NUM_DAYS_START_MORNING));
         de.setEndMorning(c.getString(NUM_DAYS_END_MORNING));
         de.setStartAfternoon(c.getString(NUM_DAYS_START_AFTERNOON));
@@ -233,7 +250,18 @@ public class SqlFactory implements SqlConstants {
         wtd.setDay(Integer.parseInt(split[0]));
         wtd.setMonth(Integer.parseInt(split[1]));
         wtd.setYear(Integer.parseInt(split[2]));
-        final DayEntry de = new DayEntry(wtd, DayType.compute(c.getInt(NUM_PROFILES_TYPE)));
+
+        String types = c.getString(NUM_PROFILES_TYPE);
+        DayType dta, dtb;
+        if(types != null && !types.isEmpty() && types.contains("|")) {
+          String [] sp = types.split("|");
+          dta = DayType.compute(getInt(sp[0], DayType.ERROR.value()));
+          dtb = DayType.compute(getInt(sp[1], DayType.ERROR.value()));
+        } else {
+          dta = DayType.compute(c.getInt(NUM_PROFILES_TYPE));
+          dtb = dta;
+        }
+        final DayEntry de = new DayEntry(wtd, dta, dtb);
         de.setStartMorning(c.getString(NUM_PROFILES_START_MORNING));
         de.setEndMorning(c.getString(NUM_PROFILES_END_MORNING));
         de.setStartAfternoon(c.getString(NUM_PROFILES_START_AFTERNOON));

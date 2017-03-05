@@ -126,13 +126,14 @@ public class ExportFragment extends Fragment implements AdapterView.OnItemSelect
 
         List<String> headers = new ArrayList<>();
         headers.add(getString(R.string.date).replaceAll(" :", "")); // A -> 65
-        headers.add(getString(R.string.type).replaceAll(" :", "")); // B -> 66
-        headers.add(getString(R.string.hour_in)); // C -> 67
-        headers.add(getString(R.string.hour_out)); // D -> 68
-        headers.add(getString(R.string.break_time)); // E -> 69
-        headers.add(getString(R.string.overtime)); // F -> 70
+        headers.add(getString(R.string.type_morning).replaceAll(" :", "")); // B -> 66
+        headers.add(getString(R.string.type_afternoon).replaceAll(" :", "")); // C -> 67
+        headers.add(getString(R.string.hour_in)); // D -> 68
+        headers.add(getString(R.string.hour_out)); // E -> 69
+        headers.add(getString(R.string.break_time)); // F -> 70
+        headers.add(getString(R.string.overtime)); // G -> 71
         if(!app.isExportHideWage())
-          headers.add(getString(R.string.wage).replaceAll(" :", "")); // G -> 71
+          headers.add(getString(R.string.wage).replaceAll(" :", "")); // H -> 72
         excel.createHorizontalHeader(sheet, row, column, headers.toArray(new String[]{}));
         List<DayEntry> works = app.getDaysFactory().list();
         column = 0;
@@ -140,10 +141,11 @@ public class ExportFragment extends Fragment implements AdapterView.OnItemSelect
         for (DayEntry de : works) {
           if (!de.getDay().isInMonth(ee.month + 1) || !de.getDay().isInYear(ee.year)) continue;
           excel.addLabel(sheet, row, column, de.getDay().dateString(), false);
-          excel.addLabel(sheet, row, column+1, de.getType() != DayType.AT_WORK ? de.getType().string(getActivity()) : "", false);
+          excel.addLabel(sheet, row, column+1, de.getTypeMorning() != DayType.AT_WORK ? de.getTypeMorning().string(getActivity()) : "", false);
+          excel.addLabel(sheet, row, column+2, de.getTypeAfternoon() != DayType.AT_WORK ? de.getTypeAfternoon().string(getActivity()) : "", false);
           double wage = .0f;
-          int column_offset= 2;
-          if(de.getType() != DayType.AT_WORK) {
+          int column_offset= 3;
+          if(de.getTypeMorning() != DayType.AT_WORK && de.getTypeAfternoon() != DayType.AT_WORK) {
             excel.addTime(sheet, row, column + (column_offset++), WorkTimeDay.timeString(0, 0), false);
             excel.addTime(sheet, row, column + (column_offset++), WorkTimeDay.timeString(0, 0), false);
             excel.addTime(sheet, row, column + (column_offset++), WorkTimeDay.timeString(0, 0), false);
@@ -163,7 +165,7 @@ public class ExportFragment extends Fragment implements AdapterView.OnItemSelect
         excel.addLabel(sheet, row, column++, getString(R.string.total), true);
         int length = (!app.isExportHideWage() ? 2 : 1);
         for (int i = 0; i < length; ++i) {
-          char c = (char) (70 + i);
+          char c = (char) (71 + i);
           StringBuilder sb = new StringBuilder();
           sb.append("SUM(").append(c).append(2).append(":").append(c).append(row).append(")");
           excel.addFormula(sheet, row, column++, sb, true, i < length - 1 ? true : false);
@@ -214,7 +216,7 @@ public class ExportFragment extends Fragment implements AdapterView.OnItemSelect
       for(int day = 1; day <= maxDay; ++day) {
         ctime.set(Calendar.DAY_OF_MONTH, day);
         DayEntry de = map.get(String.format(Locale.US, "%02d/%02d/%04d", ctime.get(Calendar.DAY_OF_MONTH), ctime.get(Calendar.MONTH) + 1, ctime.get(Calendar.YEAR)));
-        if(de != null && de.getType() == DayType.AT_WORK) {
+        if(de != null && (de.getTypeMorning() == DayType.AT_WORK || de.getTypeAfternoon() == DayType.AT_WORK)) {
           pay += de.getWorkTimePay(app.getAmountByHour());
           total.addTime(de.getWorkTime());
         }

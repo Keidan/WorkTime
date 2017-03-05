@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -41,7 +40,8 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
   public static final String DAY_ACTIVITY_EXTRA_DATE = "fr.ralala.worktime.activities.DAY_ACTIVITY_EXTRA_DATE_date";
   public static final String DAY_ACTIVITY_EXTRA_PROFILE = "fr.ralala.worktime.activities.DAY_ACTIVITY_EXTRA_DATE_profile";
   private Spinner spProfile = null;
-  private Spinner spType = null;
+  private Spinner spTypeMorning = null;
+  private Spinner spTypeAfternoon = null;
   private TextView tvStartMorning = null;
   private TextView tvEndMorning = null;
   private TextView tvStartAfternoon = null;
@@ -97,8 +97,8 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
       }
     }
     if(de == null) {
-      de = new DayEntry(WorkTimeDay.now(), DayType.ERROR);
-      if(!date.isEmpty() && date.indexOf("/") != -1)
+      de = new DayEntry(WorkTimeDay.now(), DayType.ERROR, DayType.ERROR);
+      if(date != null && !date.isEmpty() && date.contains("/"))
         de.setDay(date);
     }
     fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -109,7 +109,8 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
       setTitle(date);
     TextView tvProfile = (TextView)findViewById(R.id.tvProfile);
     spProfile = (Spinner)findViewById(R.id.spProfile);
-    spType = (Spinner)findViewById(R.id.spType);
+    spTypeMorning = (Spinner)findViewById(R.id.spTypeMorning);
+    spTypeAfternoon = (Spinner)findViewById(R.id.spTypeAfternoon);
     tvStartMorning = (TextView)findViewById(R.id.tvStartMorning);
     tvEndMorning = (TextView)findViewById(R.id.tvEndMorning);
     tvStartAfternoon = (TextView)findViewById(R.id.tvStartAfternoon);
@@ -148,15 +149,24 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
       etName.setText(de.getName());
     }
     /* build type spinner */
-    final ArrayAdapter<String> spTypeAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item);
-    spTypeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-    spType.setAdapter(spTypeAdapter);
-    spTypeAdapter.add(DayType.getText(this, DayType.AT_WORK));
-    spTypeAdapter.add(DayType.getText(this, DayType.HOLIDAY));
-    spTypeAdapter.add(DayType.getText(this, DayType.PUBLIC_HOLIDAY));
-    spTypeAdapter.add(DayType.getText(this, DayType.SICKNESS));
-    spTypeAdapter.add(DayType.getText(this, DayType.UNPAID));
-    spType.setSelection(de.getType() == DayType.ERROR ? 0 : de.getType().value());
+    final ArrayAdapter<String> spTypeAdapterMorning = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item);
+    spTypeAdapterMorning.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+    spTypeMorning.setAdapter(spTypeAdapterMorning);
+    spTypeAdapterMorning.add(DayType.getText(this, DayType.AT_WORK));
+    spTypeAdapterMorning.add(DayType.getText(this, DayType.HOLIDAY));
+    spTypeAdapterMorning.add(DayType.getText(this, DayType.PUBLIC_HOLIDAY));
+    spTypeAdapterMorning.add(DayType.getText(this, DayType.SICKNESS));
+    spTypeAdapterMorning.add(DayType.getText(this, DayType.UNPAID));
+    final ArrayAdapter<String> spTypeAdapterAfternoon = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item);
+    spTypeAdapterAfternoon.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+    spTypeAfternoon.setAdapter(spTypeAdapterAfternoon);
+    spTypeAdapterAfternoon.add(DayType.getText(this, DayType.AT_WORK));
+    spTypeAdapterAfternoon.add(DayType.getText(this, DayType.HOLIDAY));
+    spTypeAdapterAfternoon.add(DayType.getText(this, DayType.PUBLIC_HOLIDAY));
+    spTypeAdapterAfternoon.add(DayType.getText(this, DayType.SICKNESS));
+    spTypeAdapterAfternoon.add(DayType.getText(this, DayType.UNPAID));
+    spTypeMorning.setSelection(de.getTypeMorning() == DayType.ERROR ? 0 : de.getTypeMorning().value());
+    spTypeAfternoon.setSelection(de.getTypeAfternoon() == DayType.ERROR ? 0 : de.getTypeAfternoon().value());
 
     if(displayProfile) {
     /* build profiles spinner */
@@ -207,7 +217,8 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
           AndroidHelper.initTimeTextView(wtdStartAfternoon = new WorkTimeDay(), tvStartAfternoon);
           AndroidHelper.initTimeTextView(wtdEndAfternoon = new WorkTimeDay(), tvEndAfternoon);
           etAmount.setText(getString(R.string.zero));
-          spType.setSelection(DayType.AT_WORK.value());
+          spTypeMorning.setSelection(DayType.AT_WORK.value());
+          spTypeAfternoon.setSelection(DayType.AT_WORK.value());
           etName.setText("");
           setTitle(de.getDay().dateString());
           spProfile.setSelection(0);
@@ -220,7 +231,9 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
 
   public void onClick(final View v) {
     if(v.equals(fab)) {
-      DayEntry newEntry = new DayEntry(de.getDay().toCalendar(), DayType.compute(this, spType.getSelectedItem().toString()));
+      DayEntry newEntry = new DayEntry(de.getDay().toCalendar(),
+        DayType.compute(this, spTypeMorning.getSelectedItem().toString()),
+        DayType.compute(this, spTypeAfternoon.getSelectedItem().toString()));
       String s = etAmount.getText().toString().trim();
       if (s.equals(getString(R.string.zero))) s = "";
       newEntry.setAmountByHour(s.isEmpty() ? app.getAmountByHour() : Double.parseDouble(s));
@@ -252,11 +265,8 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
         return;
       }
       if(displayProfile) {
-        Log.e(getClass().getSimpleName(), "de.match(newEntry):"+de.match(newEntry));
         if (!de.match(newEntry))
           app.getDaysFactory().remove(de);
-        Log.e(getClass().getSimpleName(), "newEntry.getStartMorning().isValidTime():"+newEntry.getStartMorning().isValidTime());
-        Log.e(getClass().getSimpleName(), "newEntry.getEndAfternoon().isValidTime():"+newEntry.getEndAfternoon().isValidTime());
         if (newEntry.getStartMorning().isValidTime() && newEntry.getEndAfternoon().isValidTime())
           app.getDaysFactory().add(newEntry);
       } else {
@@ -289,7 +299,8 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
           AndroidHelper.initTimeTextView(de.getStartAfternoon(), tvStartAfternoon);
           AndroidHelper.initTimeTextView(de.getEndAfternoon(), tvEndAfternoon);
           etAmount.setText(String.format(Locale.US, "%.02f", de.getAmountByHour()).replaceAll(",", "."));
-          spType.setSelection(de.getType() == DayType.ERROR ? 0 : de.getType().value());
+          spTypeMorning.setSelection(de.getTypeMorning() == DayType.ERROR ? 0 : de.getTypeMorning().value());
+          spTypeAfternoon.setSelection(de.getTypeAfternoon() == DayType.ERROR ? 0 : de.getTypeAfternoon().value());
           etName.setText(de.getName());
           refreshStartEndPause(de);
         }

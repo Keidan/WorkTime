@@ -7,8 +7,14 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.LinearGradient;
+import android.graphics.Shader;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.LayerDrawable;
+import android.graphics.drawable.PaintDrawable;
+import android.graphics.drawable.ShapeDrawable;
+import android.graphics.drawable.shapes.RectShape;
 import android.net.Uri;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
@@ -42,6 +48,32 @@ import fr.ralala.worktime.models.WorkTimeDay;
  *******************************************************************************
  */
 public class AndroidHelper {
+
+  public static void applyLinearGradient(final View view, final int ...colors) {
+    Drawable[] layers = new Drawable[1];
+
+    ShapeDrawable.ShaderFactory sf = new ShapeDrawable.ShaderFactory() {
+      @Override
+      public Shader resize(int width, int height) {
+        LinearGradient lg = new LinearGradient(
+          view.getWidth(),
+          0,
+          0,
+          0,
+          colors,
+          new float[] { 0, 1 },
+          Shader.TileMode.CLAMP);
+        return lg;
+      }
+    };
+    PaintDrawable p = new PaintDrawable();
+    p.setShape(new RectShape());
+    p.setShaderFactory(sf);
+    layers[0] = p;
+
+    LayerDrawable composite = new LayerDrawable(layers);
+    view.setBackgroundDrawable(composite);
+  }
 
   public static void openAnimation(final Activity a) {
     a.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);

@@ -52,7 +52,7 @@ public class DaysFactory {
     for(int day = 1; day <= maxDay; ++day) {
       ctime.set(Calendar.DAY_OF_MONTH, day);
       DayEntry de = map.get(String.format(Locale.US, "%02d/%02d/%04d", ctime.get(Calendar.DAY_OF_MONTH), ctime.get(Calendar.MONTH) + 1, ctime.get(Calendar.YEAR)));
-      if(de != null && de.getType() == DayType.AT_WORK && week == ctime.get(Calendar.WEEK_OF_YEAR)) {
+      if(de != null && (de.getTypeMorning() == DayType.AT_WORK || de.getTypeAfternoon() == DayType.AT_WORK) && week == ctime.get(Calendar.WEEK_OF_YEAR)) {
         ret.addTime(de.getWorkTime());
       }
     }

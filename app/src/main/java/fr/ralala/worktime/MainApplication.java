@@ -5,6 +5,7 @@ import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.util.Log;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -56,8 +57,8 @@ public class MainApplication extends Application {
       profilesFactory.reload(sql);
       ret = true;
     } catch (final Exception e) {
-      //AndroidHelper.showAlertDialog(this, R.string.error, getString(R.string.error) + ": " + e.getMessage());
-      AndroidHelper.snack(activity, getString(R.string.error) + ": " + e.getMessage());
+      Log.e(getClass().getSimpleName(), "Error: " + e.getMessage(), e);
+      AndroidHelper.showAlertDialog(this, R.string.error, getString(R.string.error) + ": " + e.getMessage());
     }
     return ret;
   }
