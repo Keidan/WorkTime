@@ -79,6 +79,13 @@ public class DaysEntriesArrayAdapter extends ArrayAdapter<DayEntry> {
       holder.tvPause = (TextView) v.findViewById(R.id.tvPause);
       holder.tvTotal = (TextView) v.findViewById(R.id.tvTotal);
       holder.tvOver = (TextView) v.findViewById(R.id.tvOver);
+      setRowHeight(holder.tvDay);
+      setRowHeight(holder.tvStart);
+      setRowHeight(holder.tvEnd);
+      setRowHeight(holder.tvPause);
+      setRowHeight(holder.tvTotal);
+      setRowHeight(holder.tvOver);
+
       v.setTag(holder);
     } else {
         /* We recycle a View that already exists */
@@ -191,6 +198,12 @@ public class DaysEntriesArrayAdapter extends ArrayAdapter<DayEntry> {
       }
     }
     return v;
+  }
+
+  private void setRowHeight(TextView v) {
+    v.setMinHeight(0); // Min Height
+    v.setMinimumHeight(0); // Min Height
+    v.setHeight(44); // Height
   }
 
   private boolean isNotValidMorning(DayEntry t) {
