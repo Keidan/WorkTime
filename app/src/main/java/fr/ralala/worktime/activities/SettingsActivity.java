@@ -37,6 +37,7 @@ public class SettingsActivity extends PreferenceActivity implements Preference.O
   public static final String       PREFS_KEY_HIDE_WAGE            = "prefHideWage";
   public static final String       PREFS_KEY_CHANGELOG            = "prefChangelog";
   public static final String       PREFS_KEY_VERSION              = "prefVersion";
+  public static final String       PREFS_KEY_DAY_ROWS_HEIGHT      = "prefDayRowsHeight";
 
   private MyPreferenceFragment     prefFrag                       = null;
   private AppCompatDelegate        mDelegate;

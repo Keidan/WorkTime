@@ -203,7 +203,7 @@ public class DaysEntriesArrayAdapter extends ArrayAdapter<DayEntry> {
   private void setRowHeight(TextView v) {
     v.setMinHeight(0); // Min Height
     v.setMinimumHeight(0); // Min Height
-    v.setHeight(44); // Height
+    v.setHeight(((MainApplication)c.getApplicationContext()).getDayRowsHeight()); // Height
   }
 
   private boolean isNotValidMorning(DayEntry t) {

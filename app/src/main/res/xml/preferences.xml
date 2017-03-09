@@ -23,6 +23,12 @@
             android:defaultValue="false"
             android:summary="@string/pref_summary_hide_wage"
             android:title="@string/pref_title_hide_wage" />
+        <EditTextPreference
+            android:key="prefDayRowsHeight"
+            android:defaultValue="44"
+            android:summary="@string/pref_summary_day_row_height"
+            android:title="@string/pref_title_day_row_height"
+            android:inputType="numberDecimal" />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/pref_title_database" android:key="prefCatDatabase" >
         <Preference

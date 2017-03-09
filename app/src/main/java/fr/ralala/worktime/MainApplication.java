@@ -89,6 +89,11 @@ public class MainApplication extends Application {
     return sql;
   }
 
+  public int getDayRowsHeight() {
+    SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+    return Integer.parseInt(prefs.getString(SettingsActivity.PREFS_KEY_DAY_ROWS_HEIGHT, "44"));
+  }
+
   public WorkTimeDay getLegalWorkTimeByDay() {
     SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
     String [] split = prefs.getString(SettingsActivity.PREFS_KEY_WORKTIME_BY_DAY, "00:00").split(":");
