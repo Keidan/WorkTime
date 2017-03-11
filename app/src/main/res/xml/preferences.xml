@@ -1,6 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" android:key="prefScreen">
     <PreferenceCategory android:title="@string/pref_title_settings" android:key="prefCatSettings" >
+        <ListPreference
+            android:key="prefDefaultHome"
+            android:defaultValue="home"
+            android:entries="@array/entries_fragments"
+            android:summary="@string/pref_fragments_summary"
+            android:entryValues="@array/values_fragments"
+            android:title="@string/pref_fragments_title" />
         <fr.ralala.worktime.dialogs.TimePreferenceDialog
             android:key="prefWorkTimeByDay"
             android:title="@string/pref_title_work_time_by_day"

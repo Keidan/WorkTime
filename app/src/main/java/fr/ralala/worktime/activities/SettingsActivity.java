@@ -40,6 +40,9 @@ public class SettingsActivity extends PreferenceActivity implements Preference.O
   public static final String       PREFS_KEY_DAY_ROWS_HEIGHT            = "prefDayRowsHeight";
   public static final String       PREFS_KEY_PROFILES_WEIGHT_DEPTH      = "prefWeightDepth";
   public static final String       PREFS_KEY_PROFILES_WEIGHT_CLEAR      = "prefWeightClear";
+  public static final String       PREFS_KEY_DEFAULT_HOME               = "prefDefaultHome";
+
+
 
   private MyPreferenceFragment     prefFrag                       = null;
   private AppCompatDelegate        mDelegate;
@@ -80,6 +83,7 @@ public class SettingsActivity extends PreferenceActivity implements Preference.O
       prefFrag.findPreference(PREFS_KEY_VERSION).setSummary(e.getMessage());
     }
     prefFrag.findPreference(PREFS_KEY_CHANGELOG).setOnPreferenceClickListener(this);
+
   }
 
   @Override

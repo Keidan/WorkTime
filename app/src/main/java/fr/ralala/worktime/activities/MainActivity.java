@@ -12,6 +12,7 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 
@@ -67,9 +68,9 @@ public class MainActivity extends RuntimePermissionsActivity implements Navigati
     navigationView.setNavigationItemSelectedListener(this);
     navigationView.getMenu().getItem(0).setChecked(true);
 
-    displayView(R.id.nav_home);
-    /* load SQL */
     app = MainApplication.getApp(this);
+    displayView(getDefaultHome());
+    /* load SQL */
     if(!app.openSql(this)) finish();
 
     String[] perms = new String[]{
@@ -88,6 +89,20 @@ public class MainActivity extends RuntimePermissionsActivity implements Navigati
         R.string.changelog_show_full), this);
     if(changeLog.firstRun())
       changeLog.getLogDialog().show();
+  }
+
+  private int getDefaultHome() {
+    switch(app.getDefaultHome()) {
+      case 1:
+        return (R.id.nav_profile);
+      case 2:
+        return (R.id.nav_public_holidays);
+      case 3:
+        return (R.id.nav_export);
+      case 0:
+      default:
+        return (R.id.nav_home);
+    }
   }
 
   public SwipeDetector getSwipeDetector() {
@@ -132,7 +147,7 @@ public class MainActivity extends RuntimePermissionsActivity implements Navigati
       drawer.closeDrawer(GravityCompat.START);
     }
     if (!viewIsAtHome) { //if the current view is not the News fragment
-      displayView(R.id.nav_home); //display the home fragment
+      displayView(getDefaultHome()); //display the home fragment
       navigationView.getMenu().getItem(IDX_HOME).setChecked(true); /* select home title */
     } else {
       //moveTaskToBack(true);  //If view is in News fragment, exit application
@@ -162,24 +177,21 @@ public class MainActivity extends RuntimePermissionsActivity implements Navigati
   public void displayView(int viewId) {
     String title = getString(R.string.app_title);
 
+    viewIsAtHome = getDefaultHome() == viewId ? true : false;
     switch (viewId) {
       case R.id.nav_profile:
         fragment = new ProfileFragment();
         title  = getString(R.string.profile);
-        viewIsAtHome = false;
         break;
       case R.id.nav_public_holidays:
         fragment = new PublicHolidaysFragment();
         title = getString(R.string.public_holidays);
-        viewIsAtHome = false;
         break;
       case R.id.nav_export:
         fragment = new ExportFragment();
         title = getString(R.string.export);
-        viewIsAtHome = false;
         break;
       case R.id.nav_settings:
-        viewIsAtHome = false;
         startActivity(new Intent(this, SettingsActivity.class));
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if(drawer != null) drawer.closeDrawer(GravityCompat.START);
@@ -187,7 +199,6 @@ public class MainActivity extends RuntimePermissionsActivity implements Navigati
       case R.id.nav_home:
       default:
         fragment = new MainFragment();
-        viewIsAtHome = true;
         break;
 
     }

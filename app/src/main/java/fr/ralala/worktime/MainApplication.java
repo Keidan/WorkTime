@@ -90,6 +90,10 @@ public class MainApplication extends Application {
   }
 
 
+  public int getDefaultHome() {
+    SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+    return Integer.parseInt(prefs.getString(SettingsActivity.PREFS_KEY_DEFAULT_HOME, "0"));
+  }
   public int getProfilesWeightDepth() {
     SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
     return Integer.parseInt(prefs.getString(SettingsActivity.PREFS_KEY_PROFILES_WEIGHT_DEPTH, "5"));
