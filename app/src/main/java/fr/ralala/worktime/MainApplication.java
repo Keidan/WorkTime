@@ -51,7 +51,7 @@ public class MainApplication extends Application {
     boolean ret = false;
     try {
       sql = new SqlFactory(this);
-      sql.open();
+      sql.open(activity);
       publicHolidaysFactory.reload(sql);
       daysFactory.reload(sql);
       profilesFactory.reload(sql);
@@ -87,6 +87,12 @@ public class MainApplication extends Application {
 
   public SqlFactory getSql() {
     return sql;
+  }
+
+
+  public int getProfilesWeightDepth() {
+    SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+    return Integer.parseInt(prefs.getString(SettingsActivity.PREFS_KEY_PROFILES_WEIGHT_DEPTH, "5"));
   }
 
   public int getDayRowsHeight() {

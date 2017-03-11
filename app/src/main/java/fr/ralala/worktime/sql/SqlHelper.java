@@ -43,6 +43,8 @@ import java.util.Locale;
     + COL_PROFILES_TYPE
     + " TEXT NOT NULL, "
     + COL_PROFILES_AMOUNT
+    + " TEXT NOT NULL, "
+    + COL_PROFILES_LEARNING_WEIGHT
     + " TEXT NOT NULL);";
 
   private static final String CREATE_BDD_DAYS = "CREATE TABLE IF NOT EXISTS "
@@ -96,6 +98,10 @@ import java.util.Locale;
       db.execSQL("ALTER TABLE " + TABLE_PROFILES + " RENAME TO " + TABLE_PROFILES + "_v1");
       db.execSQL("ALTER TABLE " + TABLE_DAYS + " RENAME TO " + TABLE_DAYS + "_v1");
       db.execSQL(CREATE_BDD_DAYS);
+      db.execSQL(CREATE_BDD_PROFILES);
+    }
+    else if(oldVersion == 2 && newVersion == 3) {
+      db.execSQL("ALTER TABLE " + TABLE_PROFILES + " RENAME TO " + TABLE_PROFILES + "_v2");
       db.execSQL(CREATE_BDD_PROFILES);
     }
   }

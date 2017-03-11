@@ -30,12 +30,6 @@
             android:title="@string/pref_title_day_row_height"
             android:inputType="numberDecimal" />
     </PreferenceCategory>
-    <PreferenceCategory android:title="@string/pref_title_database" android:key="prefCatDatabase" >
-        <Preference
-            android:key="prefImportExport"
-            android:title="@string/pref_title_import_export"
-            android:summary="@string/pref_summary_import_export"/>
-    </PreferenceCategory>
     <PreferenceCategory android:title="@string/pref_title_export" android:key="prefCatExport" >
         <CheckBoxPreference
             android:key="prefExportMailEnable"
@@ -54,6 +48,29 @@
             android:defaultValue="false"
             android:summary="@string/pref_summary_hide_wage"
             android:title="@string/pref_title_hide_wage" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/pref_title_learning" android:key="prefCatWeight" >
+        <Preference
+            android:key="prefCatWeightLabel"
+            android:title="@string/empty"
+            android:summary="@string/pref_summary_learning"
+            android:selectable="false"/>
+        <EditTextPreference
+            android:key="prefWeightDepth"
+            android:defaultValue="5"
+            android:summary="@string/pref_summary_learning_threshold"
+            android:title="@string/pref_title_learning_threshold"
+            android:inputType="numberDecimal" />
+        <Preference
+            android:key="prefWeightClear"
+            android:title="@string/pref_title_learning_clear"
+            android:summary="@string/pref_summary_learning_clear"/>
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/pref_title_database" android:key="prefCatDatabase" >
+        <Preference
+            android:key="prefImportExport"
+            android:title="@string/pref_title_import_export"
+            android:summary="@string/pref_summary_import_export"/>
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/pref_title_infos" >
         <Preference

@@ -14,6 +14,7 @@ import java.util.List;
 import fr.ralala.worktime.models.DayEntry;
 import fr.ralala.worktime.models.DayType;
 import fr.ralala.worktime.models.WorkTimeDay;
+import fr.ralala.worktime.utils.AndroidHelper;
 
 /**
  *******************************************************************************
@@ -32,8 +33,9 @@ public class SqlFactory implements SqlConstants {
     helper = new SqlHelper(context, DB_NAME, null, VERSION_BDD);
   }
 
-  public void open() {
+  public void open(Context c) {
     bdd = helper.getWritableDatabase();
+    boolean restart = false;
 
     if(isTableExists(TABLE_PROFILES + "_v1")) {
       Log.d(getClass().getSimpleName(), "TABLE_PROFILES found");
@@ -46,6 +48,7 @@ public class SqlFactory implements SqlConstants {
       for(DayEntry de : listNew)
         insertProfile(de);
       removeTable(TABLE_PROFILES + "_v1");
+      restart = true;
     }
     if(isTableExists(TABLE_DAYS + "_v1")) {
       Log.d(getClass().getSimpleName(), "TABLE_DAYS found");
@@ -58,8 +61,22 @@ public class SqlFactory implements SqlConstants {
       for(DayEntry de : listNew)
         insertDay(de);
       removeTable(TABLE_DAYS + "_v1");
+      restart = true;
     }
 
+    if(isTableExists(TABLE_PROFILES + "_v2")) {
+      Log.d(getClass().getSimpleName(), "TABLE_PROFILES found");
+      final List<DayEntry> listOld = readProfilesV2(0, 1, 2, 3, 4, 5, 6, 7);
+      Log.d(getClass().getSimpleName(), "delete table profiles");
+      bdd.delete(TABLE_PROFILES, null, null);
+      Log.d(getClass().getSimpleName(), "table profiles deleted");
+      for(DayEntry de : listOld) /* reload weight */
+        insertProfile(de);
+      removeTable(TABLE_PROFILES + "_v2");
+      restart = true;
+    }
+    if(restart)
+      AndroidHelper.restartApplication(c);
   }
 
   public void close() {
@@ -89,7 +106,7 @@ public class SqlFactory implements SqlConstants {
   }
 
   private List<DayEntry> readV1(final String tablename_v1, final int c_current, final int c_type, final int c_start, final int c_end, final int c_pause, final int c_amount, final int c_name) {
-    final List<DayEntry> listProfiles = new ArrayList<>();
+    final List<DayEntry> list = new ArrayList<>();
     Cursor c = bdd.rawQuery("SELECT * FROM " + tablename_v1 + "_v1", null);
     if (c.moveToFirst()) {
       do {
@@ -108,6 +125,38 @@ public class SqlFactory implements SqlConstants {
         if(c_name != -1)
           de.setName(c.getString(c_name));
 
+        list.add(de);
+      } while (c.moveToNext());
+    }
+    c.close();
+    Collections.sort(list, new Comparator<DayEntry>() {
+      @Override
+      public int compare(final DayEntry lhs, final DayEntry rhs) {
+        return c_name != -1 ? lhs.getName().compareTo(rhs.getName()) : lhs.getDay().compareTo(rhs.getDay());
+      }
+    });
+    return list;
+  }
+
+  private List<DayEntry> readProfilesV2(final int c_name, final int c_current, final int c_start_m, final int c_end_m, final int c_start_a, final int c_end_a, final int c_type, final int c_amount) {
+    final List<DayEntry> listProfiles = new ArrayList<>();
+    Cursor c = bdd.rawQuery("SELECT * FROM " + TABLE_PROFILES + "_v2", null);
+    if (c.moveToFirst()) {
+      do {
+        String[] split = c.getString(c_current).split("/");
+        WorkTimeDay wtd = new WorkTimeDay();
+        wtd.setDay(Integer.parseInt(split[0]));
+        wtd.setMonth(Integer.parseInt(split[1]));
+        wtd.setYear(Integer.parseInt(split[2]));
+        final DayEntry de = new DayEntry(wtd, DayType.compute(c.getInt(c_type)), DayType.compute(c.getInt(c_type)));
+        de.setStartMorning(c.getString(c_start_m)); /* start morning*/
+        de.setEndMorning(c.getString(c_end_m)); /* end morning*/
+        de.setStartAfternoon(c.getString(c_start_a)); /* start afternoon*/
+        de.setEndAfternoon(c.getString(c_end_a)); /* end afternoon*/
+        String s = c.getString(c_amount);
+        if (s != null && !s.isEmpty())
+          de.setAmountByHour(Double.parseDouble(s));
+        de.setName(c.getString(c_name));
         listProfiles.add(de);
       } while (c.moveToNext());
     }
@@ -115,7 +164,7 @@ public class SqlFactory implements SqlConstants {
     Collections.sort(listProfiles, new Comparator<DayEntry>() {
       @Override
       public int compare(final DayEntry lhs, final DayEntry rhs) {
-        return c_name != -1 ? lhs.getName().compareTo(rhs.getName()) : lhs.getDay().compareTo(rhs.getDay());
+        return lhs.getName().compareTo(rhs.getName());
       }
     });
     return listProfiles;
@@ -133,6 +182,12 @@ public class SqlFactory implements SqlConstants {
     return false;
   }
 
+  public long updateProfile(final DayEntry de) {
+    final ContentValues values = new ContentValues();
+    values.put(COL_PROFILES_LEARNING_WEIGHT, "" + de.getLearningWeight());
+    return bdd.update(TABLE_PROFILES, values, COL_PROFILES_NAME + "='"+de.getName().replaceAll("'", "\\'") + "'", null);
+  }
+
   public long insertProfile(final DayEntry de) {
     final ContentValues values = new ContentValues();
     values.put(COL_PROFILES_NAME, de.getName().replaceAll("'", "\\'"));
@@ -143,6 +198,7 @@ public class SqlFactory implements SqlConstants {
     values.put(COL_PROFILES_END_AFTERNOON, de.getEndAfternoon().timeString());
     values.put(COL_PROFILES_TYPE, de.getTypeMorning().value() + "|" + de.getTypeAfternoon().value());
     values.put(COL_PROFILES_AMOUNT, String.valueOf(de.getAmountByHour()));
+    values.put(COL_PROFILES_LEARNING_WEIGHT, String.valueOf(de.getLearningWeight()));
     return bdd.insert(TABLE_PROFILES, null, values);
   }
 
@@ -192,7 +248,6 @@ public class SqlFactory implements SqlConstants {
 
   private int getInt(String s, int def) {
     try {
-      Log.e("TEG", "s:" +s);
       return Integer.parseInt(s);
     } catch (Exception e) {
       return def;
@@ -269,6 +324,9 @@ public class SqlFactory implements SqlConstants {
         String s = c.getString(NUM_PROFILES_AMOUNT);
         if(s != null && !s.isEmpty())
           de.setAmountByHour(Double.parseDouble(s));
+        s = c.getString(NUM_PROFILES_LEARNING_WEIGHT);
+        if(s != null && !s.isEmpty())
+          de.setLearningWeight(Integer.parseInt(s));
         de.setName(c.getString(NUM_PROFILES_NAME).replaceAll("\\'", "'"));
 
         list.add(de);

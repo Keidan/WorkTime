@@ -49,6 +49,13 @@ import fr.ralala.worktime.models.WorkTimeDay;
  */
 public class AndroidHelper {
 
+  public static void restartApplication(final Context c) {
+    Intent i = c.getApplicationContext().getPackageManager()
+      .getLaunchIntentForPackage(c.getApplicationContext().getPackageName() );
+    i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+    c.startActivity(i);
+  }
+
   public static void applyLinearGradient(final View view, final int ...colors) {
     Drawable[] layers = new Drawable[1];
 

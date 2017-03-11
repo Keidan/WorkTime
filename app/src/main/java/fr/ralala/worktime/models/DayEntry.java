@@ -27,6 +27,7 @@ public class DayEntry {
   private DayType typeMorning = DayType.ERROR;
   private DayType typeAfternoon = DayType.ERROR;
   private double amountByHour = 0.0;
+  private int learningWeight = 0;
 
   public DayEntry(final WorkTimeDay day, final DayType typeMorning, final DayType typeAfternoon) {
     this.day = new WorkTimeDay();
@@ -77,6 +78,7 @@ public class DayEntry {
   }
 
   public void copy(DayEntry de) {
+    learningWeight = de.learningWeight;
     typeMorning = de.typeMorning;
     typeAfternoon = de.typeAfternoon;
     name = de.name;
@@ -203,5 +205,12 @@ public class DayEntry {
 
   public void setAmountByHour(double amountByHour) {
     this.amountByHour = amountByHour;
+  }
+  public int getLearningWeight() {
+    return learningWeight;
+  }
+
+  public void setLearningWeight(int learningWeight) {
+    this.learningWeight = learningWeight;
   }
 }

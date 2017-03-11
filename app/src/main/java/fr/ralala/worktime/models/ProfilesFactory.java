@@ -1,5 +1,6 @@
 package fr.ralala.worktime.models;
 
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -28,6 +29,41 @@ public class ProfilesFactory {
     this.sql = sql;
     profiles.clear();
     profiles.addAll(sql.getProfiles());
+  }
+
+  public void resetProfilesLearningWeight() {
+    for(DayEntry p : profiles) {
+      if(p.getLearningWeight() > 0) {
+        p.setLearningWeight(0);
+        sql.updateProfile(p);
+      }
+    }
+  }
+
+  public void updateProfilesLearningWeight(DayEntry profile, int weightLimit) {
+    for(DayEntry p : profiles) {
+      int weight = p.getLearningWeight();
+      if(profile != null && p.getName().equals(profile.getName())) {
+        p.setLearningWeight(weight < weightLimit ? ++weight : weightLimit);
+        sql.updateProfile(p);
+      } else if(weight > 0) {
+        p.setLearningWeight(--weight);
+        sql.updateProfile(p);
+      }
+    }
+  }
+
+  public DayEntry getHighestLearningWeight() {
+    DayEntry profile = null;
+    int weight = 0;
+    for(DayEntry p : profiles) {
+      if(weight < p.getLearningWeight()) {
+        weight = p.getLearningWeight();
+        profile = p;
+      }
+    }
+    if(weight == 0) return null;
+    return profile;
   }
 
   public List<DayEntry> list() {

@@ -58,6 +58,7 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
   private WorkTimeDay wtdStartAfternoon = null;
   private WorkTimeDay wtdEndAfternoon = null;
   private MainApplication app = null;
+  private DayEntry selectedProfile = null;
 
 
   public static void startActivity(final Context ctx, final String date, final boolean profile) {
@@ -194,6 +195,27 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
   }
 
   @Override
+  public void onResume() {
+    super.onResume();
+    selectedProfile = null;
+    if(displayProfile) {
+      DayEntry de = app.getProfilesFactory().getHighestLearningWeight();
+      if(de == null)
+        spProfile.setSelection(0);
+      else {
+        for (int i = 0; i < spProfilesAdapter.getCount(); ++i) {
+          String s = spProfilesAdapter.getItem(i);
+          if (s != null && s.equals(de.getName())) {
+            spProfile.setSelection(i);
+            //selecProfile(i);
+            break;
+          }
+        }
+      }
+    }
+  }
+
+  @Override
   public boolean onCreateOptionsMenu(final Menu menu) {
     MenuInflater inflater = getMenuInflater();
     inflater.inflate(R.menu.activity_day, menu);
@@ -269,6 +291,7 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
           app.getDaysFactory().remove(de);
         if (newEntry.getStartMorning().isValidTime() && newEntry.getEndAfternoon().isValidTime())
           app.getDaysFactory().add(newEntry);
+        app.getProfilesFactory().updateProfilesLearningWeight(selectedProfile, app.getProfilesWeightDepth());
       } else {
         if(de.getName().isEmpty() || !de.match(newEntry))
           app.getProfilesFactory().remove(de);
@@ -289,8 +312,12 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
 
   @Override
   public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+    selecProfile(i);
+  }
+
+  private void selecProfile(int indexInAdapter) {
     if(spProfilesAdapter != null) {
-      String name = spProfilesAdapter.getItem(i);
+      String name = spProfilesAdapter.getItem(indexInAdapter);
       if(name != null && !name.isEmpty()) {
         DayEntry de = app.getProfilesFactory().getByName(name);
         if (de != null) {
@@ -303,8 +330,10 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
           spTypeAfternoon.setSelection(de.getTypeAfternoon() == DayType.ERROR ? 0 : de.getTypeAfternoon().value());
           etName.setText(de.getName());
           refreshStartEndPause(de);
+          selectedProfile = de;
         }
-      }
+      } else
+        selectedProfile = null;
     }
   }
 

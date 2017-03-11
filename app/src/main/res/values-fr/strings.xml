@@ -75,6 +75,12 @@
     <string name="pref_summary_import_from_dropbox">Importer la base de donn\u00E9es depuis dropbox.</string>
     <string name="pref_summary_day_row_height">Hauteur des rang\u00E9es de la liste des jours dans la fen\u00EAtre de temps de travail.</string>
     <string name="pref_title_day_row_height">Hauteur des lignes</string>
+    <string name="pref_title_learning">Apprentissage des profils</string>
+    <string name="pref_summary_learning">Cette section permet de g\u00E9rer l\'apprentissage du profil de pr\u00E9f\u00E9rence utilis\u00E9 par l\'insertion des jours de la vue principale.</string>
+    <string name="pref_summary_learning_threshold">Permet de g\u00E9rer le seuil de l\'apprentissage.</string>
+    <string name="pref_title_learning_threshold">Seuil de l\'apprentissage</string>
+    <string name="pref_title_learning_clear">Effacer les apprentissages</string>
+    <string name="pref_summary_learning_clear">Effacer toutes les valeurs d\'apprentissation.</string>
     <string name="chooser_long_press_message">Appuyez longuement sur pour s\u00E9lectionner le fichier ou le r\u00E9pertoire.</string>
     <string name="use_folder">Utilisez ce dossier</string>
     <string name="use_file">Utilisez ce fichier</string>
@@ -111,4 +117,5 @@
     <string name="pref_title_infos">Informations</string>
     <string name="pref_changelog_title">Changelog</string>
     <string name="pref_changelog_summary">Cliquez pour afficher le fichier changelog de l\'application.</string>
+    <string name="profiles_weight_reseted">Poids des profils r\u00E9initialis\u00E9s.</string>
 </resources>

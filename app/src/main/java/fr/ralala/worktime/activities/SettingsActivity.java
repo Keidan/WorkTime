@@ -27,21 +27,24 @@ import fr.ralala.worktime.utils.AndroidHelper;
  *******************************************************************************
  */
 public class SettingsActivity extends PreferenceActivity implements Preference.OnPreferenceClickListener{
-  public static final String       PREFS_KEY_WORKTIME_BY_DAY      = "prefWorkTimeByDay";
-  public static final String       PREFS_KEY_AMOUNT_BY_HOUR       = "prefAmountByHour";
-  public static final String       PREFS_KEY_CURRENCY             = "prefCurrency";
-  public static final String       PREFS_KEY_IMPORT_EXPORT        = "prefImportExport";
-  public static final String       PREFS_KEY_EMAIL                = "prefExportMail";
-  public static final String       PREFS_KEY_EMAIL_ENABLE         = "prefExportMailEnable";
-  public static final String       PREFS_KEY_EXPORT_HIDE_WAGE     = "prefExportHideWage";
-  public static final String       PREFS_KEY_HIDE_WAGE            = "prefHideWage";
-  public static final String       PREFS_KEY_CHANGELOG            = "prefChangelog";
-  public static final String       PREFS_KEY_VERSION              = "prefVersion";
-  public static final String       PREFS_KEY_DAY_ROWS_HEIGHT      = "prefDayRowsHeight";
+  public static final String       PREFS_KEY_WORKTIME_BY_DAY            = "prefWorkTimeByDay";
+  public static final String       PREFS_KEY_AMOUNT_BY_HOUR             = "prefAmountByHour";
+  public static final String       PREFS_KEY_CURRENCY                   = "prefCurrency";
+  public static final String       PREFS_KEY_IMPORT_EXPORT              = "prefImportExport";
+  public static final String       PREFS_KEY_EMAIL                      = "prefExportMail";
+  public static final String       PREFS_KEY_EMAIL_ENABLE               = "prefExportMailEnable";
+  public static final String       PREFS_KEY_EXPORT_HIDE_WAGE           = "prefExportHideWage";
+  public static final String       PREFS_KEY_HIDE_WAGE                  = "prefHideWage";
+  public static final String       PREFS_KEY_CHANGELOG                  = "prefChangelog";
+  public static final String       PREFS_KEY_VERSION                    = "prefVersion";
+  public static final String       PREFS_KEY_DAY_ROWS_HEIGHT            = "prefDayRowsHeight";
+  public static final String       PREFS_KEY_PROFILES_WEIGHT_DEPTH      = "prefWeightDepth";
+  public static final String       PREFS_KEY_PROFILES_WEIGHT_CLEAR      = "prefWeightClear";
 
   private MyPreferenceFragment     prefFrag                       = null;
   private AppCompatDelegate        mDelegate;
   private ChangeLog changeLog = null;
+  private MainApplication app = null;
 
   @Override
   public void onCreate(final Bundle savedInstanceState) {
@@ -63,10 +66,11 @@ public class SettingsActivity extends PreferenceActivity implements Preference.O
         R.string.changelog_full_title,
         R.string.changelog_show_full), this);
 
-    MainApplication app = (MainApplication)getApplicationContext();
+    app = (MainApplication)getApplicationContext();
     prefFrag.findPreference(PREFS_KEY_EMAIL).setEnabled(app.isExportMailEnabled());
     prefFrag.findPreference(PREFS_KEY_EMAIL_ENABLE).setOnPreferenceClickListener(this);
     prefFrag.findPreference(PREFS_KEY_IMPORT_EXPORT).setOnPreferenceClickListener(this);
+    prefFrag.findPreference(PREFS_KEY_PROFILES_WEIGHT_CLEAR).setOnPreferenceClickListener(this);
     prefFrag.findPreference(PREFS_KEY_VERSION).setTitle(
       getResources().getString(R.string.app_name));
     try {
@@ -112,6 +116,9 @@ public class SettingsActivity extends PreferenceActivity implements Preference.O
       prefFrag.findPreference(PREFS_KEY_EMAIL).setEnabled(!p.isEnabled());
     } else if (preference.equals(prefFrag.findPreference(PREFS_KEY_CHANGELOG))) {
       changeLog.getFullLogDialog().show();
+    } else if (preference.equals(prefFrag.findPreference(PREFS_KEY_PROFILES_WEIGHT_CLEAR))) {
+      app.getProfilesFactory().resetProfilesLearningWeight();
+      AndroidHelper.toast(this, R.string.profiles_weight_reseted);
     }
     return true;
   }

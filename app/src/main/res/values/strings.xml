@@ -84,6 +84,12 @@
     <string name="pref_summary_import_from_dropbox">Import the database from dropbox.</string>
     <string name="pref_summary_day_row_height">Height of the rows for the days list in the work time view.</string>
     <string name="pref_title_day_row_height">Rows height</string>
+    <string name="pref_title_learning">Learning of profiles</string>
+    <string name="pref_summary_learning">This section allows to manage the learning of the profile of preference used by the insertion of the days of the main view.</string>
+    <string name="pref_summary_learning_threshold">Allows to manage the learning threshold.</string>
+    <string name="pref_title_learning_threshold">Learning threshold</string>
+    <string name="pref_title_learning_clear">Clear learning</string>
+    <string name="pref_summary_learning_clear">Clear all the learning values.</string>
     <string name="chooser_long_press_message">Long press to select the file or the directory.</string>
     <string name="use_folder">Use this folder</string>
     <string name="use_file">Use this file</string>
@@ -121,4 +127,5 @@
     <string name="pref_title_infos">Information</string>
     <string name="pref_changelog_title">Changelog</string>
     <string name="pref_changelog_summary">Click to display the application changelog.</string>
+    <string name="profiles_weight_reseted">Profiles weight reseted.</string>
 </resources>
