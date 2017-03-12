@@ -91,16 +91,6 @@ public class QuickAccessFragment extends Fragment implements OnClickListener {
         app.setQuickAccessPause(true);
         app.getQuickAccessNotification().update(null, app.isQuickAccessPause());
       }
-    } else if(v.equals(btFinalize)) {
-      app.setQuickAccessPause(true);
-      btStart.setChecked(false);
-      btFinalize.setVisibility(View.GONE);
-      app.getQuickAccessNotification().remove(getActivity());
-      DayEntry de = app.getDaysFactory().getCurrentDay();
-      app.getDaysFactory().remove(de);
-      app.getDaysFactory().add(de);
-    }
-    if(v.equals(btStart) || v.equals(btFinalize)) {
       if(!app.isQuickAccessPause()) {
         if(!isStarted()) {
           getActivity().startService(new Intent(getActivity(), QuickAccessService.class));
@@ -108,6 +98,15 @@ public class QuickAccessFragment extends Fragment implements OnClickListener {
       } else if(!isStarted())  {
         getActivity().stopService(new Intent(getActivity(), QuickAccessService.class));
       }
+    } else if(v.equals(btFinalize)) {
+      app.setQuickAccessPause(true);
+      btStart.setChecked(false);
+      btFinalize.setVisibility(View.GONE);
+      DayEntry de = app.getDaysFactory().getCurrentDay();
+      app.getDaysFactory().remove(de);
+      app.getDaysFactory().add(de);
+      getActivity().stopService(new Intent(getActivity(), QuickAccessService.class));
+      app.getQuickAccessNotification().remove(getActivity());
     }
   }
 
