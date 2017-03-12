@@ -22,6 +22,7 @@ public class WorkTimeDay {
   private int year = 1970;
   private int hours = 0;
   private int minutes = 0;
+  private int seconds = 0;
 
   public WorkTimeDay() {
   }
@@ -69,6 +70,7 @@ public class WorkTimeDay {
     wtd.year = year;
     wtd.hours = hours;
     wtd.minutes = minutes;
+    wtd.seconds = seconds;
     return wtd;
   }
 
@@ -78,6 +80,7 @@ public class WorkTimeDay {
     year = wtd.year;
     hours = wtd.hours;
     minutes = wtd.minutes;
+    seconds = wtd.seconds;
   }
 
   public String toString() {
@@ -107,7 +110,7 @@ public class WorkTimeDay {
 
   public Calendar toCalendar() {
     Calendar c = Calendar.getInstance();
-    c.setTimeZone(TimeZone.getTimeZone("GMT"));
+    c.setTimeZone(TimeZone.getDefault());
     c.set(Calendar.YEAR, year);
     c.set(Calendar.MONTH, month - 1);
     c.set(Calendar.DAY_OF_MONTH, day);
@@ -182,5 +185,13 @@ public class WorkTimeDay {
 
   public void setMinutes(int minutes) {
     this.minutes = minutes;
+  }
+
+  public int getSeconds() {
+    return seconds;
+  }
+
+  public void setSeconds(int seconds) {
+    this.seconds = seconds;
   }
 }

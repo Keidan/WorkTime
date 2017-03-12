@@ -1,6 +1,7 @@
 package fr.ralala.worktime.utils;
 
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
@@ -48,6 +49,22 @@ import fr.ralala.worktime.models.WorkTimeDay;
  *******************************************************************************
  */
 public class AndroidHelper {
+
+
+  public static boolean isServiceRunning(final Context context,
+                                         final Class<?> serviceClass) {
+    if(context == null) return false;
+    final ActivityManager manager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+    if(manager != null) {
+      for (final ActivityManager.RunningServiceInfo service : manager
+        .getRunningServices(Integer.MAX_VALUE)) {
+        if (serviceClass.getName().equals(service.service.getClassName())) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
 
   public static void restartApplication(final Context c) {
     Intent i = c.getApplicationContext().getPackageManager()

@@ -16,6 +16,7 @@ import fr.ralala.worktime.models.ProfilesFactory;
 import fr.ralala.worktime.models.PublicHolidaysFactory;
 import fr.ralala.worktime.models.WorkTimeDay;
 import fr.ralala.worktime.activities.SettingsActivity;
+import fr.ralala.worktime.quickaccess.QuickAccessNotification;
 import fr.ralala.worktime.sql.SqlFactory;
 import fr.ralala.worktime.utils.AndroidHelper;
 
@@ -35,11 +36,15 @@ public class MainApplication extends Application {
   private final DaysFactory daysFactory;
   private SqlFactory sql = null;
   private Calendar currentDate = null;
+  private boolean quickAccessPause = true;
+  private int nfyIdQuickAccess = 1;
+  private QuickAccessNotification quickAccessNotification = null;
 
   public MainApplication() {
     publicHolidaysFactory = new PublicHolidaysFactory();
     profilesFactory = new ProfilesFactory();
     daysFactory = new DaysFactory();
+    quickAccessNotification = new QuickAccessNotification(this, nfyIdQuickAccess);
   }
 
 
@@ -72,6 +77,9 @@ public class MainApplication extends Application {
     return currentDate;
   }
 
+  public QuickAccessNotification getQuickAccessNotification() {
+    return quickAccessNotification;
+  }
 
   public ProfilesFactory getProfilesFactory() {
     return profilesFactory;
@@ -145,5 +153,13 @@ public class MainApplication extends Application {
     for(int i = 1; i <= wDays; ++i)
       w.addTime(getLegalWorkTimeByDay());
     return w;
+  }
+
+  public void setQuickAccessPause(boolean quickAccessPause) {
+    this.quickAccessPause = quickAccessPause;
+  }
+
+  public boolean isQuickAccessPause() {
+    return quickAccessPause;
   }
 }

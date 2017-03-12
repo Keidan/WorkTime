@@ -2,9 +2,13 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/nav_home"
+            android:id="@+id/nav_quickaccess"
             android:checked="true"
-            android:icon="@mipmap/ic_home"
+            android:icon="@mipmap/ic_quickaccess"
+            android:title="@string/quickaccess"/>
+        <item
+            android:id="@+id/nav_worktime"
+            android:icon="@mipmap/ic_worktime"
             android:title="@string/work_time"/>
         <item
             android:id="@+id/nav_profile"

@@ -22,6 +22,7 @@ import fr.ralala.worktime.MainApplication;
 import fr.ralala.worktime.models.DayEntry;
 import fr.ralala.worktime.models.DayType;
 import fr.ralala.worktime.models.WorkTimeDay;
+import fr.ralala.worktime.quickaccess.QuickAccessService;
 import fr.ralala.worktime.utils.AndroidHelper;
 
 
@@ -287,11 +288,15 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
         return;
       }
       if(displayProfile) {
-        if (!de.match(newEntry))
+        boolean match = de.match(newEntry);
+        if (!match) {
           app.getDaysFactory().remove(de);
-        if (newEntry.getStartMorning().isValidTime() && newEntry.getEndAfternoon().isValidTime())
-          app.getDaysFactory().add(newEntry);
-        app.getProfilesFactory().updateProfilesLearningWeight(selectedProfile, app.getProfilesWeightDepth());
+          app.getProfilesFactory().updateProfilesLearningWeight(selectedProfile, app.getProfilesWeightDepth());
+          if (newEntry.getStartMorning().isValidTime() && newEntry.getEndAfternoon().isValidTime())
+            app.getDaysFactory().add(newEntry);
+          if(AndroidHelper.isServiceRunning(this, QuickAccessService.class))
+            stopService(new Intent(this, QuickAccessService.class));
+        }
       } else {
         if(de.getName().isEmpty() || !de.match(newEntry))
           app.getProfilesFactory().remove(de);

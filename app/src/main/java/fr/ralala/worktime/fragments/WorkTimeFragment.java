@@ -44,7 +44,7 @@ import fr.ralala.worktime.utils.SwipeDetector;
  *
  *******************************************************************************
  */
-public class MainFragment extends Fragment implements View.OnClickListener, AdapterView.OnItemClickListener, SwipeDetector.SwipeDetectorListener {
+public class WorkTimeFragment extends Fragment implements View.OnClickListener, AdapterView.OnItemClickListener, SwipeDetector.SwipeDetectorListener {
 
   private ImageButton btPreviousMonth = null;
   private ImageButton btNextMonth = null;

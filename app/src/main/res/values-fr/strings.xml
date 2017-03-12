@@ -120,4 +120,9 @@
     <string name="pref_changelog_title">Changelog</string>
     <string name="pref_changelog_summary">Cliquez pour afficher le fichier changelog de l\'application.</string>
     <string name="profiles_weight_reseted">Poids des profils r\u00E9initialis\u00E9s.</string>
+    <string name="quickaccess">Acc\u00E8s rapide</string>
+    <string name="bt_start">D\u00E9marrer</string>
+    <string name="bt_pause">Pause</string>
+    <string name="bt_finalize">Finaliser la journ\u00E9e</string>
+    <string name="bt_finalize2">Finaliser</string>
 </resources>

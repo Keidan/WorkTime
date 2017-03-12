@@ -130,4 +130,10 @@
     <string name="pref_changelog_title">Changelog</string>
     <string name="pref_changelog_summary">Click to display the application changelog.</string>
     <string name="profiles_weight_reseted">Profiles weight reseted.</string>
+    <string name="quickaccess">Quick access</string>
+    <string name="bt_start">Start</string>
+    <string name="bt_pause">Pause</string>
+    <string name="bt_finalize">Finalize day</string>
+    <string name="bt_finalize2">Finalize</string>
+    <string name="default_time" translatable="false">00:00</string>
 </resources>

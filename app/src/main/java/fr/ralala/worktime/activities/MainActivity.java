@@ -12,7 +12,6 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 
@@ -21,9 +20,10 @@ import fr.ralala.worktime.R;
 import fr.ralala.worktime.changelog.ChangeLog;
 import fr.ralala.worktime.changelog.ChangeLogIds;
 import fr.ralala.worktime.fragments.ExportFragment;
-import fr.ralala.worktime.fragments.MainFragment;
+import fr.ralala.worktime.fragments.WorkTimeFragment;
 import fr.ralala.worktime.fragments.ProfileFragment;
 import fr.ralala.worktime.fragments.PublicHolidaysFragment;
+import fr.ralala.worktime.fragments.QuickAccessFragment;
 import fr.ralala.worktime.utils.AndroidHelper;
 import fr.ralala.worktime.utils.SwipeDetector;
 
@@ -37,10 +37,11 @@ import fr.ralala.worktime.utils.SwipeDetector;
  *******************************************************************************
  */
 public class MainActivity extends RuntimePermissionsActivity implements NavigationView.OnNavigationItemSelectedListener {
-  private static final int IDX_HOME = 0;
-  private static final int IDX_PROFILE = 1;
-  private static final int IDX_PUBLIC_HOLYDAY = 2;
-  private static final int IDX_EXPORT = 3;
+  private static final int IDX_WORK_TIME = 1;
+  private static final int IDX_QUICK_ACCESS = 0;
+  private static final int IDX_PROFILE = 2;
+  private static final int IDX_PUBLIC_HOLIDAY = 3;
+  private static final int IDX_EXPORT = 4;
   private static final int PERMISSIONS_REQUEST = 30;
   private static final int BACK_TIME_DELAY = 2000;
   private static long lastBackPressed = -1;
@@ -93,15 +94,17 @@ public class MainActivity extends RuntimePermissionsActivity implements Navigati
 
   private int getDefaultHome() {
     switch(app.getDefaultHome()) {
-      case 1:
+      case IDX_QUICK_ACCESS:
+        return (R.id.nav_quickaccess);
+      case IDX_PROFILE:
         return (R.id.nav_profile);
-      case 2:
+      case IDX_PUBLIC_HOLIDAY:
         return (R.id.nav_public_holidays);
-      case 3:
+      case IDX_EXPORT:
         return (R.id.nav_export);
-      case 0:
+      case IDX_WORK_TIME:
       default:
-        return (R.id.nav_home);
+        return (R.id.nav_worktime);
     }
   }
 
@@ -123,14 +126,16 @@ public class MainActivity extends RuntimePermissionsActivity implements Navigati
       ft.detach(fragment);
       ft.attach(fragment);
       ft.commit();
-      if(ProfileFragment.class.isInstance(fragment))
+      if(QuickAccessFragment.class.isInstance(fragment))
+        navigationView.getMenu().getItem(IDX_QUICK_ACCESS).setChecked(true); /* select quick access title */
+      else if(ProfileFragment.class.isInstance(fragment))
         navigationView.getMenu().getItem(IDX_PROFILE).setChecked(true); /* select profile title */
       else if(PublicHolidaysFragment.class.isInstance(fragment))
-        navigationView.getMenu().getItem(IDX_PUBLIC_HOLYDAY).setChecked(true); /* select public holidays title */
+        navigationView.getMenu().getItem(IDX_PUBLIC_HOLIDAY).setChecked(true); /* select public holidays title */
       else if(ExportFragment.class.isInstance(fragment))
         navigationView.getMenu().getItem(IDX_EXPORT).setChecked(true); /* select export title */
-      else if(MainFragment.class.isInstance(fragment))
-        navigationView.getMenu().getItem(IDX_HOME).setChecked(true); /* select home title */
+      else if(WorkTimeFragment.class.isInstance(fragment))
+        navigationView.getMenu().getItem(IDX_WORK_TIME).setChecked(true); /* select work title */
 
     }
   }
@@ -147,8 +152,9 @@ public class MainActivity extends RuntimePermissionsActivity implements Navigati
       drawer.closeDrawer(GravityCompat.START);
     }
     if (!viewIsAtHome) { //if the current view is not the News fragment
-      displayView(getDefaultHome()); //display the home fragment
-      navigationView.getMenu().getItem(IDX_HOME).setChecked(true); /* select home title */
+      int h = getDefaultHome();
+      displayView(h); //display the home fragment
+      navigationView.getMenu().getItem(IDX_WORK_TIME).setChecked(true); /* select home title */
     } else {
       //moveTaskToBack(true);  //If view is in News fragment, exit application
       if (lastBackPressed + BACK_TIME_DELAY > System.currentTimeMillis()) {
@@ -179,6 +185,10 @@ public class MainActivity extends RuntimePermissionsActivity implements Navigati
 
     viewIsAtHome = getDefaultHome() == viewId ? true : false;
     switch (viewId) {
+      case R.id.nav_quickaccess:
+        fragment = new QuickAccessFragment();
+        title = getString(R.string.quickaccess);
+        break;
       case R.id.nav_profile:
         fragment = new ProfileFragment();
         title  = getString(R.string.profile);
@@ -196,9 +206,9 @@ public class MainActivity extends RuntimePermissionsActivity implements Navigati
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if(drawer != null) drawer.closeDrawer(GravityCompat.START);
         return;
-      case R.id.nav_home:
+      case R.id.nav_worktime:
       default:
-        fragment = new MainFragment();
+        fragment = new WorkTimeFragment();
         break;
 
     }

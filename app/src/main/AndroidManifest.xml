@@ -71,6 +71,14 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".activities.MainActivity"/>
         </activity>
+
+        <service android:name="fr.ralala.worktime.quickaccess.QuickAccessService"/>
+        <receiver android:name="fr.ralala.worktime.quickaccess.QuickAccessNotificationReceiver">
+            <intent-filter>
+                <category android:name="fr.ralala.worktime.services.PAUSE"/>
+
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

@@ -1,6 +1,8 @@
 package fr.ralala.worktime.models;
 
 
+import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -57,6 +59,16 @@ public class DaysFactory {
       }
     }
     return ret;
+  }
+
+  public DayEntry getCurrentDay() {
+    for(DayEntry d : days)
+      if(d.getDay().dateString().equals(WorkTimeDay.now().dateString())) {
+        return d;
+      }
+    DayEntry d = new DayEntry(WorkTimeDay.now(), DayType.ERROR, DayType.ERROR);
+    days.add(d);
+    return d;
   }
 
   public Map<String, DayEntry> toDaysMap() {

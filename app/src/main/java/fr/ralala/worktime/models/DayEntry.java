@@ -69,9 +69,11 @@ public class DayEntry {
 
   public WorkTimeDay getWorkTime() {
     WorkTimeDay wm = getTypeMorning() == DayType.AT_WORK ? endMorning.clone() : new WorkTimeDay();
-    wm.delTime(getTypeMorning() == DayType.AT_WORK ? startMorning.clone() : new WorkTimeDay());
+    if(!wm.timeString().equals("00:00"))
+      wm.delTime(getTypeMorning() == DayType.AT_WORK ? startMorning.clone() : new WorkTimeDay());
     WorkTimeDay wa = getTypeAfternoon() == DayType.AT_WORK ? endAfternoon.clone() : new WorkTimeDay();
-    wa.delTime(getTypeAfternoon() == DayType.AT_WORK ? startAfternoon.clone() : new WorkTimeDay());
+    if(!wa.timeString().equals("00:00"))
+      wa.delTime(getTypeAfternoon() == DayType.AT_WORK ? startAfternoon.clone() : new WorkTimeDay());
     WorkTimeDay wt = wm.clone();
     wt.addTime(wa);
     return wt;
@@ -147,6 +149,12 @@ public class DayEntry {
   public void setEndAfternoon(String end) {
     this.endAfternoon.copy(parseTime(end));
   }
+  public void setEndAfternoon(WorkTimeDay end) {
+    this.endAfternoon.copy(end);
+  }
+  public void setEndMorning(WorkTimeDay end) {
+    this.endMorning.copy(end);
+  }
 
   public void setDay(String day) {
     this.day.copy(parseDate(day));
@@ -163,6 +171,8 @@ public class DayEntry {
   }
 
   public WorkTimeDay getPause() {
+    if(startAfternoon.timeString().equals("00:00"))
+      return startAfternoon;
     WorkTimeDay wp = startAfternoon.clone();
     wp.delTime(endMorning.clone());
     return wp;
