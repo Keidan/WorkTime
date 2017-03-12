@@ -141,7 +141,10 @@ public class MainActivity extends RuntimePermissionsActivity implements Navigati
   }
 
   public void onDestroy() {
-    if(app != null) app.getSql().close();
+    if(app != null) {
+      app.getSql().close();
+      app.getQuickAccessNotification().remove(this);
+    }
     super.onDestroy();
   }
 

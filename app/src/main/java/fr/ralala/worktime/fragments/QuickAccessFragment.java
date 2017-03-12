@@ -63,10 +63,13 @@ public class QuickAccessFragment extends Fragment implements OnClickListener {
       blink.start();
     }
     if(isStarted()) {
-      btStart.setChecked(!app.isQuickAccessPause());
-      onClick(btStart);
-      updateText(app.getDaysFactory().getCurrentDay(), false, false);
+      btStart.setChecked(true);
+      btFinalize.setVisibility(View.VISIBLE);
+    } else {
+      btStart.setChecked(false);
+      btFinalize.setVisibility(View.GONE);
     }
+    updateText(app.getDaysFactory().getCurrentDay(), false, false);
   }
 
   @Override
