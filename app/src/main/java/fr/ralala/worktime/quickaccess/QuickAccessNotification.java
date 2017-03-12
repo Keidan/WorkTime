@@ -26,6 +26,7 @@ public class QuickAccessNotification {
   private Notification nfy = null;
   private Context c = null;
   private PendingIntent pausePendingIntent = null;
+  private boolean visible = false;
 
   public QuickAccessNotification(final Context c, final int id) {
     this.c = c;
@@ -34,6 +35,11 @@ public class QuickAccessNotification {
 
   public void remove(final Context c) {
     NotificationManagerCompat.from(c).cancel(nfyId);
+    visible = false;
+  }
+
+  public boolean isVisible() {
+    return visible;
   }
 
   public void update(String text, boolean pause){
@@ -70,5 +76,6 @@ public class QuickAccessNotification {
     nfyBuilder.setContentIntent(contentPendingIntent);
     nfy = nfyBuilder.build();
     NotificationManagerCompat.from(c).notify(nfyId, nfy);
+    visible = true;
   }
 }

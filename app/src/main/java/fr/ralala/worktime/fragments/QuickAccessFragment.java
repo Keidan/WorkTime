@@ -62,7 +62,7 @@ public class QuickAccessFragment extends Fragment implements OnClickListener {
       blink = new Blink();
       blink.start();
     }
-    if(isStarted()) {
+    if(isStarted() || app.getQuickAccessNotification().isVisible()) {
       btStart.setChecked(true);
       btFinalize.setVisibility(View.VISIBLE);
     } else {

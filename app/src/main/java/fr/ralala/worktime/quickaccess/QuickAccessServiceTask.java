@@ -34,13 +34,14 @@ public class QuickAccessServiceTask extends TimerTask{
     DayEntry de = app.getDaysFactory().getCurrentDay();
     WorkTimeDay d = de.getDay();
     DayEntry wtd = app.getProfilesFactory().getHighestLearningWeight();
-    int h = 12;
+    long time = 0;
     if(wtd != null) {
       WorkTimeDay wem = wtd.getEndMorning();
-      h = wem.getHours();
-    }
+      time = wem.getTimeMs();
+    } else
+      time = new WorkTimeDay(0, 0, 0, 12, 0).getTimeMs();
 
-    if(d.getHours() < h) {
+    if(d.getTimeMs() < time) {
       /* morning */
       if(de.getStartMorning().timeString().equals("00:00")) {
         de.setStartMorning(d.timeString());
