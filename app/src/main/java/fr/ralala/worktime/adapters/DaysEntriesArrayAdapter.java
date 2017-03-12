@@ -149,21 +149,28 @@ public class DaysEntriesArrayAdapter extends ArrayAdapter<DayEntry> {
         }
       }
       if (holder.tvEnd != null) {
-        if (isNotValidAfternoon(t))
-          holder.tvEnd.setText("-");
+        if (isNotValidAfternoon(t)) {
+          WorkTimeDay w = t.getEndMorning();
+          if(w.timeString().equals("00:00"))
+            holder.tvEnd.setText("-");
+          else
+            holder.tvEnd.setText(t.getEndMorning().timeString());
+        }
         else {
           holder.tvEnd.setText(t.getEndAfternoon().timeString());
         }
       }
       if (holder.tvPause != null) {
-        if (isNotValidMorning(t) && isNotValidAfternoon(t))
+        WorkTimeDay w = t.getPause();
+        if (isNotValidMorning(t) && isNotValidAfternoon(t) || w.timeString().equals("00:00"))
           holder.tvPause.setText("-");
         else {
           holder.tvPause.setText(t.getPause().timeString());
         }
       }
+      WorkTimeDay w = t.getWorkTime();
       if (holder.tvTotal != null) {
-        if(isNotValidMorning(t) && isNotValidAfternoon(t))
+        if(isNotValidMorning(t) && isNotValidAfternoon(t) || w.timeString().equals("00:00"))
           holder.tvTotal.setText("-");
         else {
           holder.tvTotal.setText(t.getWorkTime().timeString());
@@ -171,7 +178,7 @@ public class DaysEntriesArrayAdapter extends ArrayAdapter<DayEntry> {
       }
       if (holder.tvOver != null) {
         MainApplication app = MainApplication.getApp(c);
-        if(isNotValidMorning(t) && isNotValidAfternoon(t)) {
+        if(isNotValidMorning(t) && isNotValidAfternoon(t) || w.timeString().equals("00:00")) {
           holder.tvOver.setText("-");
           holder.tvOver.setTypeface(Typeface.MONOSPACE, Typeface.NORMAL);
           holder.tvOver.setGravity(Gravity.CENTER);
