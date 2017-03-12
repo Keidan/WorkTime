@@ -21,8 +21,8 @@
         android:textAlignment="center"/>
 
     <ToggleButton
-        android:textOff="@string/bt_pause"
-        android:textOn="@string/bt_start"
+        android:textOff="@string/bt_start"
+        android:textOn="@string/bt_pause"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/tvTime"
