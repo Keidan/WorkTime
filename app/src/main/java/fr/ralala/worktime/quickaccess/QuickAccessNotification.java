@@ -65,7 +65,8 @@ public class QuickAccessNotification {
     pausePendingIntent = PendingIntent.getBroadcast(c, 0, pauseIntent, PendingIntent.FLAG_UPDATE_CURRENT);
     nfyBuilder.addAction(new NotificationCompat.Action(R.mipmap.ic_pause, c.getString(R.string.bt_pause), pausePendingIntent));
     Intent contentIntent = new Intent(c, MainActivity.class);
-    PendingIntent contentPendingIntent = PendingIntent.getBroadcast(c, 0, contentIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+    contentIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+    PendingIntent contentPendingIntent = PendingIntent.getActivity(c, 0, contentIntent, Intent.FLAG_ACTIVITY_NEW_TASK);
     nfyBuilder.setContentIntent(contentPendingIntent);
     nfy = nfyBuilder.build();
     NotificationManagerCompat.from(c).notify(nfyId, nfy);
