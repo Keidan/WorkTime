@@ -24,6 +24,7 @@ import fr.ralala.worktime.fragments.WorkTimeFragment;
 import fr.ralala.worktime.fragments.ProfileFragment;
 import fr.ralala.worktime.fragments.PublicHolidaysFragment;
 import fr.ralala.worktime.fragments.QuickAccessFragment;
+import fr.ralala.worktime.quickaccess.QuickAccessService;
 import fr.ralala.worktime.utils.AndroidHelper;
 import fr.ralala.worktime.utils.SwipeDetector;
 
@@ -141,11 +142,16 @@ public class MainActivity extends RuntimePermissionsActivity implements Navigati
   }
 
   public void onDestroy() {
+    cleanup();
+    super.onDestroy();
+  }
+
+  private void cleanup() {
     if(app != null) {
       app.getSql().close();
       app.getQuickAccessNotification().remove(this);
     }
-    super.onDestroy();
+    AndroidHelper.killServiceIfRunning(this, QuickAccessService.class);
   }
 
   @Override
@@ -161,6 +167,7 @@ public class MainActivity extends RuntimePermissionsActivity implements Navigati
     } else {
       //moveTaskToBack(true);  //If view is in News fragment, exit application
       if (lastBackPressed + BACK_TIME_DELAY > System.currentTimeMillis()) {
+        cleanup();
         super.onBackPressed();
         Process.killProcess(android.os.Process.myPid());
       } else {

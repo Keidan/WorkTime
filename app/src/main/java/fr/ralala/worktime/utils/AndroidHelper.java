@@ -38,6 +38,7 @@ import java.util.Locale;
 
 import fr.ralala.worktime.R;
 import fr.ralala.worktime.models.WorkTimeDay;
+import fr.ralala.worktime.quickaccess.QuickAccessService;
 
 /**
  *******************************************************************************
@@ -64,6 +65,11 @@ public class AndroidHelper {
       }
     }
     return false;
+  }
+
+  public static void killServiceIfRunning(final Context context, final Class<?> serviceClass) {
+    if(isServiceRunning(context, serviceClass))
+      context.stopService(new Intent(context, serviceClass));
   }
 
   public static void restartApplication(final Context c) {
