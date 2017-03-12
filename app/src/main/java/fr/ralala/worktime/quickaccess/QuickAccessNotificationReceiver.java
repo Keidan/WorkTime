@@ -5,12 +5,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
-import java.util.Locale;
-
 import fr.ralala.worktime.MainApplication;
-import fr.ralala.worktime.R;
-import fr.ralala.worktime.models.DayEntry;
-import fr.ralala.worktime.models.WorkTimeDay;
 
 /**
  *******************************************************************************
@@ -34,11 +29,7 @@ public class QuickAccessNotificationReceiver extends BroadcastReceiver {
       else
         context.startService(new Intent(context, QuickAccessService.class));
       app.setQuickAccessPause(!app.isQuickAccessPause());
-      DayEntry d = app.getDaysFactory().getCurrentDay();
-      WorkTimeDay w = d.getWorkTime();
-      String text = context.getString(R.string.work_time) + ": ";
-      text += String.format(Locale.US, "%02d:%02d:%02d", w.getHours(), w.getMinutes(), w.getSeconds());
-      app.getQuickAccessNotification().update(text, app.isQuickAccessPause());
+      app.getQuickAccessNotification().update(null, app.isQuickAccessPause());
     }
   }
 

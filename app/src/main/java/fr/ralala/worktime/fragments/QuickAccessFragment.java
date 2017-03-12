@@ -98,7 +98,7 @@ public class QuickAccessFragment extends Fragment implements OnClickListener {
         if(!isStarted()) {
           getActivity().startService(new Intent(getActivity(), QuickAccessService.class));
         }
-      } else if(!isStarted())  {
+      } else if(isStarted())  {
         getActivity().stopService(new Intent(getActivity(), QuickAccessService.class));
       }
     } else if(v.equals(btFinalize)) {
@@ -136,16 +136,13 @@ public class QuickAccessFragment extends Fragment implements OnClickListener {
             @Override
             public void run() {
               btStart.setChecked(true);
-              onClick(btStart);
             }
           });
-        } else
-        if(!isStarted() && btStart.isChecked()) {
+        } else if(!isStarted() && btStart.isChecked()) {
           btStart.post(new Runnable() {
             @Override
             public void run() {
               btStart.setChecked(false);
-              onClick(btStart);
             }
           });
         }
