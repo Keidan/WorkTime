@@ -60,6 +60,7 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
   private WorkTimeDay wtdEndAfternoon = null;
   private MainApplication app = null;
   private DayEntry selectedProfile = null;
+  private boolean openForAdd = false;
 
 
   public static void startActivity(final Context ctx, final String date, final boolean profile) {
@@ -99,6 +100,7 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
       }
     }
     if(de == null) {
+      openForAdd = true;
       de = new DayEntry(WorkTimeDay.now(), DayType.ERROR, DayType.ERROR);
       if(date != null && !date.isEmpty() && date.contains("/"))
         de.setDay(date);
@@ -199,7 +201,7 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
   public void onResume() {
     super.onResume();
     selectedProfile = null;
-    if(displayProfile) {
+    if(displayProfile && openForAdd) {
       DayEntry de = app.getProfilesFactory().getHighestLearningWeight();
       if(de == null)
         spProfile.setSelection(0);
