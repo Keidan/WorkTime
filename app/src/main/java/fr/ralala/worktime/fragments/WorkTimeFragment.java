@@ -4,7 +4,6 @@ import android.app.DatePickerDialog;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,6 +25,7 @@ import fr.ralala.worktime.activities.DayActivity;
 import fr.ralala.worktime.activities.MainActivity;
 
 import fr.ralala.worktime.dialogs.MonthDetailsDialog;
+import fr.ralala.worktime.quickaccess.QuickAccessService;
 import fr.ralala.worktime.utils.AndroidHelper;
 import fr.ralala.worktime.MainApplication;
 import fr.ralala.worktime.R;
@@ -174,6 +174,10 @@ public class WorkTimeFragment extends Fragment implements View.OnClickListener, 
 
   @Override
   public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+    if(AndroidHelper.isServiceRunning(getActivity(), QuickAccessService.class)) {
+      AndroidHelper.toast(getActivity(), R.string.service_running);
+      return;
+    }
     DayEntry de = lvAdapter.getItem(i);
     DayActivity.startActivity(getActivity(), de.getDay().dateString(), true);
   }
