@@ -43,8 +43,9 @@ public class ProfilesFactory {
   public void updateProfilesLearningWeight(DayEntry profile, int weightLimit) {
     for(DayEntry p : profiles) {
       int weight = p.getLearningWeight();
+      int max = weightLimit*2;
       if(profile != null && p.getName().equals(profile.getName())) {
-        p.setLearningWeight(weight < weightLimit ? ++weight : weightLimit);
+        p.setLearningWeight(weight < max ? ++weight : max);
         sql.updateProfile(p);
       } else if(weight > 0) {
         p.setLearningWeight(--weight);
@@ -57,7 +58,7 @@ public class ProfilesFactory {
     DayEntry profile = null;
     int weight = 0;
     for(DayEntry p : profiles) {
-      if(weight < p.getLearningWeight()) {
+      if(weight >= p.getLearningWeight()) {
         weight = p.getLearningWeight();
         profile = p;
       }
