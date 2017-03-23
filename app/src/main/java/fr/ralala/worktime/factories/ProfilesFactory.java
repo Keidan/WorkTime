@@ -1,4 +1,4 @@
-package fr.ralala.worktime.models;
+package fr.ralala.worktime.factories;
 
 
 import java.util.ArrayList;
@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import fr.ralala.worktime.models.DayEntry;
 import fr.ralala.worktime.sql.SqlFactory;
 
 /**

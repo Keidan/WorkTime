@@ -1,7 +1,5 @@
-package fr.ralala.worktime.models;
+package fr.ralala.worktime.factories;
 
-
-import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -13,6 +11,9 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.TimeZone;
 
+import fr.ralala.worktime.models.DayEntry;
+import fr.ralala.worktime.models.DayType;
+import fr.ralala.worktime.models.WorkTimeDay;
 import fr.ralala.worktime.sql.SqlFactory;
 
 /**

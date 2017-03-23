@@ -11,9 +11,9 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
 
-import fr.ralala.worktime.models.DaysFactory;
-import fr.ralala.worktime.models.ProfilesFactory;
-import fr.ralala.worktime.models.PublicHolidaysFactory;
+import fr.ralala.worktime.factories.DaysFactory;
+import fr.ralala.worktime.factories.ProfilesFactory;
+import fr.ralala.worktime.factories.PublicHolidaysFactory;
 import fr.ralala.worktime.models.WorkTimeDay;
 import fr.ralala.worktime.activities.SettingsActivity;
 import fr.ralala.worktime.quickaccess.QuickAccessNotification;
