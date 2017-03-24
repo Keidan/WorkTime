@@ -11,6 +11,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import fr.ralala.worktime.R;
 import fr.ralala.worktime.models.DayEntry;
 import fr.ralala.worktime.models.DayType;
 import fr.ralala.worktime.models.WorkTimeDay;
@@ -35,7 +36,7 @@ public class SqlFactory implements SqlConstants {
 
   public void open(Context c) {
     bdd = helper.getWritableDatabase();
-    boolean restart = false;
+    boolean restartV1 = false, restartV2 = false;
 
     if(isTableExists(TABLE_PROFILES + "_v1")) {
       Log.d(getClass().getSimpleName(), "TABLE_PROFILES found");
@@ -48,7 +49,7 @@ public class SqlFactory implements SqlConstants {
       for(DayEntry de : listNew)
         insertProfile(de);
       removeTable(TABLE_PROFILES + "_v1");
-      restart = true;
+      restartV1 = true;
     }
     if(isTableExists(TABLE_DAYS + "_v1")) {
       Log.d(getClass().getSimpleName(), "TABLE_DAYS found");
@@ -61,7 +62,7 @@ public class SqlFactory implements SqlConstants {
       for(DayEntry de : listNew)
         insertDay(de);
       removeTable(TABLE_DAYS + "_v1");
-      restart = true;
+      restartV1 = true;
     }
 
     if(isTableExists(TABLE_PROFILES + "_v2")) {
@@ -73,10 +74,12 @@ public class SqlFactory implements SqlConstants {
       for(DayEntry de : listOld) /* reload weight */
         insertProfile(de);
       removeTable(TABLE_PROFILES + "_v2");
-      restart = true;
+      restartV2 = true;
     }
-    if(restart)
-      AndroidHelper.restartApplication(c);
+    if(restartV1)
+      AndroidHelper.restartApplication(c, R.string.restart_from_db_update_v1);
+    else if(restartV2)
+      AndroidHelper.restartApplication(c, R.string.restart_from_db_update_v2);
   }
 
   public void close() {

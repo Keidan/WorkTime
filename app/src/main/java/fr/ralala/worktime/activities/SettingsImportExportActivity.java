@@ -276,7 +276,7 @@ public class SettingsImportExportActivity extends PreferenceActivity implements 
     app.getProfilesFactory().reload(app.getSql());
     app.getPublicHolidaysFactory().reload(app.getSql());
     AndroidHelper.toast(SettingsImportExportActivity.this, getString(R.string.import_success));
-    AndroidHelper.restartApplication(this);
+    AndroidHelper.restartApplication(this, -1);
   }
 
   private <T, V> void computeAndLoad(final List<T> list, AndroidHelper.AlertDialogListListener<V> yes) {

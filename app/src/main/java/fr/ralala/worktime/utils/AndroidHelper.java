@@ -72,7 +72,9 @@ public class AndroidHelper {
       context.stopService(new Intent(context, serviceClass));
   }
 
-  public static void restartApplication(final Context c) {
+  public static void restartApplication(final Context c, final int string_id) {
+    if(string_id != -1)
+      toast(c, string_id);
     Intent i = c.getApplicationContext().getPackageManager()
       .getLaunchIntentForPackage(c.getApplicationContext().getPackageName() );
     i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
