@@ -41,6 +41,7 @@ public class SettingsActivity extends PreferenceActivity implements Preference.O
   public static final String       PREFS_KEY_PROFILES_WEIGHT_DEPTH      = "prefWeightDepth";
   public static final String       PREFS_KEY_PROFILES_WEIGHT_CLEAR      = "prefWeightClear";
   public static final String       PREFS_KEY_DEFAULT_HOME               = "prefDefaultHome";
+  public static final String       PREFS_KEY_SCROLL_TO_CURRENT_DAY      = "prefScrollToCurrentDay";
 
 
 

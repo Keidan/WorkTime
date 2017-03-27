@@ -83,6 +83,8 @@
     <string name="pref_summary_learning_clear">Effacer toutes les valeurs d\'apprentissation.</string>
     <string name="pref_fragments_title">Accueil par d\u00E9faut</string>
     <string name="pref_fragments_summary">S\u00E9lectionne l\'accueil par d\u00E9faut \u00E0 afficher au d\u00E9but de l\'application..</string>
+    <string name="pref_summary_scroll_to_current_day">D\u00E9filement automatique de la vue du temps de travail vers le jour en cours.</string>
+    <string name="pref_title_scroll_to_current_day">D\u00E9filement vers le jour en cours</string>
     <string name="chooser_long_press_message">Appuyez longuement sur pour s\u00E9lectionner le fichier ou le r\u00E9pertoire.</string>
     <string name="use_folder">Utilisez ce dossier</string>
     <string name="use_file">Utilisez ce fichier</string>

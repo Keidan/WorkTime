@@ -92,6 +92,8 @@
     <string name="pref_summary_learning_clear">Clear all the learning values.</string>
     <string name="pref_fragments_title">Default home</string>
     <string name="pref_fragments_summary">Selects the default home to display at the start of the application.</string>
+    <string name="pref_summary_scroll_to_current_day">Automatic scrolling of the working time view to the current day.</string>
+    <string name="pref_title_scroll_to_current_day">Scroll to the current day</string>
     <string name="chooser_long_press_message">Long press to select the file or the directory.</string>
     <string name="use_folder">Use this folder</string>
     <string name="use_file">Use this file</string>

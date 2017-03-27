@@ -148,6 +148,12 @@ public class MainApplication extends Application {
     return prefs.getBoolean(SettingsActivity.PREFS_KEY_EXPORT_HIDE_WAGE, false);
   }
 
+  public boolean isScrollToCurrentDay() {
+    SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+    return prefs.getBoolean(SettingsActivity.PREFS_KEY_SCROLL_TO_CURRENT_DAY, false);
+
+  }
+
   public WorkTimeDay getEstimatedHours(int wDays) {
     WorkTimeDay w = new WorkTimeDay();
     for(int i = 1; i <= wDays; ++i)

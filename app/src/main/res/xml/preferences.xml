@@ -36,6 +36,11 @@
             android:summary="@string/pref_summary_day_row_height"
             android:title="@string/pref_title_day_row_height"
             android:inputType="numberDecimal" />
+        <CheckBoxPreference
+            android:key="prefScrollToCurrentDay"
+            android:defaultValue="false"
+            android:summary="@string/pref_summary_scroll_to_current_day"
+            android:title="@string/pref_title_scroll_to_current_day" />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/pref_title_export" android:key="prefCatExport" >
         <CheckBoxPreference

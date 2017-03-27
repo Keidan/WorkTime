@@ -217,12 +217,14 @@ public class WorkTimeFragment extends Fragment implements View.OnClickListener, 
     int maxDay = app.getCurrentDate().getActualMaximum(Calendar.DAY_OF_MONTH);
 
     int wDays = 0;
+    int index = 0;
     double realwDays = 0.0;
     int currentDay = app.getCurrentDate().get(Calendar.DAY_OF_MONTH);
     /* get first week */
     app.getCurrentDate().set(Calendar.DAY_OF_MONTH, 1);
     int firstWeek = app.getCurrentDate().get(Calendar.WEEK_OF_YEAR);
     WorkTimeDay wtdTotalWorkTime = new WorkTimeDay();
+    WorkTimeDay wtdnow = WorkTimeDay.now();
     /* loop for each days in the month */
     for(int day = minDay; day <= maxDay; ++day) {
       app.getCurrentDate().set(Calendar.DAY_OF_MONTH, day);
@@ -243,6 +245,12 @@ public class WorkTimeFragment extends Fragment implements View.OnClickListener, 
         if(de.getTypeAfternoon() == DayType.AT_WORK) realwDays += 0.5;
       }
       lvAdapter.add(de);
+      if(app.isScrollToCurrentDay() && lastFirstVisibleItem == 0 && de.getDay().dateString().equals(wtdnow.dateString())) {
+        lastFirstVisibleItem = index;
+        isScrollingUp = true;
+        rlDetails.setVisibility(View.GONE);
+      }
+      else if(lastFirstVisibleItem == 0) index++;
     }
     Map<String, DayEntry> map = app.getDaysFactory().toDaysMap();
     int min = (firstWeek == 52 ? 1 : firstWeek);
