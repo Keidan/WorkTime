@@ -1,6 +1,7 @@
 package fr.ralala.worktime.factories;
 
 
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -59,7 +60,7 @@ public class ProfilesFactory {
     DayEntry profile = null;
     int weight = 0;
     for(DayEntry p : profiles) {
-      if(weight >= p.getLearningWeight()) {
+      if(weight == 0 || weight >= p.getLearningWeight()) {
         weight = p.getLearningWeight();
         profile = p;
       }
