@@ -169,7 +169,7 @@ public class WorkTimeFragment extends Fragment implements View.OnClickListener, 
   public void onSaveInstanceState(Bundle outState) {
     super.onSaveInstanceState(outState);
     /* save the scroll position value */
-    outState.putInt("lastFirstVisibleItem", days.getFirstVisiblePosition());
+    outState.putInt("lastFirstVisibleItem", lastFirstVisibleItem);
   }
 
   @Override
