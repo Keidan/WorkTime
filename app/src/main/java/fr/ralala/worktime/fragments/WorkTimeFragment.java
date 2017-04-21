@@ -138,21 +138,7 @@ public class WorkTimeFragment extends Fragment implements View.OnClickListener, 
       }
     });
     updateTop();
-    /* the effect without the code below is too ugly, in waits for a better solution */
-    new Thread() {
-      @Override
-      public void run() {
-        try {
-          sleep(50);
-        } catch (InterruptedException ie) { }
-        getActivity().runOnUiThread(new Runnable() {
-          @Override
-          public void run() {
-            updateDates();
-          }
-        });
-      }
-    }.start();
+    updateDates();
     return rootView;
   }
 
