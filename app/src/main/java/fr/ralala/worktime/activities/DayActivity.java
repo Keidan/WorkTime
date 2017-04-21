@@ -210,7 +210,7 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
           String s = spProfilesAdapter.getItem(i);
           if (s != null && s.equals(de.getName())) {
             spProfile.setSelection(i);
-            //selecProfile(i);
+            selectProfile(i);
             break;
           }
         }
@@ -319,10 +319,10 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
 
   @Override
   public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-    selecProfile(i);
+    selectProfile(i);
   }
 
-  private void selecProfile(int indexInAdapter) {
+  private void selectProfile(int indexInAdapter) {
     if(spProfilesAdapter != null) {
       String name = spProfilesAdapter.getItem(indexInAdapter);
       if(name != null && !name.isEmpty()) {
