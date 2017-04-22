@@ -127,7 +127,7 @@
     <string name="bt_pause">Pause</string>
     <string name="bt_finalize">Finaliser la journ\u00E9e</string>
     <string name="bt_finalize2">Finaliser</string>
-    <string name="service_running">Finalisez ou mettez sur pause l\'acc\u00E9s rapide avant de modifier le jour.</string>
+    <string name="service_running">Finalisez ou mettez sur pause l\'acc\u00E8s rapide avant de modifier le jour.</string>
     <string name="restart_from_db_update_v1">Base de donn\u00E9es mise \u00E0 jour vers la version 2</string>
     <string name="restart_from_db_update_v2">Base de donn\u00E9es mise \u00E0 jour vers la version 3</string>
 </resources>
