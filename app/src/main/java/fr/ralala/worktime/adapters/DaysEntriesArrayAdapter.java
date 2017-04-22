@@ -151,7 +151,7 @@ public class DaysEntriesArrayAdapter extends ArrayAdapter<DayEntry> {
       if (holder.tvEnd != null) {
         if (isNotValidAfternoon(t)) {
           WorkTimeDay w = t.getEndMorning();
-          if(w.timeString().equals("00:00"))
+          if(w.timeString().equals("00:00") || isNotValidMorning(t))
             holder.tvEnd.setText("-");
           else
             holder.tvEnd.setText(t.getEndMorning().timeString());
