@@ -49,8 +49,13 @@ public class MainActivity extends RuntimePermissionsActivity implements Navigati
   private boolean viewIsAtHome = false;
   private MainApplication app = null;
   private NavigationView navigationView = null;
-  private Fragment fragment = null;
+  private Fragment currentFragment = null;
   private SwipeDetector swipeDetector = null;
+  private Fragment quickAccessFragment = null;
+  private Fragment profileFragment = null;
+  private Fragment publicHolidaysFragment = null;
+  private Fragment exportFragment = null;
+  private Fragment workTimeFragment = null;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -71,6 +76,17 @@ public class MainActivity extends RuntimePermissionsActivity implements Navigati
     navigationView.getMenu().getItem(0).setChecked(true);
 
     app = MainApplication.getApp(this);
+    if(quickAccessFragment == null)
+      quickAccessFragment = new QuickAccessFragment();
+    if(profileFragment == null)
+      profileFragment = new ProfileFragment();
+    if(publicHolidaysFragment == null)
+      publicHolidaysFragment = new PublicHolidaysFragment();
+    if(exportFragment == null)
+      exportFragment = new ExportFragment();
+    if(workTimeFragment == null)
+      workTimeFragment = new WorkTimeFragment();
+    currentFragment = workTimeFragment;
     displayView(getDefaultHome());
     /* load SQL */
     if(!app.openSql(this)) finish();
@@ -109,6 +125,22 @@ public class MainActivity extends RuntimePermissionsActivity implements Navigati
     }
   }
 
+  private Fragment getDefaultHomeView() {
+    switch(app.getDefaultHome()) {
+      case IDX_QUICK_ACCESS:
+        return quickAccessFragment;
+      case IDX_PROFILE:
+        return profileFragment;
+      case IDX_PUBLIC_HOLIDAY:
+        return publicHolidaysFragment;
+      case IDX_EXPORT:
+        return exportFragment;
+      case IDX_WORK_TIME:
+      default:
+        return workTimeFragment;
+    }
+  }
+
   public SwipeDetector getSwipeDetector() {
     return swipeDetector;
   }
@@ -121,11 +153,11 @@ public class MainActivity extends RuntimePermissionsActivity implements Navigati
 
   public void onResume() {
     super.onResume();
+    Fragment fragment = currentFragment;
     if(fragment != null) {
       final FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
       ft.setCustomAnimations(R.anim.fadein, R.anim.fadeout);
-      ft.detach(fragment);
-      ft.attach(fragment);
+      ft.replace(R.id.content_frame, fragment);
       ft.commit();
       if(QuickAccessFragment.class.isInstance(fragment))
         navigationView.getMenu().getItem(IDX_QUICK_ACCESS).setChecked(true); /* select quick access title */
@@ -137,7 +169,6 @@ public class MainActivity extends RuntimePermissionsActivity implements Navigati
         navigationView.getMenu().getItem(IDX_EXPORT).setChecked(true); /* select export title */
       else if(WorkTimeFragment.class.isInstance(fragment))
         navigationView.getMenu().getItem(IDX_WORK_TIME).setChecked(true); /* select work title */
-
     }
   }
 
@@ -196,38 +227,39 @@ public class MainActivity extends RuntimePermissionsActivity implements Navigati
     viewIsAtHome = getDefaultHome() == viewId ? true : false;
     switch (viewId) {
       case R.id.nav_quickaccess:
-        fragment = new QuickAccessFragment();
+        currentFragment = quickAccessFragment;
         title = getString(R.string.quickaccess);
         break;
       case R.id.nav_profile:
-        fragment = new ProfileFragment();
+        currentFragment = profileFragment;
         title  = getString(R.string.profile);
         break;
       case R.id.nav_public_holidays:
-        fragment = new PublicHolidaysFragment();
+        currentFragment = publicHolidaysFragment;
         title = getString(R.string.public_holidays);
         break;
       case R.id.nav_export:
-        fragment = new ExportFragment();
+        currentFragment = exportFragment;
         title = getString(R.string.export);
         break;
       case R.id.nav_settings:
+        currentFragment = getDefaultHomeView();
         startActivity(new Intent(this, SettingsActivity.class));
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if(drawer != null) drawer.closeDrawer(GravityCompat.START);
         return;
       case R.id.nav_worktime:
       default:
-        fragment = new WorkTimeFragment();
+        currentFragment = workTimeFragment;
         break;
 
     }
 
-    if (fragment != null) {
+    if (currentFragment != null) {
       FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
       ft.setCustomAnimations(R.anim.fadein, R.anim.fadeout);
 
-      ft.replace(R.id.content_frame, fragment);
+      ft.replace(R.id.content_frame, currentFragment);
       ft.commit();
     }
 
