@@ -51,11 +51,12 @@
     <string name="start_morning">Morning arrival:</string>
     <string name="at_work">At work</string>
     <string name="default_hours" translatable="false">00:00</string>
-    <string name="error_invalid_type">Invalid profile</string>
-    <string name="error_invalid_start">Invalid departure time</string>
-    <string name="error_invalid_end">Invalid arrival time</string>
-    <string name="error_invalid_start_end_morning">The morning departure and arrival times are invalid</string>
-    <string name="error_invalid_start_end_afternoon">The afternoon departure and arrival times are invalid</string>
+    <string name="error_invalid_type">Invalid profile.</string>
+    <string name="error_invalid_start">Invalid departure time.</string>
+    <string name="error_invalid_end">Invalid arrival time.</string>
+    <string name="error_invalid_start_end_morning">The morning departure and arrival times are invalid.</string>
+    <string name="error_invalid_start_end_afternoon">The afternoon departure and arrival times are invalid.</string>
+    <string name="error_invalid_legal_worktime">The legal work time is invalid.</string>
     <string name="text_for">for</string>
     <string name="at">at</string>
     <string name="hours_lower_case">hour(s)</string>
@@ -146,4 +147,5 @@
     <string name="recurrence">Recurrence</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
+    <string name="legalWorkTimeByDay">Legal work time</string>
 </resources>

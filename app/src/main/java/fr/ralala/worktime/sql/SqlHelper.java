@@ -45,6 +45,8 @@ import java.util.Locale;
     + COL_PROFILES_AMOUNT
     + " TEXT NOT NULL, "
     + COL_PROFILES_LEARNING_WEIGHT
+    + " TEXT NOT NULL, "
+    + COL_PROFILES_LEGAL_WORKTIME
     + " TEXT NOT NULL);";
 
   private static final String CREATE_BDD_DAYS = "CREATE TABLE IF NOT EXISTS "
@@ -63,6 +65,8 @@ import java.util.Locale;
     + COL_DAYS_TYPE
     + " TEXT NOT NULL, "
     + COL_DAYS_AMOUNT
+    + " TEXT NOT NULL, "
+    + COL_DAYS_LEGAL_WORKTIME
     + " TEXT NOT NULL);";
 
   private static final String CREATE_BDD_PUBLIC_HOLIDAYS = "CREATE TABLE IF NOT EXISTS "
@@ -107,8 +111,12 @@ import java.util.Locale;
       db.execSQL(CREATE_BDD_PROFILES);
     }
     else if(oldVersion == 3 && newVersion == 4) {
+      db.execSQL("ALTER TABLE " + TABLE_PROFILES + " RENAME TO " + TABLE_PROFILES + "_v3");
+      db.execSQL("ALTER TABLE " + TABLE_DAYS + " RENAME TO " + TABLE_DAYS + "_v3");
       db.execSQL("ALTER TABLE " + TABLE_PUBLIC_HOLIDAYS + " RENAME TO " + TABLE_PUBLIC_HOLIDAYS + "_v3");
       db.execSQL(CREATE_BDD_PUBLIC_HOLIDAYS);
+      db.execSQL(CREATE_BDD_PROFILES);
+      db.execSQL(CREATE_BDD_DAYS);
     }
   }
 

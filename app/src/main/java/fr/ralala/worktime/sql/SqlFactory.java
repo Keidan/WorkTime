@@ -29,9 +29,15 @@ import fr.ralala.worktime.utils.AndroidHelper;
 public class SqlFactory implements SqlConstants {
   private SQLiteDatabase bdd     = null;
   private SqlHelper           helper  = null;
+  private Context context = null;
+
+  public Context getContext() {
+    return context;
+  }
 
   public SqlFactory(final Context context) throws Exception {
     helper = new SqlHelper(context, DB_NAME, null, VERSION_BDD);
+    this.context = context;
   }
 
   public void open(Context c) {
@@ -71,22 +77,45 @@ public class SqlFactory implements SqlConstants {
       Log.d(getClass().getSimpleName(), "delete table profiles");
       bdd.delete(TABLE_PROFILES, null, null);
       Log.d(getClass().getSimpleName(), "table profiles deleted");
-      for(DayEntry de : listOld) /* reload weight */
+      for(DayEntry de : listOld)
         insertProfile(de);
       removeTable(TABLE_PROFILES + "_v2");
       restartV2 = true;
     }
     if(isTableExists(TABLE_PUBLIC_HOLIDAYS + "_v3")) {
       Log.e(getClass().getSimpleName(), "PUBLIC_HOLIDAYS found");
-      final List<DayEntry> listOld = readPublicHolidaysV3();
+      final List<DayEntry> listOld = getPublicHolidays(TABLE_PUBLIC_HOLIDAYS + "_v3");
       Log.e(getClass().getSimpleName(), "delete table public holidays");
       bdd.delete(TABLE_PUBLIC_HOLIDAYS, null, null);
       Log.e(getClass().getSimpleName(), "table public holidays deleted");
-      for(DayEntry de : listOld) /* reload weight */ {
-        Log.e(getClass().getSimpleName(), "insert entry " + de.getName());
+      for(DayEntry de : listOld) {
         insertPublicHoliday(de);
       }
       removeTable(TABLE_PUBLIC_HOLIDAYS + "_v3");
+      restartV3 = true;
+    }
+    if(isTableExists(TABLE_DAYS + "_v3")) {
+      Log.e(getClass().getSimpleName(), "TABLE_DAYS found");
+      final List<DayEntry> listOld = getDays(TABLE_DAYS + "_v3");
+      Log.e(getClass().getSimpleName(), "delete table days");
+      bdd.delete(TABLE_DAYS, null, null);
+      Log.e(getClass().getSimpleName(), "table days deleted");
+      for(DayEntry de : listOld) {
+        insertDay(de);
+      }
+      removeTable(TABLE_DAYS + "_v3");
+      restartV3 = true;
+    }
+    if(isTableExists(TABLE_PROFILES + "_v3")) {
+      Log.e(getClass().getSimpleName(), "TABLE_PROFILES found");
+      final List<DayEntry> listOld = getProfiles(TABLE_PROFILES + "_v3");
+      Log.e(getClass().getSimpleName(), "delete table profiles");
+      bdd.delete(TABLE_PROFILES, null, null);
+      Log.e(getClass().getSimpleName(), "table profiles deleted");
+      for(DayEntry de : listOld) {
+        insertProfile(de);
+      }
+      removeTable(TABLE_PROFILES + "_v3");
       restartV3 = true;
     }
     if(restartV1)
@@ -103,7 +132,7 @@ public class SqlFactory implements SqlConstants {
 
   private void v1tov2(List<DayEntry> listOld, List<DayEntry> listNew) {
     for(DayEntry de : listOld) {
-      final DayEntry d = new DayEntry(de.getDay(), de.getTypeMorning(), de.getTypeAfternoon());
+      final DayEntry d = new DayEntry(context, de.getDay(), de.getTypeMorning(), de.getTypeAfternoon());
       d.copy(de);
       WorkTimeDay start = de.getStartMorning();
       WorkTimeDay end = de.getEndMorning();
@@ -133,7 +162,7 @@ public class SqlFactory implements SqlConstants {
         wtd.setDay(Integer.parseInt(split[0]));
         wtd.setMonth(Integer.parseInt(split[1]));
         wtd.setYear(Integer.parseInt(split[2]));
-        final DayEntry de = new DayEntry(wtd, DayType.compute(c.getInt(c_type)), DayType.compute(c.getInt(c_type)));
+        final DayEntry de = new DayEntry(context, wtd, DayType.compute(c.getInt(c_type)), DayType.compute(c.getInt(c_type)));
         de.setStartMorning(c.getString(c_start)); /* start */
         de.setEndMorning(c.getString(c_end)); /* end */
         de.setStartAfternoon(c.getString(c_pause)); /* pause */
@@ -166,7 +195,7 @@ public class SqlFactory implements SqlConstants {
         wtd.setDay(Integer.parseInt(split[0]));
         wtd.setMonth(Integer.parseInt(split[1]));
         wtd.setYear(Integer.parseInt(split[2]));
-        final DayEntry de = new DayEntry(wtd, DayType.compute(c.getInt(c_type)), DayType.compute(c.getInt(c_type)));
+        final DayEntry de = new DayEntry(context, wtd, DayType.compute(c.getInt(c_type)), DayType.compute(c.getInt(c_type)));
         de.setStartMorning(c.getString(c_start_m)); /* start morning*/
         de.setEndMorning(c.getString(c_end_m)); /* end morning*/
         de.setStartAfternoon(c.getString(c_start_a)); /* start afternoon*/
@@ -186,31 +215,6 @@ public class SqlFactory implements SqlConstants {
       }
     });
     return listProfiles;
-  }
-
-  private List<DayEntry> readPublicHolidaysV3() {
-    final List<DayEntry> list = new ArrayList<>();
-    final Cursor c = bdd.rawQuery("SELECT * FROM " + TABLE_PUBLIC_HOLIDAYS + "_v3", null);
-    if (c.moveToFirst()) {
-      do {
-        String [] split = c.getString(1).split("/");
-        WorkTimeDay wtd = new WorkTimeDay();
-        wtd.setDay(Integer.parseInt(split[0]));
-        wtd.setMonth(Integer.parseInt(split[1]));
-        wtd.setYear(Integer.parseInt(split[2]));
-        final DayEntry de = new DayEntry(wtd, DayType.PUBLIC_HOLIDAY, DayType.PUBLIC_HOLIDAY);
-        de.setName(c.getString(0).replaceAll("\\'", "'"));
-        list.add(de);
-      } while (c.moveToNext());
-    }
-    c.close();
-    Collections.sort(list, new Comparator<DayEntry>() {
-      @Override
-      public int compare(final DayEntry lhs, final DayEntry rhs) {
-        return lhs.getDay().compareTo(rhs.getDay());
-      }
-    });
-    return list;
   }
 
   public boolean isTableExists(String tableName) {
@@ -242,6 +246,7 @@ public class SqlFactory implements SqlConstants {
     values.put(COL_PROFILES_TYPE, de.getTypeMorning().value() + "|" + de.getTypeAfternoon().value());
     values.put(COL_PROFILES_AMOUNT, String.valueOf(de.getAmountByHour()));
     values.put(COL_PROFILES_LEARNING_WEIGHT, String.valueOf(de.getLearningWeight()));
+    values.put(COL_PROFILES_LEGAL_WORKTIME, de.getLegalWorktime().timeString());
     return bdd.insert(TABLE_PROFILES, null, values);
   }
 
@@ -254,6 +259,7 @@ public class SqlFactory implements SqlConstants {
     values.put(COL_DAYS_END_AFTERNOON, de.getEndAfternoon().timeString());
     values.put(COL_DAYS_TYPE, de.getTypeMorning().value() + "|" + de.getTypeAfternoon().value());
     values.put(COL_DAYS_AMOUNT, String.valueOf(de.getAmountByHour()));
+    values.put(COL_DAYS_LEGAL_WORKTIME, de.getLegalWorktime().timeString());
     return bdd.insert(TABLE_DAYS, null, values);
   }
 
@@ -266,8 +272,12 @@ public class SqlFactory implements SqlConstants {
   }
 
   public List<DayEntry> getPublicHolidays() {
+    return getPublicHolidays(TABLE_PUBLIC_HOLIDAYS);
+  }
+
+  public List<DayEntry> getPublicHolidays(String tablename) {
     final List<DayEntry> list = new ArrayList<>();
-    final Cursor c = bdd.rawQuery("SELECT * FROM " + TABLE_PUBLIC_HOLIDAYS, null);
+    final Cursor c = bdd.rawQuery("SELECT * FROM " + tablename, null);
     if (c.moveToFirst()) {
       do {
         String [] split = c.getString(NUM_PUBLIC_HOLIDAYS_DATE).split("/");
@@ -275,9 +285,9 @@ public class SqlFactory implements SqlConstants {
         wtd.setDay(Integer.parseInt(split[0]));
         wtd.setMonth(Integer.parseInt(split[1]));
         wtd.setYear(Integer.parseInt(split[2]));
-        final DayEntry de = new DayEntry(wtd, DayType.PUBLIC_HOLIDAY, DayType.PUBLIC_HOLIDAY);
+        final DayEntry de = new DayEntry(context, wtd, DayType.PUBLIC_HOLIDAY, DayType.PUBLIC_HOLIDAY);
         de.setName(c.getString(NUM_PUBLIC_HOLIDAYS_NAME).replaceAll("\\'", "'"));
-        if(bdd.getVersion() >= VERSION_MIN_RECURRENCE)
+        if(bdd.getVersion() >= VERSION_MIN_RECURRENCE_LEGAL_WT && c.getColumnCount() > NUM_PUBLIC_HOLIDAYS_RECURRENCE)
           de.setRecurrence(c.getString(NUM_PUBLIC_HOLIDAYS_RECURRENCE).equals("1"));
         list.add(de);
       } while (c.moveToNext());
@@ -299,10 +309,13 @@ public class SqlFactory implements SqlConstants {
       return def;
     }
   }
-
   public List<DayEntry> getDays() {
+    return getDays(TABLE_DAYS);
+  }
+
+  public List<DayEntry> getDays(String tablename) {
     final List<DayEntry> list = new ArrayList<>();
-    final Cursor c = bdd.rawQuery("SELECT * FROM " + TABLE_DAYS, null);
+    final Cursor c = bdd.rawQuery("SELECT * FROM " + tablename, null);
     if (c.moveToFirst()) {
       do {
         String [] split = c.getString(NUM_DAYS_CURRENT).split("/");
@@ -320,13 +333,15 @@ public class SqlFactory implements SqlConstants {
           dta = DayType.compute(c.getInt(NUM_DAYS_TYPE));
           dtb = DayType.compute(c.getInt(NUM_DAYS_TYPE));
         }
-        final DayEntry de = new DayEntry(wtd, dta, dtb);
+        final DayEntry de = new DayEntry(context, wtd, dta, dtb);
         de.setStartMorning(c.getString(NUM_DAYS_START_MORNING));
         de.setEndMorning(c.getString(NUM_DAYS_END_MORNING));
-        if(bdd.getVersion() >= VERSION_MIN_MORNING_AFTERNOON)
+        if(bdd.getVersion() >= VERSION_MIN_MORNING_AFTERNOON && c.getColumnCount() > NUM_DAYS_AMOUNT)
           de.setStartAfternoon(c.getString(NUM_DAYS_START_AFTERNOON));
-        if(bdd.getVersion() >= VERSION_MIN_MORNING_AFTERNOON)
+        if(bdd.getVersion() >= VERSION_MIN_MORNING_AFTERNOON && c.getColumnCount() > NUM_DAYS_AMOUNT)
           de.setEndAfternoon(c.getString(NUM_DAYS_END_AFTERNOON));
+        if(bdd.getVersion() >= VERSION_MIN_MORNING_AFTERNOON && c.getColumnCount() > NUM_DAYS_LEGAL_WORKTIME)
+          de.setLegalWorktime(c.getString(NUM_DAYS_LEGAL_WORKTIME));
         String s = c.getString(NUM_DAYS_AMOUNT);
         if(s != null && !s.isEmpty())
           de.setAmountByHour(Double.parseDouble(s));
@@ -344,8 +359,11 @@ public class SqlFactory implements SqlConstants {
   }
 
   public List<DayEntry> getProfiles() {
+    return getProfiles(TABLE_PROFILES);
+  }
+  public List<DayEntry> getProfiles(String tablename) {
     final List<DayEntry> list = new ArrayList<>();
-    final Cursor c = bdd.rawQuery("SELECT * FROM " + TABLE_PROFILES, null);
+    final Cursor c = bdd.rawQuery("SELECT * FROM " + tablename, null);
     if (c.moveToFirst()) {
       do {
         String [] split = c.getString(NUM_PROFILES_CURRENT).split("/");
@@ -364,21 +382,24 @@ public class SqlFactory implements SqlConstants {
           dta = DayType.compute(c.getInt(NUM_PROFILES_TYPE));
           dtb = dta;
         }
-        final DayEntry de = new DayEntry(wtd, dta, dtb);
+        final DayEntry de = new DayEntry(context, wtd, dta, dtb);
         de.setStartMorning(c.getString(NUM_PROFILES_START_MORNING));
         de.setEndMorning(c.getString(NUM_PROFILES_END_MORNING));
-        if(bdd.getVersion() >= VERSION_MIN_MORNING_AFTERNOON)
+        if(bdd.getVersion() >= VERSION_MIN_MORNING_AFTERNOON && c.getColumnCount() > NUM_PROFILES_AMOUNT)
           de.setStartAfternoon(c.getString(NUM_PROFILES_START_AFTERNOON));
-        if(bdd.getVersion() >= VERSION_MIN_MORNING_AFTERNOON)
+        if(bdd.getVersion() >= VERSION_MIN_MORNING_AFTERNOON && c.getColumnCount() > NUM_PROFILES_AMOUNT)
           de.setEndAfternoon(c.getString(NUM_PROFILES_END_AFTERNOON));
         String s = c.getString(NUM_PROFILES_AMOUNT);
         if(s != null && !s.isEmpty())
           de.setAmountByHour(Double.parseDouble(s));
+        if(bdd.getVersion() >= VERSION_MIN_MORNING_AFTERNOON && c.getColumnCount() > NUM_PROFILES_LEARNING_WEIGHT)
         s = c.getString(NUM_PROFILES_LEARNING_WEIGHT);
         if(s != null && !s.isEmpty())
           de.setLearningWeight(Integer.parseInt(s));
         de.setName(c.getString(NUM_PROFILES_NAME).replaceAll("\\'", "'"));
 
+        if(bdd.getVersion() >= VERSION_MIN_MORNING_AFTERNOON && c.getColumnCount() > NUM_PROFILES_LEGAL_WORKTIME)
+          de.setLegalWorktime(c.getString(NUM_PROFILES_LEGAL_WORKTIME));
         list.add(de);
       } while (c.moveToNext());
     }

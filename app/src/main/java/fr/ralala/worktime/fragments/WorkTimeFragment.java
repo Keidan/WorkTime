@@ -18,6 +18,7 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -214,8 +215,7 @@ public class WorkTimeFragment extends Fragment implements View.OnClickListener, 
     lvAdapter.clear();
     int minDay = 1;
     int maxDay = app.getCurrentDate().getActualMaximum(Calendar.DAY_OF_MONTH);
-
-    int wDays = 0;
+    List<DayEntry> wDays = new ArrayList<>();
     int index = 0;
     double realwDays = 0.0;
     int currentDay = app.getCurrentDate().get(Calendar.DAY_OF_MONTH);
@@ -227,7 +227,7 @@ public class WorkTimeFragment extends Fragment implements View.OnClickListener, 
     /* loop for each days in the month */
     for(int day = minDay; day <= maxDay; ++day) {
       app.getCurrentDate().set(Calendar.DAY_OF_MONTH, day);
-      DayEntry de = new DayEntry(app.getCurrentDate(), DayType.ERROR, DayType.ERROR);
+      DayEntry de = new DayEntry(getActivity(), app.getCurrentDate(), DayType.ERROR, DayType.ERROR);
       de.setAmountByHour(app.getAmountByHour()); /* set default amount */
       /* Force public holiday */
       if(app.getPublicHolidaysFactory().isPublicHolidays(de.getDay())) {
@@ -239,7 +239,7 @@ public class WorkTimeFragment extends Fragment implements View.OnClickListener, 
       app.getDaysFactory().checkForDayDateAndCopy(de);
       /* count working day */
       if(now != Calendar.SUNDAY && now != Calendar.SATURDAY && !app.getPublicHolidaysFactory().isPublicHolidays(de.getDay())) {
-        ++wDays;
+        wDays.add(de);
         if(de.getTypeMorning() == DayType.AT_WORK) realwDays += 0.5;
         if(de.getTypeAfternoon() == DayType.AT_WORK) realwDays += 0.5;
       }
@@ -263,9 +263,9 @@ public class WorkTimeFragment extends Fragment implements View.OnClickListener, 
     int n = Integer.parseInt((""+realwDays).split("\\.")[1]);
     String workDays = getString(R.string.work_days) + ": ";
     if(n != 0)
-      workDays += String.format(Locale.US, "%02d.%02d/%02d", (int)realwDays, n, wDays);
+      workDays += String.format(Locale.US, "%02d.%02d/%02d", (int)realwDays, n, wDays.size());
     else
-      workDays += String.format(Locale.US, "%02d/%02d", (int)realwDays, wDays);
+      workDays += String.format(Locale.US, "%02d/%02d", (int)realwDays, wDays.size());
     workDays += " " + getString(R.string.days_lower_case);
     tvWorkDays.setText(workDays);
 

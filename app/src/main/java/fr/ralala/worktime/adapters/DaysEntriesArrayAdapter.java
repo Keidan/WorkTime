@@ -1,6 +1,7 @@
 package fr.ralala.worktime.adapters;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.graphics.Typeface;
 import android.support.annotation.NonNull;
 import android.view.Gravity;
@@ -46,6 +47,7 @@ public class DaysEntriesArrayAdapter extends ArrayAdapter<DayEntry> {
     TextView tvPause = null;
     TextView tvTotal = null;
     TextView tvOver = null;
+    ColorStateList tvOverColors = null;
   }
 
   public DaysEntriesArrayAdapter(final Context context, final int textViewResourceId,
@@ -78,13 +80,13 @@ public class DaysEntriesArrayAdapter extends ArrayAdapter<DayEntry> {
       holder.tvPause = (TextView) v.findViewById(R.id.tvPause);
       holder.tvTotal = (TextView) v.findViewById(R.id.tvTotal);
       holder.tvOver = (TextView) v.findViewById(R.id.tvOver);
+      holder.tvOverColors = holder.tvOver.getTextColors();
       setRowHeight(holder.tvDay);
       setRowHeight(holder.tvStart);
       setRowHeight(holder.tvEnd);
       setRowHeight(holder.tvPause);
       setRowHeight(holder.tvTotal);
       setRowHeight(holder.tvOver);
-
       v.setTag(holder);
     } else {
         /* We recycle a View that already exists */
@@ -177,14 +179,13 @@ public class DaysEntriesArrayAdapter extends ArrayAdapter<DayEntry> {
         }
       }
       if (holder.tvOver != null) {
-        MainApplication app = MainApplication.getApp(c);
         if(isNotValidMorning(t) && isNotValidAfternoon(t) || w.timeString().equals("00:00")) {
           holder.tvOver.setText("-");
           holder.tvOver.setTypeface(Typeface.MONOSPACE, Typeface.NORMAL);
           holder.tvOver.setGravity(Gravity.CENTER);
         }
         else {
-          long overtime = t.getOverTimeMs(app);
+          long overtime = t.getOverTimeMs();
           WorkTimeDay wtd = t.getOverTime(overtime);
           if(overtime == 0) {
             holder.tvOver.setText("-");
@@ -195,8 +196,10 @@ public class DaysEntriesArrayAdapter extends ArrayAdapter<DayEntry> {
             holder.tvOver.setGravity(Gravity.END);
             if (overtime < 0) {
               holder.tvOver.setTextColor(c.getResources().getColor(android.R.color.holo_red_dark, null));
-            } else {
+            } else if (overtime > 0) {
               holder.tvOver.setTextColor(c.getResources().getColor(android.R.color.holo_green_dark, null));
+            } else {
+              holder.tvOver.setTextColor(holder.tvOverColors);
             }
             holder.tvOver.setText(wtd.timeString());
           }

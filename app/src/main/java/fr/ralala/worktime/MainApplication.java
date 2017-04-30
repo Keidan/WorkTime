@@ -9,11 +9,13 @@ import android.util.Log;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.TimeZone;
 
 import fr.ralala.worktime.factories.DaysFactory;
 import fr.ralala.worktime.factories.ProfilesFactory;
 import fr.ralala.worktime.factories.PublicHolidaysFactory;
+import fr.ralala.worktime.models.DayEntry;
 import fr.ralala.worktime.models.WorkTimeDay;
 import fr.ralala.worktime.activities.SettingsActivity;
 import fr.ralala.worktime.quickaccess.QuickAccessNotification;
@@ -154,10 +156,10 @@ public class MainApplication extends Application {
 
   }
 
-  public WorkTimeDay getEstimatedHours(int wDays) {
+  public WorkTimeDay getEstimatedHours(List<DayEntry> wDays) {
     WorkTimeDay w = new WorkTimeDay();
-    for(int i = 1; i <= wDays; ++i)
-      w.addTime(getLegalWorkTimeByDay());
+    for(int i = 0; i < wDays.size(); ++i)
+      w.addTime(wDays.get(i).getLegalWorktime());
     return w;
   }
 

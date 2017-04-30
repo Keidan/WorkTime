@@ -41,8 +41,8 @@ public class MonthDetailsDialog implements DialogInterface.OnClickListener {
   private AlertDialog alertDialog = null;
 
   private class Item {
+    List<DayEntry> wDays = new ArrayList<>();
     WorkTimeDay w = new WorkTimeDay();
-    int wDays = 0;
     double wage = 0.0;
   }
 
@@ -94,7 +94,7 @@ public class MonthDetailsDialog implements DialogInterface.OnClickListener {
         i = weeks.get(ctime.get(Calendar.WEEK_OF_YEAR));
 
         i.w.addTime(de.getWorkTime());
-        ++i.wDays;
+        i.wDays.add(de);
         i.wage += de.getWorkTimePay();
       }
     }

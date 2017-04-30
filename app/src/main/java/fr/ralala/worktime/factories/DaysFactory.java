@@ -67,7 +67,7 @@ public class DaysFactory {
       if(d.getDay().dateString().equals(WorkTimeDay.now().dateString())) {
         return d;
       }
-    DayEntry d = new DayEntry(WorkTimeDay.now(), DayType.ERROR, DayType.ERROR);
+    DayEntry d = new DayEntry(sql.getContext(), WorkTimeDay.now(), DayType.ERROR, DayType.ERROR);
     days.add(d);
     return d;
   }

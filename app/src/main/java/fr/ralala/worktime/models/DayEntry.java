@@ -29,8 +29,11 @@ public class DayEntry {
   private double amountByHour = 0.0;
   private int learningWeight = 0;
   private boolean recurrence = false;
+  private WorkTimeDay legalWorktime = null;
+  private Context context = null;
 
-  public DayEntry(final WorkTimeDay day, final DayType typeMorning, final DayType typeAfternoon) {
+  public DayEntry(final Context c, final WorkTimeDay day, final DayType typeMorning, final DayType typeAfternoon) {
+    this.context = c;
     this.day = new WorkTimeDay();
     this.startMorning = new WorkTimeDay();
     this.endMorning = new WorkTimeDay();
@@ -38,11 +41,12 @@ public class DayEntry {
     this.endAfternoon = new WorkTimeDay();
     this.typeMorning = typeMorning;
     this.typeAfternoon = typeAfternoon;
+    this.legalWorktime = MainApplication.getApp(c).getLegalWorkTimeByDay();
     this.day.copy(day);
   }
 
-  public DayEntry(final Calendar day, final DayType typeMorning, final DayType typeAfternoon) {
-    this(new WorkTimeDay().fromCalendar(day), typeMorning, typeAfternoon);
+  public DayEntry(final Context c, final Calendar day, final DayType typeMorning, final DayType typeAfternoon) {
+    this(c, new WorkTimeDay().fromCalendar(day), typeMorning, typeAfternoon);
   }
 
   public double getWorkTimePay(double defAmount) {
@@ -56,16 +60,16 @@ public class DayEntry {
     return getWorkTimePay(-1);
   }
 
-  public long getOverTimeMs(MainApplication app) {
-    return getWorkTime().getTimeMs() - app.getLegalWorkTimeByDay().getTimeMs();
+  public long getOverTimeMs() {
+    return getWorkTime().getTimeMs() - getLegalWorktime().getTimeMs();
   }
 
   public WorkTimeDay getOverTime(long diffInMs) {
     return new WorkTimeDay(diffInMs);
   }
 
-  public WorkTimeDay getOverTime(MainApplication app) {
-    return getOverTime(getOverTimeMs(app));
+  public WorkTimeDay getOverTime() {
+    return getOverTime(getOverTimeMs());
   }
 
   public WorkTimeDay getWorkTime() {
@@ -81,6 +85,7 @@ public class DayEntry {
   }
 
   public void copy(DayEntry de) {
+    context = de.context;
     learningWeight = de.learningWeight;
     typeMorning = de.typeMorning;
     typeAfternoon = de.typeAfternoon;
@@ -91,12 +96,14 @@ public class DayEntry {
     startAfternoon.copy(de.startAfternoon);
     endAfternoon.copy(de.endAfternoon);
     amountByHour = de.amountByHour;
+    recurrence = de.recurrence;
+    legalWorktime = de.legalWorktime;
   }
 
   public boolean match(DayEntry de) {
     return day.match(de.day)  && startMorning.match(de.startMorning) && endMorning.match(de.endMorning)
       && startAfternoon.match(de.startAfternoon) && endAfternoon.match(de.endAfternoon) &&
-      typeMorning == de.typeMorning && typeAfternoon == de.typeAfternoon && amountByHour == de.amountByHour;
+      typeMorning == de.typeMorning && typeAfternoon == de.typeAfternoon && amountByHour == de.amountByHour && legalWorktime.match(de.legalWorktime);
   }
 
   public boolean matchSimpleDate(WorkTimeDay current) {
@@ -121,6 +128,8 @@ public class DayEntry {
   }
 
   private WorkTimeDay parseTime(String time) {
+    if(time == null)
+      time = "00:00";
     WorkTimeDay wtd = new WorkTimeDay();
     String split [] = time.split(":");
     wtd.setHours(Integer.parseInt(split[0]));
@@ -231,5 +240,15 @@ public class DayEntry {
 
   public void setRecurrence(boolean recurrence) {
     this.recurrence = recurrence;
+  }
+
+  public WorkTimeDay getLegalWorktime() {
+    if(legalWorktime.timeString().equals("00:00"))
+      legalWorktime = MainApplication.getApp(context).getLegalWorkTimeByDay();
+    return legalWorktime;
+  }
+
+  public void setLegalWorktime(String legalWorktime) {
+    this.legalWorktime.copy(parseTime(legalWorktime));
   }
 }

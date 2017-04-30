@@ -46,6 +46,7 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
   private TextView tvStartMorning = null;
   private TextView tvEndMorning = null;
   private TextView tvStartAfternoon = null;
+  private TextView tvLegalWorktime = null;
   private TextView tvEndAfternoon = null;
   private EditText etAmount = null;
   private EditText etName = null;
@@ -58,6 +59,7 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
   private WorkTimeDay wtdEndMorning = null;
   private WorkTimeDay wtdStartAfternoon = null;
   private WorkTimeDay wtdEndAfternoon = null;
+  private WorkTimeDay wtdLegalWorktime = null;
   private MainApplication app = null;
   private DayEntry selectedProfile = null;
   private boolean openForAdd = false;
@@ -101,7 +103,7 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
     }
     if(de == null) {
       openForAdd = true;
-      de = new DayEntry(WorkTimeDay.now(), DayType.ERROR, DayType.ERROR);
+      de = new DayEntry(this, WorkTimeDay.now(), DayType.ERROR, DayType.ERROR);
       if(date != null && !date.isEmpty() && date.contains("/"))
         de.setDay(date);
     }
@@ -119,6 +121,7 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
     tvEndMorning = (TextView)findViewById(R.id.tvEndMorning);
     tvStartAfternoon = (TextView)findViewById(R.id.tvStartAfternoon);
     tvEndAfternoon = (TextView)findViewById(R.id.tvEndAfternoon);
+    tvLegalWorktime = (TextView)findViewById(R.id.tvLegalWorktime);
     etAmount = (EditText)findViewById(R.id.etAmount);
     TextView tvName = (TextView)findViewById(R.id.tvName);
     etName = (EditText)findViewById(R.id.etName);
@@ -131,6 +134,7 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
     tvEndMorning.setOnClickListener(this);
     tvStartAfternoon.setOnClickListener(this);
     tvEndAfternoon.setOnClickListener(this);
+    tvLegalWorktime.setOnClickListener(this);
     /* manage view for the call from the profile view */
     if(displayProfile) {
       int v = View.VISIBLE;
@@ -189,6 +193,7 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
     AndroidHelper.initTimeTextView(de.getEndMorning(), tvEndMorning);
     AndroidHelper.initTimeTextView(de.getStartAfternoon(), tvStartAfternoon);
     AndroidHelper.initTimeTextView(de.getEndAfternoon(), tvEndAfternoon);
+    AndroidHelper.initTimeTextView(de.getLegalWorktime(), tvLegalWorktime);
 
     if(!app.isHideWage()) {
       etAmount.setTypeface(tvStartAfternoon.getTypeface());
@@ -203,6 +208,11 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
   public void onResume() {
     super.onResume();
     selectedProfile = null;
+    if(tvLegalWorktime.getText().equals(getString(R.string.default_time))) {
+      String t = app.getLegalWorkTimeByDay().timeString();
+      tvLegalWorktime.setText(t);
+      de.setLegalWorktime(t);
+    }
     if(displayProfile && openForAdd) {
       DayEntry de = app.getProfilesFactory().getHighestLearningWeight();
       if(de == null)
@@ -243,6 +253,7 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
           AndroidHelper.initTimeTextView(wtdEndMorning = new WorkTimeDay(), tvEndMorning);
           AndroidHelper.initTimeTextView(wtdStartAfternoon = new WorkTimeDay(), tvStartAfternoon);
           AndroidHelper.initTimeTextView(wtdEndAfternoon = new WorkTimeDay(), tvEndAfternoon);
+          AndroidHelper.initTimeTextView(wtdLegalWorktime = app.getLegalWorkTimeByDay(), tvLegalWorktime);
           etAmount.setText(getString(R.string.zero));
           spTypeMorning.setSelection(DayType.AT_WORK.value() + 1);
           spTypeAfternoon.setSelection(DayType.AT_WORK.value() + 1);
@@ -258,7 +269,7 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
 
   public void onClick(final View v) {
     if(v.equals(fab)) {
-      DayEntry newEntry = new DayEntry(de.getDay().toCalendar(),
+      DayEntry newEntry = new DayEntry(this, de.getDay().toCalendar(),
         DayType.compute(this, spTypeMorning.getSelectedItem().toString()),
         DayType.compute(this, spTypeAfternoon.getSelectedItem().toString()));
       String s = etAmount.getText().toString().trim();
@@ -269,6 +280,7 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
       newEntry.setStartMorning(tvStartMorning.getText().toString());
       newEntry.setEndAfternoon(tvEndAfternoon.getText().toString());
       newEntry.setStartAfternoon(tvStartAfternoon.getText().toString());
+      newEntry.setLegalWorktime(tvLegalWorktime.getText().toString());
       if(displayProfile) {
         boolean match = de.match(newEntry);
         if (!match) {
@@ -301,6 +313,9 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
         } else if (tvStartAfternoon.getText().toString().equals(tvEndAfternoon.getText().toString())) {
           AndroidHelper.showAlertDialog(this, R.string.error, R.string.error_invalid_start_end_afternoon);
           return;
+        } else if (tvLegalWorktime.getText().toString().equals(getString(R.string.default_time))) {
+          AndroidHelper.showAlertDialog(this, R.string.error, R.string.error_invalid_legal_worktime);
+          return;
         }
         if(de.getName().isEmpty() || !de.match(newEntry)) {
           app.getProfilesFactory().remove(de);
@@ -318,6 +333,8 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
       AndroidHelper.openTimePicker(this, wtdStartAfternoon, tvStartAfternoon);
     else if(v.equals(tvEndAfternoon))
       AndroidHelper.openTimePicker(this, wtdEndAfternoon, tvEndAfternoon);
+    else if(v.equals(tvLegalWorktime))
+      AndroidHelper.openTimePicker(this, wtdLegalWorktime, tvLegalWorktime);
   }
 
   @Override
@@ -335,6 +352,7 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
           AndroidHelper.initTimeTextView(de.getEndMorning(), tvEndMorning);
           AndroidHelper.initTimeTextView(de.getStartAfternoon(), tvStartAfternoon);
           AndroidHelper.initTimeTextView(de.getEndAfternoon(), tvEndAfternoon);
+          AndroidHelper.initTimeTextView(de.getLegalWorktime(), tvLegalWorktime);
           etAmount.setText(String.format(Locale.US, "%.02f", de.getAmountByHour()).replaceAll(",", "."));
           spTypeMorning.setSelection(de.getTypeMorning() == DayType.ERROR ? 0 : de.getTypeMorning().value() + 1);
           spTypeAfternoon.setSelection(de.getTypeAfternoon() == DayType.ERROR ? 0 : de.getTypeAfternoon().value() + 1);
@@ -353,6 +371,9 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
     wtdEndMorning = de.getEndMorning().clone();
     wtdStartAfternoon = de.getStartAfternoon().clone();
     wtdEndAfternoon = de.getEndAfternoon().clone();
+    if(de.getLegalWorktime().timeString().equals(getString(R.string.default_time)))
+      de.setLegalWorktime(app.getLegalWorkTimeByDay().timeString());
+    wtdLegalWorktime = de.getLegalWorktime().clone();
   }
 
   @Override
