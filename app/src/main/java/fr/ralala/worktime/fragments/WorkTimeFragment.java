@@ -59,6 +59,7 @@ public class WorkTimeFragment extends Fragment implements View.OnClickListener, 
   private boolean isScrollingUp = false;
   private int lastFirstVisibleItem = 0;
   private MonthDetailsDialog monthDetailsDialog = null;
+  private boolean resumeAfterActivity = false;
 
   @Override
   public View onCreateView(final LayoutInflater inflater,
@@ -142,6 +143,15 @@ public class WorkTimeFragment extends Fragment implements View.OnClickListener, 
     return rootView;
   }
 
+  public void onResume() {
+    super.onResume();
+    if(resumeAfterActivity) {
+      updateTop();
+      updateDates();
+      resumeAfterActivity = false;
+    }
+  }
+
 
   @Override
   public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -165,6 +175,7 @@ public class WorkTimeFragment extends Fragment implements View.OnClickListener, 
       return;
     }
     DayEntry de = lvAdapter.getItem(i);
+    resumeAfterActivity = true;
     DayActivity.startActivity(getActivity(), de.getDay().dateString(), true);
   }
 

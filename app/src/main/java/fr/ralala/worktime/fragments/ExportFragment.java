@@ -49,6 +49,7 @@ public class ExportFragment extends Fragment implements AdapterView.OnItemSelect
   private ExportListViewArrayAdapter lvAdapter = null;
   private Spinner sp = null;
   private MainApplication app = null;
+  private boolean resumeAfterActivity = false;
 
   @Override
   public View onCreateView(final LayoutInflater inflater,
@@ -88,6 +89,14 @@ public class ExportFragment extends Fragment implements AdapterView.OnItemSelect
     return rootView;
   }
 
+  public void onResume() {
+    super.onResume();
+    if(resumeAfterActivity) {
+      lvAdapter.notifyDataSetChanged();
+      resumeAfterActivity = false;
+    }
+  }
+
   @Override
   public void onClick(View v) {
     final List<ExportListViewArrayAdapter.ExportEntry> entries = lvAdapter.getCheckedItems();
@@ -101,6 +110,7 @@ public class ExportFragment extends Fragment implements AdapterView.OnItemSelect
       return;
     }
 
+    resumeAfterActivity = true;
     final File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS),
       getString(R.string.app_name) + "_" + entries.get(0).year + ".xls");
     if(file.exists()) {

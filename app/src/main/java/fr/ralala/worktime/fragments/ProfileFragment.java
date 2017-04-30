@@ -31,6 +31,7 @@ public class ProfileFragment  extends Fragment implements SimpleEntriesArrayAdap
 
   private ProfilesEntriesArrayAdapter adapter = null;
   private MainApplication app = null;
+  private boolean resumeAfterActivity = false;
 
   @Override
   public View onCreateView(final LayoutInflater inflater,
@@ -47,6 +48,14 @@ public class ProfileFragment  extends Fragment implements SimpleEntriesArrayAdap
     return rootView;
   }
 
+  public void onResume() {
+    super.onResume();
+    if(resumeAfterActivity) {
+      adapter.notifyDataSetChanged();
+      resumeAfterActivity = false;
+    }
+  }
+
   @Override
   public void onClick(View view) {
     DayActivity.startActivity(getActivity(), "null", false);
@@ -54,6 +63,7 @@ public class ProfileFragment  extends Fragment implements SimpleEntriesArrayAdap
 
 
   public boolean onMenuEdit(DayEntry de) {
+    resumeAfterActivity = true;
     DayActivity.startActivity(getActivity(), de.getName(), false);
     return true;
   }
