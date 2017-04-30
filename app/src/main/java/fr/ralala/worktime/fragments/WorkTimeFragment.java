@@ -171,10 +171,12 @@ public class WorkTimeFragment extends Fragment implements View.OnClickListener, 
   public void onClick(final View v) {
     if(v.equals(btPreviousMonth)) {
       app.getCurrentDate().add(Calendar.MONTH, -1);
+      lastFirstVisibleItem = 0;
       updateTop();
       updateDates();
     } else if(v.equals(btNextMonth)) {
       app.getCurrentDate().add(Calendar.MONTH, 1);
+      lastFirstVisibleItem = 0;
       updateTop();
       updateDates();
     } else if(v.equals(rlDetails)) {
