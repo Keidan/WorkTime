@@ -249,7 +249,13 @@ public class WorkTimeFragment extends Fragment implements View.OnClickListener, 
     }
     /* reload work day label */
     app.getCurrentDate().set(Calendar.DAY_OF_MONTH, currentDay);
-    String workDays = getString(R.string.work_days) + ": " + String.format(Locale.US, "%02d.%02d/%02d", (int)realwDays, Integer.parseInt((""+realwDays).split("\\.")[1]), wDays) + " " + getString(R.string.days_lower_case);
+    int n = Integer.parseInt((""+realwDays).split("\\.")[1]);
+    String workDays = getString(R.string.work_days) + ": ";
+    if(n != 0)
+      workDays += String.format(Locale.US, "%02d.%02d/%02d", (int)realwDays, n, wDays);
+    else
+      workDays += String.format(Locale.US, "%02d/%02d", (int)realwDays, wDays);
+    workDays += " " + getString(R.string.days_lower_case);
     tvWorkDays.setText(workDays);
 
     /* substract legal working time */
