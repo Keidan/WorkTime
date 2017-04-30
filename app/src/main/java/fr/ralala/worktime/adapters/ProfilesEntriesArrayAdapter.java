@@ -39,7 +39,7 @@ public class ProfilesEntriesArrayAdapter extends ArrayAdapter<DayEntry> {
 
   private class ViewHolder {
     TextView name;
-    TextView date;
+    TextView info;
     ImageView menu;
   }
 
@@ -68,7 +68,7 @@ public class ProfilesEntriesArrayAdapter extends ArrayAdapter<DayEntry> {
       v = vi.inflate(id, null);
       holder = new ViewHolder();
       holder.name = (TextView) v.findViewById(R.id.name);
-      holder.date = (TextView) v.findViewById(R.id.date);
+      holder.info = (TextView) v.findViewById(R.id.info);
       holder.menu = (ImageView) v.findViewById(R.id.menu);
       v.setTag(holder);
     } else {
@@ -80,9 +80,9 @@ public class ProfilesEntriesArrayAdapter extends ArrayAdapter<DayEntry> {
     if (t != null) {
       if (holder.name != null)
         holder.name.setText(t.getName());
-      if (holder.date != null) {
+      if (holder.info != null) {
         MainApplication app = (MainApplication) getContext().getApplicationContext();
-        holder.date.setText(!app.isHideWage() ?
+        holder.info.setText(!app.isHideWage() ?
           String.format(Locale.US,
             "%s %s %s -> %s %s %.02f%s/h",
             t.getStartMorning().timeString(),

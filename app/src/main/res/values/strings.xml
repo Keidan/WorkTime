@@ -142,4 +142,8 @@
     <string name="service_running">Finalize or pause quick access before update the day.</string>
     <string name="restart_from_db_update_v1">Database updated to version 2</string>
     <string name="restart_from_db_update_v2">Database updated to version 3</string>
+    <string name="restart_from_db_update_v3">Database updated to version 4</string>
+    <string name="recurrence">Recurrence</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
 </resources>

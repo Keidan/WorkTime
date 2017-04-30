@@ -28,6 +28,7 @@ public class DayEntry {
   private DayType typeAfternoon = DayType.ERROR;
   private double amountByHour = 0.0;
   private int learningWeight = 0;
+  private boolean recurrence = false;
 
   public DayEntry(final WorkTimeDay day, final DayType typeMorning, final DayType typeAfternoon) {
     this.day = new WorkTimeDay();
@@ -101,7 +102,7 @@ public class DayEntry {
   public boolean matchSimpleDate(WorkTimeDay current) {
     boolean ret = (current.getMonth() == day.getMonth() && current.getDay() == day.getDay());
     /* simple holidays can change between each years */
-    if(ret && typeMorning == DayType.HOLIDAY && typeAfternoon == DayType.HOLIDAY)
+    if(!isRecurrence() && ret && typeMorning == DayType.HOLIDAY && typeAfternoon == DayType.HOLIDAY)
       return current.getYear() == day.getYear();
     return ret;
   }
@@ -222,5 +223,13 @@ public class DayEntry {
 
   public void setLearningWeight(int learningWeight) {
     this.learningWeight = learningWeight;
+  }
+
+  public boolean isRecurrence() {
+    return recurrence;
+  }
+
+  public void setRecurrence(boolean recurrence) {
+    this.recurrence = recurrence;
   }
 }

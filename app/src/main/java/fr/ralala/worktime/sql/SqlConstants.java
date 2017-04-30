@@ -10,13 +10,16 @@ package fr.ralala.worktime.sql;
  *******************************************************************************
  */
 public interface SqlConstants {
-  int    VERSION_BDD                   = 3;
+  int    VERSION_BDD                   = 4;
+  int VERSION_MIN_MORNING_AFTERNOON    = 2;
+  int VERSION_MIN_RECURRENCE           = 4;
   String DB_NAME                       = "work_time.sqlite3";
   String TABLE_PUBLIC_HOLIDAYS         = "public_holidays";
   String TABLE_DAYS                    = "days";
   String TABLE_PROFILES                = "profiles";
   String COL_PUBLIC_HOLIDAYS_NAME      = "ph_name";
   String COL_PUBLIC_HOLIDAYS_DATE      = "ph_date";
+  String COL_PUBLIC_HOLIDAYS_RECURRENCE= "ph_recurrence";
   String COL_DAYS_CURRENT              = "d_current";
   String COL_DAYS_START_MORNING        = "d_start_morning";
   String COL_DAYS_END_MORNING          = "d_end_morning";
@@ -35,6 +38,7 @@ public interface SqlConstants {
   String COL_PROFILES_LEARNING_WEIGHT  = "p_learning_weight";
   int    NUM_PUBLIC_HOLIDAYS_NAME      = 0;
   int    NUM_PUBLIC_HOLIDAYS_DATE      = 1;
+  int    NUM_PUBLIC_HOLIDAYS_RECURRENCE= 2;
   int    NUM_DAYS_CURRENT              = 0;
   int    NUM_DAYS_START_MORNING        = 1;
   int    NUM_DAYS_END_MORNING          = 2;

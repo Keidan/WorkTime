@@ -71,6 +71,8 @@ import java.util.Locale;
     + COL_PUBLIC_HOLIDAYS_NAME
     + " TEXT NOT NULL, "
     + COL_PUBLIC_HOLIDAYS_DATE
+    + " TEXT NOT NULL, "
+    + COL_PUBLIC_HOLIDAYS_RECURRENCE
     + " TEXT NOT NULL);";
 
   public SqlHelper(final Context context, final String name,
@@ -103,6 +105,10 @@ import java.util.Locale;
     else if(oldVersion == 2 && newVersion == 3) {
       db.execSQL("ALTER TABLE " + TABLE_PROFILES + " RENAME TO " + TABLE_PROFILES + "_v2");
       db.execSQL(CREATE_BDD_PROFILES);
+    }
+    else if(oldVersion == 3 && newVersion == 4) {
+      db.execSQL("ALTER TABLE " + TABLE_PUBLIC_HOLIDAYS + " RENAME TO " + TABLE_PUBLIC_HOLIDAYS + "_v3");
+      db.execSQL(CREATE_BDD_PUBLIC_HOLIDAYS);
     }
   }
 

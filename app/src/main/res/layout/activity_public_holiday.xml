@@ -63,5 +63,22 @@
             style="@style/date_picker_theme">
         </DatePicker>
 
+        <TextView
+            android:id="@+id/tvRecurrence"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_column="0"
+            android:layout_row="2"
+            android:text="@string/recurrence"
+            android:labelFor="@+id/ckRecurrence"/>
+
+        <CheckBox
+            android:id="@+id/ckRecurrence"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="fill_horizontal"
+            android:layout_row="2"
+            android:layout_column="1"/>
+
     </GridLayout>
 </FrameLayout>

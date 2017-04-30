@@ -39,7 +39,7 @@ public class PublicHolidaysEntriesArrayAdapter extends ArrayAdapter<DayEntry> {
 
   private class ViewHolder {
     TextView name;
-    TextView date;
+    TextView info;
     ImageView menu;
   }
 
@@ -68,7 +68,7 @@ public class PublicHolidaysEntriesArrayAdapter extends ArrayAdapter<DayEntry> {
       v = vi.inflate(id, null);
       holder = new ViewHolder();
       holder.name = (TextView) v.findViewById(R.id.name);
-      holder.date = (TextView) v.findViewById(R.id.date);
+      holder.info = (TextView) v.findViewById(R.id.info);
       holder.menu = (ImageView) v.findViewById(R.id.menu);
       v.setTag(holder);
     } else {
@@ -80,10 +80,13 @@ public class PublicHolidaysEntriesArrayAdapter extends ArrayAdapter<DayEntry> {
     if (t != null) {
       if (holder.name != null)
         holder.name.setText(t.getName());
-      if (holder.date != null) {
+      if (holder.info != null) {
         Calendar cal = t.getDay().toCalendar();
-        holder.date.setText(String.format(Locale.US, "%02d %s %04d",
-          cal.get(Calendar.DAY_OF_MONTH), AndroidHelper.getMonthString(cal.get(Calendar.MONTH)), cal.get(Calendar.YEAR)));
+        String text = String.format(Locale.US, "%02d %s %04d",
+          cal.get(Calendar.DAY_OF_MONTH), AndroidHelper.getMonthString(cal.get(Calendar.MONTH)), cal.get(Calendar.YEAR));
+        text += ", " + c.getString(R.string.recurrence) + ": " + c.getString(t.isRecurrence() ? R.string.yes : R.string.no);
+        holder.info.setText(text);
+
       }
       /* Show the popup menu if the user click on the 3-dots item. */
       try {

@@ -9,6 +9,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
 
@@ -37,6 +38,7 @@ public class PublicHolidayActivity extends AppCompatActivity implements View.OnC
   private FloatingActionButton fab = null;
   private EditText tname = null;
   private DatePicker tdate = null;
+  private CheckBox ckRecurrence = null;
 
   public static void startActivity(final Context ctx, final String name) {
     Intent intent = new Intent(ctx, PublicHolidayActivity.class);
@@ -79,18 +81,20 @@ public class PublicHolidayActivity extends AppCompatActivity implements View.OnC
     fab = (FloatingActionButton) findViewById(R.id.fab);
     fab.setOnClickListener(this);
 
-
+    ckRecurrence = (CheckBox)findViewById(R.id.ckRecurrence);
     tname = (EditText) findViewById(R.id.etName);
     tdate = (DatePicker) findViewById(R.id.dpDate);
     if(de != null) {
       tname.setText(de.getName());
       // set current date into datepicker
       tdate.init(de.getDay().getYear(), de.getDay().getMonth() - 1, de.getDay().getDay(), null);
+      ckRecurrence.setChecked(de.isRecurrence());
     } else {
       tname.setText("");
       WorkTimeDay now = WorkTimeDay.now();
       // set current date into datepicker
       tdate.init(now.getYear(), now.getMonth() - 1, now.getDay(), null);
+      ckRecurrence.setChecked(false);
     }
   }
 
@@ -130,6 +134,7 @@ public class PublicHolidayActivity extends AppCompatActivity implements View.OnC
       if(de != null) app.getPublicHolidaysFactory().remove(de); /* remove old entry */
       DayEntry de = new DayEntry(wtd, DayType.PUBLIC_HOLIDAY, DayType.PUBLIC_HOLIDAY);
       de.setName(name);
+      de.setRecurrence(ckRecurrence.isChecked());
       app.getPublicHolidaysFactory().add(de);
       onBackPressed();
     }
