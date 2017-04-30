@@ -156,6 +156,7 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
     final ArrayAdapter<String> spTypeAdapterMorning = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item);
     spTypeAdapterMorning.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
     spTypeMorning.setAdapter(spTypeAdapterMorning);
+    spTypeAdapterMorning.add("");
     spTypeAdapterMorning.add(DayType.getText(this, DayType.AT_WORK));
     spTypeAdapterMorning.add(DayType.getText(this, DayType.HOLIDAY));
     spTypeAdapterMorning.add(DayType.getText(this, DayType.PUBLIC_HOLIDAY));
@@ -164,13 +165,14 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
     final ArrayAdapter<String> spTypeAdapterAfternoon = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item);
     spTypeAdapterAfternoon.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
     spTypeAfternoon.setAdapter(spTypeAdapterAfternoon);
+    spTypeAdapterAfternoon.add("");
     spTypeAdapterAfternoon.add(DayType.getText(this, DayType.AT_WORK));
     spTypeAdapterAfternoon.add(DayType.getText(this, DayType.HOLIDAY));
     spTypeAdapterAfternoon.add(DayType.getText(this, DayType.PUBLIC_HOLIDAY));
     spTypeAdapterAfternoon.add(DayType.getText(this, DayType.SICKNESS));
     spTypeAdapterAfternoon.add(DayType.getText(this, DayType.UNPAID));
-    spTypeMorning.setSelection(de.getTypeMorning() == DayType.ERROR ? 0 : de.getTypeMorning().value());
-    spTypeAfternoon.setSelection(de.getTypeAfternoon() == DayType.ERROR ? 0 : de.getTypeAfternoon().value());
+    spTypeMorning.setSelection(de.getTypeMorning() == DayType.ERROR ? 0 : de.getTypeMorning().value() + 1);
+    spTypeAfternoon.setSelection(de.getTypeAfternoon() == DayType.ERROR ? 0 : de.getTypeAfternoon().value() + 1);
 
     if(displayProfile) {
     /* build profiles spinner */
@@ -242,8 +244,8 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
           AndroidHelper.initTimeTextView(wtdStartAfternoon = new WorkTimeDay(), tvStartAfternoon);
           AndroidHelper.initTimeTextView(wtdEndAfternoon = new WorkTimeDay(), tvEndAfternoon);
           etAmount.setText(getString(R.string.zero));
-          spTypeMorning.setSelection(DayType.AT_WORK.value());
-          spTypeAfternoon.setSelection(DayType.AT_WORK.value());
+          spTypeMorning.setSelection(DayType.AT_WORK.value() + 1);
+          spTypeAfternoon.setSelection(DayType.AT_WORK.value() + 1);
           etName.setText("");
           setTitle(de.getDay().dateString());
           spProfile.setSelection(0);
@@ -334,8 +336,8 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
           AndroidHelper.initTimeTextView(de.getStartAfternoon(), tvStartAfternoon);
           AndroidHelper.initTimeTextView(de.getEndAfternoon(), tvEndAfternoon);
           etAmount.setText(String.format(Locale.US, "%.02f", de.getAmountByHour()).replaceAll(",", "."));
-          spTypeMorning.setSelection(de.getTypeMorning() == DayType.ERROR ? 0 : de.getTypeMorning().value());
-          spTypeAfternoon.setSelection(de.getTypeAfternoon() == DayType.ERROR ? 0 : de.getTypeAfternoon().value());
+          spTypeMorning.setSelection(de.getTypeMorning() == DayType.ERROR ? 0 : de.getTypeMorning().value() + 1);
+          spTypeAfternoon.setSelection(de.getTypeAfternoon() == DayType.ERROR ? 0 : de.getTypeAfternoon().value() + 1);
           etName.setText(de.getName());
           refreshStartEndPause(de);
           selectedProfile = de;
