@@ -312,7 +312,7 @@ public class SqlFactory implements SqlConstants {
         String types = c.getString(NUM_PROFILES_TYPE);
         DayType dta, dtb;
         if(types != null && !types.isEmpty() && types.contains("|")) {
-          String [] sp = types.split("|");
+          String [] sp = types.split("\\|");
           dta = DayType.compute(getInt(sp[0], DayType.ERROR.value()));
           dtb = DayType.compute(getInt(sp[1], DayType.ERROR.value()));
         } else {

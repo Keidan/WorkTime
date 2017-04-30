@@ -267,28 +267,6 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
       newEntry.setStartMorning(tvStartMorning.getText().toString());
       newEntry.setEndAfternoon(tvEndAfternoon.getText().toString());
       newEntry.setStartAfternoon(tvStartAfternoon.getText().toString());
-      if (!displayProfile && etName.getText().toString().isEmpty()) {
-        AndroidHelper.showAlertDialog(this, R.string.error, R.string.error_no_name);
-        return;
-      } else if (!displayProfile && newEntry.getStartMorning().getHours() == 0) {
-        AndroidHelper.showAlertDialog(this, R.string.error, R.string.error_invalid_start);
-        return;
-      } else if (!displayProfile && newEntry.getEndMorning().getHours() == 0) {
-        AndroidHelper.showAlertDialog(this, R.string.error, R.string.error_invalid_end);
-        return;
-      } else if (!displayProfile && newEntry.getStartAfternoon().getHours() == 0) {
-        AndroidHelper.showAlertDialog(this, R.string.error, R.string.error_invalid_start);
-        return;
-      } else if (!displayProfile && newEntry.getEndAfternoon().getHours() == 0) {
-        AndroidHelper.showAlertDialog(this, R.string.error, R.string.error_invalid_end);
-        return;
-      } else if (!displayProfile && tvStartMorning.getText().toString().equals(tvEndMorning.getText().toString())) {
-        AndroidHelper.showAlertDialog(this, R.string.error, R.string.error_invalid_start_end_morning);
-        return;
-      } else if (!displayProfile && tvStartAfternoon.getText().toString().equals(tvEndAfternoon.getText().toString())) {
-        AndroidHelper.showAlertDialog(this, R.string.error, R.string.error_invalid_start_end_afternoon);
-        return;
-      }
       if(displayProfile) {
         boolean match = de.match(newEntry);
         if (!match) {
@@ -300,10 +278,33 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
             stopService(new Intent(this, QuickAccessService.class));
         }
       } else {
-        if(de.getName().isEmpty() || !de.match(newEntry))
+        if (etName.getText().toString().isEmpty()) {
+          AndroidHelper.showAlertDialog(this, R.string.error, R.string.error_no_name);
+          return;
+        } else if (newEntry.getStartMorning().getHours() == 0) {
+          AndroidHelper.showAlertDialog(this, R.string.error, R.string.error_invalid_start);
+          return;
+        } else if (newEntry.getEndMorning().getHours() == 0) {
+          AndroidHelper.showAlertDialog(this, R.string.error, R.string.error_invalid_end);
+          return;
+        } else if (newEntry.getStartAfternoon().getHours() == 0) {
+          AndroidHelper.showAlertDialog(this, R.string.error, R.string.error_invalid_start);
+          return;
+        } else if (newEntry.getEndAfternoon().getHours() == 0) {
+          AndroidHelper.showAlertDialog(this, R.string.error, R.string.error_invalid_end);
+          return;
+        } else if (tvStartMorning.getText().toString().equals(tvEndMorning.getText().toString())) {
+          AndroidHelper.showAlertDialog(this, R.string.error, R.string.error_invalid_start_end_morning);
+          return;
+        } else if (tvStartAfternoon.getText().toString().equals(tvEndAfternoon.getText().toString())) {
+          AndroidHelper.showAlertDialog(this, R.string.error, R.string.error_invalid_start_end_afternoon);
+          return;
+        }
+        if(de.getName().isEmpty() || !de.match(newEntry)) {
           app.getProfilesFactory().remove(de);
-        if(newEntry.getStartMorning().isValidTime() && newEntry.getEndAfternoon().isValidTime()) {
-          app.getProfilesFactory().add(newEntry);
+          if (newEntry.getStartMorning().isValidTime() && newEntry.getEndAfternoon().isValidTime()) {
+            app.getProfilesFactory().add(newEntry);
+          }
         }
       }
       finish();
