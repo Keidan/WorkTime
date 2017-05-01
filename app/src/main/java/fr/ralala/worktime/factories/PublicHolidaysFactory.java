@@ -46,6 +46,20 @@ public class PublicHolidaysFactory {
     return false;
   }
 
+  public boolean testValidity(final DayEntry de) {
+    for(DayEntry d : publicHolidays) {
+      WorkTimeDay d_day = d.getDay();
+      WorkTimeDay de_day = de.getDay();
+      if(d_day.getDay() == de_day.getDay() && d_day.getMonth() == de_day.getMonth()) {
+        if(d.isRecurrence() || de.isRecurrence()) {
+          return false;
+        } else if(d_day.getYear() == de_day.getYear())
+          return false;
+      }
+    }
+    return true;
+  }
+
   public void remove(final DayEntry de) {
     publicHolidays.remove(de);
     sql.removePublicHoliday(de);

@@ -133,10 +133,16 @@ public class PublicHolidayActivity extends AppCompatActivity implements View.OnC
       wtd.setYear(tdate.getYear());
       if(de != null) app.getPublicHolidaysFactory().remove(de); /* remove old entry */
       DayEntry de = new DayEntry(this, wtd, DayType.PUBLIC_HOLIDAY, DayType.PUBLIC_HOLIDAY);
-      de.setName(name);
-      de.setRecurrence(ckRecurrence.isChecked());
-      app.getPublicHolidaysFactory().add(de);
-      onBackPressed();
+      if(app.getPublicHolidaysFactory().testValidity(de)) {
+        de.setName(name);
+        de.setRecurrence(ckRecurrence.isChecked());
+        app.getPublicHolidaysFactory().add(de);
+        onBackPressed();
+      } else {
+        AndroidHelper.showAlertDialog(this, R.string.error, R.string.error_duplicate_public_holiday);
+        return;
+      }
+
     }
   }
 

@@ -138,4 +138,5 @@
     <string name="no">Non</string>
     <string name="legalWorkTimeByDay">Temps de travail l\u00E9gal</string>
     <string name="error_editing_public_holiday">L\'\u00E9dition du jour f\u00E9ri\u00E9 n\'est pas prise en charge.</string>
+    <string name="error_duplicate_public_holiday">Le jour f\u00E9ri\u00E9 est d\u00E9j\u00E0 ins\u00E9r\u00E9.</string>
 </resources>
