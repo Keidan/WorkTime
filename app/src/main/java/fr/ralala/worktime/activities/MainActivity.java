@@ -12,6 +12,7 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
+import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 
@@ -56,6 +57,7 @@ public class MainActivity extends RuntimePermissionsActivity implements Navigati
   private Fragment publicHolidaysFragment = null;
   private Fragment exportFragment = null;
   private Fragment workTimeFragment = null;
+  private DrawerLayout drawer = null;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -65,7 +67,7 @@ public class MainActivity extends RuntimePermissionsActivity implements Navigati
     setSupportActionBar(toolbar);
     swipeDetector = new SwipeDetector(this);
 
-    DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+    drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
     ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
       this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
     drawer.setDrawerListener(toggle);
@@ -187,24 +189,23 @@ public class MainActivity extends RuntimePermissionsActivity implements Navigati
 
   @Override
   public void onBackPressed() {
-    DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-    if (drawer.isDrawerOpen(GravityCompat.START)) {
-      drawer.closeDrawer(GravityCompat.START);
-    }
     if (!viewIsAtHome) { //if the current view is not the News fragment
       int h = getDefaultHome();
       displayView(h); //display the home fragment
       navigationView.getMenu().getItem(IDX_WORK_TIME).setChecked(true); /* select home title */
     } else {
-      //moveTaskToBack(true);  //If view is in News fragment, exit application
-      if (lastBackPressed + BACK_TIME_DELAY > System.currentTimeMillis()) {
-        cleanup();
-        super.onBackPressed();
-        Process.killProcess(android.os.Process.myPid());
-      } else {
-        AndroidHelper.toast(this, R.string.on_double_back_exit_text);
-      }
-      lastBackPressed = System.currentTimeMillis();
+      if(drawer.isDrawerOpen(Gravity.START)) {
+        //moveTaskToBack(true);  //If view is in News fragment, exit application
+        if (lastBackPressed + BACK_TIME_DELAY > System.currentTimeMillis()) {
+          cleanup();
+          super.onBackPressed();
+          Process.killProcess(android.os.Process.myPid());
+        } else {
+          AndroidHelper.toast(this, R.string.on_double_back_exit_text);
+        }
+        lastBackPressed = System.currentTimeMillis();
+      } else
+        drawer.openDrawer(Gravity.START);
     }
   }
 
