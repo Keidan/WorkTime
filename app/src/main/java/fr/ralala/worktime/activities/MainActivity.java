@@ -249,6 +249,11 @@ public class MainActivity extends RuntimePermissionsActivity implements Navigati
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if(drawer != null) drawer.closeDrawer(GravityCompat.START);
         return;
+      case R.id.nav_exit:
+        cleanup();
+        super.onBackPressed();
+        Process.killProcess(android.os.Process.myPid());
+        return;
       case R.id.nav_worktime:
       default:
         currentFragment = workTimeFragment;

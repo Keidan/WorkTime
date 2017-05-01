@@ -10,7 +10,7 @@
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-
+    <string name="exit">Exit</string>
     <string name="settings">Settings</string>
     <string name="app_title" translatable="false">Work Time</string>
     <string name="profile">Profile</string>

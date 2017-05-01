@@ -26,6 +26,10 @@
             android:id="@+id/nav_settings"
             android:icon="@mipmap/ic_settings"
             android:title="@string/settings"/>
+        <item
+            android:id="@+id/nav_exit"
+            android:icon="@mipmap/ic_exit"
+            android:title="@string/exit"/>
     </group>
 </menu>
 
