@@ -102,7 +102,6 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
       }
     }
     if(de == null) {
-      openForAdd = true;
       de = new DayEntry(this, WorkTimeDay.now(), DayType.ERROR, DayType.ERROR);
       if(date != null && !date.isEmpty() && date.contains("/"))
         de.setDay(date);
@@ -255,8 +254,8 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
           AndroidHelper.initTimeTextView(wtdEndAfternoon = new WorkTimeDay(), tvEndAfternoon);
           AndroidHelper.initTimeTextView(wtdLegalWorktime = app.getLegalWorkTimeByDay(), tvLegalWorktime);
           etAmount.setText(getString(R.string.zero));
-          spTypeMorning.setSelection(DayType.AT_WORK.value() + 1);
-          spTypeAfternoon.setSelection(DayType.AT_WORK.value() + 1);
+          spTypeMorning.setSelection(DayType.AT_WORK.value());
+          spTypeAfternoon.setSelection(DayType.AT_WORK.value());
           etName.setText("");
           setTitle(de.getDay().dateString());
           spProfile.setSelection(0);
@@ -281,12 +280,40 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
       newEntry.setEndAfternoon(tvEndAfternoon.getText().toString());
       newEntry.setStartAfternoon(tvStartAfternoon.getText().toString());
       newEntry.setLegalWorktime(tvLegalWorktime.getText().toString());
+      if(newEntry.getTypeMorning() != DayType.ERROR) {
+        if (newEntry.getStartMorning().getHours() == 0) {
+          AndroidHelper.showAlertDialog(this, R.string.error, R.string.error_invalid_start);
+          return;
+        } else if (newEntry.getEndMorning().getHours() == 0) {
+          AndroidHelper.showAlertDialog(this, R.string.error, R.string.error_invalid_end);
+          return;
+        } else if (tvStartMorning.getText().toString().equals(tvEndMorning.getText().toString())) {
+          AndroidHelper.showAlertDialog(this, R.string.error, R.string.error_invalid_start_end_morning);
+          return;
+        }
+      } else if(newEntry.getTypeAfternoon() != DayType.ERROR) {
+        if (newEntry.getStartAfternoon().getHours() == 0) {
+          AndroidHelper.showAlertDialog(this, R.string.error, R.string.error_invalid_start);
+          return;
+        } else if (newEntry.getEndAfternoon().getHours() == 0) {
+          AndroidHelper.showAlertDialog(this, R.string.error, R.string.error_invalid_end);
+          return;
+        } else if (tvStartAfternoon.getText().toString().equals(tvEndAfternoon.getText().toString())) {
+          AndroidHelper.showAlertDialog(this, R.string.error, R.string.error_invalid_start_end_afternoon);
+          return;
+        }
+      }
+
+      if (tvLegalWorktime.getText().toString().equals(getString(R.string.default_time))) {
+        AndroidHelper.showAlertDialog(this, R.string.error, R.string.error_invalid_legal_worktime);
+        return;
+      }
       if(displayProfile) {
         boolean match = de.match(newEntry);
         if (!match) {
           app.getDaysFactory().remove(de);
           app.getProfilesFactory().updateProfilesLearningWeight(selectedProfile, app.getProfilesWeightDepth());
-          if (newEntry.getStartMorning().isValidTime() && newEntry.getEndAfternoon().isValidTime())
+          if (newEntry.getStartMorning().isValidTime() || newEntry.getEndAfternoon().isValidTime())
             app.getDaysFactory().add(newEntry);
           if(AndroidHelper.isServiceRunning(this, QuickAccessService.class))
             stopService(new Intent(this, QuickAccessService.class));
@@ -295,31 +322,10 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
         if (etName.getText().toString().isEmpty()) {
           AndroidHelper.showAlertDialog(this, R.string.error, R.string.error_no_name);
           return;
-        } else if (newEntry.getStartMorning().getHours() == 0) {
-          AndroidHelper.showAlertDialog(this, R.string.error, R.string.error_invalid_start);
-          return;
-        } else if (newEntry.getEndMorning().getHours() == 0) {
-          AndroidHelper.showAlertDialog(this, R.string.error, R.string.error_invalid_end);
-          return;
-        } else if (newEntry.getStartAfternoon().getHours() == 0) {
-          AndroidHelper.showAlertDialog(this, R.string.error, R.string.error_invalid_start);
-          return;
-        } else if (newEntry.getEndAfternoon().getHours() == 0) {
-          AndroidHelper.showAlertDialog(this, R.string.error, R.string.error_invalid_end);
-          return;
-        } else if (tvStartMorning.getText().toString().equals(tvEndMorning.getText().toString())) {
-          AndroidHelper.showAlertDialog(this, R.string.error, R.string.error_invalid_start_end_morning);
-          return;
-        } else if (tvStartAfternoon.getText().toString().equals(tvEndAfternoon.getText().toString())) {
-          AndroidHelper.showAlertDialog(this, R.string.error, R.string.error_invalid_start_end_afternoon);
-          return;
-        } else if (tvLegalWorktime.getText().toString().equals(getString(R.string.default_time))) {
-          AndroidHelper.showAlertDialog(this, R.string.error, R.string.error_invalid_legal_worktime);
-          return;
         }
         if(de.getName().isEmpty() || !de.match(newEntry)) {
           app.getProfilesFactory().remove(de);
-          if (newEntry.getStartMorning().isValidTime() && newEntry.getEndAfternoon().isValidTime()) {
+          if (newEntry.getStartMorning().isValidTime() || newEntry.getEndAfternoon().isValidTime()) {
             app.getProfilesFactory().add(newEntry);
           }
         }
