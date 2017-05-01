@@ -50,7 +50,7 @@ public class ProfilesFactory {
         p.setLearningWeight(weight < max ? ++weight : max);
         sql.updateProfile(p);
       } else if(weight > 0) {
-        p.setLearningWeight(--weight);
+        p.setLearningWeight(p.getLearningWeight() - 1);
         sql.updateProfile(p);
       }
     }
