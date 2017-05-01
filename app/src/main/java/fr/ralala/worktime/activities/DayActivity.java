@@ -102,6 +102,7 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
       }
     }
     if(de == null) {
+      openForAdd = true;
       de = new DayEntry(this, WorkTimeDay.now(), DayType.ERROR, DayType.ERROR);
       if(date != null && !date.isEmpty() && date.contains("/"))
         de.setDay(date);
