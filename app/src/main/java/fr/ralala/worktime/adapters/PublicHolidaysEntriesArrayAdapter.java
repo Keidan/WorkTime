@@ -82,9 +82,10 @@ public class PublicHolidaysEntriesArrayAdapter extends ArrayAdapter<DayEntry> {
         holder.name.setText(t.getName());
       if (holder.info != null) {
         Calendar cal = t.getDay().toCalendar();
-        String text = String.format(Locale.US, "%02d %s %04d",
-          cal.get(Calendar.DAY_OF_MONTH), AndroidHelper.getMonthString(cal.get(Calendar.MONTH)), cal.get(Calendar.YEAR));
-        text += ", " + c.getString(R.string.recurrence) + ": " + c.getString(t.isRecurrence() ? R.string.yes : R.string.no);
+        String text = String.format(Locale.US, "%02d %s",
+          cal.get(Calendar.DAY_OF_MONTH), AndroidHelper.getMonthString(cal.get(Calendar.MONTH)));
+        if(!t.isRecurrence())
+          text += String.format(Locale.US, " %04d", cal.get(Calendar.YEAR));
         holder.info.setText(text);
 
       }

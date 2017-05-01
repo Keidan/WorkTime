@@ -68,9 +68,19 @@ public class PublicHolidaysFactory {
   public void add(final DayEntry de) {
     publicHolidays.add(de);
     sql.insertPublicHoliday(de);
+    /* sort by recurrence */
     Collections.sort(publicHolidays, new Comparator<DayEntry>() {
       @Override
       public int compare(DayEntry a, DayEntry b) {
+        if(a.isRecurrence() || b.isRecurrence()) return 1;
+        return a.getDay().compareTo(b.getDay());
+      }
+    });
+    /* sort by years */
+    Collections.sort(publicHolidays, new Comparator<DayEntry>() {
+      @Override
+      public int compare(DayEntry a, DayEntry b) {
+        if(a.isRecurrence() || b.isRecurrence()) return -1;
         return a.getDay().compareTo(b.getDay());
       }
     });

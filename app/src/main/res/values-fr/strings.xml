@@ -135,8 +135,6 @@
     <string name="restart_from_db_update_v2">Base de donn\u00E9es mise \u00E0 jour vers la version 3</string>
     <string name="restart_from_db_update_v3">Base de donn\u00E9es mise \u00E0 jour vers la version 4</string>
     <string name="recurrence">R\u00E9currence</string>
-    <string name="yes">Oui</string>
-    <string name="no">Non</string>
     <string name="legalWorkTimeByDay">Temps de travail l\u00E9gal</string>
     <string name="error_editing_public_holiday">L\'\u00E9dition du jour f\u00E9ri\u00E9 n\'est pas prise en charge.</string>
     <string name="error_duplicate_public_holiday">Le jour f\u00E9ri\u00E9 est d\u00E9j\u00E0 ins\u00E9r\u00E9.</string>

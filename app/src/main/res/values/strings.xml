@@ -145,8 +145,6 @@
     <string name="restart_from_db_update_v2">Database updated to version 3</string>
     <string name="restart_from_db_update_v3">Database updated to version 4</string>
     <string name="recurrence">Recurrence</string>
-    <string name="yes">Yes</string>
-    <string name="no">No</string>
     <string name="legalWorkTimeByDay">Legal work time</string>
     <string name="error_editing_public_holiday">Public holiday edition is not supported.</string>
     <string name="error_duplicate_public_holiday">The public holiday is already inserted.</string>
