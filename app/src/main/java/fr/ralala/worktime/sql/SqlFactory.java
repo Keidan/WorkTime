@@ -393,7 +393,7 @@ public class SqlFactory implements SqlConstants {
         if(s != null && !s.isEmpty())
           de.setAmountByHour(Double.parseDouble(s));
         if(bdd.getVersion() >= VERSION_MIN_MORNING_AFTERNOON && c.getColumnCount() > NUM_PROFILES_LEARNING_WEIGHT)
-        s = c.getString(NUM_PROFILES_LEARNING_WEIGHT);
+          s = c.getString(NUM_PROFILES_LEARNING_WEIGHT);
         if(s != null && !s.isEmpty())
           de.setLearningWeight(Integer.parseInt(s));
         de.setName(c.getString(NUM_PROFILES_NAME).replaceAll("\\'", "'"));
