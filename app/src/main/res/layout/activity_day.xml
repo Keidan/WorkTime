@@ -16,7 +16,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
-        app:srcCompat="@mipmap/ic_plus_white"/>
+        app:srcCompat="@mipmap/ic_apply_white"/>
 
     <android.support.percent.PercentRelativeLayout
         android:id="@+id/prl"
