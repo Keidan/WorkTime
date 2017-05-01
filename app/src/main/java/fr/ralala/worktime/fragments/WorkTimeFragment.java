@@ -127,7 +127,7 @@ public class WorkTimeFragment extends Fragment implements View.OnClickListener, 
             isScrollingUp = true;
           }
           /* change the visibility if 5% of the list is displayed or hidden */
-          int k = (int)(lvAdapter.getCount()*(5.0f/100.0f));
+          int k = at5Percent();
           if(!isScrollingUp && currentFirstVisibleItem > k && rlDetails.getVisibility() == View.VISIBLE)
             rlDetails.setVisibility(View.GONE);
           else if(isScrollingUp && currentFirstVisibleItem < k && rlDetails.getVisibility() == View.GONE)
@@ -211,6 +211,10 @@ public class WorkTimeFragment extends Fragment implements View.OnClickListener, 
     tvYear.setText(String.valueOf(app.getCurrentDate().get(Calendar.YEAR)));
   }
 
+  private int at5Percent() {
+    return (int)(lvAdapter.getCount()*(5.0f/100.0f));
+  }
+
   private void updateDates() {
     lvAdapter.clear();
     int minDay = 1;
@@ -246,8 +250,19 @@ public class WorkTimeFragment extends Fragment implements View.OnClickListener, 
       lvAdapter.add(de);
       if(app.isScrollToCurrentDay() && lastFirstVisibleItem == 0 && de.getDay().dateString().equals(wtdnow.dateString())) {
         lastFirstVisibleItem = index;
-        isScrollingUp = true;
-        rlDetails.setVisibility(View.GONE);
+
+        /* change the visibility if 5% of the list is displayed or hidden */
+        int k = at5Percent();
+        if(!isScrollingUp && index > k && rlDetails.getVisibility() == View.VISIBLE) {
+          rlDetails.setVisibility(View.GONE);
+          isScrollingUp = true;
+        } else if(isScrollingUp && index < k && rlDetails.getVisibility() == View.GONE) {
+          rlDetails.setVisibility(View.VISIBLE);
+          isScrollingUp = false;
+        } else if(index == 0 && rlDetails.getVisibility() != View.VISIBLE) {
+          rlDetails.setVisibility(View.VISIBLE);
+          isScrollingUp = false;
+        }
       }
       else if(lastFirstVisibleItem == 0) index++;
     }
