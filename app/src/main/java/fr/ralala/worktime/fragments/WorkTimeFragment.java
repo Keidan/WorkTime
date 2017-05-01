@@ -109,6 +109,7 @@ public class WorkTimeFragment extends Fragment implements View.OnClickListener, 
             app.getCurrentDate().set(Calendar.YEAR, selectedYear);
             app.getCurrentDate().set(Calendar.MONTH, selectedMonth);
             app.getCurrentDate().set(Calendar.DAY_OF_MONTH, selectedDay);
+            updateTop();
             updateDates();
           }
         });
