@@ -137,4 +137,5 @@
     <string name="yes">Oui</string>
     <string name="no">Non</string>
     <string name="legalWorkTimeByDay">Temps de travail l\u00E9gal</string>
+    <string name="error_editing_public_holiday">L\'\u00E9dition du jour f\u00E9ri\u00E9 n\'est pas prise en charge.</string>
 </resources>

@@ -176,6 +176,10 @@ public class WorkTimeFragment extends Fragment implements View.OnClickListener, 
       return;
     }
     DayEntry de = lvAdapter.getItem(i);
+    if(de.getTypeMorning() == DayType.PUBLIC_HOLIDAY || de.getTypeAfternoon() == DayType.PUBLIC_HOLIDAY) {
+      AndroidHelper.toast(getActivity(), R.string.error_editing_public_holiday);
+      return;
+    }
     resumeAfterActivity = true;
     DayActivity.startActivity(getActivity(), de.getDay().dateString(), true);
   }

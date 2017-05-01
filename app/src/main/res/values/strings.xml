@@ -148,4 +148,5 @@
     <string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="legalWorkTimeByDay">Legal work time</string>
+    <string name="error_editing_public_holiday">Public holiday edition is not supported.</string>
 </resources>
