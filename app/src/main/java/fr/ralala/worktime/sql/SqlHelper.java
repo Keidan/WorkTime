@@ -14,6 +14,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
+import fr.ralala.worktime.MainApplication;
+
 /**
  *******************************************************************************
  * <p><b>Project WorkTime</b><br/>
@@ -79,6 +81,14 @@ import java.util.Locale;
     + COL_PUBLIC_HOLIDAYS_RECURRENCE
     + " TEXT NOT NULL);";
 
+  private static final String CREATE_BDD_SETTINGS = "CREATE TABLE IF NOT EXISTS "
+    + TABLE_SETTINGS
+    + " ("
+    + COL_SETTINGS_NAME
+    + " TEXT NOT NULL, "
+    + COL_SETTINGS_VALUE
+    + " TEXT NOT NULL);";
+
   public SqlHelper(final Context context, final String name,
                    final SQLiteDatabase.CursorFactory factory, final int version) {
     super(context, name, factory, version);
@@ -89,6 +99,7 @@ import java.util.Locale;
     db.execSQL(CREATE_BDD_PUBLIC_HOLIDAYS);
     db.execSQL(CREATE_BDD_DAYS);
     db.execSQL(CREATE_BDD_PROFILES);
+    db.execSQL(CREATE_BDD_SETTINGS);
   }
 
   @Override
@@ -99,30 +110,35 @@ import java.util.Locale;
   @Override
   public void onUpgrade(final SQLiteDatabase db, final int oldVersion,
                         final int newVersion) {
-
     if(oldVersion == 1 && newVersion == 2) {
-      db.execSQL("ALTER TABLE " + TABLE_PROFILES + " RENAME TO " + TABLE_PROFILES + "_v1");
-      db.execSQL("ALTER TABLE " + TABLE_DAYS + " RENAME TO " + TABLE_DAYS + "_v1");
+      db.execSQL("ALTER TABLE " + TABLE_PROFILES + " RENAME TO " + TABLE_PROFILES + "_v" + oldVersion);
+      db.execSQL("ALTER TABLE " + TABLE_DAYS + " RENAME TO " + TABLE_DAYS + "_v" + oldVersion);
       db.execSQL(CREATE_BDD_DAYS);
       db.execSQL(CREATE_BDD_PROFILES);
     }
     else if(oldVersion == 2 && newVersion == 3) {
-      db.execSQL("ALTER TABLE " + TABLE_PROFILES + " RENAME TO " + TABLE_PROFILES + "_v2");
+      db.execSQL("ALTER TABLE " + TABLE_PROFILES + " RENAME TO " + TABLE_PROFILES + "_v" + oldVersion);
       db.execSQL(CREATE_BDD_PROFILES);
     }
     else if(oldVersion == 3 && newVersion == 4) {
-      db.execSQL("ALTER TABLE " + TABLE_PROFILES + " RENAME TO " + TABLE_PROFILES + "_v3");
-      db.execSQL("ALTER TABLE " + TABLE_DAYS + " RENAME TO " + TABLE_DAYS + "_v3");
-      db.execSQL("ALTER TABLE " + TABLE_PUBLIC_HOLIDAYS + " RENAME TO " + TABLE_PUBLIC_HOLIDAYS + "_v3");
+      db.execSQL("ALTER TABLE " + TABLE_PROFILES + " RENAME TO " + TABLE_PROFILES + "_v" + oldVersion);
+      db.execSQL("ALTER TABLE " + TABLE_DAYS + " RENAME TO " + TABLE_DAYS + "_v" + oldVersion);
+      db.execSQL("ALTER TABLE " + TABLE_PUBLIC_HOLIDAYS + " RENAME TO " + TABLE_PUBLIC_HOLIDAYS + "_v" + oldVersion);
       db.execSQL(CREATE_BDD_PUBLIC_HOLIDAYS);
       db.execSQL(CREATE_BDD_PROFILES);
       db.execSQL(CREATE_BDD_DAYS);
+    }
+    else if(oldVersion == 4 && newVersion == 5) {
+      db.execSQL(CREATE_BDD_SETTINGS);
+      db.execSQL("ALTER TABLE " + TABLE_SETTINGS + " RENAME TO " + TABLE_SETTINGS + "_v" + oldVersion);
+      db.execSQL(CREATE_BDD_SETTINGS);
     }
   }
 
   // Copy to sdcard for debug use
   public static String copyDatabase(final Context c, final String name,
                                      final String folder) throws Exception{
+    MainApplication.getApp(c).getSql().settingsSave();
     final String databasePath = c.getDatabasePath(name).getPath();
     final File f = new File(databasePath);
     OutputStream myOutput = null;
@@ -166,6 +182,7 @@ import java.util.Locale;
   }
 
   public static void loadDatabase(Context c, final String name, File in) throws Exception{
+    MainApplication.getApp(c).getSql().settingsLoad();
     final String databasePath = c.getDatabasePath(name).getPath();
     final File f = new File(databasePath);
     InputStream myInput = null;

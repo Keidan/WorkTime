@@ -131,9 +131,7 @@
     <string name="bt_finalize">Finaliser la journ\u00E9e</string>
     <string name="bt_finalize2">Finaliser</string>
     <string name="service_running">Finalisez ou mettez sur pause l\'acc\u00E8s rapide avant de modifier le jour.</string>
-    <string name="restart_from_db_update_v1">Base de donn\u00E9es mise \u00E0 jour vers la version 2</string>
-    <string name="restart_from_db_update_v2">Base de donn\u00E9es mise \u00E0 jour vers la version 3</string>
-    <string name="restart_from_db_update_v3">Base de donn\u00E9es mise \u00E0 jour vers la version 4</string>
+    <string name="restart_from_db_update_vn">Base de donn\u00E9es mise \u00E0 jour vers la version</string>
     <string name="recurrence">R\u00E9currence</string>
     <string name="legalWorkTimeByDay">Temps de travail l\u00E9gal</string>
     <string name="error_editing_public_holiday">L\'\u00E9dition du jour f\u00E9ri\u00E9 n\'est pas prise en charge.</string>

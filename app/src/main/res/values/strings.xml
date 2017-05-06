@@ -141,9 +141,7 @@
     <string name="bt_finalize2">Finalize</string>
     <string name="default_time" translatable="false">00:00</string>
     <string name="service_running">Finalize or pause quick access before update the day.</string>
-    <string name="restart_from_db_update_v1">Database updated to version 2</string>
-    <string name="restart_from_db_update_v2">Database updated to version 3</string>
-    <string name="restart_from_db_update_v3">Database updated to version 4</string>
+    <string name="restart_from_db_update_vn">Database updated to version</string>
     <string name="recurrence">Recurrence</string>
     <string name="legalWorkTimeByDay">Legal work time</string>
     <string name="error_editing_public_holiday">Public holiday edition is not supported.</string>

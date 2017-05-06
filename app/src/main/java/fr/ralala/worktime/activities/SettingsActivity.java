@@ -27,6 +27,17 @@ import fr.ralala.worktime.utils.AndroidHelper;
  *******************************************************************************
  */
 public class SettingsActivity extends PreferenceActivity implements Preference.OnPreferenceClickListener{
+  public static final String       PREFS_DEFVAL_DEFAULT_HOME            = "0";
+  public static final String       PREFS_DEFVAL_PROFILES_WEIGHT_DEPTH   = "5";
+  public static final String       PREFS_DEFVAL_DAY_ROWS_HEIGHT         = "44";
+  public static final String       PREFS_DEFVAL_WORKTIME_BY_DAY         = "00:00";
+  public static final String       PREFS_DEFVAL_AMOUNT_BY_HOUR          = "0.0";
+  public static final String       PREFS_DEFVAL_CURRENCY                = "€";
+  public static final String       PREFS_DEFVAL_EMAIL                   = "";
+  public static final String       PREFS_DEFVAL_EMAIL_ENABLE            = "true";
+  public static final String       PREFS_DEFVAL_HIDE_WAGE               = "false";
+  public static final String       PREFS_DEFVAL_EXPORT_HIDE_WAGE        = "false";
+  public static final String       PREFS_DEFVAL_SCROLL_TO_CURRENT_DAY   = "false";
   public static final String       PREFS_KEY_WORKTIME_BY_DAY            = "prefWorkTimeByDay";
   public static final String       PREFS_KEY_AMOUNT_BY_HOUR             = "prefAmountByHour";
   public static final String       PREFS_KEY_CURRENCY                   = "prefCurrency";
@@ -85,6 +96,18 @@ public class SettingsActivity extends PreferenceActivity implements Preference.O
     }
     prefFrag.findPreference(PREFS_KEY_CHANGELOG).setOnPreferenceClickListener(this);
 
+  }
+
+  @Override
+  public void onResume() {
+    super.onResume();
+    MainApplication.getApp(this).getSql().settingsLoad();
+  }
+
+  @Override
+  public void onPause() {
+    super.onPause();
+    MainApplication.getApp(this).getSql().settingsSave();
   }
 
   @Override

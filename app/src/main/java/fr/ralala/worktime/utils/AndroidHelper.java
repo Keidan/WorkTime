@@ -72,13 +72,17 @@ public class AndroidHelper {
       context.stopService(new Intent(context, serviceClass));
   }
 
-  public static void restartApplication(final Context c, final int string_id) {
-    if(string_id != -1)
-      toast(c, string_id);
+  public static void restartApplication(final Context c, final String string) {
+    if(string != null)
+      toast(c, string);
     Intent i = c.getApplicationContext().getPackageManager()
       .getLaunchIntentForPackage(c.getApplicationContext().getPackageName() );
     i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
     c.startActivity(i);
+  }
+
+  public static void restartApplication(final Context c, final int string_id) {
+    restartApplication(c, string_id == -1 ? null : c.getString(string_id));
   }
 
   public static void applyLinearGradient(final View view, final int ...colors) {

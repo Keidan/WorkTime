@@ -71,7 +71,6 @@ public class SettingsImportExportActivity extends PreferenceActivity implements 
     actionBar.setDisplayShowHomeEnabled(true);
     actionBar.setDisplayHomeAsUpEnabled(true);
 
-    MainApplication app = (MainApplication)getApplicationContext();
     prefFrag.findPreference(PREFS_KEY_EXPORT_TO_DEVICE).setOnPreferenceClickListener(this);
     prefFrag.findPreference(PREFS_KEY_IMPORT_FROM_DEVICE).setOnPreferenceClickListener(this);
     prefFrag.findPreference(PREFS_KEY_EXPORT_TO_DROPBOX).setOnPreferenceClickListener(this);

@@ -2,8 +2,10 @@ package fr.ralala.worktime.sql;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -11,7 +13,9 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import fr.ralala.worktime.MainApplication;
 import fr.ralala.worktime.R;
+import fr.ralala.worktime.activities.SettingsActivity;
 import fr.ralala.worktime.models.DayEntry;
 import fr.ralala.worktime.models.DayType;
 import fr.ralala.worktime.models.WorkTimeDay;
@@ -42,9 +46,10 @@ public class SqlFactory implements SqlConstants {
 
   public void open(Context c) {
     bdd = helper.getWritableDatabase();
-    boolean restartV1 = false, restartV2 = false, restartV3 = false;
+    int version = 0;
 
     if(isTableExists(TABLE_PROFILES + "_v1")) {
+      version = 1;
       Log.d(getClass().getSimpleName(), "TABLE_PROFILES found");
       final List<DayEntry> listOld = readV1("profiles", 1, 5, 2, 3, 4, 6, 0);
       final List<DayEntry> listNew = new ArrayList<>();
@@ -54,10 +59,10 @@ public class SqlFactory implements SqlConstants {
       Log.d(getClass().getSimpleName(), "table profiles deleted");
       for(DayEntry de : listNew)
         insertProfile(de);
-      removeTable(TABLE_PROFILES + "_v1");
-      restartV1 = true;
+      removeTable(TABLE_PROFILES + "_v" + version);
     }
     if(isTableExists(TABLE_DAYS + "_v1")) {
+      version = 1;
       Log.d(getClass().getSimpleName(), "TABLE_DAYS found");
       final List<DayEntry> listOld = readV1("days", 0, 4, 1, 2, 3, 5, -1);
       final List<DayEntry> listNew = new ArrayList<>();
@@ -67,11 +72,11 @@ public class SqlFactory implements SqlConstants {
       Log.d(getClass().getSimpleName(), "table days deleted");
       for(DayEntry de : listNew)
         insertDay(de);
-      removeTable(TABLE_DAYS + "_v1");
-      restartV1 = true;
+      removeTable(TABLE_DAYS + "_v" + version);
     }
 
     if(isTableExists(TABLE_PROFILES + "_v2")) {
+      version = 2;
       Log.d(getClass().getSimpleName(), "TABLE_PROFILES found");
       final List<DayEntry> listOld = readProfilesV2(0, 1, 2, 3, 4, 5, 6, 7);
       Log.d(getClass().getSimpleName(), "delete table profiles");
@@ -79,51 +84,51 @@ public class SqlFactory implements SqlConstants {
       Log.d(getClass().getSimpleName(), "table profiles deleted");
       for(DayEntry de : listOld)
         insertProfile(de);
-      removeTable(TABLE_PROFILES + "_v2");
-      restartV2 = true;
+      removeTable(TABLE_PROFILES + "_v" + version);
     }
     if(isTableExists(TABLE_PUBLIC_HOLIDAYS + "_v3")) {
+      version = 3;
       Log.e(getClass().getSimpleName(), "PUBLIC_HOLIDAYS found");
-      final List<DayEntry> listOld = getPublicHolidays(TABLE_PUBLIC_HOLIDAYS + "_v3");
+      final List<DayEntry> listOld = getPublicHolidays(TABLE_PUBLIC_HOLIDAYS + "_v" + version);
       Log.e(getClass().getSimpleName(), "delete table public holidays");
       bdd.delete(TABLE_PUBLIC_HOLIDAYS, null, null);
       Log.e(getClass().getSimpleName(), "table public holidays deleted");
       for(DayEntry de : listOld) {
         insertPublicHoliday(de);
       }
-      removeTable(TABLE_PUBLIC_HOLIDAYS + "_v3");
-      restartV3 = true;
+      removeTable(TABLE_PUBLIC_HOLIDAYS + "_v" + version);
     }
     if(isTableExists(TABLE_DAYS + "_v3")) {
+      version = 3;
       Log.e(getClass().getSimpleName(), "TABLE_DAYS found");
-      final List<DayEntry> listOld = getDays(TABLE_DAYS + "_v3");
+      final List<DayEntry> listOld = getDays(TABLE_DAYS + "_v" + version);
       Log.e(getClass().getSimpleName(), "delete table days");
       bdd.delete(TABLE_DAYS, null, null);
       Log.e(getClass().getSimpleName(), "table days deleted");
       for(DayEntry de : listOld) {
         insertDay(de);
       }
-      removeTable(TABLE_DAYS + "_v3");
-      restartV3 = true;
+      removeTable(TABLE_DAYS + "_v" + version);
     }
     if(isTableExists(TABLE_PROFILES + "_v3")) {
+      version = 3;
       Log.e(getClass().getSimpleName(), "TABLE_PROFILES found");
-      final List<DayEntry> listOld = getProfiles(TABLE_PROFILES + "_v3");
+      final List<DayEntry> listOld = getProfiles(TABLE_PROFILES + "_v" + version);
       Log.e(getClass().getSimpleName(), "delete table profiles");
       bdd.delete(TABLE_PROFILES, null, null);
       Log.e(getClass().getSimpleName(), "table profiles deleted");
       for(DayEntry de : listOld) {
         insertProfile(de);
       }
-      removeTable(TABLE_PROFILES + "_v3");
-      restartV3 = true;
+      removeTable(TABLE_PROFILES + "_v" + version);
     }
-    if(restartV1)
-      AndroidHelper.restartApplication(c, R.string.restart_from_db_update_v1);
-    else if(restartV2)
-      AndroidHelper.restartApplication(c, R.string.restart_from_db_update_v2);
-    else if(restartV3)
-      AndroidHelper.restartApplication(c, R.string.restart_from_db_update_v3);
+    if(isTableExists(TABLE_SETTINGS + "_v4")) {
+      version = 4;
+      removeTable(TABLE_SETTINGS + "_v" + version);
+      settingsSave();
+    }
+    if(version != 0)
+      AndroidHelper.restartApplication(c, context.getString(R.string.restart_from_db_update_vn) + " " + (version + 1));
   }
 
   public void close() {
@@ -233,6 +238,59 @@ public class SqlFactory implements SqlConstants {
     final ContentValues values = new ContentValues();
     values.put(COL_PROFILES_LEARNING_WEIGHT, "" + de.getLearningWeight());
     return bdd.update(TABLE_PROFILES, values, COL_PROFILES_NAME + "='"+de.getName().replaceAll("'", "\\'") + "'", null);
+  }
+
+  public void settingsLoad() {
+    if(bdd.getVersion() < VERSION_MIN_SETTINGS) return;
+    final Cursor c = bdd.rawQuery("SELECT * FROM " + TABLE_SETTINGS, null);
+    if (c.moveToFirst()) {
+      do {
+        String name = c.getString(NUM_SETTINGS_NAME);
+        String value = c.getString(NUM_SETTINGS_VALUE);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
+        SharedPreferences.Editor edit = prefs.edit();
+        if(name.equals(SettingsActivity.PREFS_KEY_DEFAULT_HOME) || name.equals(SettingsActivity.PREFS_KEY_PROFILES_WEIGHT_DEPTH)
+            || name.equals(SettingsActivity.PREFS_KEY_DAY_ROWS_HEIGHT) || name.equals(SettingsActivity.PREFS_KEY_WORKTIME_BY_DAY)
+            || name.equals(SettingsActivity.PREFS_KEY_AMOUNT_BY_HOUR) || name.equals(SettingsActivity.PREFS_KEY_CURRENCY )
+            || name.equals(SettingsActivity.PREFS_KEY_EMAIL))
+          edit.putString(name, value);
+        else if(name.equals(SettingsActivity.PREFS_KEY_EMAIL_ENABLE) || name.equals(SettingsActivity.PREFS_KEY_HIDE_WAGE)
+            || name.equals(SettingsActivity.PREFS_KEY_EXPORT_HIDE_WAGE) || name.equals(SettingsActivity.PREFS_KEY_SCROLL_TO_CURRENT_DAY))
+          edit.putBoolean(name, value.equals("1"));
+        edit.apply();
+      } while (c.moveToNext());
+    }
+    c.close();
+
+  }
+
+  private long addSetting(SharedPreferences prefs, String key, String defvalue) {
+    final ContentValues values = new ContentValues();
+    values.put(COL_SETTINGS_NAME, key);
+    values.put(COL_SETTINGS_VALUE, prefs.getString(key, defvalue));
+    return bdd.insert(TABLE_SETTINGS, null, values);
+  }
+  private long addSetting(SharedPreferences prefs, String key, boolean defvalue) {
+    final ContentValues values = new ContentValues();
+    values.put(COL_SETTINGS_NAME, key);
+    values.put(COL_SETTINGS_VALUE, prefs.getBoolean(key, defvalue));
+    return bdd.insert(TABLE_SETTINGS, null, values);
+  }
+  public void settingsSave() {
+    if(bdd.getVersion() < VERSION_MIN_SETTINGS) return;
+    bdd.delete(TABLE_SETTINGS, null, null);
+    SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
+    addSetting(prefs, SettingsActivity.PREFS_KEY_DEFAULT_HOME, SettingsActivity.PREFS_DEFVAL_DEFAULT_HOME);
+    addSetting(prefs, SettingsActivity.PREFS_KEY_PROFILES_WEIGHT_DEPTH, SettingsActivity.PREFS_DEFVAL_PROFILES_WEIGHT_DEPTH);
+    addSetting(prefs, SettingsActivity.PREFS_KEY_DAY_ROWS_HEIGHT, SettingsActivity.PREFS_DEFVAL_DAY_ROWS_HEIGHT);
+    addSetting(prefs, SettingsActivity.PREFS_KEY_WORKTIME_BY_DAY, SettingsActivity.PREFS_DEFVAL_WORKTIME_BY_DAY);
+    addSetting(prefs, SettingsActivity.PREFS_KEY_AMOUNT_BY_HOUR, SettingsActivity.PREFS_DEFVAL_AMOUNT_BY_HOUR);
+    addSetting(prefs, SettingsActivity.PREFS_KEY_CURRENCY, SettingsActivity.PREFS_DEFVAL_CURRENCY);
+    addSetting(prefs, SettingsActivity.PREFS_KEY_EMAIL, SettingsActivity.PREFS_DEFVAL_EMAIL);
+    addSetting(prefs, SettingsActivity.PREFS_KEY_EMAIL_ENABLE, SettingsActivity.PREFS_DEFVAL_EMAIL_ENABLE.equals("true"));
+    addSetting(prefs, SettingsActivity.PREFS_KEY_HIDE_WAGE, SettingsActivity.PREFS_DEFVAL_HIDE_WAGE.equals("true"));
+    addSetting(prefs, SettingsActivity.PREFS_KEY_EXPORT_HIDE_WAGE, SettingsActivity.PREFS_DEFVAL_EXPORT_HIDE_WAGE.equals("true"));
+    addSetting(prefs, SettingsActivity.PREFS_KEY_SCROLL_TO_CURRENT_DAY, SettingsActivity.PREFS_DEFVAL_SCROLL_TO_CURRENT_DAY.equals("true"));
   }
 
   public long insertProfile(final DayEntry de) {
