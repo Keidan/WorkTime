@@ -189,24 +189,22 @@ public class MainActivity extends RuntimePermissionsActivity implements Navigati
 
   @Override
   public void onBackPressed() {
-    if (!viewIsAtHome) { //if the current view is not the News fragment
+    if(viewIsAtHome)
+      drawer.openDrawer(Gravity.START);
+    else { //if the current view is not the News fragment
       int h = getDefaultHome();
       displayView(h); //display the home fragment
       navigationView.getMenu().getItem(IDX_WORK_TIME).setChecked(true); /* select home title */
-    } else {
-      if(drawer.isDrawerOpen(Gravity.START)) {
-        //moveTaskToBack(true);  //If view is in News fragment, exit application
-        if (lastBackPressed + BACK_TIME_DELAY > System.currentTimeMillis()) {
-          cleanup();
-          super.onBackPressed();
-          Process.killProcess(android.os.Process.myPid());
-        } else {
-          AndroidHelper.toast(this, R.string.on_double_back_exit_text);
-        }
-        lastBackPressed = System.currentTimeMillis();
-      } else
-        drawer.openDrawer(Gravity.START);
     }
+    if (lastBackPressed + BACK_TIME_DELAY > System.currentTimeMillis()) {
+      cleanup();
+      super.onBackPressed();
+      Process.killProcess(android.os.Process.myPid());
+      return;
+    } else {
+      AndroidHelper.toast(this, R.string.on_double_back_exit_text);
+    }
+    lastBackPressed = System.currentTimeMillis();
   }
 
   @SuppressWarnings("StatementWithEmptyBody")
