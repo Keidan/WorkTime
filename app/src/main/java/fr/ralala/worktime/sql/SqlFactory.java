@@ -353,12 +353,6 @@ public class SqlFactory implements SqlConstants {
       } while (c.moveToNext());
     }
     c.close();
-    Collections.sort(list, new Comparator<DayEntry>() {
-      @Override
-      public int compare(final DayEntry lhs, final DayEntry rhs) {
-        return lhs.getDay().compareTo(rhs.getDay());
-      }
-    });
     return list;
   }
 
