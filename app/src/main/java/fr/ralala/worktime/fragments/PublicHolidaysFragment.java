@@ -38,7 +38,6 @@ public class PublicHolidaysFragment extends Fragment implements SimpleEntriesArr
 
   private PublicHolidaysEntriesArrayAdapter adapter = null;
   private MainApplication app = null;
-  private boolean resumeAfterActivity = false;
 
   @Override
   public View onCreateView(final LayoutInflater inflater,
@@ -59,14 +58,14 @@ public class PublicHolidaysFragment extends Fragment implements SimpleEntriesArr
   }
   public void onResume() {
     super.onResume();
-    if(resumeAfterActivity) {
+    if(app.isResumeAfterActivity()) {
       adapter.notifyDataSetChanged();
-      resumeAfterActivity = false;
+    app.setResumeAfterActivity(false);
     }
   }
 
   public boolean onMenuEdit(DayEntry de) {
-    resumeAfterActivity = true;
+    app.setResumeAfterActivity(true);
     PublicHolidayActivity.startActivity(getActivity(), de.getName());
     return true;
   }

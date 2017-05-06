@@ -60,7 +60,6 @@ public class WorkTimeFragment extends Fragment implements View.OnClickListener, 
   private boolean isScrollingUp = false;
   private int lastFirstVisibleItem = 0;
   private MonthDetailsDialog monthDetailsDialog = null;
-  private boolean resumeAfterActivity = false;
 
   @Override
   public View onCreateView(final LayoutInflater inflater,
@@ -109,8 +108,7 @@ public class WorkTimeFragment extends Fragment implements View.OnClickListener, 
             app.getCurrentDate().set(Calendar.YEAR, selectedYear);
             app.getCurrentDate().set(Calendar.MONTH, selectedMonth);
             app.getCurrentDate().set(Calendar.DAY_OF_MONTH, selectedDay);
-            updateTop();
-            updateDates();
+            updateAll();
           }
         });
       }
@@ -140,17 +138,15 @@ public class WorkTimeFragment extends Fragment implements View.OnClickListener, 
         }
       }
     });
-    updateTop();
-    updateDates();
+    updateAll();
     return rootView;
   }
 
   public void onResume() {
     super.onResume();
-    if(resumeAfterActivity) {
-      updateTop();
-      updateDates();
-      resumeAfterActivity = false;
+    if(app.isResumeAfterActivity()) {
+      updateAll();
+      app.setResumeAfterActivity(false);
     }
   }
 
@@ -181,7 +177,7 @@ public class WorkTimeFragment extends Fragment implements View.OnClickListener, 
       AndroidHelper.toast(getActivity(), R.string.error_editing_public_holiday);
       return;
     }
-    resumeAfterActivity = true;
+    app.setResumeAfterActivity(true);
     DayActivity.startActivity(getActivity(), de.getDay().dateString(), true);
   }
 
@@ -189,19 +185,22 @@ public class WorkTimeFragment extends Fragment implements View.OnClickListener, 
     if(v.equals(btPreviousMonth)) {
       app.getCurrentDate().add(Calendar.MONTH, -1);
       lastFirstVisibleItem = 0;
-      updateTop();
-      updateDates();
+      updateAll();
     } else if(v.equals(btNextMonth)) {
       app.getCurrentDate().add(Calendar.MONTH, 1);
       lastFirstVisibleItem = 0;
-      updateTop();
-      updateDates();
+      updateAll();
     } else if(v.equals(rlDetails)) {
       monthDetailsDialog.reloadDetails(
         app.getCurrentDate().get(Calendar.MONTH),
         app.getCurrentDate().get(Calendar.YEAR));
       monthDetailsDialog.open();
     }
+  }
+
+  public void updateAll() {
+    updateTop();
+    updateDates();
   }
 
   private void updateTop() {

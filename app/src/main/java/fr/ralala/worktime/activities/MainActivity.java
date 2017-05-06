@@ -242,6 +242,7 @@ public class MainActivity extends RuntimePermissionsActivity implements Navigati
         title = getString(R.string.export);
         break;
       case R.id.nav_settings:
+        app.setResumeAfterActivity(true);
         currentFragment = getDefaultHomeView();
         startActivity(new Intent(this, SettingsActivity.class));
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

@@ -40,6 +40,7 @@ public class MainApplication extends Application {
   private boolean quickAccessPause = true;
   private int nfyIdQuickAccess = 1;
   private QuickAccessNotification quickAccessNotification = null;
+  private boolean resumeAfterActivity = false;
 
   public MainApplication() {
     publicHolidaysFactory = new PublicHolidaysFactory();
@@ -168,5 +169,13 @@ public class MainApplication extends Application {
 
   public boolean isQuickAccessPause() {
     return quickAccessPause;
+  }
+
+  public void setResumeAfterActivity(boolean resumeAfterActivity) {
+    this.resumeAfterActivity = resumeAfterActivity;
+  }
+
+  public boolean isResumeAfterActivity() {
+    return resumeAfterActivity;
   }
 }

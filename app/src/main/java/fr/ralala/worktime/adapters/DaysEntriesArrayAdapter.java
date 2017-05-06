@@ -81,17 +81,17 @@ public class DaysEntriesArrayAdapter extends ArrayAdapter<DayEntry> {
       holder.tvTotal = (TextView) v.findViewById(R.id.tvTotal);
       holder.tvOver = (TextView) v.findViewById(R.id.tvOver);
       holder.tvOverColors = holder.tvOver.getTextColors();
-      setRowHeight(holder.tvDay);
-      setRowHeight(holder.tvStart);
-      setRowHeight(holder.tvEnd);
-      setRowHeight(holder.tvPause);
-      setRowHeight(holder.tvTotal);
-      setRowHeight(holder.tvOver);
       v.setTag(holder);
     } else {
         /* We recycle a View that already exists */
       holder = (ViewHolder) v.getTag();
     }
+    setRowHeight(holder.tvDay);
+    setRowHeight(holder.tvStart);
+    setRowHeight(holder.tvEnd);
+    setRowHeight(holder.tvPause);
+    setRowHeight(holder.tvTotal);
+    setRowHeight(holder.tvOver);
     WorkTimeDay today = WorkTimeDay.now();
     if (t != null) {
 
