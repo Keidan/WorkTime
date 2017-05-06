@@ -41,6 +41,11 @@
             android:defaultValue="false"
             android:summary="@string/pref_summary_scroll_to_current_day"
             android:title="@string/pref_title_scroll_to_current_day" />
+        <CheckBoxPreference
+            android:key="prefHideExitButton"
+            android:defaultValue="false"
+            android:summary="@string/pref_summary_hide_exit_button"
+            android:title="@string/pref_title_hide_exit_button" />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/pref_title_export" android:key="prefCatExport" >
         <CheckBoxPreference

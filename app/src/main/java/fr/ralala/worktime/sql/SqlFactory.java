@@ -255,7 +255,8 @@ public class SqlFactory implements SqlConstants {
             || name.equals(SettingsActivity.PREFS_KEY_EMAIL))
           edit.putString(name, value);
         else if(name.equals(SettingsActivity.PREFS_KEY_EMAIL_ENABLE) || name.equals(SettingsActivity.PREFS_KEY_HIDE_WAGE)
-            || name.equals(SettingsActivity.PREFS_KEY_EXPORT_HIDE_WAGE) || name.equals(SettingsActivity.PREFS_KEY_SCROLL_TO_CURRENT_DAY))
+            || name.equals(SettingsActivity.PREFS_KEY_EXPORT_HIDE_WAGE) || name.equals(SettingsActivity.PREFS_KEY_SCROLL_TO_CURRENT_DAY)
+            || name.equals(SettingsActivity.PREFS_KEY_HIDE_EXIT_BUTTON))
           edit.putBoolean(name, value.equals("1"));
         edit.apply();
       } while (c.moveToNext());
@@ -291,6 +292,7 @@ public class SqlFactory implements SqlConstants {
     addSetting(prefs, SettingsActivity.PREFS_KEY_HIDE_WAGE, SettingsActivity.PREFS_DEFVAL_HIDE_WAGE.equals("true"));
     addSetting(prefs, SettingsActivity.PREFS_KEY_EXPORT_HIDE_WAGE, SettingsActivity.PREFS_DEFVAL_EXPORT_HIDE_WAGE.equals("true"));
     addSetting(prefs, SettingsActivity.PREFS_KEY_SCROLL_TO_CURRENT_DAY, SettingsActivity.PREFS_DEFVAL_SCROLL_TO_CURRENT_DAY.equals("true"));
+    addSetting(prefs, SettingsActivity.PREFS_KEY_HIDE_EXIT_BUTTON, SettingsActivity.PREFS_DEFVAL_HIDE_EXIT_BUTTON.equals("true"));
   }
 
   public long insertProfile(final DayEntry de) {

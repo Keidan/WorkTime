@@ -15,6 +15,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.MotionEvent;
+import android.view.View;
 
 import fr.ralala.worktime.MainApplication;
 import fr.ralala.worktime.R;
@@ -44,6 +45,7 @@ public class MainActivity extends RuntimePermissionsActivity implements Navigati
   private static final int IDX_PROFILE = 2;
   private static final int IDX_PUBLIC_HOLIDAY = 3;
   private static final int IDX_EXPORT = 4;
+  private static final int IDX_EXIT = 6;
   private static final int PERMISSIONS_REQUEST = 30;
   private static final int BACK_TIME_DELAY = 2000;
   private static long lastBackPressed = -1;
@@ -155,6 +157,7 @@ public class MainActivity extends RuntimePermissionsActivity implements Navigati
 
   public void onResume() {
     super.onResume();
+    navigationView.getMenu().getItem(IDX_EXIT).setVisible(!app.isHideExitButton());
     Fragment fragment = currentFragment;
     if(fragment != null) {
       final FragmentTransaction ft = getSupportFragmentManager().beginTransaction();

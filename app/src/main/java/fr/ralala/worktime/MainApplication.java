@@ -156,6 +156,11 @@ public class MainApplication extends Application {
     return prefs.getBoolean(SettingsActivity.PREFS_KEY_SCROLL_TO_CURRENT_DAY, SettingsActivity.PREFS_DEFVAL_SCROLL_TO_CURRENT_DAY.equals("true"));
   }
 
+  public boolean isHideExitButton() {
+    SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+    return prefs.getBoolean(SettingsActivity.PREFS_KEY_HIDE_EXIT_BUTTON, SettingsActivity.PREFS_DEFVAL_HIDE_EXIT_BUTTON.equals("true"));
+  }
+
   public WorkTimeDay getEstimatedHours(List<DayEntry> wDays) {
     WorkTimeDay w = new WorkTimeDay();
     for(int i = 0; i < wDays.size(); ++i)
