@@ -198,6 +198,7 @@ public class MainActivity extends RuntimePermissionsActivity implements Navigati
       int h = getDefaultHome();
       displayView(h); //display the home fragment
       navigationView.getMenu().getItem(IDX_WORK_TIME).setChecked(true); /* select home title */
+      return;
     }
     if (lastBackPressed + BACK_TIME_DELAY > System.currentTimeMillis()) {
       cleanup();
