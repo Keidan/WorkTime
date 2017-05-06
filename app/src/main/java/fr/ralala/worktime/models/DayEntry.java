@@ -73,12 +73,12 @@ public class DayEntry {
   }
 
   public WorkTimeDay getWorkTime() {
-    WorkTimeDay wm = getTypeMorning() == DayType.AT_WORK ? endMorning.clone() : new WorkTimeDay();
+    WorkTimeDay wm = isValidMorningType() ? endMorning.clone() : new WorkTimeDay();
     if(!wm.timeString().equals("00:00"))
-      wm.delTime(getTypeMorning() == DayType.AT_WORK ? startMorning.clone() : new WorkTimeDay());
-    WorkTimeDay wa = getTypeAfternoon() == DayType.AT_WORK ? endAfternoon.clone() : new WorkTimeDay();
+      wm.delTime(isValidMorningType() ? startMorning.clone() : new WorkTimeDay());
+    WorkTimeDay wa = isValidAfternoonType() ? endAfternoon.clone() : new WorkTimeDay();
     if(!wa.timeString().equals("00:00"))
-      wa.delTime(getTypeAfternoon() == DayType.AT_WORK ? startAfternoon.clone() : new WorkTimeDay());
+      wa.delTime(isValidAfternoonType() ? startAfternoon.clone() : new WorkTimeDay());
     WorkTimeDay wt = wm.clone();
     wt.addTime(wa);
     return wt;
@@ -186,6 +186,13 @@ public class DayEntry {
     WorkTimeDay wp = startAfternoon.clone();
     wp.delTime(endMorning.clone());
     return wp;
+  }
+
+  public boolean isValidMorningType() {
+    return getTypeMorning() != DayType.UNPAID && getTypeMorning() != DayType.ERROR;
+  }
+  public boolean isValidAfternoonType() {
+    return getTypeAfternoon() != DayType.UNPAID && getTypeAfternoon() != DayType.ERROR;
   }
 
   public DayType getTypeMorning() {
