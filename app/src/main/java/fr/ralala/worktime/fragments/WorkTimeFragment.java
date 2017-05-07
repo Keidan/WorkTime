@@ -2,7 +2,6 @@ package fr.ralala.worktime.fragments;
 
 import android.app.DatePickerDialog;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -57,8 +56,6 @@ public class WorkTimeFragment extends Fragment implements View.OnClickListener, 
   private DaysEntriesArrayAdapter lvAdapter = null;
   private ListView days = null;
   private MainApplication app = null;
-  private boolean isScrollingUp = false;
-  private int lastFirstVisibleItem = 0;
   private MonthDetailsDialog monthDetailsDialog = null;
 
   @Override
@@ -68,9 +65,6 @@ public class WorkTimeFragment extends Fragment implements View.OnClickListener, 
     ((MainActivity)getActivity()).getSwipeDetector().setSwipeDetectorListener(this);
     app = MainApplication.getApp(getActivity());
     //app.getCurrentDate().setTime(new Date());
-    /* restore the scroll position value */
-    if(savedInstanceState != null && savedInstanceState.containsKey("lastFirstVisibleItem"))
-      lastFirstVisibleItem = savedInstanceState.getInt("lastFirstVisibleItem");
 
     monthDetailsDialog = new MonthDetailsDialog(getActivity(), app);
 
@@ -86,13 +80,6 @@ public class WorkTimeFragment extends Fragment implements View.OnClickListener, 
     rlDetails.setOnClickListener(this);
     btPreviousMonth.setOnClickListener(this);
     btNextMonth.setOnClickListener(this);
-
-    /* hide if the index is not a the begin of the list */
-    if(lastFirstVisibleItem > 0) {
-      isScrollingUp = true;
-      rlDetails.setVisibility(View.GONE);
-    }
-
 
     lvAdapter = new DaysEntriesArrayAdapter(
       getContext(), R.layout.days_listview_item, new ArrayList<DayEntry>());
@@ -120,11 +107,7 @@ public class WorkTimeFragment extends Fragment implements View.OnClickListener, 
       public void onScrollStateChanged(AbsListView view, int scrollState) {
         if (view.getId() == days.getId()) {
           final int currentFirstVisibleItem = days.getFirstVisiblePosition();
-          if (currentFirstVisibleItem > lastFirstVisibleItem) {
-            isScrollingUp = false;
-          } else if (currentFirstVisibleItem < lastFirstVisibleItem) {
-            isScrollingUp = true;
-          }
+          boolean isScrollingUp = (currentFirstVisibleItem < app.getLastFirstVisibleItem());
           /* change the visibility if 5% of the list is displayed or hidden */
           int k = at5Percent();
           if(!isScrollingUp && currentFirstVisibleItem > k && rlDetails.getVisibility() == View.VISIBLE)
@@ -134,36 +117,16 @@ public class WorkTimeFragment extends Fragment implements View.OnClickListener, 
           else if(currentFirstVisibleItem == 0 && rlDetails.getVisibility() != View.VISIBLE)
             rlDetails.setVisibility(View.VISIBLE);
           /* store previous item */
-          lastFirstVisibleItem = currentFirstVisibleItem;
+          app.setLastFirstVisibleItem(currentFirstVisibleItem);
         }
       }
     });
-    updateAll();
     return rootView;
   }
 
   public void onResume() {
     super.onResume();
-    if(app.isResumeAfterActivity()) {
-      updateAll();
-      app.setResumeAfterActivity(false);
-    }
-  }
-
-
-  @Override
-  public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-    super.onActivityCreated(savedInstanceState);
-    /* restore the scroll position value */
-    if(savedInstanceState != null && savedInstanceState.containsKey("lastFirstVisibleItem"))
-      lastFirstVisibleItem = savedInstanceState.getInt("lastFirstVisibleItem");
-  }
-
-  @Override
-  public void onSaveInstanceState(Bundle outState) {
-    super.onSaveInstanceState(outState);
-    /* save the scroll position value */
-    outState.putInt("lastFirstVisibleItem", lastFirstVisibleItem);
+    updateAll();
   }
 
   @Override
@@ -173,22 +136,21 @@ public class WorkTimeFragment extends Fragment implements View.OnClickListener, 
       return;
     }
     DayEntry de = lvAdapter.getItem(i);
-    if(de.getTypeMorning() == DayType.PUBLIC_HOLIDAY || de.getTypeAfternoon() == DayType.PUBLIC_HOLIDAY) {
+    if(de == null || de.getTypeMorning() == DayType.PUBLIC_HOLIDAY || de.getTypeAfternoon() == DayType.PUBLIC_HOLIDAY) {
       AndroidHelper.toast(getActivity(), R.string.error_editing_public_holiday);
       return;
     }
-    app.setResumeAfterActivity(true);
     DayActivity.startActivity(getActivity(), de.getDay().dateString(), true);
   }
 
   public void onClick(final View v) {
     if(v.equals(btPreviousMonth)) {
       app.getCurrentDate().add(Calendar.MONTH, -1);
-      lastFirstVisibleItem = 0;
+      app.setLastFirstVisibleItem(0);
       updateAll();
     } else if(v.equals(btNextMonth)) {
       app.getCurrentDate().add(Calendar.MONTH, 1);
-      lastFirstVisibleItem = 0;
+      app.setLastFirstVisibleItem(0);
       updateAll();
     } else if(v.equals(rlDetails)) {
       monthDetailsDialog.reloadDetails(
@@ -252,23 +214,10 @@ public class WorkTimeFragment extends Fragment implements View.OnClickListener, 
         if(de.getTypeAfternoon() == DayType.AT_WORK) realwDays += 0.5;
       }
       lvAdapter.add(de);
-      if(app.isScrollToCurrentDay() && lastFirstVisibleItem == 0 && de.getDay().dateString().equals(wtdnow.dateString())) {
-        lastFirstVisibleItem = index;
-
-        /* change the visibility if 5% of the list is displayed or hidden */
-        int k = at5Percent();
-        if(!isScrollingUp && index > k && rlDetails.getVisibility() == View.VISIBLE) {
-          rlDetails.setVisibility(View.GONE);
-          isScrollingUp = true;
-        } else if(isScrollingUp && index < k && rlDetails.getVisibility() == View.GONE) {
-          rlDetails.setVisibility(View.VISIBLE);
-          isScrollingUp = false;
-        } else if(index == 0 && rlDetails.getVisibility() != View.VISIBLE) {
-          rlDetails.setVisibility(View.VISIBLE);
-          isScrollingUp = false;
-        }
+      if(app.isScrollToCurrentDay() && app.getLastFirstVisibleItem() == 0 && de.getDay().dateString().equals(wtdnow.dateString())) {
+        app.setLastFirstVisibleItem(index);
       }
-      else if(lastFirstVisibleItem == 0) index++;
+      else if(app.getLastFirstVisibleItem() == 0) index++;
     }
     Map<String, DayEntry> map = app.getDaysFactory().toDaysMap();
     int min = (firstWeek == 52 ? 1 : firstWeek);
@@ -297,8 +246,17 @@ public class WorkTimeFragment extends Fragment implements View.OnClickListener, 
 
     tvMonthlyHours.setText(monthlyHours);
     lvAdapter.notifyDataSetChanged();
-    /* restore the scroll position */
-    days.setSelection(lastFirstVisibleItem);
+    /* restores the scroll position and reloads the adapter else the listview seems not agree with the call of setSelection */
+    days.setAdapter(days.getAdapter());
+    days.setSelection(app.getLastFirstVisibleItem());
+    if(app.isScrollToCurrentDay()) {
+        /* change the visibility if 5% of the list is displayed or hidden */
+      int k = at5Percent();
+      if((app.getLastFirstVisibleItem() == 0 || app.getLastFirstVisibleItem() < k) && rlDetails.getVisibility() != View.VISIBLE)
+        rlDetails.setVisibility(View.VISIBLE);
+      else if (app.getLastFirstVisibleItem() > k && rlDetails.getVisibility() == View.VISIBLE)
+        rlDetails.setVisibility(View.GONE);
+    }
   }
 
 

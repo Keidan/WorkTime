@@ -41,6 +41,7 @@ public class MainApplication extends Application {
   private int nfyIdQuickAccess = 1;
   private QuickAccessNotification quickAccessNotification = null;
   private boolean resumeAfterActivity = false;
+  private int lastFirstVisibleItem = 0;
 
   public MainApplication() {
     publicHolidaysFactory = new PublicHolidaysFactory();
@@ -182,5 +183,13 @@ public class MainApplication extends Application {
 
   public boolean isResumeAfterActivity() {
     return resumeAfterActivity;
+  }
+
+  public void setLastFirstVisibleItem(int lastFirstVisibleItem) {
+    this.lastFirstVisibleItem = lastFirstVisibleItem;
+  }
+
+  public int getLastFirstVisibleItem() {
+    return lastFirstVisibleItem;
   }
 }
