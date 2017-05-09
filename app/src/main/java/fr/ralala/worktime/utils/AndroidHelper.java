@@ -180,6 +180,8 @@ public class AndroidHelper {
       @Override
       public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
         tv.setText(String.format(Locale.US, "%02d:%02d", selectedHour, selectedMinute));
+        current.setHours(selectedHour);
+        current.setMinutes(selectedMinute);
       }
     }, current.getHours(), current.getMinutes(), true);//Yes 24 hour time
     timePicker.show();
