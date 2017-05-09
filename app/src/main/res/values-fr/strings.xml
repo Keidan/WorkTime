@@ -51,6 +51,8 @@
     <string name="error_invalid_legal_worktime">Le temps de travail l\u00E9gal n\'est pas valable.</string>
     <string name="text_for">pour</string>
     <string name="at">\u00E0</string>
+    <string name="and">et</string>
+    <string name="more">en plus</string>
     <string name="hours_lower_case">heure(s)</string>
     <string name="pref_title_settings">Param\u00E8tres</string>
     <string name="pref_title_work_time_by_day">Temps de travail par jour</string>

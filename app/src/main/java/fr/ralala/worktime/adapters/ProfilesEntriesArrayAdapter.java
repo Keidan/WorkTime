@@ -84,21 +84,27 @@ public class ProfilesEntriesArrayAdapter extends ArrayAdapter<DayEntry> {
         MainApplication app = (MainApplication) getContext().getApplicationContext();
         holder.info.setText(!app.isHideWage() ?
           String.format(Locale.US,
-            "%s %s %s -> %s %s %.02f%s/h",
+            "%s %s %s -> %s %s %.02f%s/h %s %s %s",
             t.getStartMorning().timeString(),
             c.getString(R.string.at),
             t.getEndAfternoon().timeString(),
             t.getWorkTime().timeString(),
             c.getString(R.string.text_for),
             t.getAmountByHour(),
-            ((MainApplication)c.getApplicationContext()).getCurrency())
+            ((MainApplication)c.getApplicationContext()).getCurrency(),
+            c.getString(R.string.and),
+            t.getOverTime().timeString(),
+            c.getString(R.string.more))
         :
           String.format(Locale.US,
-            "%s %s %s -> %s",
+            "%s %s %s -> %s %s %s %s",
             t.getStartMorning().timeString(),
             c.getString(R.string.at),
             t.getEndAfternoon().timeString(),
-            t.getWorkTime().timeString()));
+            t.getWorkTime().timeString(),
+            c.getString(R.string.and),
+            t.getOverTime().timeString(),
+            c.getString(R.string.more)));
       }
       /* Show the popup menu if the user click on the 3-dots item. */
       try {
