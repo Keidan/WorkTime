@@ -15,70 +15,77 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
-        android:layout_margin="@dimen/fab_margin"
+        android:layout_marginTop="@dimen/fab_margin_top"
+        android:layout_marginStart="@dimen/fab_margin_start"
+        android:layout_marginEnd="@dimen/fab_margin_end"
+        android:layout_marginBottom="@dimen/fab_margin_bottom"
         app:srcCompat="@mipmap/ic_apply_white"/>
 
-    <GridLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:columnCount="2" >
-
-        <TextView
-            android:id="@+id/tvName"
-            android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <GridLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_column="0"
-            android:layout_row="0"
-            android:text="@string/name"
-            android:labelFor="@+id/etName"/>
+            android:columnCount="2" >
 
-        <EditText
-            android:id="@+id/etName"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_column="1"
-            android:layout_gravity="fill_horizontal"
-            android:layout_row="0"
-            android:layout_marginStart="10sp"
-            android:inputType="textCapWords" >
-        </EditText>
+            <TextView
+                android:id="@+id/tvName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_column="0"
+                android:layout_row="0"
+                android:text="@string/name"
+                android:labelFor="@+id/etName"/>
 
-        <TextView
-            android:id="@+id/tvDate"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_column="0"
-            android:layout_row="1"
-            android:text="@string/date"
-            android:labelFor="@+id/txtName"/>
+            <EditText
+                android:id="@+id/etName"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_column="1"
+                android:layout_gravity="fill_horizontal"
+                android:layout_row="0"
+                android:layout_marginStart="10sp"
+                android:inputType="textCapWords" >
+            </EditText>
 
-        <DatePicker
-            android:id="@+id/dpDate"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_column="1"
-            android:layout_gravity="fill_horizontal"
-            android:layout_row="1"
-            android:layout_marginStart="10sp"
-            style="@style/date_picker_theme">
-        </DatePicker>
+            <TextView
+                android:id="@+id/tvDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_column="0"
+                android:layout_row="1"
+                android:text="@string/date"
+                android:labelFor="@+id/txtName"/>
 
-        <TextView
-            android:id="@+id/tvRecurrence"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_column="0"
-            android:layout_row="2"
-            android:text="@string/recurrence"
-            android:labelFor="@+id/ckRecurrence"/>
+            <DatePicker
+                android:id="@+id/dpDate"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_column="1"
+                android:layout_gravity="fill_horizontal"
+                android:layout_row="1"
+                android:layout_marginStart="10sp"
+                style="@style/date_picker_theme">
+            </DatePicker>
 
-        <CheckBox
-            android:id="@+id/ckRecurrence"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="fill_horizontal"
-            android:layout_row="2"
-            android:layout_column="1"/>
+            <TextView
+                android:id="@+id/tvRecurrence"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_column="0"
+                android:layout_row="2"
+                android:text="@string/recurrence"
+                android:labelFor="@+id/ckRecurrence"/>
 
-    </GridLayout>
+            <CheckBox
+                android:id="@+id/ckRecurrence"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="fill_horizontal"
+                android:layout_row="2"
+                android:layout_column="1"/>
+
+        </GridLayout>
+    </ScrollView>
 </FrameLayout>
