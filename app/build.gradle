@@ -22,8 +22,8 @@ android {
         applicationId "fr.ralala.worktime"
         minSdkVersion 23
         targetSdkVersion 23
-        versionCode 16
-        versionName "1.16"
+        versionCode 17
+        versionName "1.17"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     signingConfigs {
