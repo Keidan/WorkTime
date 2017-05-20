@@ -76,6 +76,7 @@ public class PublicHolidaysFragment extends Fragment implements SimpleEntriesArr
   }
 
   public void onClick(View view) {
+    app.setResumeAfterActivity(true);
     PublicHolidayActivity.startActivity(getActivity(), "null");
   }
 

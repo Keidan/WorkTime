@@ -57,6 +57,7 @@ public class ProfileFragment  extends Fragment implements SimpleEntriesArrayAdap
 
   @Override
   public void onClick(View view) {
+    app.setResumeAfterActivity(true);
     DayActivity.startActivity(getActivity(), "null", false);
   }
 
