@@ -2,6 +2,8 @@ package fr.ralala.worktime.factories;
 
 
 
+import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -42,7 +44,7 @@ public class ProfilesFactory {
     }
   }
 
-  public void updateProfilesLearningWeight(DayEntry profile, int weightLimit) {
+  public void updateProfilesLearningWeight(DayEntry profile, int weightLimit, boolean fromClear) {
     for(DayEntry p : profiles) {
       int weight = p.getLearningWeight();
       int max = weightLimit*2;
@@ -50,7 +52,8 @@ public class ProfilesFactory {
         p.setLearningWeight(weight < max ? ++weight : max);
         sql.updateProfile(p);
       } else if(weight > 0) {
-        p.setLearningWeight(p.getLearningWeight() - 1);
+        if(fromClear)
+          p.setLearningWeight(p.getLearningWeight() - 1);
         sql.updateProfile(p);
       }
     }

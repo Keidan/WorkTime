@@ -64,6 +64,8 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
   private DayEntry selectedProfile = null;
   private boolean openForAdd = false;
 
+  private boolean fromClear = false;
+
 
   public static void startActivity(final Context ctx, final String date, final boolean profile) {
     Intent intent = new Intent(ctx, DayActivity.class);
@@ -207,6 +209,7 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
   @Override
   public void onResume() {
     super.onResume();
+    fromClear = false;
     selectedProfile = null;
     if(tvLegalWorktime.getText().equals(getString(R.string.default_time))) {
       String t = app.getLegalWorkTimeByDay().timeString();
@@ -249,6 +252,7 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
         return true;
       case R.id.action_cancel:
         if(displayProfile) {
+          fromClear = true;
           AndroidHelper.initTimeTextView(wtdStartMorning = new WorkTimeDay(), tvStartMorning);
           AndroidHelper.initTimeTextView(wtdEndMorning = new WorkTimeDay(), tvEndMorning);
           AndroidHelper.initTimeTextView(wtdStartAfternoon = new WorkTimeDay(), tvStartAfternoon);
@@ -313,7 +317,8 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
         boolean match = de.match(newEntry);
         if (!match) {
           app.getDaysFactory().remove(de);
-          app.getProfilesFactory().updateProfilesLearningWeight(selectedProfile, app.getProfilesWeightDepth());
+          app.getProfilesFactory().updateProfilesLearningWeight(selectedProfile, app.getProfilesWeightDepth(), fromClear);
+          fromClear = false;
           if (newEntry.getStartMorning().isValidTime() || newEntry.getEndAfternoon().isValidTime())
             app.getDaysFactory().add(newEntry);
           if(AndroidHelper.isServiceRunning(this, QuickAccessService.class))
