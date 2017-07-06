@@ -2,7 +2,6 @@ package fr.ralala.worktime.factories;
 
 
 
-import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -62,8 +61,8 @@ public class ProfilesFactory {
   public DayEntry getHighestLearningWeight() {
     DayEntry profile = null;
     int weight = 0;
-    for(DayEntry p : profiles) {
-      if(weight == 0 || weight >= p.getLearningWeight()) {
+    for(DayEntry p : profiles) {;
+      if(weight == 0 || weight <= p.getLearningWeight()) {
         weight = p.getLearningWeight();
         profile = p;
       }
