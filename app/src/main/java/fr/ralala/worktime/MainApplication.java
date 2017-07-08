@@ -21,6 +21,7 @@ import fr.ralala.worktime.models.Setting;
 import fr.ralala.worktime.models.WorkTimeDay;
 import fr.ralala.worktime.activities.SettingsActivity;
 import fr.ralala.worktime.quickaccess.QuickAccessNotification;
+import fr.ralala.worktime.services.DropboxAutoExportService;
 import fr.ralala.worktime.sql.SqlFactory;
 import fr.ralala.worktime.utils.AndroidHelper;
 
@@ -76,6 +77,10 @@ public class MainApplication extends Application {
       daysFactory.reload(sql);
       profilesFactory.reload(sql);
       ret = true;
+      /*SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+      SharedPreferences.Editor ed = prefs.edit();
+      ed.remove(DropboxAutoExportService.KEY_NEED_UPDATE);
+      ed.apply();*/
     } catch (final Exception e) {
       Log.e(getClass().getSimpleName(), "Error: " + e.getMessage(), e);
       AndroidHelper.showAlertDialog(this, R.string.error, getString(R.string.error) + ": " + e.getMessage());
@@ -110,6 +115,11 @@ public class MainApplication extends Application {
 
   public SqlFactory getSql() {
     return sql;
+  }
+
+  public int getExportAutoSavePeriodicity() {
+    SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+    return Integer.parseInt(prefs.getString(SettingsActivity.PREFS_KEY_IMPORT_EXPORT_AUTO_SAVE_PERIODICITY, SettingsActivity.PREFS_DEFVAL_IMPORT_EXPORT_AUTO_SAVE_PERIODICITY));
   }
 
   public boolean isExportAutoSave() {

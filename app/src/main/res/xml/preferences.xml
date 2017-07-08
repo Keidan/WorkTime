@@ -89,6 +89,13 @@
             android:defaultValue="false"
             android:summary="@string/pref_summary_import_export_auto_save"
             android:title="@string/pref_title_import_export_auto_save" />
+        <ListPreference
+            android:key="prefImportExportAutoSavePeriodicity"
+            android:defaultValue="0"
+            android:entries="@array/entries_periodicity"
+            android:summary="@string/pref_fragments_summary_periodicity"
+            android:entryValues="@array/values_periodicity"
+            android:title="@string/pref_fragments_title_periodicity" />
         <Preference
             android:key="prefImportExport"
             android:title="@string/pref_title_import_export"

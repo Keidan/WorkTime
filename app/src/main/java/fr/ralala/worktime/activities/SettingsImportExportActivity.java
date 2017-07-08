@@ -23,6 +23,7 @@ import java.util.Set;
 import fr.ralala.worktime.MainApplication;
 import fr.ralala.worktime.R;
 import fr.ralala.worktime.dropbox.DropboxImportExport;
+import fr.ralala.worktime.services.DropboxAutoExportService;
 import fr.ralala.worktime.sql.SqlHelper;
 import fr.ralala.worktime.utils.AndroidHelper;
 
@@ -86,6 +87,7 @@ public class SettingsImportExportActivity extends PreferenceActivity implements 
   @Override
   public boolean onPreferenceClick(final Preference preference) {
     if (preference.equals(prefFrag.findPreference(PREFS_KEY_EXPORT_TO_DROPBOX))) {
+      DropboxAutoExportService.setNeedUpdate(app, false);
       app.getDropboxImportExport().exportDatabase(this, null);
     } else if (preference.equals(prefFrag.findPreference(PREFS_KEY_IMPORT_FROM_DROPBOX))) {
       app.getDropboxImportExport().importDatabase(this, null);

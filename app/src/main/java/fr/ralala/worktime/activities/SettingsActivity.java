@@ -2,6 +2,7 @@ package fr.ralala.worktime.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
@@ -27,36 +28,38 @@ import fr.ralala.worktime.utils.AndroidHelper;
  *******************************************************************************
  */
 public class SettingsActivity extends PreferenceActivity implements Preference.OnPreferenceClickListener{
-  public static final String       PREFS_DEFVAL_DEFAULT_HOME            = "0";
-  public static final String       PREFS_DEFVAL_PROFILES_WEIGHT_DEPTH   = "5";
-  public static final String       PREFS_DEFVAL_DAY_ROWS_HEIGHT         = "44";
-  public static final String       PREFS_DEFVAL_WORKTIME_BY_DAY         = "00:00";
-  public static final String       PREFS_DEFVAL_AMOUNT_BY_HOUR          = "0.0";
-  public static final String       PREFS_DEFVAL_CURRENCY                = "€";
-  public static final String       PREFS_DEFVAL_EMAIL                   = "";
-  public static final String       PREFS_DEFVAL_EMAIL_ENABLE            = "true";
-  public static final String       PREFS_DEFVAL_HIDE_WAGE               = "false";
-  public static final String       PREFS_DEFVAL_EXPORT_HIDE_WAGE        = "false";
-  public static final String       PREFS_DEFVAL_SCROLL_TO_CURRENT_DAY   = "false";
-  public static final String       PREFS_DEFVAL_HIDE_EXIT_BUTTON        = "false";
-  public static final String       PREFS_DEFVAL_IMPORT_EXPORT_AUTO_SAVE = "false";
-  public static final String       PREFS_KEY_WORKTIME_BY_DAY            = "prefWorkTimeByDay";
-  public static final String       PREFS_KEY_AMOUNT_BY_HOUR             = "prefAmountByHour";
-  public static final String       PREFS_KEY_CURRENCY                   = "prefCurrency";
-  public static final String       PREFS_KEY_IMPORT_EXPORT              = "prefImportExport";
-  public static final String       PREFS_KEY_EMAIL                      = "prefExportMail";
-  public static final String       PREFS_KEY_EMAIL_ENABLE               = "prefExportMailEnable";
-  public static final String       PREFS_KEY_EXPORT_HIDE_WAGE           = "prefExportHideWage";
-  public static final String       PREFS_KEY_HIDE_WAGE                  = "prefHideWage";
-  public static final String       PREFS_KEY_CHANGELOG                  = "prefChangelog";
-  public static final String       PREFS_KEY_VERSION                    = "prefVersion";
-  public static final String       PREFS_KEY_DAY_ROWS_HEIGHT            = "prefDayRowsHeight";
-  public static final String       PREFS_KEY_PROFILES_WEIGHT_DEPTH      = "prefWeightDepth";
-  public static final String       PREFS_KEY_PROFILES_WEIGHT_CLEAR      = "prefWeightClear";
-  public static final String       PREFS_KEY_DEFAULT_HOME               = "prefDefaultHome";
-  public static final String       PREFS_KEY_SCROLL_TO_CURRENT_DAY      = "prefScrollToCurrentDay";
-  public static final String       PREFS_KEY_HIDE_EXIT_BUTTON           = "prefHideExitButton";
-  public static final String       PREFS_KEY_IMPORT_EXPORT_AUTO_SAVE    = "prefImportExportAutoSave";
+  public static final String       PREFS_DEFVAL_DEFAULT_HOME                        = "0";
+  public static final String       PREFS_DEFVAL_PROFILES_WEIGHT_DEPTH               = "5";
+  public static final String       PREFS_DEFVAL_DAY_ROWS_HEIGHT                     = "44";
+  public static final String       PREFS_DEFVAL_WORKTIME_BY_DAY                     = "00:00";
+  public static final String       PREFS_DEFVAL_AMOUNT_BY_HOUR                      = "0.0";
+  public static final String       PREFS_DEFVAL_CURRENCY                            = "€";
+  public static final String       PREFS_DEFVAL_EMAIL                               = "";
+  public static final String       PREFS_DEFVAL_EMAIL_ENABLE                        = "true";
+  public static final String       PREFS_DEFVAL_HIDE_WAGE                           = "false";
+  public static final String       PREFS_DEFVAL_EXPORT_HIDE_WAGE                    = "false";
+  public static final String       PREFS_DEFVAL_SCROLL_TO_CURRENT_DAY               = "false";
+  public static final String       PREFS_DEFVAL_HIDE_EXIT_BUTTON                    = "false";
+  public static final String       PREFS_DEFVAL_IMPORT_EXPORT_AUTO_SAVE             = "false";
+  public static final String       PREFS_DEFVAL_IMPORT_EXPORT_AUTO_SAVE_PERIODICITY = "0";
+  public static final String       PREFS_KEY_WORKTIME_BY_DAY                        = "prefWorkTimeByDay";
+  public static final String       PREFS_KEY_AMOUNT_BY_HOUR                         = "prefAmountByHour";
+  public static final String       PREFS_KEY_CURRENCY                               = "prefCurrency";
+  public static final String       PREFS_KEY_IMPORT_EXPORT                          = "prefImportExport";
+  public static final String       PREFS_KEY_EMAIL                                  = "prefExportMail";
+  public static final String       PREFS_KEY_EMAIL_ENABLE                           = "prefExportMailEnable";
+  public static final String       PREFS_KEY_EXPORT_HIDE_WAGE                       = "prefExportHideWage";
+  public static final String       PREFS_KEY_HIDE_WAGE                              = "prefHideWage";
+  public static final String       PREFS_KEY_CHANGELOG                              = "prefChangelog";
+  public static final String       PREFS_KEY_VERSION                                = "prefVersion";
+  public static final String       PREFS_KEY_DAY_ROWS_HEIGHT                        = "prefDayRowsHeight";
+  public static final String       PREFS_KEY_PROFILES_WEIGHT_DEPTH                  = "prefWeightDepth";
+  public static final String       PREFS_KEY_PROFILES_WEIGHT_CLEAR                  = "prefWeightClear";
+  public static final String       PREFS_KEY_DEFAULT_HOME                           = "prefDefaultHome";
+  public static final String       PREFS_KEY_SCROLL_TO_CURRENT_DAY                  = "prefScrollToCurrentDay";
+  public static final String       PREFS_KEY_HIDE_EXIT_BUTTON                       = "prefHideExitButton";
+  public static final String       PREFS_KEY_IMPORT_EXPORT_AUTO_SAVE                = "prefImportExportAutoSave";
+  public static final String       PREFS_KEY_IMPORT_EXPORT_AUTO_SAVE_PERIODICITY    = "prefImportExportAutoSavePeriodicity";
 
 
 
@@ -91,8 +94,10 @@ public class SettingsActivity extends PreferenceActivity implements Preference.O
     prefFrag.findPreference(PREFS_KEY_EMAIL_ENABLE).setOnPreferenceClickListener(this);
     prefFrag.findPreference(PREFS_KEY_IMPORT_EXPORT).setOnPreferenceClickListener(this);
     prefFrag.findPreference(PREFS_KEY_PROFILES_WEIGHT_CLEAR).setOnPreferenceClickListener(this);
+    prefFrag.findPreference(PREFS_KEY_IMPORT_EXPORT_AUTO_SAVE).setOnPreferenceClickListener(this);
     prefFrag.findPreference(PREFS_KEY_VERSION).setTitle(
       getResources().getString(R.string.app_name));
+    prefFrag.findPreference(PREFS_KEY_IMPORT_EXPORT_AUTO_SAVE_PERIODICITY).setEnabled(((CheckBoxPreference)prefFrag.findPreference(PREFS_KEY_IMPORT_EXPORT_AUTO_SAVE)).isChecked());
     try {
       prefFrag.findPreference(PREFS_KEY_VERSION).setSummary(getPackageManager().getPackageInfo(getPackageName(), 0).versionName);
     } catch (final Exception e) {
@@ -152,6 +157,9 @@ public class SettingsActivity extends PreferenceActivity implements Preference.O
     } else if (preference.equals(prefFrag.findPreference(PREFS_KEY_PROFILES_WEIGHT_CLEAR))) {
       app.getProfilesFactory().resetProfilesLearningWeight();
       AndroidHelper.toast(this, R.string.profiles_weight_reseted);
+    } else if (preference.equals(prefFrag.findPreference(PREFS_KEY_IMPORT_EXPORT_AUTO_SAVE))) {
+      prefFrag.findPreference(PREFS_KEY_IMPORT_EXPORT_AUTO_SAVE_PERIODICITY).setEnabled(
+        ((CheckBoxPreference)prefFrag.findPreference(PREFS_KEY_IMPORT_EXPORT_AUTO_SAVE)).isChecked());
     }
     return true;
   }

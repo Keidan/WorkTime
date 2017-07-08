@@ -19,6 +19,7 @@ import fr.ralala.worktime.models.DayEntry;
 import fr.ralala.worktime.models.DayType;
 import fr.ralala.worktime.models.Setting;
 import fr.ralala.worktime.models.WorkTimeDay;
+import fr.ralala.worktime.services.DropboxAutoExportService;
 import fr.ralala.worktime.utils.AndroidHelper;
 
 /**
@@ -257,6 +258,8 @@ public class SqlFactory implements SqlConstants {
     addSetting(prefs, SettingsActivity.PREFS_KEY_SCROLL_TO_CURRENT_DAY, SettingsActivity.PREFS_DEFVAL_SCROLL_TO_CURRENT_DAY.equals("true"));
     addSetting(prefs, SettingsActivity.PREFS_KEY_HIDE_EXIT_BUTTON, SettingsActivity.PREFS_DEFVAL_HIDE_EXIT_BUTTON.equals("true"));
     addSetting(prefs, SettingsActivity.PREFS_KEY_IMPORT_EXPORT_AUTO_SAVE, SettingsActivity.PREFS_DEFVAL_IMPORT_EXPORT_AUTO_SAVE.equals("false"));
+    addSetting(prefs, SettingsActivity.PREFS_KEY_IMPORT_EXPORT_AUTO_SAVE_PERIODICITY, SettingsActivity.PREFS_DEFVAL_IMPORT_EXPORT_AUTO_SAVE_PERIODICITY);
+    addSetting(prefs, DropboxAutoExportService.KEY_NEED_UPDATE, DropboxAutoExportService.DEFVAL_NEED_UPDATE.equals("false"));
   }
 
   public void settingsLoad(List<Setting> settings) {
@@ -271,11 +274,12 @@ public class SqlFactory implements SqlConstants {
         if(name.equals(SettingsActivity.PREFS_KEY_DEFAULT_HOME) || name.equals(SettingsActivity.PREFS_KEY_PROFILES_WEIGHT_DEPTH)
             || name.equals(SettingsActivity.PREFS_KEY_DAY_ROWS_HEIGHT) || name.equals(SettingsActivity.PREFS_KEY_WORKTIME_BY_DAY)
             || name.equals(SettingsActivity.PREFS_KEY_AMOUNT_BY_HOUR) || name.equals(SettingsActivity.PREFS_KEY_CURRENCY )
-            || name.equals(SettingsActivity.PREFS_KEY_EMAIL))
+            || name.equals(SettingsActivity.PREFS_KEY_EMAIL) || name.equals(SettingsActivity.PREFS_KEY_IMPORT_EXPORT_AUTO_SAVE_PERIODICITY))
           edit.putString(name, value);
         else if(name.equals(SettingsActivity.PREFS_KEY_EMAIL_ENABLE) || name.equals(SettingsActivity.PREFS_KEY_HIDE_WAGE)
             || name.equals(SettingsActivity.PREFS_KEY_EXPORT_HIDE_WAGE) || name.equals(SettingsActivity.PREFS_KEY_SCROLL_TO_CURRENT_DAY)
-            || name.equals(SettingsActivity.PREFS_KEY_HIDE_EXIT_BUTTON)|| name.equals(SettingsActivity.PREFS_KEY_IMPORT_EXPORT_AUTO_SAVE))
+            || name.equals(SettingsActivity.PREFS_KEY_HIDE_EXIT_BUTTON) || name.equals(SettingsActivity.PREFS_KEY_IMPORT_EXPORT_AUTO_SAVE)
+            || name.equals(DropboxAutoExportService.KEY_NEED_UPDATE))
           edit.putBoolean(name, value.equals("1"));
         if(settings != null)
           settings.add(new Setting(name, value));
