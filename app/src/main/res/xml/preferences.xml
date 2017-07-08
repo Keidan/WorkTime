@@ -84,6 +84,11 @@
             android:summary="@string/pref_summary_learning_clear"/>
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/pref_title_database" android:key="prefCatDatabase" >
+        <CheckBoxPreference
+            android:key="prefImportExportAutoSave"
+            android:defaultValue="false"
+            android:summary="@string/pref_summary_import_export_auto_save"
+            android:title="@string/pref_title_import_export_auto_save" />
         <Preference
             android:key="prefImportExport"
             android:title="@string/pref_title_import_export"

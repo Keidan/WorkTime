@@ -1,4 +1,4 @@
-package fr.ralala.worktime.quickaccess;
+package fr.ralala.worktime.services;
 
 
 import android.app.Service;
@@ -8,6 +8,7 @@ import android.os.IBinder;
 import java.util.Timer;
 
 import fr.ralala.worktime.MainApplication;
+import fr.ralala.worktime.quickaccess.QuickAccessServiceTask;
 
 /**
  *******************************************************************************
@@ -21,7 +22,6 @@ import fr.ralala.worktime.MainApplication;
 public class QuickAccessService extends Service {
   private MainApplication app = null;
   private Timer timer = null;
-  private QuickAccessServiceTask task = null;
 
   @Override
   public void onCreate() {
@@ -34,7 +34,7 @@ public class QuickAccessService extends Service {
       timer = new Timer();
     }
     // schedule task
-    timer.scheduleAtFixedRate(task = new QuickAccessServiceTask(app), 0, 1000);
+    timer.scheduleAtFixedRate(new QuickAccessServiceTask(app), 0, 1000);
   }
 
   @Override
@@ -44,7 +44,6 @@ public class QuickAccessService extends Service {
       timer.cancel();
       timer.purge();
       timer = null;
-      task = null;
     }
   }
 

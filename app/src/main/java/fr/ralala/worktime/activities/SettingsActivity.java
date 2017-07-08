@@ -39,6 +39,7 @@ public class SettingsActivity extends PreferenceActivity implements Preference.O
   public static final String       PREFS_DEFVAL_EXPORT_HIDE_WAGE        = "false";
   public static final String       PREFS_DEFVAL_SCROLL_TO_CURRENT_DAY   = "false";
   public static final String       PREFS_DEFVAL_HIDE_EXIT_BUTTON        = "false";
+  public static final String       PREFS_DEFVAL_IMPORT_EXPORT_AUTO_SAVE = "false";
   public static final String       PREFS_KEY_WORKTIME_BY_DAY            = "prefWorkTimeByDay";
   public static final String       PREFS_KEY_AMOUNT_BY_HOUR             = "prefAmountByHour";
   public static final String       PREFS_KEY_CURRENCY                   = "prefCurrency";
@@ -55,6 +56,8 @@ public class SettingsActivity extends PreferenceActivity implements Preference.O
   public static final String       PREFS_KEY_DEFAULT_HOME               = "prefDefaultHome";
   public static final String       PREFS_KEY_SCROLL_TO_CURRENT_DAY      = "prefScrollToCurrentDay";
   public static final String       PREFS_KEY_HIDE_EXIT_BUTTON           = "prefHideExitButton";
+  public static final String       PREFS_KEY_IMPORT_EXPORT_AUTO_SAVE    = "prefImportExportAutoSave";
+
 
 
 
@@ -103,7 +106,7 @@ public class SettingsActivity extends PreferenceActivity implements Preference.O
   @Override
   public void onResume() {
     super.onResume();
-    MainApplication.getApp(this).getSql().settingsLoad();
+    MainApplication.getApp(this).getSql().settingsLoad(null);
   }
 
   @Override

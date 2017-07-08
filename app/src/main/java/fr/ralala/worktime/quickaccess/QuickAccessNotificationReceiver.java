@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 
 import fr.ralala.worktime.MainApplication;
+import fr.ralala.worktime.services.QuickAccessService;
 
 /**
  *******************************************************************************

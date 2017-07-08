@@ -65,6 +65,8 @@
     <string name="pref_title_import_export">Importation/Exportation</string>
     <string name="pref_title_export">Exportation</string>
     <string name="pref_title_import">Importation</string>
+    <string name="pref_title_import_export_auto_save">Exportation automatique</string>
+    <string name="pref_summary_import_export_auto_save">Lorsqu\'une modification est effectu\u00E9e, la base de donn\u00E9es sera export\u00E9e automatiquement \u00E0 l\'aide du service dropbox (\u00E0 la sortie de l\'application).</string>
     <string name="pref_title_device">P\u00E9riph\u00E9rique</string>
     <string name="pref_title_dropbox">Dropbox</string>
     <string name="pref_summary_import_export">Importer/Exporter la base de donn\u00E9es.</string>

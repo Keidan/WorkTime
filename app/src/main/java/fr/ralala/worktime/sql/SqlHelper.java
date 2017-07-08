@@ -137,7 +137,12 @@ import fr.ralala.worktime.MainApplication;
 
   // Copy to sdcard for debug use
   public static String copyDatabase(final Context c, final String name,
-                                     final String folder) throws Exception{
+                                    final String folder) throws Exception {
+    return copyDatabase(c, name, folder, name, true);
+  }
+  public static String copyDatabase(final Context c, final String name,
+                                     final String folder,
+                                    final String filename, boolean date) throws Exception{
     MainApplication.getApp(c).getSql().settingsSave();
     final String databasePath = c.getDatabasePath(name).getPath();
     final File f = new File(databasePath);
@@ -152,7 +157,7 @@ import fr.ralala.worktime.MainApplication;
         final File directory = new File(folder);
         if (!directory.exists())
           directory.mkdir();
-        File out = new File(directory, new SimpleDateFormat("yyyyMMdd_hhmma", Locale.US).format(new Date()) + "_" + name);
+        File out = new File(directory, !date ? filename : (new SimpleDateFormat("yyyyMMdd_hhmma", Locale.US).format(new Date()) + "_" + name));
         myOutput = new FileOutputStream(out);
         myInput = new FileInputStream(databasePath);
 
@@ -182,7 +187,7 @@ import fr.ralala.worktime.MainApplication;
   }
 
   public static void loadDatabase(Context c, final String name, File in) throws Exception{
-    MainApplication.getApp(c).getSql().settingsLoad();
+    MainApplication.getApp(c).getSql().settingsLoad(null);
     final String databasePath = c.getDatabasePath(name).getPath();
     final File f = new File(databasePath);
     InputStream myInput = null;

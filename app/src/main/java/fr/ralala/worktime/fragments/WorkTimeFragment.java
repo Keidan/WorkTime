@@ -25,7 +25,7 @@ import fr.ralala.worktime.activities.DayActivity;
 import fr.ralala.worktime.activities.MainActivity;
 
 import fr.ralala.worktime.dialogs.MonthDetailsDialog;
-import fr.ralala.worktime.quickaccess.QuickAccessService;
+import fr.ralala.worktime.services.QuickAccessService;
 import fr.ralala.worktime.utils.AndroidHelper;
 import fr.ralala.worktime.MainApplication;
 import fr.ralala.worktime.R;

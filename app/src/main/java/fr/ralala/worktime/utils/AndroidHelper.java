@@ -38,7 +38,6 @@ import java.util.Locale;
 
 import fr.ralala.worktime.R;
 import fr.ralala.worktime.models.WorkTimeDay;
-import fr.ralala.worktime.quickaccess.QuickAccessService;
 
 /**
  *******************************************************************************

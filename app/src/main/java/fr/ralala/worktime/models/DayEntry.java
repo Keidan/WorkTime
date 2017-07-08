@@ -32,6 +32,25 @@ public class DayEntry {
   private WorkTimeDay legalWorktime = null;
   private Context context = null;
 
+  public boolean equals(Object o) {
+    if(o == null || !DayEntry.class.isInstance(o))
+      return false;
+    if (this == o)
+      return true;
+    DayEntry de = (DayEntry)o;
+    if(name != null || de.name != null) {
+      if(name != null && de.name != null && name.compareTo(de.name) != 0)
+        return false;
+      else if((name == null && de.name != null) || (name != null && de.name == null))
+        return false;
+    }
+    return (day.match(de.day) && startMorning.match(de.startMorning)
+      && endMorning.match(de.endMorning) && startAfternoon.match(de.startAfternoon)
+      && endAfternoon.match(de.endAfternoon)&& legalWorktime.match(de.legalWorktime) && typeMorning == de.typeMorning
+      && typeAfternoon == de.typeAfternoon && amountByHour == de.amountByHour
+      && learningWeight == de.learningWeight&& recurrence == de.recurrence);
+  }
+
   public DayEntry(final Context c, final WorkTimeDay day, final DayType typeMorning, final DayType typeAfternoon) {
     this.context = c;
     this.day = new WorkTimeDay();

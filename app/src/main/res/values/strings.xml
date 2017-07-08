@@ -72,6 +72,8 @@
     <string name="pref_title_database">Database</string>
     <string name="pref_title_import_export">Import/Export</string>
     <string name="pref_summary_import_export">Import/Export the database.</string>
+    <string name="pref_summary_import_export_auto_save">Auto export</string>
+    <string name="pref_title_import_export_auto_save">When a change is made, the database will be exported automatically using the dropbox service (on app exit).</string>
     <string name="pref_title_device">Device</string>
     <string name="pref_title_dropbox">Dropbox</string>
     <string name="pref_title_export">Export</string>

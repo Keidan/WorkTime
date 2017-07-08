@@ -18,7 +18,7 @@ import fr.ralala.worktime.MainApplication;
 import fr.ralala.worktime.R;
 import fr.ralala.worktime.models.DayEntry;
 import fr.ralala.worktime.models.WorkTimeDay;
-import fr.ralala.worktime.quickaccess.QuickAccessService;
+import fr.ralala.worktime.services.QuickAccessService;
 import fr.ralala.worktime.utils.AndroidHelper;
 
 /**

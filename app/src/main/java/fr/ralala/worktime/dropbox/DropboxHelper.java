@@ -30,7 +30,8 @@ public class DropboxHelper {
     return helper;
   }
 
-  public boolean connect(final Context c, final String appkey) {
+  public boolean connect(final Context ctx, final String appkey) {
+    Context c = ctx.getApplicationContext();
     helper.loadToken(c);
     if(!helper.hasToken(c)) {
       Auth.startOAuth2Authentication(c, appkey);
@@ -40,13 +41,15 @@ public class DropboxHelper {
     return true;
   }
 
-  public boolean hasToken(final Context c) {
+  public boolean hasToken(final Context ctx) {
+    Context c = ctx.getApplicationContext();
     SharedPreferences prefs = c.getSharedPreferences(LABEL, Context.MODE_PRIVATE);
     String accessToken = prefs.getString(KEY, null);
     return accessToken != null;
   }
 
-  private DropboxHelper loadToken(final Context c) {
+  private DropboxHelper loadToken(final Context ctx) {
+    Context c = ctx.getApplicationContext();
     SharedPreferences prefs = c.getSharedPreferences(LABEL, Context.MODE_PRIVATE);
     String accessToken = prefs.getString(KEY, null);
     if (accessToken == null) {

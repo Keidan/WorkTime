@@ -15,7 +15,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.MotionEvent;
-import android.view.View;
 
 import fr.ralala.worktime.MainApplication;
 import fr.ralala.worktime.R;
@@ -26,7 +25,8 @@ import fr.ralala.worktime.fragments.WorkTimeFragment;
 import fr.ralala.worktime.fragments.ProfileFragment;
 import fr.ralala.worktime.fragments.PublicHolidaysFragment;
 import fr.ralala.worktime.fragments.QuickAccessFragment;
-import fr.ralala.worktime.quickaccess.QuickAccessService;
+import fr.ralala.worktime.services.DropboxAutoExportService;
+import fr.ralala.worktime.services.QuickAccessService;
 import fr.ralala.worktime.utils.AndroidHelper;
 import fr.ralala.worktime.utils.SwipeDetector;
 
@@ -68,7 +68,6 @@ public class MainActivity extends RuntimePermissionsActivity implements Navigati
     Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
     setSupportActionBar(toolbar);
     swipeDetector = new SwipeDetector(this);
-
     drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
     ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
       this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -157,6 +156,7 @@ public class MainActivity extends RuntimePermissionsActivity implements Navigati
 
   public void onResume() {
     super.onResume();
+    AndroidHelper.killServiceIfRunning(this, DropboxAutoExportService.class);
     navigationView.getMenu().getItem(IDX_EXIT).setVisible(!app.isHideExitButton());
     Fragment fragment = currentFragment;
     if(fragment != null) {
@@ -175,6 +175,8 @@ public class MainActivity extends RuntimePermissionsActivity implements Navigati
       else if(WorkTimeFragment.class.isInstance(fragment))
         navigationView.getMenu().getItem(IDX_WORK_TIME).setChecked(true); /* select work title */
     }
+    if(app.isExportAutoSave())
+      app.initOnLoadTables();
   }
 
   public void onDestroy() {
@@ -184,6 +186,9 @@ public class MainActivity extends RuntimePermissionsActivity implements Navigati
 
   private void cleanup() {
     if(app != null) {
+      if(app.isExportAutoSave()) {
+        startService(new Intent(this, DropboxAutoExportService.class));
+      }
       app.getSql().close();
       app.getQuickAccessNotification().remove(this);
     }
@@ -203,7 +208,7 @@ public class MainActivity extends RuntimePermissionsActivity implements Navigati
     if (lastBackPressed + BACK_TIME_DELAY > System.currentTimeMillis()) {
       cleanup();
       super.onBackPressed();
-      Process.killProcess(android.os.Process.myPid());
+      //Process.killProcess(android.os.Process.myPid());
       return;
     } else {
       AndroidHelper.toast(this, R.string.on_double_back_exit_text);

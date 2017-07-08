@@ -24,7 +24,7 @@ public class QuickAccessServiceTask extends TimerTask{
   private int seconds = 0;
   private String textLabel = "";
 
-  protected QuickAccessServiceTask(MainApplication app) {
+  public QuickAccessServiceTask(MainApplication app) {
     this.app = app;
     textLabel = app.getString(R.string.work_time) + ": ";
   }

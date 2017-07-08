@@ -72,7 +72,8 @@
                 android:value=".activities.MainActivity"/>
         </activity>
 
-        <service android:name="fr.ralala.worktime.quickaccess.QuickAccessService"/>
+        <service android:name="fr.ralala.worktime.services.DropboxAutoExportService"/>
+        <service android:name="fr.ralala.worktime.services.QuickAccessService"/>
         <receiver android:name="fr.ralala.worktime.quickaccess.QuickAccessNotificationReceiver">
             <intent-filter>
                 <category android:name="fr.ralala.worktime.services.PAUSE"/>

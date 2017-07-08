@@ -13,11 +13,11 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import fr.ralala.worktime.MainApplication;
 import fr.ralala.worktime.R;
 import fr.ralala.worktime.activities.SettingsActivity;
 import fr.ralala.worktime.models.DayEntry;
 import fr.ralala.worktime.models.DayType;
+import fr.ralala.worktime.models.Setting;
 import fr.ralala.worktime.models.WorkTimeDay;
 import fr.ralala.worktime.utils.AndroidHelper;
 
@@ -240,43 +240,6 @@ public class SqlFactory implements SqlConstants {
     return bdd.update(TABLE_PROFILES, values, COL_PROFILES_NAME + "='"+de.getName().replaceAll("'", "\\'") + "'", null);
   }
 
-  public void settingsLoad() {
-    if(bdd.getVersion() < VERSION_MIN_SETTINGS) return;
-    final Cursor c = bdd.rawQuery("SELECT * FROM " + TABLE_SETTINGS, null);
-    if (c.moveToFirst()) {
-      do {
-        String name = c.getString(NUM_SETTINGS_NAME);
-        String value = c.getString(NUM_SETTINGS_VALUE);
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
-        SharedPreferences.Editor edit = prefs.edit();
-        if(name.equals(SettingsActivity.PREFS_KEY_DEFAULT_HOME) || name.equals(SettingsActivity.PREFS_KEY_PROFILES_WEIGHT_DEPTH)
-            || name.equals(SettingsActivity.PREFS_KEY_DAY_ROWS_HEIGHT) || name.equals(SettingsActivity.PREFS_KEY_WORKTIME_BY_DAY)
-            || name.equals(SettingsActivity.PREFS_KEY_AMOUNT_BY_HOUR) || name.equals(SettingsActivity.PREFS_KEY_CURRENCY )
-            || name.equals(SettingsActivity.PREFS_KEY_EMAIL))
-          edit.putString(name, value);
-        else if(name.equals(SettingsActivity.PREFS_KEY_EMAIL_ENABLE) || name.equals(SettingsActivity.PREFS_KEY_HIDE_WAGE)
-            || name.equals(SettingsActivity.PREFS_KEY_EXPORT_HIDE_WAGE) || name.equals(SettingsActivity.PREFS_KEY_SCROLL_TO_CURRENT_DAY)
-            || name.equals(SettingsActivity.PREFS_KEY_HIDE_EXIT_BUTTON))
-          edit.putBoolean(name, value.equals("1"));
-        edit.apply();
-      } while (c.moveToNext());
-    }
-    c.close();
-
-  }
-
-  private long addSetting(SharedPreferences prefs, String key, String defvalue) {
-    final ContentValues values = new ContentValues();
-    values.put(COL_SETTINGS_NAME, key);
-    values.put(COL_SETTINGS_VALUE, prefs.getString(key, defvalue));
-    return bdd.insert(TABLE_SETTINGS, null, values);
-  }
-  private long addSetting(SharedPreferences prefs, String key, boolean defvalue) {
-    final ContentValues values = new ContentValues();
-    values.put(COL_SETTINGS_NAME, key);
-    values.put(COL_SETTINGS_VALUE, prefs.getBoolean(key, defvalue));
-    return bdd.insert(TABLE_SETTINGS, null, values);
-  }
   public void settingsSave() {
     if(bdd.getVersion() < VERSION_MIN_SETTINGS) return;
     bdd.delete(TABLE_SETTINGS, null, null);
@@ -293,6 +256,46 @@ public class SqlFactory implements SqlConstants {
     addSetting(prefs, SettingsActivity.PREFS_KEY_EXPORT_HIDE_WAGE, SettingsActivity.PREFS_DEFVAL_EXPORT_HIDE_WAGE.equals("true"));
     addSetting(prefs, SettingsActivity.PREFS_KEY_SCROLL_TO_CURRENT_DAY, SettingsActivity.PREFS_DEFVAL_SCROLL_TO_CURRENT_DAY.equals("true"));
     addSetting(prefs, SettingsActivity.PREFS_KEY_HIDE_EXIT_BUTTON, SettingsActivity.PREFS_DEFVAL_HIDE_EXIT_BUTTON.equals("true"));
+    addSetting(prefs, SettingsActivity.PREFS_KEY_IMPORT_EXPORT_AUTO_SAVE, SettingsActivity.PREFS_DEFVAL_IMPORT_EXPORT_AUTO_SAVE.equals("false"));
+  }
+
+  public void settingsLoad(List<Setting> settings) {
+    if(bdd.getVersion() < VERSION_MIN_SETTINGS) return;
+    final Cursor c = bdd.rawQuery("SELECT * FROM " + TABLE_SETTINGS, null);
+    if (c.moveToFirst()) {
+      do {
+        String name = c.getString(NUM_SETTINGS_NAME);
+        String value = c.getString(NUM_SETTINGS_VALUE);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
+        SharedPreferences.Editor edit = prefs.edit();
+        if(name.equals(SettingsActivity.PREFS_KEY_DEFAULT_HOME) || name.equals(SettingsActivity.PREFS_KEY_PROFILES_WEIGHT_DEPTH)
+            || name.equals(SettingsActivity.PREFS_KEY_DAY_ROWS_HEIGHT) || name.equals(SettingsActivity.PREFS_KEY_WORKTIME_BY_DAY)
+            || name.equals(SettingsActivity.PREFS_KEY_AMOUNT_BY_HOUR) || name.equals(SettingsActivity.PREFS_KEY_CURRENCY )
+            || name.equals(SettingsActivity.PREFS_KEY_EMAIL))
+          edit.putString(name, value);
+        else if(name.equals(SettingsActivity.PREFS_KEY_EMAIL_ENABLE) || name.equals(SettingsActivity.PREFS_KEY_HIDE_WAGE)
+            || name.equals(SettingsActivity.PREFS_KEY_EXPORT_HIDE_WAGE) || name.equals(SettingsActivity.PREFS_KEY_SCROLL_TO_CURRENT_DAY)
+            || name.equals(SettingsActivity.PREFS_KEY_HIDE_EXIT_BUTTON)|| name.equals(SettingsActivity.PREFS_KEY_IMPORT_EXPORT_AUTO_SAVE))
+          edit.putBoolean(name, value.equals("1"));
+        if(settings != null)
+          settings.add(new Setting(name, value));
+        edit.apply();
+      } while (c.moveToNext());
+    }
+    c.close();
+  }
+
+  private long addSetting(SharedPreferences prefs, String key, String defvalue) {
+    final ContentValues values = new ContentValues();
+    values.put(COL_SETTINGS_NAME, key);
+    values.put(COL_SETTINGS_VALUE, prefs.getString(key, defvalue));
+    return bdd.insert(TABLE_SETTINGS, null, values);
+  }
+  private long addSetting(SharedPreferences prefs, String key, boolean defvalue) {
+    final ContentValues values = new ContentValues();
+    values.put(COL_SETTINGS_NAME, key);
+    values.put(COL_SETTINGS_VALUE, prefs.getBoolean(key, defvalue));
+    return bdd.insert(TABLE_SETTINGS, null, values);
   }
 
   public long insertProfile(final DayEntry de) {

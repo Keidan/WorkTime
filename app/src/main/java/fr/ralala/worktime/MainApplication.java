@@ -1,21 +1,23 @@
 package fr.ralala.worktime;
 
-import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 
+import fr.ralala.worktime.dropbox.DropboxImportExport;
 import fr.ralala.worktime.factories.DaysFactory;
 import fr.ralala.worktime.factories.ProfilesFactory;
 import fr.ralala.worktime.factories.PublicHolidaysFactory;
 import fr.ralala.worktime.models.DayEntry;
+import fr.ralala.worktime.models.Setting;
 import fr.ralala.worktime.models.WorkTimeDay;
 import fr.ralala.worktime.activities.SettingsActivity;
 import fr.ralala.worktime.quickaccess.QuickAccessNotification;
@@ -42,12 +44,20 @@ public class MainApplication extends Application {
   private QuickAccessNotification quickAccessNotification = null;
   private boolean resumeAfterActivity = false;
   private int lastFirstVisibleItem = 0;
+  private DropboxImportExport dropboxImportExport = null;
+  private List<DayEntry> onloadProfiles = null;
+  private List<DayEntry> onloadDays = null;
+  private List<DayEntry> onloadPublicHolidays = null;
+  private List<Setting> onloadSettings = null;
+
 
   public MainApplication() {
     publicHolidaysFactory = new PublicHolidaysFactory();
     profilesFactory = new ProfilesFactory();
     daysFactory = new DaysFactory();
     quickAccessNotification = new QuickAccessNotification(this, nfyIdQuickAccess);
+    dropboxImportExport = new DropboxImportExport();
+    onloadSettings = new ArrayList<>();
   }
 
 
@@ -55,12 +65,13 @@ public class MainApplication extends Application {
     return (MainApplication) c.getApplicationContext();
   }
 
-  public boolean openSql(final Activity activity) {
+  public boolean openSql(final Context c) {
     boolean ret = false;
     try {
-      sql = new SqlFactory(this);
-      sql.open(activity);
-      sql.settingsLoad();
+      sql = new SqlFactory(c);
+      sql.open(c);
+      if(onloadSettings.isEmpty())
+        sql.settingsLoad(onloadSettings);
       publicHolidaysFactory.reload(sql);
       daysFactory.reload(sql);
       profilesFactory.reload(sql);
@@ -101,7 +112,10 @@ public class MainApplication extends Application {
     return sql;
   }
 
-
+  public boolean isExportAutoSave() {
+    SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+    return prefs.getBoolean(SettingsActivity.PREFS_KEY_IMPORT_EXPORT_AUTO_SAVE, SettingsActivity.PREFS_DEFVAL_IMPORT_EXPORT_AUTO_SAVE.equals("true"));
+  }
   public int getDefaultHome() {
     SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
     return Integer.parseInt(prefs.getString(SettingsActivity.PREFS_KEY_DEFAULT_HOME, SettingsActivity.PREFS_DEFVAL_DEFAULT_HOME));
@@ -191,5 +205,55 @@ public class MainApplication extends Application {
 
   public int getLastFirstVisibleItem() {
     return lastFirstVisibleItem;
+  }
+
+  public DropboxImportExport getDropboxImportExport() {
+    return dropboxImportExport;
+  }
+
+  public void initOnLoadTables() {
+    if(onloadSettings == null)
+      onloadSettings = new ArrayList<>();
+    if(onloadProfiles == null)
+      onloadProfiles = sql.getProfiles();
+    if(onloadDays == null)
+      onloadDays = sql.getDays();
+    if(onloadPublicHolidays == null)
+      onloadPublicHolidays = sql.getPublicHolidays();
+    if(onloadSettings.isEmpty()) {
+      sql.settingsLoad(onloadSettings);
+    }
+  }
+
+  private <T> boolean listEquals(List<T> l1, List<T> l2) {
+    List<T> list = new ArrayList<>();
+    if(l1.size() != l2.size())
+      return false;
+    for(T i1 : l1) {
+      for(T i2 : l2) {
+        if(i1.equals(i2)) {
+          list.add(i1);
+        }
+      }
+    }
+    return list.size() == l1.size();
+  }
+
+  public boolean isTablesChanges() {
+    List<DayEntry> profiles = sql.getProfiles();
+    List<DayEntry> days = sql.getDays();
+    List<DayEntry> publicHolidays = sql.getPublicHolidays();
+    sql.settingsSave();
+    List<Setting> settings = new ArrayList<>();
+    sql.settingsLoad(settings);
+    if(!listEquals(profiles, onloadProfiles))
+      return true;
+    if(!listEquals(onloadDays, days))
+      return true;
+    if(!listEquals(onloadPublicHolidays, publicHolidays))
+      return true;
+    if(!listEquals(onloadSettings, settings))
+      return true;
+    return false;
   }
 }
