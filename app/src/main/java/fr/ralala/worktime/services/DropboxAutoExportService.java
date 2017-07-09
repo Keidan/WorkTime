@@ -39,7 +39,7 @@ public class DropboxAutoExportService extends Service implements DropboxImportEx
 
     if(app.isTablesChanges()) {
       boolean export = isExportable();
-      Log.e(getClass().getSimpleName(), "Exportation required and the day " + (export ? "" : "not") + " match.");
+      Log.e(getClass().getSimpleName(), "Exportation required and the day" + (export ? " " : " not") + " match.");
       if(export) {
         if (!app.getDropboxImportExport().exportDatabase(this, false, this)) {
           stopSelf();
@@ -51,7 +51,8 @@ public class DropboxAutoExportService extends Service implements DropboxImportEx
     } else {
       boolean export = isExportable();
       SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-      if(export && prefs.getBoolean(KEY_NEED_UPDATE, DEFVAL_NEED_UPDATE.equals("true"))) {
+      boolean needUpdate = prefs.getBoolean(KEY_NEED_UPDATE, DEFVAL_NEED_UPDATE.equals("true"));
+      if(export && needUpdate) {
         Log.e(getClass().getSimpleName(), "No changes have been detected but the day is valid for pending export.");
         setNeedUpdate(app, false);
         if (!app.getDropboxImportExport().exportDatabase(this, false, this)) {
@@ -61,7 +62,7 @@ public class DropboxAutoExportService extends Service implements DropboxImportEx
           return;
         }
       }
-      Log.e(getClass().getSimpleName(), (!export) ? "No change detected." : "Changes detected but the current day does not allow export");
+      Log.e(getClass().getSimpleName(), (!export && !needUpdate) ? "No change detected." : "Changes detected but the current day does not allow export");
       stopSelf();
     }
   }
