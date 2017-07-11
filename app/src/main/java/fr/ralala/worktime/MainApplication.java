@@ -235,6 +235,14 @@ public class MainApplication extends Application {
     }
   }
 
+  public void disableDbUpdateFromOnloadSettings() {
+    for(Setting s : onloadSettings) {
+      if(s.getName().equals(DropboxAutoExportService.KEY_NEED_UPDATE)) {
+        s.setValue("false");
+      }
+    }
+  }
+
   private <T> boolean listEquals(List<T> l1, List<T> l2) {
     List<T> list = new ArrayList<>();
     if(l1.size() != l2.size())

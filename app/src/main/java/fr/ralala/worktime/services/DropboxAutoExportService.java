@@ -12,7 +12,6 @@ import android.util.Log;
 import java.util.Calendar;
 
 import fr.ralala.worktime.MainApplication;
-import fr.ralala.worktime.activities.SettingsActivity;
 import fr.ralala.worktime.dropbox.DropboxImportExport;
 import fr.ralala.worktime.models.WorkTimeDay;
 
@@ -73,6 +72,8 @@ public class DropboxAutoExportService extends Service implements DropboxImportEx
     ed.putBoolean(KEY_NEED_UPDATE, b);
     ed.apply();
     app.getSql().settingsSave();
+    if(!b)
+      app.disableDbUpdateFromOnloadSettings();
   }
 
   private boolean isExportable() {
