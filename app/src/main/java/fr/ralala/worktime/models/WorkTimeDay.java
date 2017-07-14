@@ -58,6 +58,7 @@ public class WorkTimeDay {
   public static WorkTimeDay now() {
     WorkTimeDay wtd = new WorkTimeDay();
     Calendar now = wtd.toCalendar();
+    now.setFirstDayOfWeek(Calendar.MONDAY);
     now.setTime(new Date());
     wtd.fromCalendar(now);
     return wtd;

@@ -14,6 +14,7 @@ dependencies {
     compile 'com.squareup.okhttp:okhttp:2.7.5'
     compile 'com.squareup.okhttp3:okhttp:3.5.0'
     compile files('libs/poi-3.15.jar')
+    compile group: 'org.achartengine', name: 'achartengine', version: '1.2.0'
 }
 
 

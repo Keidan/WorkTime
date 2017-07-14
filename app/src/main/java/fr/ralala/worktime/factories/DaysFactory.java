@@ -43,6 +43,25 @@ public class DaysFactory {
     return days;
   }
 
+
+
+  public Map<Integer, Map<Integer, Map<Integer, List<DayEntry>>>> getDays() {
+    Map<Integer, Map<Integer, Map<Integer, List<DayEntry>>>> list = new HashMap<>();
+    for(DayEntry de : days) {
+      Integer y = de.getDay().getYear();
+      Integer m = de.getDay().getMonth();
+      int w = de.getDay().toCalendar().get(Calendar.WEEK_OF_YEAR);
+      if(!list.containsKey(y))
+        list.put(y, new HashMap<Integer, Map<Integer, List<DayEntry>>>());
+      if(!list.get(y).containsKey(m))
+        list.get(y).put(m, new HashMap<Integer, List<DayEntry>>());
+      if(!list.get(y).get(m).containsKey(w))
+        list.get(y).get(m).put(w, new ArrayList<DayEntry>());
+      list.get(y).get(m).get(w).add(de);
+    }
+    return list;
+  }
+
   public WorkTimeDay getWorkTimeDayFromWeek(Map<String, DayEntry> map, int week, int month, int year) {
     WorkTimeDay ret = new WorkTimeDay();
     Calendar ctime = Calendar.getInstance();

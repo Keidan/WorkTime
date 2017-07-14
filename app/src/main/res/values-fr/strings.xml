@@ -11,6 +11,7 @@
     <string name="profile">Profil</string>
     <string name="profile2">Profil:</string>
     <string name="export">Exportation</string>
+    <string name="charts">Graphiques</string>
     <string name="public_holidays">Jours f\u00E9ri\u00E9s</string>
     <string name="sickness">Maladie</string>
     <string name="holidays">Cong\u00E9</string>
@@ -19,6 +20,7 @@
     <string name="work_time">Temps de travail</string>
     <string name="work_days">Jours de travail</string>
     <string name="monthly_hours">Heures mensuel</string>
+    <string name="charts_hours">Heures</string>
     <string name="days_lower_case">jours</string>
     <string name="edit">Editer</string>
     <string name="delete">Supprimer</string>
@@ -36,6 +38,7 @@
     <string name="day_saturday_2lt">Sa</string>
     <string name="day_sunday_2lt">Di</string>
     <string name="on_double_back_exit_text">Appuyez une nouvelle fois pour quitter!</string>
+    <string name="on_double_back_back_text">Appuyez une nouvelle fois pour revenir \u00E0 l\'\u00E9cran d\'accueil!</string>
     <string name="type_morning">Matin type :</string>
     <string name="type_afternoon">Ap. midi type :</string>
     <string name="end_afternoon">Ap. midi d\u00E9part :</string>
@@ -123,6 +126,7 @@
     <string name="confirm">Confirmation</string>
     <string name="details_title">D\u00E9tails</string>
     <string name="week_letter">S</string>
+    <string name="week">semaine</string>
     <string name="error_dropbox_upload">Impossible d\'uploader le fichier</string>
     <string name="error_dropbox_download">Impossible de t\u00E9l\u00E9chareger le fichier</string>
     <string name="error_dropbox_list_directory">Impossible de r\u00E9cup\u00E9rer la list des fichiers</string>
@@ -138,6 +142,7 @@
     <string name="bt_pause">Pause</string>
     <string name="bt_finalize">Finaliser la journ\u00E9e</string>
     <string name="bt_finalize2">Finaliser</string>
+    <string name="bt_options">Options</string>
     <string name="service_running">Finalisez ou mettez sur pause l\'acc\u00E8s rapide avant de modifier le jour.</string>
     <string name="restart_from_db_update_vn">Base de donn\u00E9es mise \u00E0 jour vers la version</string>
     <string name="recurrence">R\u00E9currence</string>

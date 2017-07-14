@@ -17,6 +17,7 @@ import android.graphics.drawable.PaintDrawable;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.RectShape;
 import android.net.Uri;
+import android.os.Vibrator;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.PopupMenu;
@@ -303,6 +304,11 @@ public class AndroidHelper {
 
   public static void toast(final Context c, final int message) {
     toast(c, c.getResources().getString(message));
+  }
+
+  public static void vibrate(final Context c, final long milliseconds) {
+    Vibrator v = (Vibrator) c.getSystemService(Context.VIBRATOR_SERVICE);
+    v.vibrate(milliseconds);
   }
 
 }

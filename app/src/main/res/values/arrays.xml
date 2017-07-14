@@ -1,19 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
+    <string-array name="month_short">
+        <item name="jan">Jan</item>
+        <item name="feb">Feb</item>
+        <item name="mar">Mar</item>
+        <item name="apr">Apr</item>
+        <item name="may">May</item>
+        <item name="jun">Jun</item>
+        <item name="jul">Jul</item>
+        <item name="aug">Aug</item>
+        <item name="sep">Sep</item>
+        <item name="oct">Oct</item>
+        <item name="nov">Nov</item>
+        <item name="dec">Dec</item>
+    </string-array>
+
+    <string-array name="month_letter">
+        <item name="jan">J</item>
+        <item name="feb">F</item>
+        <item name="mar">M</item>
+        <item name="apr">A</item>
+        <item name="may">M</item>
+        <item name="jun">J</item>
+        <item name="jul">J</item>
+        <item name="aug">A</item>
+        <item name="sep">S</item>
+        <item name="oct">O</item>
+        <item name="nov">N</item>
+        <item name="dec">D</item>
+    </string-array>
+
+    <string-array name="days_letter">
+        <item name="mon">M</item>
+        <item name="tue">T</item>
+        <item name="wed">W</item>
+        <item name="thu">T</item>
+        <item name="fri">F</item>
+        <item name="sat">S</item>
+        <item name="sun">S</item>
+    </string-array>
+
     <string-array name="entries_fragments">
         <item name="0">Quick access</item>
         <item name="1">Work Time</item>
         <item name="2">Profiles</item>
         <item name="3">Public holidays</item>
         <item name="4">Export</item>
+        <item name="5">Charts</item>
     </string-array>
+
     <string-array name="values_fragments">
         <item name="0">0</item>
         <item name="1">1</item>
         <item name="2">2</item>
         <item name="3">3</item>
         <item name="4">4</item>
+        <item name="5">5</item>
     </string-array>
+
     <string-array name="entries_periodicity">
         <item name="0">Everyday</item>
         <item name="1">Monday</item>
@@ -24,6 +69,7 @@
         <item name="6">Saturday</item>
         <item name="7">Sunday</item>
     </string-array>
+
     <string-array name="values_periodicity">
         <item name="0">0</item>
         <item name="1">1</item>
