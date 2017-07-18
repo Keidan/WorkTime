@@ -67,6 +67,7 @@ public class StatisticsFragment extends Fragment implements View.OnClickListener
   private XYMultipleSeriesRenderer multiRenderer = null;
   private XYMultipleSeriesDataset datasetBar = null;
   private GraphicalView chartView = null;
+  private View rootView = null;
 
   private enum CurrentView{
     YEARS,
@@ -145,6 +146,7 @@ public class StatisticsFragment extends Fragment implements View.OnClickListener
   public View onCreateView(final LayoutInflater inflater,
                            final ViewGroup container, final Bundle savedInstanceState) {
     final ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.content_statistics, container, false);
+    this.rootView = rootView;
     app = (MainApplication)getActivity().getApplicationContext();
     Button cancel = (Button) rootView.findViewById(R.id.cancel);
     cancel.setOnClickListener(this);
@@ -178,6 +180,10 @@ public class StatisticsFragment extends Fragment implements View.OnClickListener
 
     Map<Integer, Map<Integer, Map<Integer, List<DayEntry>>>> years = app.getDaysFactory().getDays();
     SortedSet<Integer> keysYears = new TreeSet<>(years.keySet());
+    if(currentView == CurrentView.YEARS)
+      rootView.findViewById(R.id.cancel).setVisibility(View.GONE);
+    else
+      rootView.findViewById(R.id.cancel).setVisibility(View.VISIBLE);
 
     for (Integer year : keysYears) {
       if(currentView == CurrentView.YEARS || currentYearIndex == nYear) {
