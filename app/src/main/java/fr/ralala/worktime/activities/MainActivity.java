@@ -3,7 +3,6 @@ package fr.ralala.worktime.activities;
 
 import android.Manifest;
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Process;
 import android.support.design.widget.NavigationView;
@@ -12,7 +11,6 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -181,9 +179,9 @@ public class MainActivity extends RuntimePermissionsActivity implements Navigati
         fragments.setCurrentToFragment(AppFragmentsFactory.IDX_EXPORT);
         title = getString(R.string.export);
         break;
-      case R.id.nav_charts:
-        fragments.setCurrentToFragment(AppFragmentsFactory.IDX_CHARTS);
-        title = getString(R.string.charts);
+      case R.id.nav_statistics:
+        fragments.setCurrentToFragment(AppFragmentsFactory.IDX_STATISTICS);
+        title = getString(R.string.statistics);
         break;
       case R.id.nav_worktime:
         fragments.setCurrentToFragment(AppFragmentsFactory.IDX_WORK_TIME);

@@ -16,13 +16,13 @@
     <string name="profile">Profile</string>
     <string name="profile2">Profile:</string>
     <string name="export">Export</string>
-    <string name="charts">Charts</string>
+    <string name="statistics">Statistics</string>
     <string name="public_holidays">Public holidays</string>
     <string name="sickness">Sickness</string>
     <string name="holidays">Holidays</string>
     <string name="unpaid">Unpaid</string>
     <string name="monthly_ceiling">Monthly ceiling</string>
-    <string name="charts_hours">Hours</string>
+    <string name="statistics_hours">Hours</string>
     <string name="empty" translatable="false"></string>
     <string name="work_time">Work time</string>
     <string name="work_days">Work days</string>
@@ -159,7 +159,8 @@
     <string name="legalWorkTimeByDay">Legal work time</string>
     <string name="error_editing_public_holiday">Public holiday edition is not supported.</string>
     <string name="error_duplicate_public_holiday">The public holiday is already inserted.</string>
-    <string name="chart_morning">Morning</string>
-    <string name="chart_break">Break</string>
-    <string name="chart_afternoon">Afternoon</string>
+    <string name="statistics_morning">Morning</string>
+    <string name="statistics_break">Break</string>
+    <string name="statistics_afternoon">Afternoon</string>
+    <string name="statistics_reload">Reload</string>
 </resources>

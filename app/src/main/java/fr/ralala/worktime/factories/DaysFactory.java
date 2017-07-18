@@ -44,7 +44,11 @@ public class DaysFactory {
   }
 
 
-
+  /**
+   * This function return a list formatted as follow:
+   * Map<YEAR, Map<MONTH, Map<WEEK, List<DayEntry>>>>
+   * @return Map<YEAR, Map<MONTH, Map<WEEK, List<DayEntry>>>>
+   */
   public Map<Integer, Map<Integer, Map<Integer, List<DayEntry>>>> getDays() {
     Map<Integer, Map<Integer, Map<Integer, List<DayEntry>>>> list = new HashMap<>();
     for(DayEntry de : days) {

@@ -5,23 +5,23 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.LinearLayout;
 
 import org.achartengine.GraphicalView;
-import org.achartengine.chart.AbstractChart;
 import org.achartengine.chart.BarChart;
 import org.achartengine.chart.PieChart;
 import org.achartengine.model.CategorySeries;
 import org.achartengine.model.SeriesSelection;
 import org.achartengine.model.XYMultipleSeriesDataset;
 import org.achartengine.model.XYSeries;
-import org.achartengine.renderer.DefaultRenderer;
 import org.achartengine.renderer.SimpleSeriesRenderer;
 import org.achartengine.renderer.XYMultipleSeriesRenderer;
 import org.achartengine.renderer.XYSeriesRenderer;
@@ -53,7 +53,7 @@ import fr.ralala.worktime.utils.AndroidHelper;
  *
  *******************************************************************************
  */
-public class ChartsFragment extends Fragment {
+public class StatisticsFragment extends Fragment implements View.OnClickListener {
   private static final int BACK_TIME_DELAY = 2000;
   private static long lastBackPressed = -1;
   private MainApplication app = null;
@@ -144,8 +144,10 @@ public class ChartsFragment extends Fragment {
   @Override
   public View onCreateView(final LayoutInflater inflater,
                            final ViewGroup container, final Bundle savedInstanceState) {
-    final ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.content_charts, container, false);
+    final ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.content_statistics, container, false);
     app = (MainApplication)getActivity().getApplicationContext();
+    Button cancel = (Button) rootView.findViewById(R.id.cancel);
+    cancel.setOnClickListener(this);
     chartContainer = (LinearLayout) rootView.findViewById(R.id.graph);
     metrics = new DisplayMetrics();
     getActivity().getWindowManager().getDefaultDisplay().getMetrics(metrics);
@@ -155,6 +157,12 @@ public class ChartsFragment extends Fragment {
     return rootView;
   }
 
+
+  @Override
+  public void onClick(View view) {
+    currentView = CurrentView.YEARS;
+    redrawChart();
+  }
 
   public void onConfigurationChanged(Configuration newConfig) {
     redrawChart();
@@ -226,7 +234,7 @@ public class ChartsFragment extends Fragment {
       nYear++;
     }
     if((currentView != CurrentView.DETAIL))
-      drawBarChart(metrics.widthPixels, title, getString(R.string.charts_hours), entries);
+      drawBarChart(metrics.widthPixels, title, getString(R.string.statistics_hours), entries);
     else
       drawPieChart(metrics.widthPixels, title, entries);
 
@@ -432,12 +440,12 @@ public class ChartsFragment extends Fragment {
     for (Integer key : keys) {
       int i = 0;
       ChartEntry ce = values.get(key);
-      titles[i++] = getString(R.string.chart_morning);
-      titles[i++] = getString(R.string.chart_break);
-      titles[i++] = getString(R.string.chart_afternoon);
-      addPieChartEntry(dataset, cm, getString(R.string.chart_morning), toDouble(ce.morning));
-      addPieChartEntry(dataset, cp, getString(R.string.chart_break), toDouble(ce.pause));
-      addPieChartEntry(dataset, ca, getString(R.string.chart_afternoon), toDouble(ce.afternoon));
+      titles[i++] = getString(R.string.statistics_morning);
+      titles[i++] = getString(R.string.statistics_break);
+      titles[i++] = getString(R.string.statistics_afternoon);
+      addPieChartEntry(dataset, cm, getString(R.string.statistics_morning), toDouble(ce.morning));
+      addPieChartEntry(dataset, cp, getString(R.string.statistics_break), toDouble(ce.pause));
+      addPieChartEntry(dataset, ca, getString(R.string.statistics_afternoon), toDouble(ce.afternoon));
     }
     PieChart pchart = new PieChart(dataset, multiRenderer);
     chartView = new GraphicalView(getContext(), pchart);

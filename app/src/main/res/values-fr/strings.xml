@@ -11,7 +11,7 @@
     <string name="profile">Profil</string>
     <string name="profile2">Profil:</string>
     <string name="export">Exportation</string>
-    <string name="charts">Graphiques</string>
+    <string name="statistics">Statistiques</string>
     <string name="public_holidays">Jours f\u00E9ri\u00E9s</string>
     <string name="sickness">Maladie</string>
     <string name="holidays">Cong\u00E9</string>
@@ -20,7 +20,7 @@
     <string name="work_time">Temps de travail</string>
     <string name="work_days">Jours de travail</string>
     <string name="monthly_hours">Heures mensuel</string>
-    <string name="charts_hours">Heures</string>
+    <string name="statistics_hours">Heures</string>
     <string name="days_lower_case">jours</string>
     <string name="edit">Editer</string>
     <string name="delete">Supprimer</string>
@@ -149,7 +149,8 @@
     <string name="legalWorkTimeByDay">Temps de travail l\u00E9gal</string>
     <string name="error_editing_public_holiday">L\'\u00E9dition du jour f\u00E9ri\u00E9 n\'est pas prise en charge.</string>
     <string name="error_duplicate_public_holiday">Le jour f\u00E9ri\u00E9 est d\u00E9j\u00E0 ins\u00E9r\u00E9.</string>
-    <string name="chart_morning">Matin</string>
-    <string name="chart_break">Midi</string>
-    <string name="chart_afternoon">Apr\u00E8s-midi</string>
+    <string name="statistics_morning">Matin</string>
+    <string name="statistics_break">Midi</string>
+    <string name="statistics_afternoon">Apr\u00E8s-midi</string>
+    <string name="statistics_reload">Recharger</string>
 </resources>

@@ -1,6 +1,5 @@
 package fr.ralala.worktime.factories;
 
-import android.content.res.Configuration;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -8,7 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 
 import fr.ralala.worktime.MainApplication;
 import fr.ralala.worktime.R;
-import fr.ralala.worktime.fragments.ChartsFragment;
+import fr.ralala.worktime.fragments.StatisticsFragment;
 import fr.ralala.worktime.fragments.ExportFragment;
 import fr.ralala.worktime.fragments.ProfileFragment;
 import fr.ralala.worktime.fragments.PublicHolidaysFragment;
@@ -30,14 +29,14 @@ public class AppFragmentsFactory {
   public static final int IDX_PROFILE = 2;
   public static final int IDX_PUBLIC_HOLIDAY = 3;
   public static final int IDX_EXPORT = 4;
-  public static final int IDX_CHARTS = 6;
+  public static final int IDX_STATISTICS = 6;
   public static final int IDX_EXIT = 7;
   private Fragment quickAccessFragment = null;
   private Fragment profileFragment = null;
   private Fragment publicHolidaysFragment = null;
   private Fragment exportFragment = null;
   private Fragment workTimeFragment = null;
-  private Fragment chartsFragment = null;
+  private Fragment statisticsFragment = null;
   private Fragment currentFragment = null;
   private MainApplication app = null;
   private NavigationView navigationView = null;
@@ -53,8 +52,8 @@ public class AppFragmentsFactory {
       publicHolidaysFragment = new PublicHolidaysFragment();
     if(exportFragment == null)
       exportFragment = new ExportFragment();
-    if(chartsFragment == null)
-      chartsFragment = new ChartsFragment();
+    if(statisticsFragment == null)
+      statisticsFragment = new StatisticsFragment();
     if(workTimeFragment == null)
       workTimeFragment = new WorkTimeFragment();
     currentFragment = workTimeFragment;
@@ -72,8 +71,8 @@ public class AppFragmentsFactory {
         return (R.id.nav_public_holidays);
       case IDX_EXPORT:
         return (R.id.nav_export);
-      case IDX_CHARTS:
-        return (R.id.nav_charts);
+      case IDX_STATISTICS:
+        return (R.id.nav_statistics);
       case IDX_WORK_TIME:
         return (R.id.nav_worktime);
       case IDX_QUICK_ACCESS:
@@ -92,8 +91,8 @@ public class AppFragmentsFactory {
         return publicHolidaysFragment;
       case IDX_EXPORT:
         return exportFragment;
-      case IDX_CHARTS:
-        return chartsFragment;
+      case IDX_STATISTICS:
+        return statisticsFragment;
       case IDX_WORK_TIME:
       default:
         return workTimeFragment;
@@ -102,8 +101,8 @@ public class AppFragmentsFactory {
 
   public boolean consumeBackPressed() {
     Fragment fragment = currentFragment;
-    if(fragment != null && ChartsFragment.class.isInstance(fragment)) {
-      return ((ChartsFragment)fragment).consumeBackPressed();
+    if(fragment != null && StatisticsFragment.class.isInstance(fragment)) {
+      return ((StatisticsFragment)fragment).consumeBackPressed();
     }
     return false;
   }
@@ -126,8 +125,8 @@ public class AppFragmentsFactory {
         navigationView.getMenu().getItem(IDX_EXPORT).setChecked(true); /* select export title */
       else if(WorkTimeFragment.class.isInstance(fragment))
         navigationView.getMenu().getItem(IDX_WORK_TIME).setChecked(true); /* select work title */
-      else if(ChartsFragment.class.isInstance(fragment))
-        navigationView.getMenu().getItem(IDX_CHARTS).setChecked(true); /* select charts title */
+      else if(StatisticsFragment.class.isInstance(fragment))
+        navigationView.getMenu().getItem(IDX_STATISTICS).setChecked(true); /* select charts title */
     }
   }
 
@@ -149,8 +148,8 @@ public class AppFragmentsFactory {
       case IDX_EXPORT:
         currentFragment = exportFragment;
         break;
-      case IDX_CHARTS:
-        currentFragment = chartsFragment;
+      case IDX_STATISTICS:
+        currentFragment = statisticsFragment;
         break;
       case IDX_WORK_TIME:
         currentFragment = workTimeFragment;
