@@ -56,6 +56,8 @@ public class DropboxImportExport implements DropboxListener{
     this.c = c;
     this.dropboxDownloaded = dropboxDownloaded;
     if(helper.connect(c, c.getString(R.string.app_key))) {
+      if(dialog == null)
+        dialog = buildProgress(c);
       dialog.show();
       new ListFolderTask(helper.getClient(), this).execute(PATH);
       return true;
