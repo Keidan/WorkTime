@@ -48,15 +48,13 @@ public class SqlFactory implements SqlConstants {
   public void open(Context c) {
     bdd = helper.getWritableDatabase();
     int version = 0;
-
+    /* Merge V1 */
     if(isTableExists(TABLE_PROFILES + "_v1")) {
       version = 1;
       Log.d(getClass().getSimpleName(), "TABLE_PROFILES found");
       final List<DayEntry> listOld = readV1("profiles", 1, 5, 2, 3, 4, 6, 0);
       final List<DayEntry> listNew = new ArrayList<>();
       v1tov2(listOld, listNew);
-      Log.d(getClass().getSimpleName(), "delete table profiles");
-      bdd.delete(TABLE_PROFILES, null, null);
       Log.d(getClass().getSimpleName(), "table profiles deleted");
       for(DayEntry de : listNew)
         insertProfile(de);
@@ -68,31 +66,28 @@ public class SqlFactory implements SqlConstants {
       final List<DayEntry> listOld = readV1("days", 0, 4, 1, 2, 3, 5, -1);
       final List<DayEntry> listNew = new ArrayList<>();
       v1tov2(listOld, listNew);
-      Log.d(getClass().getSimpleName(), "delete table days");
-      bdd.delete(TABLE_DAYS, null, null);
       Log.d(getClass().getSimpleName(), "table days deleted");
       for(DayEntry de : listNew)
         insertDay(de);
       removeTable(TABLE_DAYS + "_v" + version);
     }
 
+    /* Merge V2 */
     if(isTableExists(TABLE_PROFILES + "_v2")) {
       version = 2;
       Log.d(getClass().getSimpleName(), "TABLE_PROFILES found");
       final List<DayEntry> listOld = readProfilesV2(0, 1, 2, 3, 4, 5, 6, 7);
-      Log.d(getClass().getSimpleName(), "delete table profiles");
-      bdd.delete(TABLE_PROFILES, null, null);
       Log.d(getClass().getSimpleName(), "table profiles deleted");
       for(DayEntry de : listOld)
         insertProfile(de);
       removeTable(TABLE_PROFILES + "_v" + version);
     }
+
+    /* Merge V3 */
     if(isTableExists(TABLE_PUBLIC_HOLIDAYS + "_v3")) {
       version = 3;
       Log.e(getClass().getSimpleName(), "PUBLIC_HOLIDAYS found");
       final List<DayEntry> listOld = getPublicHolidays(TABLE_PUBLIC_HOLIDAYS + "_v" + version);
-      Log.e(getClass().getSimpleName(), "delete table public holidays");
-      bdd.delete(TABLE_PUBLIC_HOLIDAYS, null, null);
       Log.e(getClass().getSimpleName(), "table public holidays deleted");
       for(DayEntry de : listOld) {
         insertPublicHoliday(de);
@@ -103,8 +98,6 @@ public class SqlFactory implements SqlConstants {
       version = 3;
       Log.e(getClass().getSimpleName(), "TABLE_DAYS found");
       final List<DayEntry> listOld = getDays(TABLE_DAYS + "_v" + version);
-      Log.e(getClass().getSimpleName(), "delete table days");
-      bdd.delete(TABLE_DAYS, null, null);
       Log.e(getClass().getSimpleName(), "table days deleted");
       for(DayEntry de : listOld) {
         insertDay(de);
@@ -115,19 +108,43 @@ public class SqlFactory implements SqlConstants {
       version = 3;
       Log.e(getClass().getSimpleName(), "TABLE_PROFILES found");
       final List<DayEntry> listOld = getProfiles(TABLE_PROFILES + "_v" + version);
-      Log.e(getClass().getSimpleName(), "delete table profiles");
-      bdd.delete(TABLE_PROFILES, null, null);
       Log.e(getClass().getSimpleName(), "table profiles deleted");
       for(DayEntry de : listOld) {
         insertProfile(de);
       }
       removeTable(TABLE_PROFILES + "_v" + version);
     }
+
+    /* Merge V4 */
     if(isTableExists(TABLE_SETTINGS + "_v4")) {
       version = 4;
       removeTable(TABLE_SETTINGS + "_v" + version);
       settingsSave();
     }
+
+    /* Merge V5 */
+    if(isTableExists(TABLE_DAYS + "_v5")) {
+      version = 5;
+      Log.e(getClass().getSimpleName(), "TABLE_DAYS found");
+      final List<DayEntry> listOld = getDays(TABLE_DAYS + "_v" + version);
+      removeTable(TABLE_DAYS + "_v" + version);
+      Log.e(getClass().getSimpleName(), "table days deleted");
+      for(DayEntry de : listOld) {
+        insertDay(de);
+      }
+    }
+    if(isTableExists(TABLE_PROFILES + "_v5")) {
+      version = 5;
+      Log.e(getClass().getSimpleName(), "TABLE_PROFILES found");
+      final List<DayEntry> listOld = getProfiles(TABLE_PROFILES + "_v" + version);
+      removeTable(TABLE_PROFILES + "_v" + version);
+      Log.e(getClass().getSimpleName(), "table profiles deleted");
+      for(DayEntry de : listOld) {
+        insertProfile(de);
+      }
+    }
+
+
     if(version != 0)
       AndroidHelper.restartApplication(c, context.getString(R.string.restart_from_db_update_vn) + " " + (version + 1));
   }
@@ -314,6 +331,7 @@ public class SqlFactory implements SqlConstants {
     values.put(COL_PROFILES_AMOUNT, String.valueOf(de.getAmountByHour()));
     values.put(COL_PROFILES_LEARNING_WEIGHT, String.valueOf(de.getLearningWeight()));
     values.put(COL_PROFILES_LEGAL_WORKTIME, de.getLegalWorktime().timeString());
+    values.put(COL_PROFILES_ADDITIONAL_BREAK, de.getAdditionalBreak().timeString());
     return bdd.insert(TABLE_PROFILES, null, values);
   }
 
@@ -327,6 +345,7 @@ public class SqlFactory implements SqlConstants {
     values.put(COL_DAYS_TYPE, de.getTypeMorning().value() + "|" + de.getTypeAfternoon().value());
     values.put(COL_DAYS_AMOUNT, String.valueOf(de.getAmountByHour()));
     values.put(COL_DAYS_LEGAL_WORKTIME, de.getLegalWorktime().timeString());
+    values.put(COL_DAYS_ADDITIONAL_BREAK, de.getAdditionalBreak().timeString());
     return bdd.insert(TABLE_DAYS, null, values);
   }
 
@@ -403,6 +422,8 @@ public class SqlFactory implements SqlConstants {
           de.setEndAfternoon(c.getString(NUM_DAYS_END_AFTERNOON));
         if(bdd.getVersion() >= VERSION_MIN_MORNING_AFTERNOON && c.getColumnCount() > NUM_DAYS_LEGAL_WORKTIME)
           de.setLegalWorktime(c.getString(NUM_DAYS_LEGAL_WORKTIME));
+        if(bdd.getVersion() >= VERSION_MIN_BREAK_MA && c.getColumnCount() > NUM_DAYS_ADDITIONAL_BREAK)
+          de.setAdditionalBreak(c.getString(NUM_DAYS_ADDITIONAL_BREAK));
         String s = c.getString(NUM_DAYS_AMOUNT);
         if(s != null && !s.isEmpty())
           de.setAmountByHour(Double.parseDouble(s));
@@ -461,6 +482,8 @@ public class SqlFactory implements SqlConstants {
 
         if(bdd.getVersion() >= VERSION_MIN_MORNING_AFTERNOON && c.getColumnCount() > NUM_PROFILES_LEGAL_WORKTIME)
           de.setLegalWorktime(c.getString(NUM_PROFILES_LEGAL_WORKTIME));
+        if(bdd.getVersion() >= VERSION_MIN_BREAK_MA && c.getColumnCount() > NUM_PROFILES_ADDITIONAL_BREAK)
+          de.setAdditionalBreak(c.getString(NUM_PROFILES_ADDITIONAL_BREAK));
         list.add(de);
       } while (c.moveToNext());
     }

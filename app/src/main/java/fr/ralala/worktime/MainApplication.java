@@ -50,6 +50,7 @@ public class MainApplication extends Application {
   private List<DayEntry> onloadDays = null;
   private List<DayEntry> onloadPublicHolidays = null;
   private List<Setting> onloadSettings = null;
+  private WorkTimeDay lastQuickAccessBreak = null;
 
 
   public MainApplication() {
@@ -95,6 +96,14 @@ public class MainApplication extends Application {
       currentDate.setTime(new Date());
     }
     return currentDate;
+  }
+
+  public WorkTimeDay getLastQuickAccessBreak() {
+    return lastQuickAccessBreak;
+  }
+
+  public void setLastQuickAccessBreak(WorkTimeDay lastQuickAccessBreak) {
+    this.lastQuickAccessBreak = lastQuickAccessBreak;
   }
 
   public QuickAccessNotification getQuickAccessNotification() {

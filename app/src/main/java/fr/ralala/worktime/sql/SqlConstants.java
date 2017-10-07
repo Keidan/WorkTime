@@ -10,10 +10,11 @@ package fr.ralala.worktime.sql;
  *******************************************************************************
  */
 public interface SqlConstants {
-  int    VERSION_BDD                   = 5;
+  int    VERSION_BDD                   = 6;
   int VERSION_MIN_MORNING_AFTERNOON    = 2;
   int VERSION_MIN_RECURRENCE_LEGAL_WT  = 4;
   int VERSION_MIN_SETTINGS             = 5;
+  int VERSION_MIN_BREAK_MA             = 6;
   String DB_NAME                       = "work_time.sqlite3";
   String TABLE_PUBLIC_HOLIDAYS         = "public_holidays";
   String TABLE_DAYS                    = "days";
@@ -30,6 +31,7 @@ public interface SqlConstants {
   String COL_DAYS_TYPE                 = "d_type";
   String COL_DAYS_AMOUNT               = "d_amount";
   String COL_DAYS_LEGAL_WORKTIME       = "d_legal_worktime";
+  String COL_DAYS_ADDITIONAL_BREAK     = "d_add_break";
   String COL_PROFILES_NAME             = "p_name";
   String COL_PROFILES_CURRENT          = "p_current";
   String COL_PROFILES_START_MORNING    = "p_start_morning";
@@ -40,6 +42,7 @@ public interface SqlConstants {
   String COL_PROFILES_AMOUNT           = "p_amount";
   String COL_PROFILES_LEARNING_WEIGHT  = "p_learning_weight";
   String COL_PROFILES_LEGAL_WORKTIME   = "p_legal_worktime";
+  String COL_PROFILES_ADDITIONAL_BREAK = "p_add_break";
   String COL_SETTINGS_NAME             = "s_name";
   String COL_SETTINGS_VALUE            = "s_value";
   int    NUM_PUBLIC_HOLIDAYS_NAME      = 0;
@@ -53,6 +56,7 @@ public interface SqlConstants {
   int    NUM_DAYS_TYPE                 = 5;
   int    NUM_DAYS_AMOUNT               = 6;
   int    NUM_DAYS_LEGAL_WORKTIME       = 7;
+  int    NUM_DAYS_ADDITIONAL_BREAK     = 8;
   int    NUM_PROFILES_NAME             = 0;
   int    NUM_PROFILES_CURRENT          = 1;
   int    NUM_PROFILES_START_MORNING    = 2;
@@ -63,6 +67,7 @@ public interface SqlConstants {
   int    NUM_PROFILES_AMOUNT           = 7;
   int    NUM_PROFILES_LEARNING_WEIGHT  = 8;
   int    NUM_PROFILES_LEGAL_WORKTIME   = 9;
+  int    NUM_PROFILES_ADDITIONAL_BREAK = 10;
   int    NUM_SETTINGS_NAME             = 0;
   int    NUM_SETTINGS_VALUE            = 1;
 }

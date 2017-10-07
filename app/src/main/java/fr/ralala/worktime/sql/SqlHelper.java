@@ -49,6 +49,8 @@ import fr.ralala.worktime.MainApplication;
     + COL_PROFILES_LEARNING_WEIGHT
     + " TEXT NOT NULL, "
     + COL_PROFILES_LEGAL_WORKTIME
+    + " TEXT NOT NULL, "
+    + COL_PROFILES_ADDITIONAL_BREAK
     + " TEXT NOT NULL);";
 
   private static final String CREATE_BDD_DAYS = "CREATE TABLE IF NOT EXISTS "
@@ -69,6 +71,8 @@ import fr.ralala.worktime.MainApplication;
     + COL_DAYS_AMOUNT
     + " TEXT NOT NULL, "
     + COL_DAYS_LEGAL_WORKTIME
+    + " TEXT NOT NULL, "
+    + COL_DAYS_ADDITIONAL_BREAK
     + " TEXT NOT NULL);";
 
   private static final String CREATE_BDD_PUBLIC_HOLIDAYS = "CREATE TABLE IF NOT EXISTS "
@@ -133,6 +137,12 @@ import fr.ralala.worktime.MainApplication;
       db.execSQL("ALTER TABLE " + TABLE_SETTINGS + " RENAME TO " + TABLE_SETTINGS + "_v" + oldVersion);
       db.execSQL(CREATE_BDD_SETTINGS);
     }
+    else if(oldVersion == 5 && newVersion == 6) {
+      db.execSQL("ALTER TABLE " + TABLE_PROFILES + " RENAME TO " + TABLE_PROFILES + "_v" + oldVersion);
+      db.execSQL("ALTER TABLE " + TABLE_DAYS + " RENAME TO " + TABLE_DAYS + "_v" + oldVersion);
+      db.execSQL(CREATE_BDD_PROFILES);
+      db.execSQL(CREATE_BDD_DAYS);
+    }
   }
 
   // Copy to sdcard for debug use
@@ -157,7 +167,7 @@ import fr.ralala.worktime.MainApplication;
         final File directory = new File(folder);
         if (!directory.exists())
           directory.mkdir();
-        File out = new File(directory, !date ? filename : (new SimpleDateFormat("yyyyMMdd_hhmma", Locale.US).format(new Date()) + "_" + name));
+        File out = new File(directory, !date ? filename : (new SimpleDateFormat("yyyyMMdd_ahhmm", Locale.US).format(new Date()) + "_" + name));
         myOutput = new FileOutputStream(out);
         myInput = new FileInputStream(databasePath);
 

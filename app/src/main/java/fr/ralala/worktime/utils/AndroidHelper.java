@@ -3,7 +3,6 @@ package fr.ralala.worktime.utils;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.DatePickerDialog;
-import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -23,6 +22,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.PopupMenu;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -78,7 +78,9 @@ public class AndroidHelper {
     Intent i = c.getApplicationContext().getPackageManager()
       .getLaunchIntentForPackage(c.getApplicationContext().getPackageName() );
     i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+    i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
     c.startActivity(i);
+    Runtime.getRuntime().exit(0);
   }
 
   public static void restartApplication(final Context c, final int string_id) {
@@ -175,20 +177,35 @@ public class AndroidHelper {
   }
 
   public static void openTimePicker(final Context c, final WorkTimeDay current, final TextView tv) {
-    initTimeTextView(current, tv);
-    TimePickerDialog timePicker = new TimePickerDialog(c, new TimePickerDialog.OnTimeSetListener() {
-      @Override
-      public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
-        tv.setText(String.format(Locale.US, "%02d:%02d", selectedHour, selectedMinute));
-        current.setHours(selectedHour);
-        current.setMinutes(selectedMinute);
-      }
-    }, current.getHours(), current.getMinutes(), true);//Yes 24 hour time
-    timePicker.show();
-  }
-
-  public static void initTimeTextView(final WorkTimeDay current, final TextView tv) {
     tv.setText(current.timeString());
+    AlertDialog.Builder builder = new AlertDialog.Builder(c);
+    builder.setView(R.layout.timepicker);
+    // Set up the buttons
+    builder.setPositiveButton(c.getString(R.string.ok), null);
+    builder.setNegativeButton(c.getString(R.string.cancel), null);
+    final AlertDialog mAlertDialog = builder.create();
+
+    mAlertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
+      @Override
+      public void onShow(DialogInterface dialog) {
+        Button b = mAlertDialog.getButton(AlertDialog.BUTTON_POSITIVE);
+        b.setOnClickListener(new View.OnClickListener() {
+          @Override
+          public void onClick(View view) {
+            final TimePicker timePicker = (TimePicker) mAlertDialog.findViewById(R.id.timepicker);
+            tv.setText(String.format(Locale.US, "%02d:%02d", timePicker.getHour(), timePicker.getMinute()));
+            current.setHours(timePicker.getHour());
+            current.setMinutes(timePicker.getMinute());
+            mAlertDialog.dismiss();
+          }
+        });
+      }
+    });
+    mAlertDialog.show();
+    final TimePicker timePicker = (TimePicker) mAlertDialog.findViewById(R.id.timepicker);
+    timePicker.setIs24HourView(true);
+    timePicker.setHour(current.getHours());
+    timePicker.setMinute(current.getMinutes());
   }
 
   /* tool function used to display a message box */

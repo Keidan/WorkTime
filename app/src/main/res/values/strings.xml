@@ -52,6 +52,7 @@
     <string name="end_morning">Morning departure:</string>
     <string name="start_afternoon">Afternoon arrival:</string>
     <string name="start_morning">Morning arrival:</string>
+    <string name="additional_break">Additional break:</string>
     <string name="at_work">At work</string>
     <string name="default_hours" translatable="false">00:00</string>
     <string name="error_invalid_type">Invalid profile.</string>

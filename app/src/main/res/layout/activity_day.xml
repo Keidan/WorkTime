@@ -144,19 +144,10 @@
                 android:text="@string/default_hours"
                 app:layout_widthPercent="45%"
                 android:padding="5dp"/>
-            <View
-                android:id="@+id/space2"
-                android:layout_below="@+id/space1"
-                android:layout_toEndOf="@+id/tvStartMorning"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                app:layout_widthPercent="10%"
-                android:padding="5dp"
-                android:layout_above="@+id/tvLblStartAfternoon"/>
             <TextView
                 android:id="@+id/tvEndMorning"
                 android:layout_below="@+id/tvLblEndMorning"
-                android:layout_toEndOf="@+id/space2"
+                android:layout_toEndOf="@+id/space1"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:background="@color/gray"
@@ -174,20 +165,10 @@
                 app:layout_widthPercent="45%"
                 android:layout_marginTop="10sp"
                 android:padding="5dp"/>
-            <View
-                android:id="@+id/space3"
-                android:layout_below="@+id/space2"
-                android:layout_toEndOf="@+id/tvLblStartAfternoon"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                app:layout_widthPercent="10%"
-                android:padding="5dp"
-                android:layout_marginTop="10sp"
-                android:layout_above="@+id/tvStartAfternoon"/>
             <TextView
                 android:id="@+id/tvLblEndAfternoon"
                 android:layout_below="@+id/tvEndMorning"
-                android:layout_toEndOf="@+id/space3"
+                android:layout_toEndOf="@+id/space1"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:text="@string/end_afternoon"
@@ -203,19 +184,10 @@
                 android:text="@string/default_hours"
                 app:layout_widthPercent="45%"
                 android:padding="5dp"/>
-            <View
-                android:id="@+id/space4"
-                android:layout_below="@+id/space3"
-                android:layout_toEndOf="@+id/tvStartAfternoon"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                app:layout_widthPercent="10%"
-                android:padding="5dp"
-                android:layout_above="@+id/tvLblAmount"/>
             <TextView
                 android:id="@+id/tvEndAfternoon"
                 android:layout_below="@+id/tvLblEndAfternoon"
-                android:layout_toEndOf="@+id/space4"
+                android:layout_toEndOf="@+id/space1"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:background="@color/gray"
@@ -224,8 +196,49 @@
                 android:padding="5dp"/>
 
             <TextView
-                android:id="@+id/tvLblAmount"
+                android:id="@+id/tvLblAdditionalBreak"
                 android:layout_below="@+id/tvStartAfternoon"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@string/additional_break"
+                app:layout_widthPercent="45%"
+                android:layout_marginTop="10sp"
+                android:padding="5dp"/>
+            <TextView
+                android:id="@+id/tvAdditionalBreak"
+                android:layout_below="@+id/tvLblAdditionalBreak"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:background="@color/gray"
+                android:text="@string/default_hours"
+                app:layout_widthPercent="45%"
+                android:padding="5dp"/>
+
+            <TextView
+                android:id="@+id/tvLblLegalWorktime"
+                android:layout_below="@+id/tvEndAfternoon"
+                android:layout_toEndOf="@+id/space1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@string/legalWorkTimeByDay"
+                app:layout_widthPercent="45%"
+                android:layout_marginTop="10sp"
+                android:padding="5dp"/>
+            <TextView
+                android:id="@+id/tvLegalWorktime"
+                android:layout_below="@+id/tvLblLegalWorktime"
+                android:layout_toEndOf="@+id/space1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:background="@color/gray"
+                android:text="@string/default_hours"
+                app:layout_widthPercent="45%"
+                android:padding="5dp"/>
+
+
+            <TextView
+                android:id="@+id/tvLblAmount"
+                android:layout_below="@+id/tvAdditionalBreak"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:text="@string/wage"
@@ -243,46 +256,6 @@
                 app:layout_widthPercent="45%"
                 android:padding="5dp"
                 android:inputType="numberDecimal"/>
-
-
-            <TextView
-                android:id="@+id/tvLblLegalWorktime"
-                android:layout_below="@+id/tvStartAfternoon"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:text="@string/legalWorkTimeByDay"
-                app:layout_widthPercent="45%"
-                android:layout_marginTop="10sp"
-                android:padding="5dp"/>
-            <View
-                android:id="@+id/space5"
-                android:layout_below="@+id/space4"
-                android:layout_toEndOf="@+id/tvLblLegalWorktime"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                app:layout_widthPercent="10%"
-                android:padding="5dp"
-                android:layout_marginTop="10sp"
-                android:layout_above="@+id/tvLegalWorktime"/>
-            <TextView
-                android:id="@+id/tvLegalWorktime"
-                android:layout_below="@+id/tvLblLegalWorktime"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:background="@color/gray"
-                android:text="@string/default_hours"
-                app:layout_widthPercent="45%"
-                android:padding="5dp"/>
-            <View
-                android:id="@+id/space6"
-                android:layout_below="@+id/space4"
-                android:layout_toEndOf="@+id/tvLegalWorktime"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                app:layout_widthPercent="10%"
-                android:padding="5dp"
-                android:layout_marginTop="10sp"/>
-
         </android.support.percent.PercentRelativeLayout>
     </ScrollView>
 </FrameLayout>

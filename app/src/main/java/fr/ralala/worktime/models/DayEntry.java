@@ -24,6 +24,7 @@ public class DayEntry {
   private WorkTimeDay endMorning = null;
   private WorkTimeDay startAfternoon = null;
   private WorkTimeDay endAfternoon = null;
+  private WorkTimeDay additionalBreak = null;
   private DayType typeMorning = DayType.ERROR;
   private DayType typeAfternoon = DayType.ERROR;
   private double amountByHour = 0.0;
@@ -45,7 +46,7 @@ public class DayEntry {
         return false;
     }
     return (day.match(de.day) && startMorning.match(de.startMorning)
-      && endMorning.match(de.endMorning) && startAfternoon.match(de.startAfternoon)
+      && endMorning.match(de.endMorning)&& additionalBreak.match(de.additionalBreak) && startAfternoon.match(de.startAfternoon)
       && endAfternoon.match(de.endAfternoon)&& legalWorktime.match(de.legalWorktime) && typeMorning == de.typeMorning
       && typeAfternoon == de.typeAfternoon && amountByHour == de.amountByHour
       && learningWeight == de.learningWeight&& recurrence == de.recurrence);
@@ -56,6 +57,7 @@ public class DayEntry {
     this.day = new WorkTimeDay();
     this.startMorning = new WorkTimeDay();
     this.endMorning = new WorkTimeDay();
+    this.additionalBreak = new WorkTimeDay();
     this.startAfternoon = new WorkTimeDay();
     this.endAfternoon = new WorkTimeDay();
     this.typeMorning = typeMorning;
@@ -73,6 +75,16 @@ public class DayEntry {
     if(amount == 0 && defAmount != -1) amount = defAmount;
     return amount * Double.parseDouble(
       String.valueOf(getWorkTime().getHours()) + "." + String.valueOf(getWorkTime().getMinutes()));
+  }
+
+  public WorkTimeDay getPause() {
+    if(startAfternoon.timeString().equals("00:00"))
+      return startAfternoon;
+    WorkTimeDay wp = startAfternoon.clone();
+    wp.delTime(endMorning.clone());
+    if(!additionalBreak.timeString().equals("00:00"))
+      wp.addTime(additionalBreak);
+    return wp;
   }
 
   public double getWorkTimePay() {
@@ -100,6 +112,8 @@ public class DayEntry {
       wa.delTime(isValidAfternoonType() ? startAfternoon.clone() : new WorkTimeDay());
     WorkTimeDay wt = wm.clone();
     wt.addTime(wa);
+    if(!wt.timeString().equals("00:00") && !additionalBreak.timeString().equals("00:00"))
+      wt.delTime(additionalBreak.clone());
     return wt;
   }
 
@@ -112,6 +126,7 @@ public class DayEntry {
     day.copy(de.day);
     startMorning.copy(de.startMorning);
     endMorning.copy(de.endMorning);
+    additionalBreak.copy(de.additionalBreak);
     startAfternoon.copy(de.startAfternoon);
     endAfternoon.copy(de.endAfternoon);
     amountByHour = de.amountByHour;
@@ -120,7 +135,7 @@ public class DayEntry {
   }
 
   public boolean match(DayEntry de) {
-    return day.match(de.day)  && startMorning.match(de.startMorning) && endMorning.match(de.endMorning)
+    return day.match(de.day)  && startMorning.match(de.startMorning) && endMorning.match(de.endMorning) && additionalBreak.match(de.additionalBreak)
       && startAfternoon.match(de.startAfternoon) && endAfternoon.match(de.endAfternoon) &&
       typeMorning == de.typeMorning && typeAfternoon == de.typeAfternoon && amountByHour == de.amountByHour && legalWorktime.match(de.legalWorktime);
   }
@@ -185,6 +200,17 @@ public class DayEntry {
     this.endMorning.copy(end);
   }
 
+
+  public void setAdditionalBreak(String sbreak) {
+    this.additionalBreak.copy(parseTime(sbreak));
+  }
+  public void setAdditionalBreak(WorkTimeDay wbreak) {
+    this.additionalBreak.copy(wbreak);
+  }
+  public WorkTimeDay getAdditionalBreak() {
+    return additionalBreak;
+  }
+
   public void setDay(String day) {
     this.day.copy(parseDate(day));
   }
@@ -199,13 +225,6 @@ public class DayEntry {
     return startAfternoon;
   }
 
-  public WorkTimeDay getPause() {
-    if(startAfternoon.timeString().equals("00:00"))
-      return startAfternoon;
-    WorkTimeDay wp = startAfternoon.clone();
-    wp.delTime(endMorning.clone());
-    return wp;
-  }
 
   public boolean isValidMorningType() {
     return getTypeMorning() != DayType.UNPAID && getTypeMorning() != DayType.ERROR;

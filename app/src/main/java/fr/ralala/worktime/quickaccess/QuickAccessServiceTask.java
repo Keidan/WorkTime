@@ -41,6 +41,12 @@ public class QuickAccessServiceTask extends TimerTask{
     } else
       time = new WorkTimeDay(0, 0, 0, 12, 0).getTimeMs();
 
+    WorkTimeDay lastQuickAccessBreak = app.getLastQuickAccessBreak();
+    if(lastQuickAccessBreak != null) {
+      WorkTimeDay dif = WorkTimeDay.now();
+      dif.delTime(lastQuickAccessBreak);
+      de.getAdditionalBreak().addTime(dif);
+    }
     if(d.getTimeMs() < time) {
       /* morning */
       if(de.getStartMorning().timeString().equals("00:00")) {
@@ -64,6 +70,7 @@ public class QuickAccessServiceTask extends TimerTask{
       String text = textLabel + String.format(Locale.US, "%02d:%02d:%02d", w.getHours(), w.getMinutes(), seconds);
       app.getQuickAccessNotification().update(text, app.isQuickAccessPause());
     }
+    app.setLastQuickAccessBreak(WorkTimeDay.now());
   }
 
   private WorkTimeDay update(WorkTimeDay we) {

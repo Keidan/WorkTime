@@ -45,6 +45,7 @@
     <string name="end_morning">Matin d\u00E9part :</string>
     <string name="start_afternoon">Ap. midi arriv\u00E9e :</string>
     <string name="start_morning">Matin arriv\u00E9e :</string>
+    <string name="additional_break">Pause suppl.:</string>
     <string name="at_work">Travail</string>
     <string name="error_invalid_type">Profil non valide.</string>
     <string name="error_invalid_start">Heure de d\u00E9part non valide.</string>
