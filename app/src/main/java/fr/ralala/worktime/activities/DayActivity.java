@@ -341,6 +341,7 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
         if(de.getName().isEmpty() || !de.match(newEntry)) {
           app.getProfilesFactory().remove(de);
           if (newEntry.getStartMorning().isValidTime() || newEntry.getEndAfternoon().isValidTime()) {
+            newEntry.setLearningWeight(de.getLearningWeight());
             app.getProfilesFactory().add(newEntry);
           }
         }
