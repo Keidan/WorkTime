@@ -102,6 +102,7 @@ public class MainActivity extends RuntimePermissionsActivity implements Navigati
   }
 
   public void onResume() {
+    super.onResume();
     if(app.getLastWidgetOpen() != 0L) {
       long elapsed = System.currentTimeMillis() - app.getLastWidgetOpen();
       if(elapsed <= 500) {
@@ -110,7 +111,6 @@ public class MainActivity extends RuntimePermissionsActivity implements Navigati
         return;
       }
     }
-    super.onResume();
     AndroidHelper.killServiceIfRunning(this, DropboxAutoExportService.class);
     fragments.onResume(this);
     if(app.isExportAutoSave())
