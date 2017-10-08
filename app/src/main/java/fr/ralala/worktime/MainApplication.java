@@ -51,6 +51,7 @@ public class MainApplication extends Application {
   private List<DayEntry> onloadPublicHolidays = null;
   private List<Setting> onloadSettings = null;
   private WorkTimeDay lastQuickAccessBreak = null;
+  private long lastWidgetOpen = 0L;
 
 
   public MainApplication() {
@@ -283,4 +284,13 @@ public class MainApplication extends Application {
       return true;
     return false;
   }
+
+  public long getLastWidgetOpen() {
+    return lastWidgetOpen;
+  }
+
+  public void setLastWidgetOpen(long lastWidgetOpen) {
+    this.lastWidgetOpen = lastWidgetOpen;
+  }
+
 }

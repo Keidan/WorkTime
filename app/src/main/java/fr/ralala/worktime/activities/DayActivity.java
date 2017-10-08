@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -27,6 +28,7 @@ import fr.ralala.worktime.utils.AndroidHelper;
 
 
 import fr.ralala.worktime.R;
+import fr.ralala.worktime.widget.DayWidgetProvider;
 
 /**
  *******************************************************************************
@@ -67,6 +69,7 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
   private boolean openForAdd = false;
 
   private boolean fromClear = false;
+  private boolean fromWidget = false;
 
 
   public static void startActivity(final Context ctx, final String date, final boolean profile) {
@@ -80,6 +83,20 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
   public void onBackPressed() {
     super.onBackPressed();
     AndroidHelper.closeAnimation(this);
+    if(fromWidget) {
+      app.setLastWidgetOpen(System.currentTimeMillis());
+    }
+  }
+
+
+
+  @Override
+  public void onPause() {
+    super.onPause();
+    if(fromWidget) {
+      app.setLastWidgetOpen(System.currentTimeMillis());
+      finish();
+    }
   }
 
   @Override
@@ -88,20 +105,38 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
     super.onCreate(savedInstanceState);
     app = MainApplication.getApp(this);
     setContentView(R.layout.activity_day);
-    android.support.v7.app.ActionBar actionBar = getDelegate().getSupportActionBar();
-    actionBar.setDisplayShowHomeEnabled(true);
-    actionBar.setDisplayHomeAsUpEnabled(true);
     String date =  null;
-    if(getIntent().getExtras() != null) {
-      Bundle extras = getIntent().getExtras();
-      date = extras.getString(DAY_ACTIVITY_EXTRA_DATE);
-      displayProfile = extras.getBoolean(DAY_ACTIVITY_EXTRA_PROFILE);
-      if(date.equals("null")) date = "";
+    boolean show = false;
+    if(getIntent().getAction() == null || !getIntent().getAction().equals(DayWidgetProvider.ACTION_FROM_WIDGET)) {
+      if(getIntent().getExtras() != null) {
+        Bundle extras = getIntent().getExtras();
+        date = extras.getString(DAY_ACTIVITY_EXTRA_DATE);
+        displayProfile = extras.getBoolean(DAY_ACTIVITY_EXTRA_PROFILE);
+        if(date.equals("null")) date = "";
+      }
+      show = true;
+    } else if(getIntent().getAction().equals(DayWidgetProvider.ACTION_FROM_WIDGET)) {
+      if(!app.openSql(this)) {
+        AndroidHelper.toast(this, R.string.error_widget_sql);
+        Log.e(getClass().getSimpleName(), "Widger error SQL");
+        finish();
+        return ;
+      }
+      date = app.getDaysFactory().getCurrentDay().getDay().dateString();
+      displayProfile = true;
+      fromWidget = true;
     }
+
+    android.support.v7.app.ActionBar actionBar = getDelegate().getSupportActionBar();
+    actionBar.setDisplayShowHomeEnabled(show);
+    actionBar.setDisplayHomeAsUpEnabled(show);
     List<DayEntry> days = displayProfile ? app.getDaysFactory().list() : app.getProfilesFactory().list();
     for(DayEntry de : days) {
       if((displayProfile && de.getDay().dateString().equals(date)) || (!displayProfile && de.getName().equals(date))) {
-        this.de = de;
+        if(fromWidget && !de.getWorkTime().isValidTime())
+          this.de = null;
+        else
+          this.de = de;
         break;
       }
     }
@@ -221,11 +256,14 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
       tvLegalWorktime.setText(t);
       de.setLegalWorktime(t);
     }
+    Log.e(getClass().getSimpleName(), "displayProfile:"+displayProfile);
+    Log.e(getClass().getSimpleName(), "openForAdd:"+openForAdd);
     if(displayProfile && openForAdd) {
       DayEntry de = app.getProfilesFactory().getHighestLearningWeight();
       if(de == null)
         spProfile.setSelection(0);
       else {
+        Log.e(getClass().getSimpleName(), "de.getDay().dateString():"+de.getDay().dateString());
         for (int i = 0; i < spProfilesAdapter.getCount(); ++i) {
           String s = spProfilesAdapter.getItem(i);
           if (s != null && s.equals(de.getName())) {

@@ -15,6 +15,8 @@ import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 
+import java.util.Date;
+
 import fr.ralala.worktime.MainApplication;
 import fr.ralala.worktime.R;
 import fr.ralala.worktime.changelog.ChangeLog;
@@ -100,6 +102,14 @@ public class MainActivity extends RuntimePermissionsActivity implements Navigati
   }
 
   public void onResume() {
+    if(app.getLastWidgetOpen() != 0L) {
+      long elapsed = System.currentTimeMillis() - app.getLastWidgetOpen();
+      if(elapsed <= 500) {
+        app.setLastWidgetOpen(0L);
+        finish();
+        return;
+      }
+    }
     super.onResume();
     AndroidHelper.killServiceIfRunning(this, DropboxAutoExportService.class);
     fragments.onResume(this);

@@ -53,6 +53,7 @@
     <string name="error_invalid_start_end_morning">Les horaires de d\u00E9part et d\'arriv\u00E9e du matin sont invalides.</string>
     <string name="error_invalid_start_end_afternoon">Les horaires de d\u00E9part et d\'arriv\u00E9e de l\'apr\u00E8s midi sont invalides.</string>
     <string name="error_invalid_legal_worktime">Le temps de travail l\u00E9gal n\'est pas valable.</string>
+    <string name="error_widget_sql">Impossible d\'ouvrir la base de donn\u00E9es SQL</string>
     <string name="text_for">pour</string>
     <string name="at">\u00E0</string>
     <string name="and">et</string>

@@ -73,13 +73,29 @@
                 android:value=".activities.MainActivity"/>
         </activity>
 
-        <service android:name="fr.ralala.worktime.services.DropboxAutoExportService"/>
-        <service android:name="fr.ralala.worktime.services.QuickAccessService"/>
-        <receiver android:name="fr.ralala.worktime.quickaccess.QuickAccessNotificationReceiver">
+        <service android:name=".services.DropboxAutoExportService"/>
+        <service android:name=".services.QuickAccessService"/>
+        <receiver android:name=".quickaccess.QuickAccessNotificationReceiver">
             <intent-filter>
                 <category android:name="fr.ralala.worktime.services.PAUSE"/>
 
             </intent-filter>
+        </receiver>
+        <receiver
+            android:icon="@mipmap/ic_launcher"
+            android:enabled="true"
+            android:label="@string/app_name_day"
+            android:name=".widget.DayWidgetProvider" >
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_ENABLED" />
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="android.appwidget.action.APPWIDGET_DELETED" />
+                <action android:name="android.appwidget.action.APPWIDGET_DISABLED" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/day_widget_info" />
         </receiver>
     </application>
 

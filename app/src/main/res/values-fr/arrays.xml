@@ -1,5 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string-array name="month_long">
+        <item name="jan">Janvier</item>
+        <item name="feb">F\u00E9vrier</item>
+        <item name="mar">Mars</item>
+        <item name="apr">Avril</item>
+        <item name="may">Mai</item>
+        <item name="jun">Juin</item>
+        <item name="jul">Juillet</item>
+        <item name="aug">Ao\u00FBt</item>
+        <item name="sep">Septembre</item>
+        <item name="oct">Octobre</item>
+        <item name="nov">Novembre</item>
+        <item name="dec">D\u00E9cembre</item>
+    </string-array>
+
     <string-array name="month_short">
         <item name="jan">Janv</item>
         <item name="feb">F\u00E9vr</item>

@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name" translatable="false">WorkTime</string>
+    <string name="app_name_day" translatable="false">WorkTime day</string>
     <string name="app_key" translatable="false">YOUR_APP_KEY_HERE</string>
 
     <string name="changelog_full_title">Change Log</string>
@@ -61,6 +62,7 @@
     <string name="error_invalid_start_end_morning">The morning departure and arrival times are invalid.</string>
     <string name="error_invalid_start_end_afternoon">The afternoon departure and arrival times are invalid.</string>
     <string name="error_invalid_legal_worktime">The legal work time is invalid.</string>
+    <string name="error_widget_sql">Unable to open SQL database</string>
     <string name="text_for">for</string>
     <string name="at">at</string>
     <string name="and">and</string>
