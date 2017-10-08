@@ -178,7 +178,10 @@ public class QuickAccessFragment extends Fragment implements OnClickListener {
             boolean space = text.contains(" ");
             DayEntry d = app.getDaysFactory().getCurrentDay();
             WorkTimeDay w = d.getWorkTime();
-            text = String.format(Locale.US, "%02d%s%02d", w.getHours(), space ? ":" : " ", w.getMinutes());
+            if(w.getHours() < 0 || w.getMinutes() < 0)
+              text = String.format(Locale.US, "-%02d%s%02d", Math.abs(w.getHours()), space ? ":" : " ", Math.abs(w.getMinutes()));
+            else
+              text = String.format(Locale.US, "%02d%s%02d", w.getHours(), space ? ":" : " ", w.getMinutes());
             tvTime.setText(text);
           }
         }

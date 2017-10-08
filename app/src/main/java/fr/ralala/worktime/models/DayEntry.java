@@ -105,11 +105,11 @@ public class DayEntry {
 
   public WorkTimeDay getWorkTime() {
     WorkTimeDay wm = isValidMorningType() ? endMorning.clone() : new WorkTimeDay();
-    if(!wm.timeString().equals("00:00"))
-      wm.delTime(isValidMorningType() ? startMorning.clone() : new WorkTimeDay());
+    if(!wm.timeString().equals("00:00") && isValidMorningType())
+      wm.delTime(startMorning);
     WorkTimeDay wa = isValidAfternoonType() ? endAfternoon.clone() : new WorkTimeDay();
-    if(!wa.timeString().equals("00:00"))
-      wa.delTime(isValidAfternoonType() ? startAfternoon.clone() : new WorkTimeDay());
+    if(!wa.timeString().equals("00:00") && isValidAfternoonType())
+      wa.delTime(startAfternoon);
     WorkTimeDay wt = wm.clone();
     wt.addTime(wa);
     if(!wt.timeString().equals("00:00") && !additionalBreak.timeString().equals("00:00"))

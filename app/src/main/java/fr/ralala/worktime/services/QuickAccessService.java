@@ -4,10 +4,13 @@ package fr.ralala.worktime.services;
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
+import android.util.Log;
 
 import java.util.Timer;
 
 import fr.ralala.worktime.MainApplication;
+import fr.ralala.worktime.models.DayEntry;
+import fr.ralala.worktime.models.WorkTimeDay;
 import fr.ralala.worktime.quickaccess.QuickAccessServiceTask;
 
 /**
@@ -33,6 +36,13 @@ public class QuickAccessService extends Service {
       // recreate new
       timer = new Timer();
     }
+    WorkTimeDay lastQuickAccessBreak = app.getLastQuickAccessBreak();
+    if(lastQuickAccessBreak != null) {
+      WorkTimeDay dif = WorkTimeDay.now();
+      dif.delTime(lastQuickAccessBreak);
+      DayEntry de = app.getDaysFactory().getCurrentDay();
+      de.getAdditionalBreak().addTime(dif);
+    }
     // schedule task
     timer.scheduleAtFixedRate(new QuickAccessServiceTask(app), 0, 1000);
   }
@@ -40,6 +50,7 @@ public class QuickAccessService extends Service {
   @Override
   public void onDestroy() {
     super.onDestroy();
+    app.setLastQuickAccessBreak(WorkTimeDay.now());
     if (timer != null) {
       timer.cancel();
       timer.purge();
