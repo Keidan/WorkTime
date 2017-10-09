@@ -54,9 +54,10 @@ import fr.ralala.worktime.models.WorkTimeDay;
 public class AndroidHelper {
 
   public static void updateWidget(final Context context, final Class<?> widgetClass) {
+    int ids[] = AppWidgetManager.getInstance(context).getAppWidgetIds(new ComponentName(context, widgetClass));
+    if(ids == null || ids.length == 0) return;
     Intent intent = new Intent(context, widgetClass);
     intent.setAction("android.appwidget.action.APPWIDGET_UPDATE");
-    int ids[] = AppWidgetManager.getInstance(context).getAppWidgetIds(new ComponentName(context, widgetClass));
     intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids);
     context.sendBroadcast(intent);
   }

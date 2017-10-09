@@ -375,9 +375,7 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
             app.getDaysFactory().add(newEntry);
           if(AndroidHelper.isServiceRunning(this, QuickAccessService.class))
             stopService(new Intent(this, QuickAccessService.class));
-          if(fromWidget) {
-            AndroidHelper.updateWidget(this, DayWidgetProvider.class);
-          }
+          AndroidHelper.updateWidget(this, DayWidgetProvider.class);
         }
       } else {
         if (etName.getText().toString().isEmpty()) {
