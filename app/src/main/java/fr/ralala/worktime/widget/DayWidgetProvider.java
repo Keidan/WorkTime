@@ -49,10 +49,13 @@ public class DayWidgetProvider extends AppWidgetProvider {
 
       remoteViews.setOnClickPendingIntent(R.id.tvMonth, pendingIntent);
       remoteViews.setOnClickPendingIntent(R.id.tvDay, pendingIntent);
-      remoteViews.setOnClickPendingIntent(R.id.tvYear, pendingIntent);
+      remoteViews.setOnClickPendingIntent(R.id.tvWorkTime, pendingIntent);
       remoteViews.setTextViewText(R.id.tvMonth, context.getResources().getStringArray(R.array.month_long)[w.getMonth() - 1]);
       remoteViews.setTextViewText(R.id.tvDay, ""+w.getDay());
-      remoteViews.setTextViewText(R.id.tvYear, ""+w.getYear());
+      if(de == null)
+        remoteViews.setTextViewText(R.id.tvWorkTime, "00:00");
+      else
+        remoteViews.setTextViewText(R.id.tvWorkTime, de.getWorkTime().timeString() + " (" + de.getOverTime().timeString() + ")");
       appWidgetManager.updateAppWidget(idx, remoteViews);
     }
   }

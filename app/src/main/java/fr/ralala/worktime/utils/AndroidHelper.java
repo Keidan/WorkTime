@@ -3,6 +3,8 @@ package fr.ralala.worktime.utils;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.DatePickerDialog;
+import android.appwidget.AppWidgetManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -51,6 +53,13 @@ import fr.ralala.worktime.models.WorkTimeDay;
  */
 public class AndroidHelper {
 
+  public static void updateWidget(final Context context, final Class<?> widgetClass) {
+    Intent intent = new Intent(context, widgetClass);
+    intent.setAction("android.appwidget.action.APPWIDGET_UPDATE");
+    int ids[] = AppWidgetManager.getInstance(context).getAppWidgetIds(new ComponentName(context, widgetClass));
+    intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids);
+    context.sendBroadcast(intent);
+  }
 
   public static boolean isServiceRunning(final Context context,
                                          final Class<?> serviceClass) {

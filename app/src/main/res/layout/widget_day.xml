@@ -13,7 +13,7 @@
         android:textColor="@color/white"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="start"
+        android:gravity="center"
         android:layout_margin="4sp"
         android:text="@string/empty"
         android:textSize="@dimen/widget_text_size_month"/>
@@ -31,12 +31,12 @@
         android:layout_above="@+id/tvYear"
         android:textSize="@dimen/widget_text_size_day"/>
     <TextView
-        android:id="@+id/tvYear"
+        android:id="@+id/tvWorkTime"
         android:layout_alignParentBottom="true"
         android:textColor="@color/white"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="end"
+        android:gravity="center"
         android:text="@string/empty"
         android:textSize="@dimen/widget_text_size_year"
         android:layout_margin="4sp"/>

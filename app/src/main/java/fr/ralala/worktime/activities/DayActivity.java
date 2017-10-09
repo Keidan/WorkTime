@@ -23,6 +23,7 @@ import fr.ralala.worktime.MainApplication;
 import fr.ralala.worktime.models.DayEntry;
 import fr.ralala.worktime.models.DayType;
 import fr.ralala.worktime.models.WorkTimeDay;
+import fr.ralala.worktime.services.DropboxAutoExportService;
 import fr.ralala.worktime.services.QuickAccessService;
 import fr.ralala.worktime.utils.AndroidHelper;
 
@@ -95,6 +96,8 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
     super.onPause();
     if(fromWidget) {
       app.setLastWidgetOpen(System.currentTimeMillis());
+      if(app.isExportAutoSave())
+        startService(new Intent(this, DropboxAutoExportService.class));
       finish();
     }
   }
@@ -116,12 +119,15 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
       }
       show = true;
     } else if(getIntent().getAction().equals(DayWidgetProvider.ACTION_FROM_WIDGET)) {
+      /* If the main activity is not started, all contexts are reset, so we need to reload the required contexts */
       if(!app.openSql(this)) {
         AndroidHelper.toast(this, R.string.error_widget_sql);
         Log.e(getClass().getSimpleName(), "Widger error SQL");
         finish();
         return ;
       }
+      if(app.isExportAutoSave())
+        app.initOnLoadTables();
       date = app.getDaysFactory().getCurrentDay().getDay().dateString();
       displayProfile = true;
       fromWidget = true;
@@ -369,6 +375,9 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
             app.getDaysFactory().add(newEntry);
           if(AndroidHelper.isServiceRunning(this, QuickAccessService.class))
             stopService(new Intent(this, QuickAccessService.class));
+          if(fromWidget) {
+            AndroidHelper.updateWidget(this, DayWidgetProvider.class);
+          }
         }
       } else {
         if (etName.getText().toString().isEmpty()) {
