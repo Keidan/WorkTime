@@ -12,8 +12,11 @@ import android.util.Log;
 import java.util.Calendar;
 
 import fr.ralala.worktime.MainApplication;
+import fr.ralala.worktime.activities.DayActivity;
+import fr.ralala.worktime.activities.MainActivity;
 import fr.ralala.worktime.dropbox.DropboxImportExport;
 import fr.ralala.worktime.models.WorkTimeDay;
+import fr.ralala.worktime.utils.AndroidHelper;
 
 /**
  *******************************************************************************
@@ -104,6 +107,8 @@ public class DropboxAutoExportService extends Service implements DropboxImportEx
     if(app != null)
       app.getSql().close();
     super.onDestroy();
+    if(app.getLastWidgetOpen() != 0L && (AndroidHelper.isActivityRunning(this, DayActivity.class) || AndroidHelper.isActivityRunning(this, MainActivity.class)))
+      return;
     Process.killProcess(android.os.Process.myPid());
   }
 

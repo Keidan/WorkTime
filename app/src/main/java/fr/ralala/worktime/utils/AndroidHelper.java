@@ -53,6 +53,18 @@ import fr.ralala.worktime.models.WorkTimeDay;
  */
 public class AndroidHelper {
 
+  public static boolean isActivityRunning(final Context context,
+                                         final Class<?> activityClass) {
+    if(context == null) return false;
+    final ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+    final List<ActivityManager.RunningTaskInfo> tasks = activityManager.getRunningTasks(Integer.MAX_VALUE);
+    for (final ActivityManager.RunningTaskInfo task : tasks) {
+      if (activityClass.getCanonicalName().equalsIgnoreCase(task.baseActivity.getClassName()))
+        return true;
+    }
+    return false;
+  }
+
   public static void updateWidget(final Context context, final Class<?> widgetClass) {
     int ids[] = AppWidgetManager.getInstance(context).getAppWidgetIds(new ComponentName(context, widgetClass));
     if(ids == null || ids.length == 0) return;
