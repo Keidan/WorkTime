@@ -167,7 +167,7 @@ import fr.ralala.worktime.MainApplication;
         final File directory = new File(folder);
         if (!directory.exists())
           directory.mkdir();
-        File out = new File(directory, !date ? filename : (new SimpleDateFormat("yyyyMMdd_ahhmm", Locale.US).format(new Date()) + "_" + name));
+        File out = new File(directory, !date ? filename : (new SimpleDateFormat("yyyyMMdd_HHmm", Locale.US).format(new Date()) + "_" + name));
         myOutput = new FileOutputStream(out);
         myInput = new FileInputStream(databasePath);
 
