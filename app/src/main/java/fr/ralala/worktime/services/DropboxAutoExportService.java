@@ -48,7 +48,6 @@ public class DropboxAutoExportService extends Service implements DropboxImportEx
           Log.e(getClass().getSimpleName(), "Export failed.");
           setNeedUpdate(app, true);
           stopSelf();
-          return;
         }
       } else {
         setNeedUpdate(app, true);
@@ -68,7 +67,7 @@ public class DropboxAutoExportService extends Service implements DropboxImportEx
         }
         return;
       }
-      if((!export && !needUpdate) || (export && !needUpdate))
+      if(!needUpdate)
         Log.e(getClass().getSimpleName(), "No change detected.");
       if((!export && needUpdate))
         Log.e(getClass().getSimpleName(), "Changes detected but the current day does not allow export.");
@@ -89,17 +88,14 @@ public class DropboxAutoExportService extends Service implements DropboxImportEx
   private boolean isExportable() {
     Calendar c = WorkTimeDay.now().toCalendar();
     int p = app.getExportAutoSavePeriodicity();
-    if((p == 0) ||
+    return ((p == 0) ||
       (p == 1 && c.get(Calendar.DAY_OF_WEEK) == Calendar.MONDAY) ||
       (p == 2 && c.get(Calendar.DAY_OF_WEEK) == Calendar.TUESDAY) ||
       (p == 3 && c.get(Calendar.DAY_OF_WEEK) == Calendar.WEDNESDAY) ||
       (p == 4 && c.get(Calendar.DAY_OF_WEEK) == Calendar.THURSDAY) ||
       (p == 5 && c.get(Calendar.DAY_OF_WEEK) == Calendar.FRIDAY) ||
       (p == 6 && c.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY) ||
-      (p == 7 && c.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY)) {
-      return true;
-    }
-    return false;
+      (p == 7 && c.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY));
   }
 
   @Override

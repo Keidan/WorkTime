@@ -25,7 +25,6 @@ public class QuickAccessNotification {
   private int nfyId = 1;
   private Notification nfy = null;
   private Context c = null;
-  private PendingIntent pausePendingIntent = null;
   private boolean visible = false;
 
   public QuickAccessNotification(final Context c, final int id) {
@@ -68,7 +67,7 @@ public class QuickAccessNotification {
     nfyBuilder.setContentText(text);
     Intent pauseIntent = new Intent(c, QuickAccessNotificationReceiver.class);
     pauseIntent.setAction(QuickAccessNotificationReceiver.KEY_PAUSE);
-    pausePendingIntent = PendingIntent.getBroadcast(c, 0, pauseIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+    PendingIntent pausePendingIntent = PendingIntent.getBroadcast(c, 0, pauseIntent, PendingIntent.FLAG_UPDATE_CURRENT);
     nfyBuilder.addAction(new NotificationCompat.Action(R.mipmap.ic_pause, c.getString(R.string.bt_pause), pausePendingIntent));
     Intent contentIntent = new Intent(c, MainActivity.class);
     contentIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);

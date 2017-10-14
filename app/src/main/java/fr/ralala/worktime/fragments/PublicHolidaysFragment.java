@@ -1,29 +1,22 @@
 package fr.ralala.worktime.fragments;
 
 
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.DatePicker;
-import android.widget.EditText;
 import android.widget.ListView;
 
 import fr.ralala.worktime.activities.PublicHolidayActivity;
-import fr.ralala.worktime.utils.AndroidHelper;
 import fr.ralala.worktime.MainApplication;
 import fr.ralala.worktime.R;
 import fr.ralala.worktime.adapters.PublicHolidaysEntriesArrayAdapter;
 import fr.ralala.worktime.adapters.SimpleEntriesArrayAdapterMenuListener;
 import fr.ralala.worktime.models.DayEntry;
-import fr.ralala.worktime.models.DayType;
-import fr.ralala.worktime.models.WorkTimeDay;
 
 /**
  *******************************************************************************

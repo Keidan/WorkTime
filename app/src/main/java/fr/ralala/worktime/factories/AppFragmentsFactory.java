@@ -30,7 +30,7 @@ public class AppFragmentsFactory {
   public static final int IDX_PUBLIC_HOLIDAY = 3;
   public static final int IDX_EXPORT = 4;
   public static final int IDX_STATISTICS = 6;
-  public static final int IDX_EXIT = 7;
+  private static final int IDX_EXIT = 7;
   private Fragment quickAccessFragment = null;
   private Fragment profileFragment = null;
   private Fragment publicHolidaysFragment = null;
@@ -81,7 +81,7 @@ public class AppFragmentsFactory {
     }
   }
 
-  public Fragment getDefaultHomeView() {
+  private Fragment getDefaultHomeView() {
     switch(app.getDefaultHome()) {
       case IDX_QUICK_ACCESS:
         return quickAccessFragment;
@@ -101,10 +101,7 @@ public class AppFragmentsFactory {
 
   public boolean consumeBackPressed() {
     Fragment fragment = currentFragment;
-    if(fragment != null && StatisticsFragment.class.isInstance(fragment)) {
-      return ((StatisticsFragment)fragment).consumeBackPressed();
-    }
-    return false;
+    return fragment != null && StatisticsFragment.class.isInstance(fragment) && ((StatisticsFragment)fragment).consumeBackPressed();
   }
 
   public void onResume(final AppCompatActivity aca) {

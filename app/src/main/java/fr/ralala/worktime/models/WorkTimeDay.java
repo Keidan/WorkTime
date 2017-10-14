@@ -124,8 +124,15 @@ public class WorkTimeDay {
     return ((hours < 0 || minutes < 0) ? "-" : "") + String.format(Locale.US, "%02d:%02d", Math.abs(hours), Math.abs(minutes));
   }
 
+  public String timeString(boolean plusSign) {
+    String s = timeString(hours, minutes);
+    if(plusSign && !s.startsWith("-"))
+      return "+" + s;
+    return s;
+  }
+
   public String timeString() {
-    return timeString(hours, minutes);
+    return timeString(false) ;
   }
 
   public String dateString() {

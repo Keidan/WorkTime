@@ -28,7 +28,7 @@ public class UploadFileTask extends AsyncTask<String, Void, FileMetadata> {
   private final DropboxListener mCallback;
   private Exception mException;
 
-  public UploadFileTask(Context context, DbxClientV2 dbxClient, DropboxListener callback) {
+  UploadFileTask(Context context, DbxClientV2 dbxClient, DropboxListener callback) {
     mContext = context;
     mDbxClient = dbxClient;
     mCallback = callback;

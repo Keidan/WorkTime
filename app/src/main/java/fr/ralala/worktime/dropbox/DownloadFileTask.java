@@ -26,7 +26,7 @@ public class DownloadFileTask extends AsyncTask<FileMetadata, Void, File> {
   private final DropboxListener mCallback;
   private Exception mException;
 
-  public DownloadFileTask(Context context, DbxClientV2 dbxClient, DropboxListener callback) {
+  DownloadFileTask(Context context, DbxClientV2 dbxClient, DropboxListener callback) {
     mContext = context;
     mDbxClient = dbxClient;
     mCallback = callback;

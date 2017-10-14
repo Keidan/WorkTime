@@ -240,7 +240,7 @@ public class SqlFactory implements SqlConstants {
     return listProfiles;
   }
 
-  public boolean isTableExists(String tableName) {
+  private boolean isTableExists(String tableName) {
     Cursor cursor = bdd.rawQuery("select DISTINCT tbl_name from sqlite_master where tbl_name = '"+tableName+"'", null);
     if(cursor!=null) {
       if(cursor.getCount()>0) {
@@ -361,7 +361,7 @@ public class SqlFactory implements SqlConstants {
     return getPublicHolidays(TABLE_PUBLIC_HOLIDAYS);
   }
 
-  public List<DayEntry> getPublicHolidays(String tablename) {
+  private List<DayEntry> getPublicHolidays(String tablename) {
     final List<DayEntry> list = new ArrayList<>();
     final Cursor c = bdd.rawQuery("SELECT * FROM " + tablename, null);
     if (c.moveToFirst()) {
@@ -393,7 +393,7 @@ public class SqlFactory implements SqlConstants {
     return getDays(TABLE_DAYS);
   }
 
-  public List<DayEntry> getDays(String tablename) {
+  private List<DayEntry> getDays(String tablename) {
     final List<DayEntry> list = new ArrayList<>();
     final Cursor c = bdd.rawQuery("SELECT * FROM " + tablename, null);
     if (c.moveToFirst()) {
@@ -443,7 +443,7 @@ public class SqlFactory implements SqlConstants {
   public List<DayEntry> getProfiles() {
     return getProfiles(TABLE_PROFILES);
   }
-  public List<DayEntry> getProfiles(String tablename) {
+  private List<DayEntry> getProfiles(String tablename) {
     final List<DayEntry> list = new ArrayList<>();
     final Cursor c = bdd.rawQuery("SELECT * FROM " + tablename, null);
     if (c.moveToFirst()) {
@@ -509,13 +509,7 @@ public class SqlFactory implements SqlConstants {
     return bdd.delete(TABLE_PROFILES, COL_PROFILES_NAME + " = \"" + de.getName() + "\"", null);
   }
 
-  public void removeTable(final String tablename) {
+  private void removeTable(final String tablename) {
     bdd.execSQL("DROP TABLE IF EXISTS " + tablename + ";");
-  }
-
-  public void removeAll() {
-    bdd.execSQL("DROP TABLE IF EXISTS " + TABLE_PUBLIC_HOLIDAYS + ";");
-    bdd.execSQL("DROP TABLE IF EXISTS " + TABLE_DAYS + ";");
-    bdd.execSQL("DROP TABLE IF EXISTS " + TABLE_PROFILES + ";");
   }
 }

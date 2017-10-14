@@ -28,27 +28,27 @@ public class ChangeLogIds {
     this.rawChangelog = rawChangelog;
   }
 
-  public int getStringChangelogOkButton() {
+  int getStringChangelogOkButton() {
     return stringChangelogOkButton;
   }
 
-  public int getStringBackgroundColor() {
+  int getStringBackgroundColor() {
     return stringBackgroundColor;
   }
 
-  public int getStringChangelogTitle() {
+  int getStringChangelogTitle() {
     return stringChangelogTitle;
   }
 
-  public int getStringChangelogFullTitle() {
+  int getStringChangelogFullTitle() {
     return stringChangelogFullTitle;
   }
 
-  public int getStringChangelogShowFull() {
+  int getStringChangelogShowFull() {
     return stringChangelogShowFull;
   }
 
-  public int getRawChangelog() {
+  int getRawChangelog() {
     return rawChangelog;
   }
 

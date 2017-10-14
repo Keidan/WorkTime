@@ -42,7 +42,6 @@ public class SettingsImportExportActivity extends PreferenceActivity implements 
   public static final String       PREFS_KEY_IMPORT_FROM_DEVICE               = "prefImportFromDevice";
   public static final String       PREFS_KEY_EXPORT_TO_DROPBOX                = "prefExportToDropbox";
   public static final String       PREFS_KEY_IMPORT_FROM_DROPBOX              = "prefImportFromDropbox";
-  private static final String      PATH                                       = "";
 
   private MyPreferenceFragment prefFrag                       = null;
   private MainApplication app = null;
@@ -57,9 +56,10 @@ public class SettingsImportExportActivity extends PreferenceActivity implements 
       .replace(android.R.id.content, prefFrag).commit();
     getFragmentManager().executePendingTransactions();
     android.support.v7.app.ActionBar actionBar = AppCompatDelegate.create(this, null).getSupportActionBar();
-    actionBar.setDisplayShowHomeEnabled(true);
-    actionBar.setDisplayHomeAsUpEnabled(true);
-
+    if(actionBar != null) {
+      actionBar.setDisplayShowHomeEnabled(true);
+      actionBar.setDisplayHomeAsUpEnabled(true);
+    }
     prefFrag.findPreference(PREFS_KEY_EXPORT_TO_DEVICE).setOnPreferenceClickListener(this);
     prefFrag.findPreference(PREFS_KEY_IMPORT_FROM_DEVICE).setOnPreferenceClickListener(this);
     prefFrag.findPreference(PREFS_KEY_EXPORT_TO_DROPBOX).setOnPreferenceClickListener(this);

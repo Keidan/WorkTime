@@ -61,7 +61,7 @@ public class ProfilesFactory {
   public DayEntry getHighestLearningWeight() {
     DayEntry profile = null;
     int weight = 0;
-    for(DayEntry p : profiles) {;
+    for(DayEntry p : profiles) {
       if(weight == 0 || weight <= p.getLearningWeight()) {
         weight = p.getLearningWeight();
         profile = p;

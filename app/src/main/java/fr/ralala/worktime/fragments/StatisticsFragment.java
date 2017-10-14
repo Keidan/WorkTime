@@ -5,7 +5,6 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -242,7 +241,7 @@ public class StatisticsFragment extends Fragment implements View.OnClickListener
     if((currentView != CurrentView.DETAIL))
       drawBarChart(metrics.widthPixels, title, getString(R.string.statistics_hours), entries);
     else
-      drawPieChart(metrics.widthPixels, title, entries);
+      drawPieChart(title, entries);
 
   }
 
@@ -435,7 +434,7 @@ public class StatisticsFragment extends Fragment implements View.OnClickListener
   }
 
 
-  private void drawPieChart(final int width, final String title, final @NonNull Map<Integer, ChartEntry> values) {
+  private void drawPieChart(final String title, final @NonNull Map<Integer, ChartEntry> values) {
     initMultiRender(title, null);
     final CategorySeries dataset = new CategorySeries("title");
     SortedSet<Integer> keys = new TreeSet<>(values.keySet());
@@ -448,7 +447,7 @@ public class StatisticsFragment extends Fragment implements View.OnClickListener
       ChartEntry ce = values.get(key);
       titles[i++] = getString(R.string.statistics_morning);
       titles[i++] = getString(R.string.statistics_break);
-      titles[i++] = getString(R.string.statistics_afternoon);
+      titles[i] = getString(R.string.statistics_afternoon);
       addPieChartEntry(dataset, cm, getString(R.string.statistics_morning), toDouble(ce.morning));
       addPieChartEntry(dataset, cp, getString(R.string.statistics_break), toDouble(ce.pause));
       addPieChartEntry(dataset, ca, getString(R.string.statistics_afternoon), toDouble(ce.afternoon));

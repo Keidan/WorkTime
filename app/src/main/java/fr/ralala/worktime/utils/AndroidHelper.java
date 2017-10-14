@@ -115,7 +115,7 @@ public class AndroidHelper {
     ShapeDrawable.ShaderFactory sf = new ShapeDrawable.ShaderFactory() {
       @Override
       public Shader resize(int width, int height) {
-        LinearGradient lg = new LinearGradient(
+        return new LinearGradient(
           view.getWidth(),
           0,
           0,
@@ -123,7 +123,6 @@ public class AndroidHelper {
           colors,
           new float[] { 0, 1 },
           Shader.TileMode.CLAMP);
-        return lg;
       }
     };
     PaintDrawable p = new PaintDrawable();
@@ -215,9 +214,11 @@ public class AndroidHelper {
           @Override
           public void onClick(View view) {
             final TimePicker timePicker = (TimePicker) mAlertDialog.findViewById(R.id.timepicker);
-            tv.setText(String.format(Locale.US, "%02d:%02d", timePicker.getHour(), timePicker.getMinute()));
-            current.setHours(timePicker.getHour());
-            current.setMinutes(timePicker.getMinute());
+            if(timePicker != null) {
+              tv.setText(String.format(Locale.US, "%02d:%02d", timePicker.getHour(), timePicker.getMinute()));
+              current.setHours(timePicker.getHour());
+              current.setMinutes(timePicker.getMinute());
+            }
             mAlertDialog.dismiss();
           }
         });
@@ -225,9 +226,11 @@ public class AndroidHelper {
     });
     mAlertDialog.show();
     final TimePicker timePicker = (TimePicker) mAlertDialog.findViewById(R.id.timepicker);
-    timePicker.setIs24HourView(true);
-    timePicker.setHour(current.getHours());
-    timePicker.setMinute(current.getMinutes());
+    if(timePicker != null) {
+      timePicker.setIs24HourView(true);
+      timePicker.setHour(current.getHours());
+      timePicker.setMinute(current.getMinutes());
+    }
   }
 
   /* tool function used to display a message box */
@@ -250,9 +253,9 @@ public class AndroidHelper {
 
   private static class ListItem<T> {
     public String name;
-    public T value;
+    T value;
 
-    public ListItem(final String name, final T value) {
+    ListItem(final String name, final T value) {
       this.name = name;
       this.value = value;
     }
@@ -272,9 +275,9 @@ public class AndroidHelper {
     builder.setIcon(android.R.drawable.ic_dialog_alert);
     List<ListItem> items = new ArrayList<>();
     for(T s : list) {
-      String ss = new File(s.toString()).getName().toString();
+      String ss = new File(s.toString()).getName();
       if(ss.endsWith("\"}")) ss = ss.substring(0, ss.length() - 2);
-      items.add(new ListItem<T>(ss, s));
+      items.add(new ListItem<>(ss, s));
     }
     final ArrayAdapter<ListItem> arrayAdapter = new ArrayAdapter<>(c, android.R.layout.select_dialog_singlechoice, items);
     builder.setNegativeButton(c.getString(R.string.cancel), new DialogInterface.OnClickListener() {
@@ -288,7 +291,8 @@ public class AndroidHelper {
       @Override
       public void onClick(DialogInterface dialog, int which) {
         dialog.dismiss();
-        if(yes != null) yes.onClick(arrayAdapter.getItem(which).value);
+        ListItem li = arrayAdapter.getItem(which);
+        if(yes != null && li != null) yes.onClick(li.value);
       }
     });
     builder.show();

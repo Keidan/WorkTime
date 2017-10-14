@@ -35,13 +35,13 @@ import fr.ralala.worktime.utils.AndroidHelper;
  *******************************************************************************
  */
 public class MainApplication extends Application {
+  private static final int NFY_QUICK_ACCESS = 1;
   private final PublicHolidaysFactory publicHolidaysFactory;
   private final ProfilesFactory profilesFactory;
   private final DaysFactory daysFactory;
   private SqlFactory sql = null;
   private Calendar currentDate = null;
   private boolean quickAccessPause = true;
-  private int nfyIdQuickAccess = 1;
   private QuickAccessNotification quickAccessNotification = null;
   private boolean resumeAfterActivity = false;
   private int lastFirstVisibleItem = 0;
@@ -58,7 +58,7 @@ public class MainApplication extends Application {
     publicHolidaysFactory = new PublicHolidaysFactory();
     profilesFactory = new ProfilesFactory();
     daysFactory = new DaysFactory();
-    quickAccessNotification = new QuickAccessNotification(this, nfyIdQuickAccess);
+    quickAccessNotification = new QuickAccessNotification(this, NFY_QUICK_ACCESS);
     dropboxImportExport = new DropboxImportExport();
     onloadSettings = new ArrayList<>();
   }
@@ -274,15 +274,7 @@ public class MainApplication extends Application {
     sql.settingsSave();
     List<Setting> settings = new ArrayList<>();
     sql.settingsLoad(settings);
-    if(!listEquals(profiles, onloadProfiles))
-      return true;
-    if(!listEquals(onloadDays, days))
-      return true;
-    if(!listEquals(onloadPublicHolidays, publicHolidays))
-      return true;
-    if(!listEquals(onloadSettings, settings))
-      return true;
-    return false;
+    return !listEquals(profiles, onloadProfiles) || !listEquals(onloadDays, days) || !listEquals(onloadPublicHolidays, publicHolidays) || (!listEquals(onloadSettings, settings));
   }
 
   public long getLastWidgetOpen() {

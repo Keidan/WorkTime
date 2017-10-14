@@ -25,12 +25,12 @@ public class DropboxHelper {
 
   private DropboxHelper() { }
 
-  public static DropboxHelper helper() {
+  static DropboxHelper helper() {
     if(helper == null) helper = new DropboxHelper();
     return helper;
   }
 
-  public boolean connect(final Context ctx, final String appkey) {
+  boolean connect(final Context ctx, final String appkey) {
     Context c = ctx.getApplicationContext();
     helper.loadToken(c);
     if(!helper.hasToken(c)) {
@@ -41,7 +41,7 @@ public class DropboxHelper {
     return true;
   }
 
-  public boolean hasToken(final Context ctx) {
+  private boolean hasToken(final Context ctx) {
     Context c = ctx.getApplicationContext();
     SharedPreferences prefs = c.getSharedPreferences(LABEL, Context.MODE_PRIVATE);
     String accessToken = prefs.getString(KEY, null);
@@ -73,7 +73,7 @@ public class DropboxHelper {
     }
   }
 
-  public DbxClientV2 getClient() {
+  DbxClientV2 getClient() {
     if (sDbxClient == null) {
       throw new IllegalStateException("Client not initialized.");
     }

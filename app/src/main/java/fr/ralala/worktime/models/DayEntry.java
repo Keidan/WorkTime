@@ -204,9 +204,6 @@ public class DayEntry {
   public void setAdditionalBreak(String sbreak) {
     this.additionalBreak.copy(parseTime(sbreak));
   }
-  public void setAdditionalBreak(WorkTimeDay wbreak) {
-    this.additionalBreak.copy(wbreak);
-  }
   public WorkTimeDay getAdditionalBreak() {
     return additionalBreak;
   }

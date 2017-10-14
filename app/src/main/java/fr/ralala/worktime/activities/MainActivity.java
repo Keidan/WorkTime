@@ -15,8 +15,6 @@ import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 
-import java.util.Date;
-
 import fr.ralala.worktime.MainApplication;
 import fr.ralala.worktime.R;
 import fr.ralala.worktime.changelog.ChangeLog;
@@ -62,9 +60,10 @@ public class MainActivity extends RuntimePermissionsActivity implements Navigati
     toggle.syncState();
 
     navigationView = (NavigationView) findViewById(R.id.nav_view);
-    navigationView.setNavigationItemSelectedListener(this);
-    navigationView.getMenu().getItem(0).setChecked(true);
-
+    if(navigationView != null) {
+      navigationView.setNavigationItemSelectedListener(this);
+      navigationView.getMenu().getItem(0).setChecked(true);
+    }
     app = MainApplication.getApp(this);
     fragments = new AppFragmentsFactory(app, navigationView);
     displayView(fragments.getDefaultHomeId());
@@ -171,7 +170,7 @@ public class MainActivity extends RuntimePermissionsActivity implements Navigati
   public void displayView(int viewId) {
     String title = getString(R.string.app_title);
 
-    viewIsAtHome = fragments.getDefaultHomeId() == viewId ? true : false;
+    viewIsAtHome = fragments.getDefaultHomeId() == viewId;
     switch (viewId) {
       case R.id.nav_quickaccess:
         fragments.setCurrentToFragment(AppFragmentsFactory.IDX_QUICK_ACCESS);

@@ -59,13 +59,15 @@ public class PublicHolidayActivity extends AppCompatActivity implements View.OnC
     app = MainApplication.getApp(this);
     setContentView(R.layout.activity_public_holiday);
     android.support.v7.app.ActionBar actionBar = getDelegate().getSupportActionBar();
-    actionBar.setDisplayShowHomeEnabled(true);
-    actionBar.setDisplayHomeAsUpEnabled(true);
+    if(actionBar != null) {
+      actionBar.setDisplayShowHomeEnabled(true);
+      actionBar.setDisplayHomeAsUpEnabled(true);
+    }
     String name =  "";
     if(getIntent().getExtras() != null) {
       Bundle extras = getIntent().getExtras();
       name = extras.getString(PUBLIC_HOLIDAY_ACTIVITY_EXTRA_NAME);
-      if(name.equals("null")) name = "";
+      if(name == null || name.equals("null")) name = "";
     }
     List<DayEntry> days = app.getPublicHolidaysFactory().list();
     for(DayEntry de : days) {
@@ -79,7 +81,8 @@ public class PublicHolidayActivity extends AppCompatActivity implements View.OnC
       de.setName(name);
     }
     fab = (FloatingActionButton) findViewById(R.id.fab);
-    fab.setOnClickListener(this);
+    if(fab != null)
+      fab.setOnClickListener(this);
 
     ckRecurrence = (CheckBox)findViewById(R.id.ckRecurrence);
     tname = (EditText) findViewById(R.id.etName);
@@ -140,9 +143,7 @@ public class PublicHolidayActivity extends AppCompatActivity implements View.OnC
         onBackPressed();
       } else {
         AndroidHelper.showAlertDialog(this, R.string.error, R.string.error_duplicate_public_holiday);
-        return;
       }
-
     }
   }
 

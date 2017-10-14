@@ -46,21 +46,24 @@ public abstract class RuntimePermissionsActivity extends AppCompatActivity {
     if ((grantResults.length > 0) && permissionCheck == PackageManager.PERMISSION_GRANTED) {
       onPermissionsGranted(requestCode);
     } else {
-      Snackbar.make(findViewById(android.R.id.content), mErrorString.get(requestCode),
-        Snackbar.LENGTH_INDEFINITE).setAction("ENABLE",
-        new View.OnClickListener() {
-          @Override
-          public void onClick(View v) {
-            Intent intent = new Intent();
-            intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-            intent.addCategory(Intent.CATEGORY_DEFAULT);
-            intent.setData(Uri.parse("package:" + getPackageName()));
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-            intent.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
-            startActivity(intent);
-          }
-        }).show();
+      View v = findViewById(android.R.id.content);
+      if(v != null) {
+        Snackbar.make(v, mErrorString.get(requestCode),
+          Snackbar.LENGTH_INDEFINITE).setAction("ENABLE",
+          new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+              Intent intent = new Intent();
+              intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+              intent.addCategory(Intent.CATEGORY_DEFAULT);
+              intent.setData(Uri.parse("package:" + getPackageName()));
+              intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+              intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+              intent.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+              startActivity(intent);
+            }
+          }).show();
+      }
     }
   }
 
@@ -75,14 +78,16 @@ public abstract class RuntimePermissionsActivity extends AppCompatActivity {
     }
     if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
       if (shouldShowRequestPermissionRationale) {
-        Snackbar.make(findViewById(android.R.id.content), stringId,
-          Snackbar.LENGTH_INDEFINITE).setAction("GRANT",
-          new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-              ActivityCompat.requestPermissions(RuntimePermissionsActivity.this, requestedPermissions, requestCode);
-            }
-          }).show();
+        View v = findViewById(android.R.id.content);
+        if(v != null)
+          Snackbar.make(v, stringId,
+            Snackbar.LENGTH_INDEFINITE).setAction("GRANT",
+            new View.OnClickListener() {
+              @Override
+              public void onClick(View v) {
+                ActivityCompat.requestPermissions(RuntimePermissionsActivity.this, requestedPermissions, requestCode);
+              }
+            }).show();
       } else {
         ActivityCompat.requestPermissions(this, requestedPermissions, requestCode);
       }

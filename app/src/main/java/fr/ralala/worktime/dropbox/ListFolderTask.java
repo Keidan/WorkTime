@@ -16,7 +16,7 @@ public class ListFolderTask extends AsyncTask<String, Void, ListFolderResult> {
   private final DropboxListener mCallback;
   private Exception mException;
 
-  public ListFolderTask(DbxClientV2 dbxClient, DropboxListener callback) {
+  ListFolderTask(DbxClientV2 dbxClient, DropboxListener callback) {
     mDbxClient = dbxClient;
     mCallback = callback;
   }

@@ -148,7 +148,7 @@ public class QuickAccessFragment extends Fragment implements OnClickListener {
         }
         while(app.isQuickAccessPause()) try {
           if(restore) {
-            updateText(app.getDaysFactory().getCurrentDay(), restore, true);
+            updateText(app.getDaysFactory().getCurrentDay(), true, true);
             restore = false;
           }
           sleep(delay);

@@ -34,10 +34,6 @@ public class Setting {
     return name;
   }
 
-  public String getValue() {
-    return value;
-  }
-
   public void setName(final String name) {
     this.name = name;
   }

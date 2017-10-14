@@ -93,7 +93,7 @@ import fr.ralala.worktime.MainApplication;
     + COL_SETTINGS_VALUE
     + " TEXT NOT NULL);";
 
-  public SqlHelper(final Context context, final String name,
+  SqlHelper(final Context context, final String name,
                    final SQLiteDatabase.CursorFactory factory, final int version) {
     super(context, name, factory, version);
   }
@@ -150,7 +150,7 @@ import fr.ralala.worktime.MainApplication;
                                     final String folder) throws Exception {
     return copyDatabase(c, name, folder, name, true);
   }
-  public static String copyDatabase(final Context c, final String name,
+  private static String copyDatabase(final Context c, final String name,
                                      final String folder,
                                     final String filename, boolean date) throws Exception{
     MainApplication.getApp(c).getSql().settingsSave();

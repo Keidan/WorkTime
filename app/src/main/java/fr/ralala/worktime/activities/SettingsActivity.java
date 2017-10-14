@@ -78,8 +78,10 @@ public class SettingsActivity extends PreferenceActivity implements Preference.O
       .replace(android.R.id.content, prefFrag).commit();
     getFragmentManager().executePendingTransactions();
     android.support.v7.app.ActionBar actionBar = getDelegate().getSupportActionBar();
-    actionBar.setDisplayShowHomeEnabled(true);
-    actionBar.setDisplayHomeAsUpEnabled(true);
+    if (actionBar != null) {
+      actionBar.setDisplayShowHomeEnabled(true);
+      actionBar.setDisplayHomeAsUpEnabled(true);
+    }
     changeLog = new ChangeLog(
       new ChangeLogIds(
         R.raw.changelog,

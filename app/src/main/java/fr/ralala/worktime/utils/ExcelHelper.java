@@ -86,7 +86,7 @@ public class ExcelHelper {
     addFormula(sheet, row, column, formula.toString(), bold, time);
   }
 
-  public void addFormula(Sheet sheet, int row, int column, String formula, boolean bold, boolean time) {
+  private void addFormula(Sheet sheet, int row, int column, String formula, boolean bold, boolean time) {
     Cell cell = getCell(sheet, row, column);
     if(!time)
       cell.setCellStyle(bold ? timesBold : times);
