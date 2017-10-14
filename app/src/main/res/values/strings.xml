@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name" translatable="false">WorkTime</string>
-    <string name="app_name_day" translatable="false">WorkTime day</string>
     <string name="app_key" translatable="false">YOUR_APP_KEY_HERE</string>
 
     <string name="changelog_full_title">Change Log</string>
@@ -166,4 +165,8 @@
     <string name="statistics_break">Break</string>
     <string name="statistics_afternoon">Afternoon</string>
     <string name="statistics_reload">Reload</string>
+    <string name="tv_morning_widget">Morning: </string>
+    <string name="tv_break_widget">Break: </string>
+    <string name="tv_afternoon_widget">Afternoon: </string>
+    <string name="tv_worktime_widget">Worktime: </string>
 </resources>

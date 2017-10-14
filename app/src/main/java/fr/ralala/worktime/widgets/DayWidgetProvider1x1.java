@@ -1,4 +1,4 @@
-package fr.ralala.worktime.widget;
+package fr.ralala.worktime.widgets;
 
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
@@ -18,14 +18,14 @@ import fr.ralala.worktime.utils.AndroidHelper;
 /**
  *******************************************************************************
  * <p><b>Project WorkTime</b><br/>
- * Day widget
+ * Day widget 1x1
  * </p>
  * @author Keidan
  *
  *******************************************************************************
  */
-public class DayWidgetProvider extends AppWidgetProvider {
-  public static final String ACTION_FROM_WIDGET = "ACTION_FROM_WIDGET";
+public class DayWidgetProvider1x1 extends AppWidgetProvider {
+  public static final String ACTION_FROM_WIDGET = "ACTION_FROM_WIDGET_1x1";
 
   @Override
   public void onUpdate(final Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
@@ -39,7 +39,7 @@ public class DayWidgetProvider extends AppWidgetProvider {
     DayEntry de = app.getDaysFactory().getCurrentDay();
     WorkTimeDay w = de == null ? new WorkTimeDay() : de.getDay();
 
-    RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.widget_day);
+    RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.widget_day1x1);
 
     for (int idx : appWidgetIds) {
       Intent intent = new Intent(context, DayActivity.class);
@@ -52,10 +52,11 @@ public class DayWidgetProvider extends AppWidgetProvider {
       remoteViews.setOnClickPendingIntent(R.id.tvWorkTime, pendingIntent);
       remoteViews.setTextViewText(R.id.tvMonth, context.getResources().getStringArray(R.array.month_long)[w.getMonth() - 1]);
       remoteViews.setTextViewText(R.id.tvDay, ""+w.getDay());
-      if(de == null)
-        remoteViews.setTextViewText(R.id.tvWorkTime, "00:00");
+
+      if(de == null || de.getWorkTime().timeString().equals("00:00") || de.getOverTime().timeString().equals("00:00"))
+        remoteViews.setTextViewText(R.id.tvWorkTime, de == null ? "00:00" : de.getWorkTime().timeString());
       else
-        remoteViews.setTextViewText(R.id.tvWorkTime, de.getWorkTime().timeString() + " (" + de.getOverTime().timeString() + ")");
+        remoteViews.setTextViewText(R.id.tvWorkTime, de.getWorkTime().timeString() + " (" + de.getOverTime().timeString(true) + ")");
       appWidgetManager.updateAppWidget(idx, remoteViews);
     }
   }

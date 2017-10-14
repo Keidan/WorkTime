@@ -84,8 +84,8 @@
         <receiver
             android:icon="@mipmap/ic_launcher"
             android:enabled="true"
-            android:label="@string/app_name_day"
-            android:name=".widget.DayWidgetProvider" >
+            android:label="@string/app_name"
+            android:name=".widgets.DayWidgetProvider1x1" >
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_ENABLED" />
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -95,7 +95,23 @@
 
             <meta-data
                 android:name="android.appwidget.provider"
-                android:resource="@xml/day_widget_info" />
+                android:resource="@xml/day_widget1x1_info" />
+        </receiver>
+        <receiver
+            android:icon="@mipmap/ic_launcher"
+            android:enabled="true"
+            android:label="@string/app_name"
+            android:name=".widgets.DayWidgetProvider4x1" >
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_ENABLED" />
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="android.appwidget.action.APPWIDGET_DELETED" />
+                <action android:name="android.appwidget.action.APPWIDGET_DISABLED" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/day_widget4x1_info" />
         </receiver>
     </application>
 

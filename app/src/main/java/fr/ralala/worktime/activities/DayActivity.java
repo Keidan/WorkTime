@@ -29,7 +29,8 @@ import fr.ralala.worktime.utils.AndroidHelper;
 
 
 import fr.ralala.worktime.R;
-import fr.ralala.worktime.widget.DayWidgetProvider;
+import fr.ralala.worktime.widgets.DayWidgetProvider1x1;
+import fr.ralala.worktime.widgets.DayWidgetProvider4x1;
 
 /**
  *******************************************************************************
@@ -110,15 +111,15 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
     setContentView(R.layout.activity_day);
     String date =  null;
     boolean show = false;
-    if(getIntent().getAction() == null || !getIntent().getAction().equals(DayWidgetProvider.ACTION_FROM_WIDGET)) {
+    if(getIntent().getAction() == null || (!getIntent().getAction().equals(DayWidgetProvider1x1.ACTION_FROM_WIDGET) && !getIntent().getAction().equals(DayWidgetProvider4x1.ACTION_FROM_WIDGET))) {
       if(getIntent().getExtras() != null) {
         Bundle extras = getIntent().getExtras();
         date = extras.getString(DAY_ACTIVITY_EXTRA_DATE);
         displayProfile = extras.getBoolean(DAY_ACTIVITY_EXTRA_PROFILE);
-        if(date.equals("null")) date = "";
+        if(date == null || date.equals("null")) date = "";
       }
       show = true;
-    } else if(getIntent().getAction().equals(DayWidgetProvider.ACTION_FROM_WIDGET)) {
+    } else if(getIntent().getAction().equals(DayWidgetProvider1x1.ACTION_FROM_WIDGET) || getIntent().getAction().equals(DayWidgetProvider4x1.ACTION_FROM_WIDGET)) {
       /* If the main activity is not started, all contexts are reset, so we need to reload the required contexts */
       if(!app.openSql(this)) {
         AndroidHelper.toast(this, R.string.error_widget_sql);
@@ -134,8 +135,10 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
     }
 
     android.support.v7.app.ActionBar actionBar = getDelegate().getSupportActionBar();
-    actionBar.setDisplayShowHomeEnabled(show);
-    actionBar.setDisplayHomeAsUpEnabled(show);
+    if(actionBar != null) {
+      actionBar.setDisplayShowHomeEnabled(show);
+      actionBar.setDisplayHomeAsUpEnabled(show);
+    }
     List<DayEntry> days = displayProfile ? app.getDaysFactory().list() : app.getProfilesFactory().list();
     for(DayEntry de : days) {
       if((displayProfile && de.getDay().dateString().equals(date)) || (!displayProfile && de.getName().equals(date))) {
@@ -153,7 +156,8 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
         de.setDay(date);
     }
     fab = (FloatingActionButton) findViewById(R.id.fab);
-    fab.setOnClickListener(this);
+    if(fab != null)
+      fab.setOnClickListener(this);
     refreshStartEndPause(de);
 
     if(displayProfile)
@@ -174,7 +178,9 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
 
     boolean hw = app.isHideWage();
     etAmount.setVisibility(hw ? View.INVISIBLE : View.VISIBLE);
-    findViewById(R.id.tvLblAmount).setVisibility(hw ? View.INVISIBLE : View.VISIBLE);
+    View tvLblAmount = findViewById(R.id.tvLblAmount);
+    if(tvLblAmount != null)
+      tvLblAmount.setVisibility(hw ? View.INVISIBLE : View.VISIBLE);
     /* add click listener for the time picker */
     tvStartMorning.setOnClickListener(this);
     tvEndMorning.setOnClickListener(this);
@@ -186,20 +192,25 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
     if(displayProfile) {
       int v = View.VISIBLE;
       spProfile.setVisibility(v);
-      tvProfile.setVisibility(v);
+      if(tvProfile != null)
+        tvProfile.setVisibility(v);
       v = View.GONE;
-      tvName.setVisibility(v);
+      if(tvName != null)
+        tvName.setVisibility(v);
       etName.setVisibility(v);
       if(app.getProfilesFactory().list().isEmpty()) {
         spProfile.setVisibility(View.GONE);
-        tvProfile.setVisibility(View.GONE);
+        if(tvProfile != null)
+          tvProfile.setVisibility(View.GONE);
       }
     } else {
       int v = View.GONE;
       spProfile.setVisibility(v);
-      tvProfile.setVisibility(v);
+      if(tvProfile != null)
+        tvProfile.setVisibility(v);
       v = View.VISIBLE;
-      tvName.setVisibility(v);
+      if(tvName != null)
+        tvName.setVisibility(v);
       etName.setVisibility(v);
       etName.setText(de.getName());
     }
@@ -375,7 +386,8 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
             app.getDaysFactory().add(newEntry);
           if(AndroidHelper.isServiceRunning(this, QuickAccessService.class))
             stopService(new Intent(this, QuickAccessService.class));
-          AndroidHelper.updateWidget(this, DayWidgetProvider.class);
+          AndroidHelper.updateWidget(this, DayWidgetProvider1x1.class);
+          AndroidHelper.updateWidget(this, DayWidgetProvider4x1.class);
         }
       } else {
         if (etName.getText().toString().isEmpty()) {

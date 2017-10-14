@@ -16,4 +16,5 @@
     <dimen name="widget_text_size_day">22sp</dimen>
     <dimen name="widget_text_size_month">9sp</dimen>
     <dimen name="widget_text_size_year">8sp</dimen>
+    <dimen name="widget_text_size_4x1">9sp</dimen>
 </resources>
