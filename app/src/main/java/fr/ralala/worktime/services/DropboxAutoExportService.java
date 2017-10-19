@@ -100,11 +100,15 @@ public class DropboxAutoExportService extends Service implements DropboxImportEx
 
   @Override
   public void onDestroy() {
-    if(app != null)
+    boolean cond = false;
+    if(app != null) {
       app.getSql().close();
+      cond = (app.getLastWidgetOpen() != 0L || AndroidHelper.isActivityRunning(this, DayActivity.class) || AndroidHelper.isActivityRunning(this, MainActivity.class));
+    }
     super.onDestroy();
-    if(app.getLastWidgetOpen() != 0L && (AndroidHelper.isActivityRunning(this, DayActivity.class) || AndroidHelper.isActivityRunning(this, MainActivity.class)))
+    if(cond)
       return;
+    Log.e("fr.ralala.", "killProcess");
     Process.killProcess(android.os.Process.myPid());
   }
 

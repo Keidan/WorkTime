@@ -42,8 +42,8 @@ import fr.ralala.worktime.widgets.DayWidgetProvider4x1;
  *******************************************************************************
  */
 public class DayActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemSelectedListener{
-  public static final String DAY_ACTIVITY_EXTRA_DATE = "fr.ralala.worktime.activities.DAY_ACTIVITY_EXTRA_DATE_date";
-  public static final String DAY_ACTIVITY_EXTRA_PROFILE = "fr.ralala.worktime.activities.DAY_ACTIVITY_EXTRA_DATE_profile";
+  public static final String DAY_ACTIVITY_EXTRA_DATE = "DAY_ACTIVITY_EXTRA_DATE_date";
+  public static final String DAY_ACTIVITY_EXTRA_PROFILE = "DAY_ACTIVITY_EXTRA_DATE_profile";
   private Spinner spProfile = null;
   private Spinner spTypeMorning = null;
   private Spinner spTypeAfternoon = null;
@@ -85,22 +85,23 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
   public void onBackPressed() {
     super.onBackPressed();
     AndroidHelper.closeAnimation(this);
-    if(fromWidget) {
-      app.setLastWidgetOpen(System.currentTimeMillis());
-    }
+    clearFromWidget();
   }
 
-
-
-  @Override
-  public void onPause() {
-    super.onPause();
+  private void clearFromWidget() {
     if(fromWidget) {
       app.setLastWidgetOpen(System.currentTimeMillis());
       if(app.isExportAutoSave())
         startService(new Intent(this, DropboxAutoExportService.class));
-      finish();
+      else
+        finish();
     }
+  }
+
+  @Override
+  public void onPause() {
+    super.onPause();
+    clearFromWidget();
   }
 
   @Override
@@ -273,14 +274,11 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
       tvLegalWorktime.setText(t);
       de.setLegalWorktime(t);
     }
-    Log.e(getClass().getSimpleName(), "displayProfile:"+displayProfile);
-    Log.e(getClass().getSimpleName(), "openForAdd:"+openForAdd);
     if(displayProfile && openForAdd) {
       DayEntry de = app.getProfilesFactory().getHighestLearningWeight();
       if(de == null)
         spProfile.setSelection(0);
       else {
-        Log.e(getClass().getSimpleName(), "de.getDay().dateString():"+de.getDay().dateString());
         for (int i = 0; i < spProfilesAdapter.getCount(); ++i) {
           String s = spProfilesAdapter.getItem(i);
           if (s != null && s.equals(de.getName())) {
@@ -446,7 +444,6 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
         selectedProfile = null;
     }
   }
-
 
   private void refreshStartEndPause(DayEntry de) {
     wtdStartMorning = de.getStartMorning().clone();

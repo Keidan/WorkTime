@@ -255,6 +255,10 @@ public class MainApplication extends Application {
 
   private <T> boolean listEquals(List<T> l1, List<T> l2) {
     List<T> list = new ArrayList<>();
+    if(l1 == null && l2 == null)
+      return true;
+    if(l1 == null || l2 == null)
+      return false;
     if(l1.size() != l2.size())
       return false;
     for(T i1 : l1) {
