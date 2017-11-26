@@ -12,11 +12,8 @@ import android.util.Log;
 import java.util.Calendar;
 
 import fr.ralala.worktime.MainApplication;
-import fr.ralala.worktime.activities.DayActivity;
-import fr.ralala.worktime.activities.MainActivity;
 import fr.ralala.worktime.dropbox.DropboxImportExport;
 import fr.ralala.worktime.models.WorkTimeDay;
-import fr.ralala.worktime.utils.AndroidHelper;
 
 /**
  *******************************************************************************
@@ -28,29 +25,29 @@ import fr.ralala.worktime.utils.AndroidHelper;
  *******************************************************************************
  */
 public class DropboxAutoExportService extends Service implements DropboxImportExport.DropboxUploaded, DropboxImportExport.DropboxDownloaded {
-  private MainApplication app = null;
+  private MainApplication mApp = null;
   public static final String KEY_NEED_UPDATE = "dropboxKeyNeedUpdate";
   public static final String DEFVAL_NEED_UPDATE = "false";
 
   @Override
   public void onCreate() {
-    app = MainApplication.getApp(this);
-    if(!app.openSql(this)) {
+    mApp = MainApplication.getApp(this);
+    if(!mApp.openSql(this)) {
       stopSelf();
     }
 
-    if(app.isTablesChanges()) {
+    if(mApp.isTablesChanges()) {
       boolean export = isExportable();
       Log.e(getClass().getSimpleName(), "Exportation required and the day" + (export ? " " : " not") + " match.");
       if(export) {
-        setNeedUpdate(app, false);
-        if (!app.getDropboxImportExport().exportDatabase(this, false, this)) {
+        setNeedUpdate(mApp, false);
+        if (!mApp.getDropboxImportExport().exportDatabase(this, false, this)) {
           Log.e(getClass().getSimpleName(), "Export failed.");
-          setNeedUpdate(app, true);
+          setNeedUpdate(mApp, true);
           stopSelf();
         }
       } else {
-        setNeedUpdate(app, true);
+        setNeedUpdate(mApp, true);
         stopSelf();
       }
     } else {
@@ -59,10 +56,10 @@ public class DropboxAutoExportService extends Service implements DropboxImportEx
       boolean needUpdate = prefs.getBoolean(KEY_NEED_UPDATE, DEFVAL_NEED_UPDATE.equals("true"));
       if(export && needUpdate) {
         Log.e(getClass().getSimpleName(), "No changes have been detected but the day is valid for pending export.");
-        setNeedUpdate(app, false);
-        if (!app.getDropboxImportExport().exportDatabase(this, false, this)) {
+        setNeedUpdate(mApp, false);
+        if (!mApp.getDropboxImportExport().exportDatabase(this, false, this)) {
           Log.e(getClass().getSimpleName(), "Export failed.");
-          setNeedUpdate(app, true);
+          setNeedUpdate(mApp, true);
           stopSelf();
         }
         return;
@@ -87,7 +84,7 @@ public class DropboxAutoExportService extends Service implements DropboxImportEx
 
   private boolean isExportable() {
     Calendar c = WorkTimeDay.now().toCalendar();
-    int p = app.getExportAutoSavePeriodicity();
+    int p = mApp.getExportAutoSavePeriodicity();
     return ((p == 0) ||
       (p == 1 && c.get(Calendar.DAY_OF_WEEK) == Calendar.MONDAY) ||
       (p == 2 && c.get(Calendar.DAY_OF_WEEK) == Calendar.TUESDAY) ||
@@ -101,9 +98,9 @@ public class DropboxAutoExportService extends Service implements DropboxImportEx
   @Override
   public void onDestroy() {
     boolean cond = false;
-    if(app != null) {
-      app.getSql().close();
-      cond = (app.getLastWidgetOpen() != 0L || AndroidHelper.isActivityRunning(this, DayActivity.class) || AndroidHelper.isActivityRunning(this, MainActivity.class));
+    if(mApp != null) {
+      mApp.getSql().close();
+      cond = (mApp.getLastWidgetOpen() != 0L || mApp.getLifeCycle().isActivityVisible());
     }
     super.onDestroy();
     if(cond)

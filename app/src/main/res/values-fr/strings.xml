@@ -47,7 +47,6 @@
     <string name="start_morning">Matin arriv\u00E9e :</string>
     <string name="additional_break">Pause suppl.:</string>
     <string name="at_work">Travail</string>
-    <string name="error_invalid_type">Profil non valide.</string>
     <string name="error_invalid_start">Heure de d\u00E9part non valide.</string>
     <string name="error_invalid_end">Heure d\'arriv\u00E9e non valide.</string>
     <string name="error_invalid_start_end_morning">Les horaires de d\u00E9part et d\'arriv\u00E9e du matin sont invalides.</string>
@@ -106,7 +105,6 @@
     <string name="use_file">Utilisez ce fichier</string>
     <string name="export_success">Exportation r\u00E9ussie</string>
     <string name="import_success">Importation r\u00E9ussie</string>
-    <string name="permissions">Permissions</string>
     <string name="permissions_read_ext_storage">Les fonctions d\'import/export ont besoin des autorisations d\'acc\u00E8s en lecture/\u00E9criture au stockage externe et l\'acc\u00E8s internet pour dropbox</string>
     <string name="year">Ann\u00E9e :</string>
     <string name="export_no_items">Aucun mois s\u00E9lectionn\u00E9 pour l\'exportation</string>
@@ -126,7 +124,6 @@
     <string name="the_file_exists_part_1">Le fichier</string>
     <string name="the_file_exists_part_2">existe d\u00E9j\u00E0. Voulez-vous remplacer le fichier existant?</string>
     <string name="confirm">Confirmation</string>
-    <string name="details_title">D\u00E9tails</string>
     <string name="week_letter">S</string>
     <string name="week">semaine</string>
     <string name="error_dropbox_upload">Impossible d\'uploader le fichier</string>
@@ -143,12 +140,10 @@
     <string name="bt_start">D\u00E9marrer</string>
     <string name="bt_pause">Pause</string>
     <string name="bt_finalize">Finaliser la journ\u00E9e</string>
-    <string name="bt_finalize2">Finaliser</string>
-    <string name="bt_options">Options</string>
     <string name="service_running">Finalisez ou mettez sur pause l\'acc\u00E8s rapide avant de modifier le jour.</string>
     <string name="restart_from_db_update_vn">Base de donn\u00E9es mise \u00E0 jour vers la version</string>
     <string name="recurrence">R\u00E9currence</string>
-    <string name="legalWorkTimeByDay">Temps de travail l\u00E9gal</string>
+    <string name="legal_worktime_by_day">Temps de travail l\u00E9gal</string>
     <string name="error_editing_public_holiday">L\'\u00E9dition du jour f\u00E9ri\u00E9 n\'est pas prise en charge.</string>
     <string name="error_duplicate_public_holiday">Le jour f\u00E9ri\u00E9 est d\u00E9j\u00E0 ins\u00E9r\u00E9.</string>
     <string name="statistics_morning">Matin</string>

@@ -3,14 +3,14 @@
     <style type='text/css'>
       a            { color:#7373a2 }
       div.title    {
-        color:#43a047;
+        color:#606060;
         font-size:1.2em;
         font-weight:bold;
         margin-top:1em;
         margin-bottom:0.5em;
         text-align:center }
       div.subtitle {
-        color:#43a0a4;
+        color:#303030;
         font-size:0.8em;
         margin-bottom:1em;
         text-align:center }
@@ -19,183 +19,11 @@
     </style> 	
   </head>
   <body>
-  $ 1.21
-      % Version 1.21
-      _ 2017/11/24
-      * The timepicker theme is forced to clock mode instead of spinner mode.
-      * Now, the amount section is displayed correctly.
-      * The learning information are retained after a profile update.
-      * The crash on the database importation has been fixed.
-      * A quick change of the current day can be made using the widgets.
-
-  $ 1.20
-      % Version 1.20
-      _ 2017/07/19
-      * A new menu showing a chart of the working time has been added (click on a bar to zoom in and press back button to zoom out).
-      * A bug with the automatic export period has been fixed.
-      * Fragment management has been improved.
-      * Minor fix.
-
-  $ 1.19
-      % Version 1.19
-      _ 2017/07/09
-      * Normally, the regression related to the profile learning is really fixed.
-      * An option to automatically export the database to Dropbox has been added.
-      * An option to manage the automatic export periodicity has been added.
-
-  $ 1.18
-      % Version 1.18
-      _ 2017/06/26
-      * Now, the lists are refreshed after adding a new profile or a new public holiday.
-      * A regression with profile learning has been fixed.
-
-  $ 1.17
-      % Version 1.17
-      _ 2017/05/13
-      * The timepicker is now saved after a one-day update.
-      * Overtime is now displayed in the profile list.
-      * The scrolling of the UI when the screen is in landscape is now possible.
-      * The add/apply buttons are slightly moved from right to left.
-
-  $ 1.16
-      % Version 1.16
-      _ 2017/05/07
-      * The time when the day type is holiday or sickness is now included into the working time.
-      * The exit feature has been changed for more intuitive use.
-      * Now all parameters are saved in the database.
-      * The time when the day is not equal to "unpaid" is now added to the calculation of the over time.
-      * Some refresh bugs have been fixed (only those found).
-      * Some spelling issues have been fixed.
-      * An option to hide the exit button has been added (with no effect to the back button behaviour).
-      * Fixing an error with algorithm used to sort the of public holidays.
-      * Fixing a bug related to the jump to the current day of the work time list and the displaying of the top panel.
-
-  $ 1.15
-      % Version 1.15
-      _ 2017/05/01
-      * A bug with the DB reading of the profile type has been fixed.
-      * Now, a user can insert half a day without being obliged to have the other half of the day at work.
-      * A bug when the list auto scroll to the current day and the user change the month has been fixed.
-      * Now, the preferred home view is selected on back from the settings view.
-      * The fractional part of the number of working hours when it is equals to 0 has been hidden.
-      * The recurrence has been added to the public holidays activity.
-      * Fixing an error when the lists are refreshed and an entry is created or modified.
-      * In the profiles and days views, it is now possible to overload the legal working time value.
-      * Minor bugs have been fixed (only those found).
-      * The edition of public holidays is disallowed.
-      * The drawer is now open when the back button is pressed.
-      * An exit button has been added to the drawer.
-      * The floating buttons icon of the add/edit views are replaced by an apply icon.
-      * Fixing a bug related to learning profiles.
-      * The top panel is refreshed after changing the date using the datepicker.
-
-  $ 1.14
-      % Version 1.14
-      _ 2017/04/22
-      * In the days activity, a regression with the selection of an entry when the used needs to update it has been fixed.
-      * In the work time view, a regression that prevents the click on a day until the list is moved has been fixed.
-      * In the settings activity, the default value of the preferred home has been changed.
-      * In the work time view, a bug with the time who that is filled in when the type of the day is equal to holiday has been fixed.
-
-  $ 1.13
-      % Version 1.13
-      _ 2017/04/04
-      * An option to enable automatic scrolling of the working time view for the current day has been added.
-      * A regression with the leaning mode has been fixed.
-
-  $ 1.12
-      % Version 1.12
-      _ 2017/03/26
-      * The day update when the quick access is started is now disallowed.
-      * Improves the management of the profile learning.
-      * Adding of a toast when the database is updated.
-
-  $ 1.11
-      % Version 1.11
-      _ 2017-03-13
-      * Fill in the fields only if the day activity is open for additions.
-
-  $ 1.10
-      % Version 1.10
-      _ 2017-03-12
-      * Align the hour trigger that determines when the quick access should use afternoon to insert the work time.
-      * Displays the activity when a click on the notification is made.
-      * Fixing unwanted effects between the quick access view and the notification when the activity is put in background.
-      * Spelling fix in the changelog.
-      * Fixing unwanted effects with the start/pause of the quick access view, whether from the notification or the activity.
-      * Fixing wrong order between on/off labels of the start button of the quick access view.
-      * Cleaning all the contexts when the application is stopped.
-
-  $ 1.9
-      % Version 1.9
-      _ 2017-03-11
-      * A learning mode has been added to auto select the more used profile when a day is added.
-      * Now, it is possible to select the default home to display at the start of the application.
-      * A quick access view has been added to manage quickly the working time.
-
-  $ 1.8
-      % Version 1.8
-      _ 2017-03-09
-      * Now, the height of the rows for the days list in the work time view are customizables.
-
-  $ 1.7
-      % Version 1.7
-      _ 2017-03-06
-      * The rows height has been increased.
-
-  $ 1.6
-      % Version 1.6
-      _ 2017-03-05
-      * Now, a day can be inserted with two separate types.
-      * Some unremoved log traces are now removed.
-      * Some spelling errors are fixed.
-
-  $ 1.5
-      % Version 1.5
-      _ 2017-03-03
-      * The days and the views of profiles are modified, now to add a day, you must indicate the start and end times for the morning and the afternoon.
-      * Because this version have a strong interaction with the database, even if your pause did not start at the time indicated by the migration, the pause time is respected.
-      * Now, the main view is refreshed when the database is restored.
-      * The changelog translation is removed.
-      * A few animation has been added (slide between activities and fade between fragments).
-      * The public holidays view have been changed.
-      * Now the scroll index is restored when the activity is refreshed.
-      * Minor bugs have been fixed (only those found).
-
-  $ 1.4
-      % Version 1.4
-      _ 2017-02-15
-      * Fix errors with the time operations when the value is negative.
-
-  $ 1.3
-      % Version 1.3
-      _ 2017-02-13
-      * Translation of the changelog in French.
-
-  $ 1.2
-      % Version 1.2
-      _ 2017-02-11
-      * Now the database file can be imported/exported from the dropbox cloud.
-      * Display of the actual number of working days.
-      * AM/PM information are added to the name of the exported database file.
-      * The issue when the weeks are not with 5 days in the same month is fixed.
-      * A changelog view has been added.
-      * The default value to the amount by hours field is now forced when it's hidden by the configuration.
-      * The excel formulas is supported now and the totals are available.
-      * The excel api has been changed.
-      * Some spelling issues have been fixed.
-      * Minor bugs have been fixed (only those found).
-
-  $ 1.1
-  	  % Version 1.1
-      _ 2017-12-19
-      * The bugs with the profiles, days and holidays management have been fixed (only those found).
-      * Minor bugs have been fixed (only those found).
-
-  	$ 1.0
-  	  % Version 1.0
-      _ 2016-11-13
-      * Create the application.
+  $ 2.0
+      % Version 2.0
+      _ 2017/11/26
+      * This version no longer works with devices that do not have at least Android N.
+      * Compatibility with versions prior to 1.21 is removed.
     $ END_OF_CHANGE_LOG
   </body>
 </html>

@@ -18,20 +18,20 @@ import fr.ralala.worktime.R;
  *******************************************************************************
  */
 public class DayEntry {
-  private String name = "";
-  private WorkTimeDay day = null;
-  private WorkTimeDay startMorning = null;
-  private WorkTimeDay endMorning = null;
-  private WorkTimeDay startAfternoon = null;
-  private WorkTimeDay endAfternoon = null;
-  private WorkTimeDay additionalBreak = null;
-  private DayType typeMorning = DayType.ERROR;
-  private DayType typeAfternoon = DayType.ERROR;
-  private double amountByHour = 0.0;
-  private int learningWeight = 0;
-  private boolean recurrence = false;
-  private WorkTimeDay legalWorktime = null;
-  private Context context = null;
+  private String mName = "";
+  private WorkTimeDay mDay = null;
+  private WorkTimeDay mStartMorning = null;
+  private WorkTimeDay mEndMorning = null;
+  private WorkTimeDay mStartAfternoon = null;
+  private WorkTimeDay mEndAfternoon = null;
+  private WorkTimeDay mAdditionalBreak = null;
+  private DayType mTypeMorning = DayType.ERROR;
+  private DayType mTypeAfternoon = DayType.ERROR;
+  private double mAmountByHour = 0.0;
+  private int mLearningWeight = 0;
+  private boolean mRecurrence = false;
+  private WorkTimeDay mLegalWorktime = null;
+  private MainApplication mApp = null;
 
   public boolean equals(Object o) {
     if(o == null || !DayEntry.class.isInstance(o))
@@ -39,31 +39,31 @@ public class DayEntry {
     if (this == o)
       return true;
     DayEntry de = (DayEntry)o;
-    if(name != null || de.name != null) {
-      if(name != null && de.name != null && name.compareTo(de.name) != 0)
+    if(mName != null || de.mName != null) {
+      if(mName != null && de.mName != null && mName.compareTo(de.mName) != 0)
         return false;
-      else if((name == null && de.name != null) || (name != null && de.name == null))
+      else if((mName == null && de.mName != null) || (mName != null && de.mName == null))
         return false;
     }
-    return (day.match(de.day) && startMorning.match(de.startMorning)
-      && endMorning.match(de.endMorning)&& additionalBreak.match(de.additionalBreak) && startAfternoon.match(de.startAfternoon)
-      && endAfternoon.match(de.endAfternoon)&& legalWorktime.match(de.legalWorktime) && typeMorning == de.typeMorning
-      && typeAfternoon == de.typeAfternoon && amountByHour == de.amountByHour
-      && learningWeight == de.learningWeight&& recurrence == de.recurrence);
+    return (mDay.match(de.mDay) && mStartMorning.match(de.mStartMorning)
+      && mEndMorning.match(de.mEndMorning)&& mAdditionalBreak.match(de.mAdditionalBreak) && mStartAfternoon.match(de.mStartAfternoon)
+      && mEndAfternoon.match(de.mEndAfternoon)&& mLegalWorktime.match(de.mLegalWorktime) && mTypeMorning == de.mTypeMorning
+      && mTypeAfternoon == de.mTypeAfternoon && mAmountByHour == de.mAmountByHour
+      && mLearningWeight == de.mLearningWeight&& mRecurrence == de.mRecurrence);
   }
 
   public DayEntry(final Context c, final WorkTimeDay day, final DayType typeMorning, final DayType typeAfternoon) {
-    this.context = c;
-    this.day = new WorkTimeDay();
-    this.startMorning = new WorkTimeDay();
-    this.endMorning = new WorkTimeDay();
-    this.additionalBreak = new WorkTimeDay();
-    this.startAfternoon = new WorkTimeDay();
-    this.endAfternoon = new WorkTimeDay();
-    this.typeMorning = typeMorning;
-    this.typeAfternoon = typeAfternoon;
-    this.legalWorktime = MainApplication.getApp(c).getLegalWorkTimeByDay();
-    this.day.copy(day);
+    mDay = new WorkTimeDay();
+    mStartMorning = new WorkTimeDay();
+    mEndMorning = new WorkTimeDay();
+    mAdditionalBreak = new WorkTimeDay();
+    mStartAfternoon = new WorkTimeDay();
+    mEndAfternoon = new WorkTimeDay();
+    mTypeMorning = typeMorning;
+    mTypeAfternoon = typeAfternoon;
+    mApp = MainApplication.getApp(c);
+    mLegalWorktime = mApp.getLegalWorkTimeByDay();
+    mDay.copy(day);
   }
 
   public DayEntry(final Context c, final Calendar day, final DayType typeMorning, final DayType typeAfternoon) {
@@ -78,12 +78,12 @@ public class DayEntry {
   }
 
   public WorkTimeDay getPause() {
-    if(startAfternoon.timeString().equals("00:00"))
-      return startAfternoon;
-    WorkTimeDay wp = startAfternoon.clone();
-    wp.delTime(endMorning.clone());
-    if(!additionalBreak.timeString().equals("00:00"))
-      wp.addTime(additionalBreak);
+    if(mStartAfternoon.timeString().equals("00:00"))
+      return mStartAfternoon;
+    WorkTimeDay wp = mStartAfternoon.clone();
+    wp.delTime(mEndMorning.clone());
+    if(!mAdditionalBreak.timeString().equals("00:00"))
+      wp.addTime(mAdditionalBreak);
     return wp;
   }
 
@@ -104,47 +104,46 @@ public class DayEntry {
   }
 
   public WorkTimeDay getWorkTime() {
-    WorkTimeDay wm = isValidMorningType() ? endMorning.clone() : new WorkTimeDay();
+    WorkTimeDay wm = isValidMorningType() ? mEndMorning.clone() : new WorkTimeDay();
     if(!wm.timeString().equals("00:00") && isValidMorningType())
-      wm.delTime(startMorning);
-    WorkTimeDay wa = isValidAfternoonType() ? endAfternoon.clone() : new WorkTimeDay();
+      wm.delTime(mStartMorning);
+    WorkTimeDay wa = isValidAfternoonType() ? mEndAfternoon.clone() : new WorkTimeDay();
     if(!wa.timeString().equals("00:00") && isValidAfternoonType())
-      wa.delTime(startAfternoon);
+      wa.delTime(mStartAfternoon);
     WorkTimeDay wt = wm.clone();
     wt.addTime(wa);
-    if(!wt.timeString().equals("00:00") && !additionalBreak.timeString().equals("00:00"))
-      wt.delTime(additionalBreak.clone());
+    if(!wt.timeString().equals("00:00") && !mAdditionalBreak.timeString().equals("00:00"))
+      wt.delTime(mAdditionalBreak.clone());
     return wt;
   }
 
   public void copy(DayEntry de) {
-    context = de.context;
-    learningWeight = de.learningWeight;
-    typeMorning = de.typeMorning;
-    typeAfternoon = de.typeAfternoon;
-    name = de.name;
-    day.copy(de.day);
-    startMorning.copy(de.startMorning);
-    endMorning.copy(de.endMorning);
-    additionalBreak.copy(de.additionalBreak);
-    startAfternoon.copy(de.startAfternoon);
-    endAfternoon.copy(de.endAfternoon);
-    amountByHour = de.amountByHour;
-    recurrence = de.recurrence;
-    legalWorktime = de.legalWorktime;
+    mLearningWeight = de.mLearningWeight;
+    mTypeMorning = de.mTypeMorning;
+    mTypeAfternoon = de.mTypeAfternoon;
+    mName = de.mName;
+    mDay.copy(de.mDay);
+    mStartMorning.copy(de.mStartMorning);
+    mEndMorning.copy(de.mEndMorning);
+    mAdditionalBreak.copy(de.mAdditionalBreak);
+    mStartAfternoon.copy(de.mStartAfternoon);
+    mEndAfternoon.copy(de.mEndAfternoon);
+    mAmountByHour = de.mAmountByHour;
+    mRecurrence = de.mRecurrence;
+    mLegalWorktime = de.mLegalWorktime;
   }
 
   public boolean match(DayEntry de) {
-    return day.match(de.day)  && startMorning.match(de.startMorning) && endMorning.match(de.endMorning) && additionalBreak.match(de.additionalBreak)
-      && startAfternoon.match(de.startAfternoon) && endAfternoon.match(de.endAfternoon) &&
-      typeMorning == de.typeMorning && typeAfternoon == de.typeAfternoon && amountByHour == de.amountByHour && legalWorktime.match(de.legalWorktime);
+    return mDay.match(de.mDay)  && mStartMorning.match(de.mStartMorning) && mEndMorning.match(de.mEndMorning) && mAdditionalBreak.match(de.mAdditionalBreak)
+      && mStartAfternoon.match(de.mStartAfternoon) && mEndAfternoon.match(de.mEndAfternoon) &&
+        mTypeMorning == de.mTypeMorning && mTypeAfternoon == de.mTypeAfternoon && mAmountByHour == de.mAmountByHour && mLegalWorktime.match(de.mLegalWorktime);
   }
 
   public boolean matchSimpleDate(WorkTimeDay current) {
-    boolean ret = (current.getMonth() == day.getMonth() && current.getDay() == day.getDay());
+    boolean ret = (current.getMonth() == mDay.getMonth() && current.getDay() == mDay.getDay());
     /* simple holidays can change between each years */
-    if(!isRecurrence() && ret && typeMorning == DayType.HOLIDAY && typeAfternoon == DayType.HOLIDAY)
-      return current.getYear() == day.getYear();
+    if(!isRecurrence() && ret && mTypeMorning == DayType.HOLIDAY && mTypeAfternoon == DayType.HOLIDAY)
+      return current.getYear() == mDay.getYear();
     return ret;
   }
 
@@ -181,45 +180,45 @@ public class DayEntry {
   }
 
   public void setStartMorning(String start) {
-    this.startMorning.copy(parseTime(start));
+    mStartMorning.copy(parseTime(start));
   }
   public void setStartAfternoon(String start) {
-    this.startAfternoon.copy(parseTime(start));
+    mStartAfternoon.copy(parseTime(start));
   }
 
   public void setEndMorning(String end) {
-    this.endMorning.copy(parseTime(end));
+    mEndMorning.copy(parseTime(end));
   }
   public void setEndAfternoon(String end) {
-    this.endAfternoon.copy(parseTime(end));
+    mEndAfternoon.copy(parseTime(end));
   }
   public void setEndAfternoon(WorkTimeDay end) {
-    this.endAfternoon.copy(end);
+    mEndAfternoon.copy(end);
   }
   public void setEndMorning(WorkTimeDay end) {
-    this.endMorning.copy(end);
+    mEndMorning.copy(end);
   }
 
 
   public void setAdditionalBreak(String sbreak) {
-    this.additionalBreak.copy(parseTime(sbreak));
+    mAdditionalBreak.copy(parseTime(sbreak));
   }
   public WorkTimeDay getAdditionalBreak() {
-    return additionalBreak;
+    return mAdditionalBreak;
   }
 
   public void setDay(String day) {
-    this.day.copy(parseDate(day));
+    mDay.copy(parseDate(day));
   }
   public WorkTimeDay getDay() {
-    return day;
+    return mDay;
   }
 
   public WorkTimeDay getStartMorning() {
-    return startMorning;
+    return mStartMorning;
   }
   public WorkTimeDay getStartAfternoon() {
-    return startAfternoon;
+    return mStartAfternoon;
   }
 
 
@@ -231,66 +230,66 @@ public class DayEntry {
   }
 
   public DayType getTypeMorning() {
-    return typeMorning;
+    return mTypeMorning;
   }
 
   public void setTypeMorning(DayType type) {
-    this.typeMorning = type;
+    mTypeMorning = type;
   }
 
   public DayType getTypeAfternoon() {
-    return typeAfternoon;
+    return mTypeAfternoon;
   }
 
   public void setTypeAfternoon(DayType type) {
-    this.typeAfternoon = type;
+    mTypeAfternoon = type;
   }
 
   public WorkTimeDay getEndMorning() {
-    return endMorning;
+    return mEndMorning;
   }
   public WorkTimeDay getEndAfternoon() {
-    return endAfternoon;
+    return mEndAfternoon;
   }
 
   public String getName() {
-    return name;
+    return mName;
   }
 
   public void setName(String name) {
-    this.name = name;
+    mName = name;
   }
 
   public double getAmountByHour() {
-    return amountByHour;
+    return mAmountByHour;
   }
 
   public void setAmountByHour(double amountByHour) {
-    this.amountByHour = amountByHour;
+    mAmountByHour = amountByHour;
   }
   public int getLearningWeight() {
-    return learningWeight;
+    return mLearningWeight;
   }
 
   public void setLearningWeight(int learningWeight) {
-    this.learningWeight = learningWeight;
+    mLearningWeight = learningWeight;
   }
 
   public boolean isRecurrence() {
-    return recurrence;
+    return mRecurrence;
   }
 
   public void setRecurrence(boolean recurrence) {
-    this.recurrence = recurrence;
+    mRecurrence = recurrence;
   }
 
   public WorkTimeDay getLegalWorktime() {
-    if(legalWorktime.timeString().equals("00:00"))
-      legalWorktime = MainApplication.getApp(context).getLegalWorkTimeByDay();
-    return legalWorktime;
+    if(mLegalWorktime.timeString().equals("00:00"))
+      mLegalWorktime = mApp.getLegalWorkTimeByDay();
+    return mLegalWorktime;
   }
 
   public void setLegalWorktime(String legalWorktime) {
-    this.legalWorktime.copy(parseTime(legalWorktime));
+    mLegalWorktime.copy(parseTime(legalWorktime));
   }
 }

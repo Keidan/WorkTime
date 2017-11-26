@@ -8,7 +8,7 @@
             android:summary="@string/pref_fragments_summary"
             android:entryValues="@array/values_fragments"
             android:title="@string/pref_fragments_title" />
-        <fr.ralala.worktime.dialogs.TimePreferenceDialog
+        <fr.ralala.worktime.ui.dialogs.TimePreferenceDialog
             android:key="prefWorkTimeByDay"
             android:title="@string/pref_title_work_time_by_day"
             android:defaultValue="00:00"
@@ -69,7 +69,7 @@
     <PreferenceCategory android:title="@string/pref_title_learning" android:key="prefCatWeight" >
         <Preference
             android:key="prefCatWeightLabel"
-            android:title="@string/empty"
+            android:title="@null"
             android:summary="@string/pref_summary_learning"
             android:selectable="false"/>
         <EditTextPreference

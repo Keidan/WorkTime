@@ -7,11 +7,14 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 
+import fr.ralala.worktime.ui.activities.DayActivity;
+import fr.ralala.worktime.ui.activities.MainActivity;
 import fr.ralala.worktime.dropbox.DropboxImportExport;
 import fr.ralala.worktime.factories.DaysFactory;
 import fr.ralala.worktime.factories.ProfilesFactory;
@@ -19,11 +22,12 @@ import fr.ralala.worktime.factories.PublicHolidaysFactory;
 import fr.ralala.worktime.models.DayEntry;
 import fr.ralala.worktime.models.Setting;
 import fr.ralala.worktime.models.WorkTimeDay;
-import fr.ralala.worktime.activities.SettingsActivity;
-import fr.ralala.worktime.quickaccess.QuickAccessNotification;
+import fr.ralala.worktime.ui.activities.SettingsActivity;
+import fr.ralala.worktime.ui.quickaccess.QuickAccessNotification;
 import fr.ralala.worktime.services.DropboxAutoExportService;
 import fr.ralala.worktime.sql.SqlFactory;
-import fr.ralala.worktime.utils.AndroidHelper;
+import fr.ralala.worktime.utils.MyActivityLifecycleCallbacks;
+import fr.ralala.worktime.ui.utils.UIHelper;
 
 /**
  *******************************************************************************
@@ -34,33 +38,46 @@ import fr.ralala.worktime.utils.AndroidHelper;
  *
  *******************************************************************************
  */
-public class MainApplication extends Application {
+public class MainApplication extends Application  {
   private static final int NFY_QUICK_ACCESS = 1;
-  private final PublicHolidaysFactory publicHolidaysFactory;
-  private final ProfilesFactory profilesFactory;
-  private final DaysFactory daysFactory;
-  private SqlFactory sql = null;
-  private Calendar currentDate = null;
-  private boolean quickAccessPause = true;
-  private QuickAccessNotification quickAccessNotification = null;
-  private boolean resumeAfterActivity = false;
-  private int lastFirstVisibleItem = 0;
-  private DropboxImportExport dropboxImportExport = null;
-  private List<DayEntry> onloadProfiles = null;
-  private List<DayEntry> onloadDays = null;
-  private List<DayEntry> onloadPublicHolidays = null;
-  private List<Setting> onloadSettings = null;
-  private WorkTimeDay lastQuickAccessBreak = null;
-  private long lastWidgetOpen = 0L;
+  private PublicHolidaysFactory mPublicHolidaysFactory;
+  private ProfilesFactory mProfilesFactory;
+  private DaysFactory mDaysFactory;
+  private SqlFactory mSql = null;
+  private Calendar mCurrentDate = null;
+  private boolean mQuickAccessPause = true;
+  private QuickAccessNotification mQuickAccessNotification = null;
+  private boolean mResumeAfterActivity = false;
+  private int mLastFirstVisibleItem = 0;
+  private DropboxImportExport mDropboxImportExport = null;
+  private List<DayEntry> mOnloadProfiles = null;
+  private List<DayEntry> mOnloadDays = null;
+  private List<DayEntry> mOnloadPublicHolidays = null;
+  private List<Setting> mOnloadSettings = null;
+  private WorkTimeDay mLastQuickAccessBreak = null;
+  private long mLastWidgetOpen = 0L;
+  private MyActivityLifecycleCallbacks mLifeCycle;
 
 
   public MainApplication() {
-    publicHolidaysFactory = new PublicHolidaysFactory();
-    profilesFactory = new ProfilesFactory();
-    daysFactory = new DaysFactory();
-    quickAccessNotification = new QuickAccessNotification(this, NFY_QUICK_ACCESS);
-    dropboxImportExport = new DropboxImportExport();
-    onloadSettings = new ArrayList<>();
+  }
+  @Override
+  public void onCreate() {
+    super.onCreate();
+    mPublicHolidaysFactory = new PublicHolidaysFactory();
+    mProfilesFactory = new ProfilesFactory();
+    mDaysFactory = new DaysFactory();
+    mQuickAccessNotification = new QuickAccessNotification(this, NFY_QUICK_ACCESS);
+    mDropboxImportExport = new DropboxImportExport();
+    mOnloadSettings = new ArrayList<>();
+
+    // Register for activity state changes notifications
+    Class<?>[] classes = new Class<?>[] { MainActivity.class, DayActivity.class };
+    registerActivityLifecycleCallbacks(mLifeCycle = new MyActivityLifecycleCallbacks(Arrays.asList(classes)));
+  }
+
+  public MyActivityLifecycleCallbacks getLifeCycle() {
+    return mLifeCycle;
   }
 
 
@@ -71,62 +88,94 @@ public class MainApplication extends Application {
   public boolean openSql(final Context c) {
     boolean ret = false;
     try {
-      sql = new SqlFactory(c);
-      sql.open(c);
-      if(onloadSettings.isEmpty())
-        sql.settingsLoad(onloadSettings);
-      publicHolidaysFactory.reload(sql);
-      daysFactory.reload(sql);
-      profilesFactory.reload(sql);
+      mSql = new SqlFactory(c);
+      mSql.open(c);
+      if(mOnloadSettings.isEmpty())
+        mSql.settingsLoad(mOnloadSettings);
+      mPublicHolidaysFactory.reload(mSql);
+      mDaysFactory.reload(mSql);
+      mProfilesFactory.reload(mSql);
       ret = true;
-      /*SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-      SharedPreferences.Editor ed = prefs.edit();
-      ed.remove(DropboxAutoExportService.KEY_NEED_UPDATE);
-      ed.apply();*/
     } catch (final Exception e) {
       Log.e(getClass().getSimpleName(), "Error: " + e.getMessage(), e);
-      AndroidHelper.showAlertDialog(this, R.string.error, getString(R.string.error) + ": " + e.getMessage());
+      UIHelper.showAlertDialog(this, R.string.error, getString(R.string.error) + ": " + e.getMessage());
     }
     return ret;
   }
 
   public Calendar getCurrentDate() {
-    if(currentDate == null) {
-      currentDate = Calendar.getInstance();
-      currentDate.setTimeZone(TimeZone.getTimeZone("GMT"));
-      currentDate.setTime(new Date());
+    if(mCurrentDate == null) {
+      mCurrentDate = Calendar.getInstance();
+      mCurrentDate.setTimeZone(TimeZone.getTimeZone("GMT"));
+      mCurrentDate.setTime(new Date());
     }
-    return currentDate;
+    return mCurrentDate;
   }
 
   public WorkTimeDay getLastQuickAccessBreak() {
-    return lastQuickAccessBreak;
+    return mLastQuickAccessBreak;
   }
 
   public void setLastQuickAccessBreak(WorkTimeDay lastQuickAccessBreak) {
-    this.lastQuickAccessBreak = lastQuickAccessBreak;
+    mLastQuickAccessBreak = lastQuickAccessBreak;
   }
 
   public QuickAccessNotification getQuickAccessNotification() {
-    return quickAccessNotification;
+    return mQuickAccessNotification;
   }
 
   public ProfilesFactory getProfilesFactory() {
-    return profilesFactory;
+    return mProfilesFactory;
   }
-
   public DaysFactory getDaysFactory() {
-    return daysFactory;
+    return mDaysFactory;
   }
-
   public PublicHolidaysFactory getPublicHolidaysFactory() {
-    return publicHolidaysFactory;
+    return mPublicHolidaysFactory;
   }
 
   public SqlFactory getSql() {
-    return sql;
+    return mSql;
   }
 
+  public WorkTimeDay getEstimatedHours(List<DayEntry> wDays) {
+    WorkTimeDay w = new WorkTimeDay();
+    for(int i = 0; i < wDays.size(); ++i)
+      w.addTime(wDays.get(i).getLegalWorktime());
+    return w;
+  }
+
+  public void setQuickAccessPause(boolean quickAccessPause) {
+    mQuickAccessPause = quickAccessPause;
+  }
+
+  public boolean isQuickAccessPause() {
+    return mQuickAccessPause;
+  }
+
+  public void setResumeAfterActivity(boolean resumeAfterActivity) {
+    mResumeAfterActivity = resumeAfterActivity;
+  }
+  public boolean isResumeAfterActivity() {
+    return mResumeAfterActivity;
+  }
+
+  public void setLastFirstVisibleItem(int lastFirstVisibleItem) {
+    mLastFirstVisibleItem = lastFirstVisibleItem;
+  }
+
+  public int getLastFirstVisibleItem() {
+    return mLastFirstVisibleItem;
+  }
+
+  public DropboxImportExport getDropboxImportExport() {
+    return mDropboxImportExport;
+  }
+
+  /* ----------------------------------
+   * Global configuration
+   * ----------------------------------
+   */
   public int getExportAutoSavePeriodicity() {
     SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
     return Integer.parseInt(prefs.getString(SettingsActivity.PREFS_KEY_IMPORT_EXPORT_AUTO_SAVE_PERIODICITY, SettingsActivity.PREFS_DEFVAL_IMPORT_EXPORT_AUTO_SAVE_PERIODICITY));
@@ -196,59 +245,28 @@ public class MainApplication extends Application {
     return prefs.getBoolean(SettingsActivity.PREFS_KEY_HIDE_EXIT_BUTTON, SettingsActivity.PREFS_DEFVAL_HIDE_EXIT_BUTTON.equals("true"));
   }
 
-  public WorkTimeDay getEstimatedHours(List<DayEntry> wDays) {
-    WorkTimeDay w = new WorkTimeDay();
-    for(int i = 0; i < wDays.size(); ++i)
-      w.addTime(wDays.get(i).getLegalWorktime());
-    return w;
-  }
-
-  public void setQuickAccessPause(boolean quickAccessPause) {
-    this.quickAccessPause = quickAccessPause;
-  }
-
-  public boolean isQuickAccessPause() {
-    return quickAccessPause;
-  }
-
-  public void setResumeAfterActivity(boolean resumeAfterActivity) {
-    this.resumeAfterActivity = resumeAfterActivity;
-  }
-
-  public boolean isResumeAfterActivity() {
-    return resumeAfterActivity;
-  }
-
-  public void setLastFirstVisibleItem(int lastFirstVisibleItem) {
-    this.lastFirstVisibleItem = lastFirstVisibleItem;
-  }
-
-  public int getLastFirstVisibleItem() {
-    return lastFirstVisibleItem;
-  }
-
-  public DropboxImportExport getDropboxImportExport() {
-    return dropboxImportExport;
-  }
-
+  /* ----------------------------------
+   * Database management
+   * ----------------------------------
+   */
   public void initOnLoadTables() {
-    if(onloadSettings == null)
-      onloadSettings = new ArrayList<>();
-    if(onloadProfiles == null)
-      onloadProfiles = sql.getProfiles();
-    if(onloadDays == null)
-      onloadDays = sql.getDays();
-    if(onloadPublicHolidays == null)
-      onloadPublicHolidays = sql.getPublicHolidays();
-    if(onloadSettings.isEmpty()) {
-      sql.settingsLoad(onloadSettings);
+    if(mOnloadSettings == null)
+      mOnloadSettings = new ArrayList<>();
+    if(mOnloadProfiles == null)
+      mOnloadProfiles = mSql.getProfiles();
+    if(mOnloadDays == null)
+      mOnloadDays = mSql.getDays();
+    if(mOnloadPublicHolidays == null)
+      mOnloadPublicHolidays = mSql.getPublicHolidays();
+    if(mOnloadSettings.isEmpty()) {
+      mSql.settingsLoad(mOnloadSettings);
     }
   }
 
   public void disableDbUpdateFromOnloadSettings() {
-    for(Setting s : onloadSettings) {
+    for(Setting s : mOnloadSettings) {
       if(s.getName().equals(DropboxAutoExportService.KEY_NEED_UPDATE)) {
-        s.setValue("false");
+        s.disable();
       }
     }
   }
@@ -272,21 +290,24 @@ public class MainApplication extends Application {
   }
 
   public boolean isTablesChanges() {
-    List<DayEntry> profiles = sql.getProfiles();
-    List<DayEntry> days = sql.getDays();
-    List<DayEntry> publicHolidays = sql.getPublicHolidays();
-    sql.settingsSave();
+    List<DayEntry> profiles = mSql.getProfiles();
+    List<DayEntry> days = mSql.getDays();
+    List<DayEntry> publicHolidays = mSql.getPublicHolidays();
+    mSql.settingsSave();
     List<Setting> settings = new ArrayList<>();
-    sql.settingsLoad(settings);
-    return !listEquals(profiles, onloadProfiles) || !listEquals(onloadDays, days) || !listEquals(onloadPublicHolidays, publicHolidays) || (!listEquals(onloadSettings, settings));
+    mSql.settingsLoad(settings);
+    return !listEquals(profiles, mOnloadProfiles) || !listEquals(mOnloadDays, days) || !listEquals(mOnloadPublicHolidays, publicHolidays) || (!listEquals(mOnloadSettings, settings));
   }
 
+  /* ----------------------------------
+   * Widget management 
+   * ----------------------------------
+   */
   public long getLastWidgetOpen() {
-    return lastWidgetOpen;
+    return mLastWidgetOpen;
   }
-
   public void setLastWidgetOpen(long lastWidgetOpen) {
-    this.lastWidgetOpen = lastWidgetOpen;
+    mLastWidgetOpen = lastWidgetOpen;
   }
 
 }

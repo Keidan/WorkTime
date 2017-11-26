@@ -17,12 +17,12 @@ import java.util.concurrent.TimeUnit;
  *******************************************************************************
  */
 public class WorkTimeDay {
-  private int day = 1;
-  private int month = 1;
-  private int year = 1970;
-  private int hours = 0;
-  private int minutes = 0;
-  private int seconds = 0;
+  private int mDay = 1;
+  private int mMonth = 1;
+  private int mYear = 1970;
+  private int mHours = 0;
+  private int mMinutes = 0;
+  private int mSeconds = 0;
 
   public WorkTimeDay() {
   }
@@ -33,16 +33,16 @@ public class WorkTimeDay {
   }
 
   public WorkTimeDay(int year, int month, int day, int hours, int minutes) {
-    this.year = year;
-    this.month = month;
-    this.day = day;
-    this.hours = hours;
-    this.minutes = minutes;
+    mYear = year;
+    mMonth = month;
+    mDay = day;
+    mHours = hours;
+    mMinutes = minutes;
   }
 
-  public WorkTimeDay fromTimeMS(long ms) {
-    hours = (int)TimeUnit.MILLISECONDS.toHours(ms);
-    minutes = (int)(TimeUnit.MILLISECONDS.toMinutes(ms) - (hours * 60));
+  private WorkTimeDay fromTimeMS(long ms) {
+    mHours = (int)TimeUnit.MILLISECONDS.toHours(ms);
+    mMinutes = (int)(TimeUnit.MILLISECONDS.toMinutes(ms) - (mHours * 60));
     return this;
   }
 
@@ -64,24 +64,25 @@ public class WorkTimeDay {
     return wtd;
   }
 
+  @SuppressWarnings("CloneDoesntCallSuperClone")
   public WorkTimeDay clone() {
     WorkTimeDay wtd = new WorkTimeDay();
-    wtd.day = day;
-    wtd.month = month;
-    wtd.year = year;
-    wtd.hours = hours;
-    wtd.minutes = minutes;
-    wtd.seconds = seconds;
+    wtd.mDay = mDay;
+    wtd.mMonth = mMonth;
+    wtd.mYear = mYear;
+    wtd.mHours = mHours;
+    wtd.mMinutes = mMinutes;
+    wtd.mSeconds = mSeconds;
     return wtd;
   }
 
-  public void copy(WorkTimeDay wtd) {
-    day = wtd.day;
-    month = wtd.month;
-    year = wtd.year;
-    hours = wtd.hours;
-    minutes = wtd.minutes;
-    seconds = wtd.seconds;
+  void copy(WorkTimeDay wtd) {
+    mDay = wtd.mDay;
+    mMonth = wtd.mMonth;
+    mYear = wtd.mYear;
+    mHours = wtd.mHours;
+    mMinutes = wtd.mMinutes;
+    mSeconds = wtd.mSeconds;
   }
 
   public String toString() {
@@ -93,30 +94,30 @@ public class WorkTimeDay {
   }
 
   public long getTimeMs() {
-    return TimeUnit.HOURS.toMillis(hours) + TimeUnit.MINUTES.toMillis(minutes);
+    return TimeUnit.HOURS.toMillis(mHours) + TimeUnit.MINUTES.toMillis(mMinutes);
   }
 
   public int compareTo(WorkTimeDay wtd) {
     return toCalendar().compareTo(wtd.toCalendar());
   }
 
-  public WorkTimeDay fromCalendar(final Calendar c) {
-    year = c.get(Calendar.YEAR);
-    month = c.get(Calendar.MONTH) + 1;
-    day = c.get(Calendar.DAY_OF_MONTH);
-    hours = c.get(Calendar.HOUR_OF_DAY);
-    minutes = c.get(Calendar.MINUTE);
+  WorkTimeDay fromCalendar(final Calendar c) {
+    mYear = c.get(Calendar.YEAR);
+    mMonth = c.get(Calendar.MONTH) + 1;
+    mDay = c.get(Calendar.DAY_OF_MONTH);
+    mHours = c.get(Calendar.HOUR_OF_DAY);
+    mMinutes = c.get(Calendar.MINUTE);
     return this;
   }
 
   public Calendar toCalendar() {
     Calendar c = Calendar.getInstance();
     c.setTimeZone(TimeZone.getDefault());
-    c.set(Calendar.YEAR, year);
-    c.set(Calendar.MONTH, month - 1);
-    c.set(Calendar.DAY_OF_MONTH, day);
-    c.set(Calendar.HOUR_OF_DAY, hours);
-    c.set(Calendar.MINUTE, minutes);
+    c.set(Calendar.YEAR, mYear);
+    c.set(Calendar.MONTH, mMonth - 1);
+    c.set(Calendar.DAY_OF_MONTH, mDay);
+    c.set(Calendar.HOUR_OF_DAY, mHours);
+    c.set(Calendar.MINUTE, mMinutes);
     return c;
   }
 
@@ -125,7 +126,7 @@ public class WorkTimeDay {
   }
 
   public String timeString(boolean plusSign) {
-    String s = timeString(hours, minutes);
+    String s = timeString(mHours, mMinutes);
     if(plusSign && !s.startsWith("-"))
       return "+" + s;
     return s;
@@ -136,7 +137,7 @@ public class WorkTimeDay {
   }
 
   public String dateString() {
-    return String.format(Locale.US, "%02d/%02d/%04d", day, month, year);
+    return String.format(Locale.US, "%02d/%02d/%04d", mDay, mMonth, mYear);
   }
 
   public boolean isInMonth(int month) {
@@ -147,59 +148,59 @@ public class WorkTimeDay {
     return getYear() == year;
   }
 
-  public boolean match(WorkTimeDay wtd) {
-    return day == wtd.day && month == wtd.month && year == wtd.year && hours == wtd.hours && minutes == wtd.minutes;
+  boolean match(WorkTimeDay wtd) {
+    return mDay == wtd.mDay && mMonth == wtd.mMonth && mYear == wtd.mYear && mHours == wtd.mHours && mMinutes == wtd.mMinutes;
   }
 
   public boolean isValidTime() {
-    return !(hours == 0 && minutes == 0);
+    return !(mHours == 0 && mMinutes == 0);
   }
 
   public int getDay() {
-    return day;
+    return mDay;
   }
 
   public void setDay(int day) {
-    this.day = day;
+    mDay = day;
   }
 
   public int getMonth() {
-    return month;
+    return mMonth;
   }
 
   public void setMonth(int month) {
-    this.month = month;
+    mMonth = month;
   }
 
   public int getYear() {
-    return year;
+    return mYear;
   }
 
   public void setYear(int year) {
-    this.year = year;
+    mYear = year;
   }
 
   public int getHours() {
-    return hours;
+    return mHours;
   }
 
   public void setHours(int hours) {
-    this.hours = hours;
+    mHours = hours;
   }
 
   public int getMinutes() {
-    return minutes;
+    return mMinutes;
   }
 
   public void setMinutes(int minutes) {
-    this.minutes = minutes;
+    mMinutes = minutes;
   }
 
   public int getSeconds() {
-    return seconds;
+    return mSeconds;
   }
 
   public void setSeconds(int seconds) {
-    this.seconds = seconds;
+    mSeconds = seconds;
   }
 }

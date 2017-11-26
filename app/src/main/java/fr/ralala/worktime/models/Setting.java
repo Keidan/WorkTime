@@ -11,35 +11,35 @@ package fr.ralala.worktime.models;
  *******************************************************************************
  */
 public class Setting {
-  private String name = null;
-  private String value = null;
+  private String mName = null;
+  private String mValue = null;
 
   public Setting(final String name, final String value) {
-    this.name = name;
-    this.value = value;
+    mName = name;
+    mValue = value;
   }
 
   public boolean equals(Object o) {
     if(o == null || !Setting.class.isInstance(o))
       return false;
     Setting s = (Setting)o;
-    return s.name.compareTo(name) == 0 && s.value.compareTo(value) == 0;
+    return s.mName.compareTo(mName) == 0 && s.mValue.compareTo(mValue) == 0;
   }
 
   public String toString() {
-    return name+":"+value;
+    return mName+":"+mValue;
   }
 
   public String getName() {
-    return name;
+    return mName;
   }
 
   public void setName(final String name) {
-    this.name = name;
+    mName = name;
   }
 
-  public void setValue(final String value) {
-    this.value = value;
+  public void disable() {
+    mValue = "false";
   }
 
 }

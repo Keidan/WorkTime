@@ -3,16 +3,16 @@
       xmlns:android="http://schemas.android.com/apk/res/android"
       android:layout_height="fill_parent"
       android:layout_width="fill_parent"
-      android:padding="10dp">
+      android:padding="@dimen/file_view_padding">
     <ImageView
         android:id="@+id/icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingEnd="10dp"
-        android:paddingStart="0dp"
+        android:paddingEnd="@dimen/file_view_icon_paddingEnd"
+        android:paddingStart="@dimen/file_view_icon_paddingStart"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:contentDescription="@string/empty"/>
+        android:contentDescription="@null"/>
     <TextView android:id="@+id/name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -26,6 +26,5 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/name"
         android:layout_toEndOf="@+id/icon"
-        android:textIsSelectable="false"
-        android:textColor="#c5c5c5"/>
+        android:textIsSelectable="@color/file_view_data"/>
 </RelativeLayout>

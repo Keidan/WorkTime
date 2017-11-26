@@ -23,7 +23,6 @@
     <string name="unpaid">Unpaid</string>
     <string name="monthly_ceiling">Monthly ceiling</string>
     <string name="statistics_hours">Hours</string>
-    <string name="empty" translatable="false"></string>
     <string name="work_time">Work time</string>
     <string name="work_days">Work days</string>
     <string name="monthly_hours">Monthly hours</string>
@@ -54,8 +53,8 @@
     <string name="start_morning">Morning arrival:</string>
     <string name="additional_break">Additional break:</string>
     <string name="at_work">At work</string>
+    <string name="default_wage" translatable="false">0.00</string>
     <string name="default_hours" translatable="false">00:00</string>
-    <string name="error_invalid_type">Invalid profile.</string>
     <string name="error_invalid_start">Invalid departure time.</string>
     <string name="error_invalid_end">Invalid arrival time.</string>
     <string name="error_invalid_start_end_morning">The morning departure and arrival times are invalid.</string>
@@ -114,7 +113,6 @@
     <string name="use_file">Use this file</string>
     <string name="export_success">Export success</string>
     <string name="import_success">Import success</string>
-    <string name="permissions">Permissions</string>
     <string name="permissions_read_ext_storage">The import/export functions needs the external storage read/write and internet(dropbox) access permissions</string>
     <string name="year">Year :</string>
     <string name="export_no_items">No selected months to export</string>
@@ -135,7 +133,6 @@
     <string name="the_file_exists_part_2">already exists. Do you want to replace the existing file?d</string>
     <string name="confirm">Confirm</string>
     <string name="zero" translatable="false">0.00</string>
-    <string name="details_title">Details</string>
     <string name="week_letter">W</string>
     <string name="week">week</string>
     <string name="error_dropbox_upload">Unable to upload the file</string>
@@ -152,13 +149,11 @@
     <string name="bt_start">Start</string>
     <string name="bt_pause">Pause</string>
     <string name="bt_finalize">Finalize day</string>
-    <string name="bt_finalize2">Finalize</string>
-    <string name="bt_options">Options</string>
     <string name="default_time" translatable="false">00:00</string>
     <string name="service_running">Finalize or pause quick access before update the day.</string>
     <string name="restart_from_db_update_vn">Database updated to version</string>
     <string name="recurrence">Recurrence</string>
-    <string name="legalWorkTimeByDay">Legal work time</string>
+    <string name="legal_worktime_by_day">Legal work time</string>
     <string name="error_editing_public_holiday">Public holiday edition is not supported.</string>
     <string name="error_duplicate_public_holiday">The public holiday is already inserted.</string>
     <string name="statistics_morning">Morning</string>

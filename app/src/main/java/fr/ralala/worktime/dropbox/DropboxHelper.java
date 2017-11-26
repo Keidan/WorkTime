@@ -17,26 +17,27 @@ import com.dropbox.core.v2.DbxClientV2;
  *
  *******************************************************************************
  */
+@SuppressWarnings("WeakerAccess")
 public class DropboxHelper {
   private static final String LABEL = "dropbox-sample";
   private static final String KEY = "access-token";
-  private DbxClientV2 sDbxClient;
-  private static DropboxHelper helper = null;
+  private DbxClientV2 mDbxClient;
+  private static DropboxHelper mHelper = null;
 
   private DropboxHelper() { }
 
   static DropboxHelper helper() {
-    if(helper == null) helper = new DropboxHelper();
-    return helper;
+    if(mHelper == null) mHelper = new DropboxHelper();
+    return mHelper;
   }
 
   boolean connect(final Context ctx, final String appkey) {
     Context c = ctx.getApplicationContext();
-    helper.loadToken(c);
-    if(!helper.hasToken(c)) {
+    mHelper.loadToken(c);
+    if(!mHelper.hasToken(c)) {
       Auth.startOAuth2Authentication(c, appkey);
-      helper.loadToken(c);
-      return helper.hasToken(c);
+      mHelper.loadToken(c);
+      return mHelper.hasToken(c);
     }
     return true;
   }
@@ -48,7 +49,7 @@ public class DropboxHelper {
     return accessToken != null;
   }
 
-  private DropboxHelper loadToken(final Context ctx) {
+  private void loadToken(final Context ctx) {
     Context c = ctx.getApplicationContext();
     SharedPreferences prefs = c.getSharedPreferences(LABEL, Context.MODE_PRIVATE);
     String accessToken = prefs.getString(KEY, null);
@@ -61,22 +62,21 @@ public class DropboxHelper {
     } else {
       initDropBox(accessToken);
     }
-    return this;
   }
 
   private void initDropBox(String accessToken) {
-    if (sDbxClient == null) {
+    if (mDbxClient == null) {
       DbxRequestConfig requestConfig = DbxRequestConfig.newBuilder(getClass().getPackage().getName())
         .withHttpRequestor(OkHttp3Requestor.INSTANCE)
         .build();
-      sDbxClient = new DbxClientV2(requestConfig, accessToken);
+      mDbxClient = new DbxClientV2(requestConfig, accessToken);
     }
   }
 
   DbxClientV2 getClient() {
-    if (sDbxClient == null) {
+    if (mDbxClient == null) {
       throw new IllegalStateException("Client not initialized.");
     }
-    return sDbxClient;
+    return mDbxClient;
   }
 }

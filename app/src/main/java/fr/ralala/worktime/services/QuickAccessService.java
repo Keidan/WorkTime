@@ -10,7 +10,6 @@ import java.util.Timer;
 import fr.ralala.worktime.MainApplication;
 import fr.ralala.worktime.models.DayEntry;
 import fr.ralala.worktime.models.WorkTimeDay;
-import fr.ralala.worktime.quickaccess.QuickAccessServiceTask;
 
 /**
  *******************************************************************************
@@ -22,38 +21,38 @@ import fr.ralala.worktime.quickaccess.QuickAccessServiceTask;
  *******************************************************************************
  */
 public class QuickAccessService extends Service {
-  private MainApplication app = null;
-  private Timer timer = null;
+  private MainApplication mApp = null;
+  private Timer mTimer = null;
 
   @Override
   public void onCreate() {
-    app = MainApplication.getApp(this);
+    mApp = MainApplication.getApp(this);
     // cancel if already existed
-    if (timer != null) {
-      timer.cancel();
+    if (mTimer != null) {
+      mTimer.cancel();
     } else {
       // recreate new
-      timer = new Timer();
+      mTimer = new Timer();
     }
-    WorkTimeDay lastQuickAccessBreak = app.getLastQuickAccessBreak();
+    WorkTimeDay lastQuickAccessBreak = mApp.getLastQuickAccessBreak();
     if(lastQuickAccessBreak != null) {
       WorkTimeDay dif = WorkTimeDay.now();
       dif.delTime(lastQuickAccessBreak);
-      DayEntry de = app.getDaysFactory().getCurrentDay();
+      DayEntry de = mApp.getDaysFactory().getCurrentDay();
       de.getAdditionalBreak().addTime(dif);
     }
     // schedule task
-    timer.scheduleAtFixedRate(new QuickAccessServiceTask(app), 0, 1000);
+    mTimer.scheduleAtFixedRate(new QuickAccessServiceTask(mApp), 0, 1000);
   }
 
   @Override
   public void onDestroy() {
     super.onDestroy();
-    app.setLastQuickAccessBreak(WorkTimeDay.now());
-    if (timer != null) {
-      timer.cancel();
-      timer.purge();
-      timer = null;
+    mApp.setLastQuickAccessBreak(WorkTimeDay.now());
+    if (mTimer != null) {
+      mTimer.cancel();
+      mTimer.purge();
+      mTimer = null;
     }
   }
 

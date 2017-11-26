@@ -22,13 +22,13 @@ public enum DayType {
   ERROR(5);
 
   DayType(final int value) {
-    this.value = value;
+    mValue = value;
   }
 
-  private final int value;
+  private final int mValue;
 
   public int value() {
-    return value;
+    return mValue;
   }
 
 

@@ -15,16 +15,16 @@
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:src="@mipmap/ic_launcher"
-        android:contentDescription="@string/empty"/>
+        android:contentDescription="@null"/>
 
     <TextView
-        android:text="@string/empty"
+        android:text="@null"
         android:layout_toEndOf="@id/icon"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/tvDate"
         android:textColor="@color/white"
-        android:layout_margin="4sp"
+        android:layout_margin="@dimen/widget_day4x1_tvDate_layout_margin"
         android:gravity="center"
         android:textSize="@dimen/widget_text_size_4x1"/>
 
@@ -37,41 +37,41 @@
 
         <TextView
             android:text="@string/tv_morning_widget"
-            android:layout_weight="1"
-            android:layout_width="0px"
+            android:layout_weight="@dimen/widget_day4x1_tvLblMorning_layout_weight"
+            android:layout_width="@dimen/widget_day4x1_tvLblMorning_layout_width"
             android:layout_height="wrap_content"
             android:id="@+id/tvLblMorning"
             android:textColor="@color/white"
-            android:layout_margin="4sp"
+            android:layout_margin="@dimen/widget_day4x1_tvLblMorning_layout_margin"
             android:textSize="@dimen/widget_text_size_4x1"/>
         <TextView
-            android:text="@string/empty"
-            android:layout_weight="1"
-            android:layout_width="0px"
+            android:text="@null"
+            android:layout_weight="@dimen/widget_day4x1_tvMorning_layout_weight"
+            android:layout_width="@dimen/widget_day4x1_tvMorning_layout_width"
             android:layout_height="wrap_content"
             android:id="@+id/tvMorning"
             android:textColor="@color/white"
-            android:layout_margin="4sp"
+            android:layout_margin="@dimen/widget_day4x1_tvMorning_layout_margin"
             android:textSize="@dimen/widget_text_size_4x1"/>
 
 
         <TextView
             android:text="@string/tv_break_widget"
-            android:layout_weight="1"
-            android:layout_width="0px"
+            android:layout_weight="@dimen/widget_day4x1_tvLblBreak_layout_weight"
+            android:layout_width="@dimen/widget_day4x1_tvLblBreak_layout_width"
             android:layout_height="wrap_content"
             android:id="@+id/tvLblBreak"
             android:textColor="@color/white"
-            android:layout_margin="4sp"
+            android:layout_margin="@dimen/widget_day4x1_tvLblBreak_layout_margin"
             android:textSize="@dimen/widget_text_size_4x1"/>
         <TextView
-            android:text="@string/empty"
-            android:layout_weight="1"
-            android:layout_width="0px"
+            android:text="@null"
+            android:layout_weight="@dimen/widget_day4x1_tvBreak_layout_weight"
+            android:layout_width="@dimen/widget_day4x1_tvBreak_layout_width"
             android:layout_height="wrap_content"
             android:id="@+id/tvBreak"
             android:textColor="@color/white"
-            android:layout_margin="4sp"
+            android:layout_margin="@dimen/widget_day4x1_tvBreak_layout_margin"
             android:textSize="@dimen/widget_text_size_4x1"/>
     </LinearLayout>
 
@@ -84,40 +84,40 @@
         android:layout_height="wrap_content">
     <TextView
         android:text="@string/tv_afternoon_widget"
-        android:layout_weight="1"
-        android:layout_width="0px"
+        android:layout_weight="@dimen/widget_day4x1_tvLblAfternoon_layout_weight"
+        android:layout_width="@dimen/widget_day4x1_tvLblAfternoon_layout_width"
         android:layout_height="wrap_content"
         android:id="@+id/tvLblAfternoon"
         android:textColor="@color/white"
-        android:layout_margin="4sp"
+        android:layout_margin="@dimen/widget_day4x1_tvLblAfternoon_layout_margin"
         android:textSize="@dimen/widget_text_size_4x1"/>
     <TextView
-        android:text="@string/empty"
-        android:layout_weight="1"
-        android:layout_width="0px"
+        android:text="@null"
+        android:layout_weight="@dimen/widget_day4x1_tvAfternoon_layout_weight"
+        android:layout_width="@dimen/widget_day4x1_tvAfternoon_layout_width"
         android:layout_height="wrap_content"
         android:id="@+id/tvAfternoon"
         android:textColor="@color/white"
-        android:layout_margin="4sp"
+        android:layout_margin="@dimen/widget_day4x1_tvAfternoon_layout_margin"
         android:textSize="@dimen/widget_text_size_4x1"/>
 
     <TextView
         android:text="@string/tv_worktime_widget"
-        android:layout_weight="1"
-        android:layout_width="0px"
+        android:layout_weight="@dimen/widget_day4x1_tvLblWorkTime_layout_weight"
+        android:layout_width="@dimen/widget_day4x1_tvLblWorkTime_layout_width"
         android:layout_height="wrap_content"
         android:id="@+id/tvLblWorkTime"
         android:textColor="@color/white"
-        android:layout_margin="4sp"
+        android:layout_margin="@dimen/widget_day4x1_tvLblWorkTime_layout_margin"
         android:textSize="@dimen/widget_text_size_4x1"/>
     <TextView
-        android:text="@string/empty"
-        android:layout_weight="1"
-        android:layout_width="0px"
+        android:text="@null"
+        android:layout_weight="@dimen/widget_day4x1_tvWorkTime_layout_weight"
+        android:layout_width="@dimen/widget_day4x1_tvWorkTime_layout_width"
         android:layout_height="wrap_content"
         android:id="@+id/tvWorkTime"
         android:textColor="@color/white"
-        android:layout_margin="4sp"
+        android:layout_margin="@dimen/widget_day4x1_tvWorkTime_layout_margin"
         android:textSize="@dimen/widget_text_size_4x1"/>
 
     </LinearLayout>

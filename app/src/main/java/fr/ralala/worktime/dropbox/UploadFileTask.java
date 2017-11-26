@@ -14,6 +14,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.ref.WeakReference;
 
 import fr.ralala.worktime.utils.UriHelpers;
 
@@ -23,13 +24,14 @@ import fr.ralala.worktime.utils.UriHelpers;
  */
 public class UploadFileTask extends AsyncTask<String, Void, FileMetadata> {
 
-  private final Context mContext;
   private final DbxClientV2 mDbxClient;
   private final DropboxListener mCallback;
   private Exception mException;
+  private final WeakReference<Context> mWeakContext;
+
 
   UploadFileTask(Context context, DbxClientV2 dbxClient, DropboxListener callback) {
-    mContext = context;
+    mWeakContext = new WeakReference<>(context);
     mDbxClient = dbxClient;
     mCallback = callback;
   }
@@ -48,8 +50,9 @@ public class UploadFileTask extends AsyncTask<String, Void, FileMetadata> {
 
   @Override
   protected FileMetadata doInBackground(String... params) {
+    Context context = mWeakContext.get();
     String localUri = params[0];
-    File localFile = UriHelpers.getFileForUri(mContext, Uri.parse(localUri));
+    File localFile = UriHelpers.getFileForUri(context, Uri.parse(localUri));
 
     if (localFile != null) {
       String remoteFolderPath = params[1];

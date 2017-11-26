@@ -14,6 +14,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.lang.ref.WeakReference;
 
 /**
  * Task to download a file from Dropbox and put it in the Downloads folder
@@ -21,13 +22,13 @@ import java.io.OutputStream;
  */
 public class DownloadFileTask extends AsyncTask<FileMetadata, Void, File> {
 
-  private final Context mContext;
   private final DbxClientV2 mDbxClient;
   private final DropboxListener mCallback;
   private Exception mException;
+  private final WeakReference<Context> mWeakContext;
 
   DownloadFileTask(Context context, DbxClientV2 dbxClient, DropboxListener callback) {
-    mContext = context;
+    mWeakContext = new WeakReference<>(context);
     mDbxClient = dbxClient;
     mCallback = callback;
   }
@@ -69,7 +70,7 @@ public class DownloadFileTask extends AsyncTask<FileMetadata, Void, File> {
       // Tell android about the file
       Intent intent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
       intent.setData(Uri.fromFile(file));
-      mContext.sendBroadcast(intent);
+      mWeakContext.get().sendBroadcast(intent);
 
       return file;
     } catch (DbxException | IOException e) {

@@ -1,9 +1,5 @@
 package fr.ralala.worktime.utils;
 
-import android.content.Context;
-
-import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.usermodel.HSSFFont;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -31,87 +27,83 @@ import java.util.Iterator;
  *******************************************************************************
  */
 public class ExcelHelper {
-  private CellStyle timesDateBold;
-  private CellStyle timesDate;
-  private CellStyle timesBold;
-  private CellStyle times;
-  private Workbook workbook = null;
-  private File file = null;
-  private CreationHelper createHelper = null;
+  private CellStyle mTimesDateBold;
+  private CellStyle mTimesDate;
+  private CellStyle mTimesBold;
+  private CellStyle mTimes;
+  private Workbook mWorkbook = null;
+  private File mFile = null;
+  private CreationHelper mCreateHelper = null;
 
-  public ExcelHelper(final Context ctx, final File file) {
-    this.file = file;
-    workbook = new HSSFWorkbook();  // or new XSSFWorkbook();
-    createHelper = workbook.getCreationHelper();
-    Font times10pt = workbook.createFont();
+  public ExcelHelper(final File file) {
+    mFile = file;
+    mWorkbook = new HSSFWorkbook();  // or new XSSFWorkbook();
+    mCreateHelper = mWorkbook.getCreationHelper();
+    Font times10pt = mWorkbook.createFont();
     times10pt.setFontHeightInPoints((short)10);
     times10pt.setFontName("Times");
-    Font times10ptBold = workbook.createFont();
+    Font times10ptBold = mWorkbook.createFont();
     times10ptBold.setFontHeightInPoints((short)10);
     times10ptBold.setFontName("Times");
     times10ptBold.setBold(true);
-    DataFormat df = workbook.createDataFormat();
-    times = workbook.createCellStyle();
-    times.setFont(times10pt);
-    timesBold = workbook.createCellStyle();
-    timesBold.setFont(times10ptBold);
-    timesDate = workbook.createCellStyle();
-    timesDate.setFont(times10pt);
-    timesDate.setDataFormat(df.getFormat("[h]:mm;@"));
+    DataFormat df = mWorkbook.createDataFormat();
+    mTimes = mWorkbook.createCellStyle();
+    mTimes.setFont(times10pt);
+    mTimesBold = mWorkbook.createCellStyle();
+    mTimesBold.setFont(times10ptBold);
+    mTimesDate = mWorkbook.createCellStyle();
+    mTimesDate.setFont(times10pt);
+    mTimesDate.setDataFormat(df.getFormat("[h]:mm;@"));
 
-    timesDateBold = workbook.createCellStyle();
-    timesDateBold.setFont(times10ptBold);
-    timesDateBold.setDataFormat(df.getFormat("[h]:mm;@"));
+    mTimesDateBold = mWorkbook.createCellStyle();
+    mTimesDateBold.setFont(times10ptBold);
+    mTimesDateBold.setDataFormat(df.getFormat("[h]:mm;@"));
   }
 
   public Sheet createSheet(final String sheetTitle) {
-    workbook.createSheet(sheetTitle);
-    return workbook.getSheet(sheetTitle);
+    mWorkbook.createSheet(sheetTitle);
+    return mWorkbook.getSheet(sheetTitle);
   }
 
   public void write() throws IOException {
-    FileOutputStream fileOut = new FileOutputStream(file);
-    workbook.write(fileOut);
+    FileOutputStream fileOut = new FileOutputStream(mFile);
+    mWorkbook.write(fileOut);
     fileOut.close();
-    workbook.close();
+    mWorkbook.close();
   }
 
-  public int createHorizontalHeader(Sheet sheet, int row, int column, String[] headers) {
+  public void createHorizontalHeader(Sheet sheet, int row, int column, String[] headers) {
     for(String header : headers)
       addLabel(sheet, row, column++, header, true);
-    return column;
   }
 
-  public void addFormula(Sheet sheet, int row, int column, StringBuilder formula, boolean bold, boolean time) {
-    addFormula(sheet, row, column, formula.toString(), bold, time);
+  public void addFormula(Sheet sheet, int row, int column, StringBuilder formula) {
+    addFormula(sheet, row, column, formula.toString());
   }
 
-  private void addFormula(Sheet sheet, int row, int column, String formula, boolean bold, boolean time) {
+  private void addFormula(Sheet sheet, int row, int column, String formula) {
     Cell cell = getCell(sheet, row, column);
-    if(!time)
-      cell.setCellStyle(bold ? timesBold : times);
-    else
-      cell.setCellStyle(bold ? timesDateBold : timesDate);
+    cell.setCellStyle(mTimesDateBold);
     cell.setCellFormula(formula);
   }
 
   public void addLabel(Sheet sheet, int row, int column, String s, boolean bold) {
     Cell cell = getCell(sheet, row, column);
-    cell.setCellValue(createHelper.createRichTextString(s));
-    cell.setCellStyle(bold ? timesBold : times);
+    cell.setCellValue(mCreateHelper.createRichTextString(s));
+    cell.setCellStyle(bold ? mTimesBold : mTimes);
   }
 
   public void addTime(Sheet sheet, int row, int column, String s, boolean bold) throws ParseException {
     Cell cell = getCell(sheet, row, column);
     cell.setCellFormula("TIME(" + s.replaceAll(":", ",") + ",00)"); // 00:00:00
-    cell.setCellStyle(bold ? timesDateBold : timesDate);
+    cell.setCellStyle(bold ? mTimesDateBold : mTimesDate);
   }
 
   public void addNumber(Sheet sheet, int row, int column,
-                         double val, boolean bold) {
+                         double val) {
     Cell cell = getCell(sheet, row, column);
     cell.setCellValue(val);
-    cell.setCellStyle(bold ? timesBold : times);
+    cell.setCellStyle(mTimes);
   }
 
   private Cell getCell(Sheet sheet, int row, int column) {

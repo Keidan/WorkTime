@@ -5,7 +5,6 @@ import android.util.Log;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
@@ -26,26 +25,26 @@ import fr.ralala.worktime.sql.SqlFactory;
  *******************************************************************************
  */
 public class PublicHolidaysFactory {
-  private final List<DayEntry> publicHolidays;
-  private SqlFactory sql = null;
+  private final List<DayEntry> mPublicHolidays;
+  private SqlFactory mSql = null;
 
   public PublicHolidaysFactory() {
-    publicHolidays = new ArrayList<>();
+    mPublicHolidays = new ArrayList<>();
   }
 
   public void reload(final SqlFactory sql) {
-    this.sql = sql;
-    publicHolidays.clear();
-    publicHolidays.addAll(sql.getPublicHolidays());
+    mSql = sql;
+    mPublicHolidays.clear();
+    mPublicHolidays.addAll(sql.getPublicHolidays());
     sort();
   }
 
   public List<DayEntry> list() {
-    return publicHolidays;
+    return mPublicHolidays;
   }
 
   public boolean isPublicHolidays(WorkTimeDay currentDate) {
-    for(DayEntry de : publicHolidays) {
+    for(DayEntry de : mPublicHolidays) {
       if((de.getTypeMorning() == DayType.PUBLIC_HOLIDAY && de.getTypeAfternoon() == DayType.PUBLIC_HOLIDAY) && de.matchSimpleDate(currentDate))
         return true;
     }
@@ -53,7 +52,7 @@ public class PublicHolidaysFactory {
   }
 
   public boolean testValidity(final DayEntry de) {
-    for(DayEntry d : publicHolidays) {
+    for(DayEntry d : mPublicHolidays) {
       WorkTimeDay d_day = d.getDay();
       WorkTimeDay de_day = de.getDay();
       if(d_day.getDay() == de_day.getDay() && d_day.getMonth() == de_day.getMonth()) {
@@ -67,20 +66,20 @@ public class PublicHolidaysFactory {
   }
 
   public void remove(final DayEntry de) {
-    publicHolidays.remove(de);
-    sql.removePublicHoliday(de);
+    mPublicHolidays.remove(de);
+    mSql.removePublicHoliday(de);
   }
 
   public void add(final DayEntry de) {
-    publicHolidays.add(de);
-    sql.insertPublicHoliday(de);
+    mPublicHolidays.add(de);
+    mSql.insertPublicHoliday(de);
     sort();
   }
 
   private void sort() {
-    Collections.sort(publicHolidays,  SortComparator.comparator(
-      SortComparator.getComparator(SortComparator.SORT_BY_RECURRENCE,
-        SortComparator.SORT_BY_DATE)));
+    mPublicHolidays.sort(SortComparator.comparator(
+        SortComparator.getComparator(SortComparator.SORT_BY_RECURRENCE,
+            SortComparator.SORT_BY_DATE)));
   }
   private enum  SortComparator implements Comparator<DayEntry> {
     SORT_BY_RECURRENCE {
@@ -107,24 +106,18 @@ public class PublicHolidaysFactory {
     },;
 
     public static Comparator<DayEntry> comparator(final Comparator<DayEntry> other) {
-      return new Comparator<DayEntry>() {
-        public int compare(DayEntry o1, DayEntry o2) {
-          return -1 * other.compare(o1, o2);
-        }
-      };
+      return (o1, o2) -> -1 * other.compare(o1, o2);
     }
 
     public static Comparator<DayEntry> getComparator(final SortComparator... multipleOptions) {
-      return new Comparator<DayEntry>() {
-        public int compare(DayEntry o1, DayEntry o2) {
-          for (SortComparator option : multipleOptions) {
-            int result = option.compare(o1, o2);
-            if (result != 0) {
-              return result;
-            }
+      return (o1, o2) -> {
+        for (SortComparator option : multipleOptions) {
+          int result = option.compare(o1, o2);
+          if (result != 0) {
+            return result;
           }
-          return 0;
         }
+        return 0;
       };
     }
   }

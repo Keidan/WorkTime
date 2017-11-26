@@ -25,6 +25,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <GridLayout
+            android:id="@+id/grid"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:columnCount="2" >
@@ -40,12 +41,12 @@
 
             <EditText
                 android:id="@+id/etName"
-                android:layout_width="0dp"
+                android:layout_width="@dimen/activity_public_holiday_etName_layout_width"
                 android:layout_height="wrap_content"
                 android:layout_column="1"
                 android:layout_gravity="fill_horizontal"
                 android:layout_row="0"
-                android:layout_marginStart="10sp"
+                android:layout_marginStart="@dimen/activity_public_holiday_etName_layout_marginStart"
                 android:inputType="textCapWords" >
             </EditText>
 
@@ -60,12 +61,12 @@
 
             <DatePicker
                 android:id="@+id/dpDate"
-                android:layout_width="0dp"
+                android:layout_width="@dimen/activity_public_holiday_dpDate_layout_width"
                 android:layout_height="wrap_content"
                 android:layout_column="1"
                 android:layout_gravity="fill_horizontal"
                 android:layout_row="1"
-                android:layout_marginStart="10sp"
+                android:layout_marginStart="@dimen/activity_public_holiday_dpDate_layout_marginStart"
                 style="@style/date_picker_theme">
             </DatePicker>
 
@@ -80,7 +81,7 @@
 
             <CheckBox
                 android:id="@+id/ckRecurrence"
-                android:layout_width="0dp"
+                android:layout_width="@dimen/activity_public_holiday_ckRecurrence_layout_width"
                 android:layout_height="wrap_content"
                 android:layout_gravity="fill_horizontal"
                 android:layout_row="2"

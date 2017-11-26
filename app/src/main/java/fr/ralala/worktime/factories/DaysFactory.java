@@ -1,9 +1,10 @@
 package fr.ralala.worktime.factories;
 
 
+import android.annotation.SuppressLint;
+
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -26,41 +27,42 @@ import fr.ralala.worktime.sql.SqlFactory;
  *******************************************************************************
  */
 public class DaysFactory {
-  private final List<DayEntry> days;
-  private SqlFactory sql = null;
+  private final List<DayEntry> mDays;
+  private SqlFactory mSql = null;
 
   public DaysFactory() {
-    days = new ArrayList<>();
+    mDays = new ArrayList<>();
   }
 
   public void reload(final SqlFactory sql) {
-    this.sql = sql;
-    days.clear();
-    days.addAll(sql.getDays());
+    mSql = sql;
+    mDays.clear();
+    mDays.addAll(sql.getDays());
   }
 
   public List<DayEntry> list() {
-    return days;
+    return mDays;
   }
 
 
   /**
    * This function return a list formatted as follow:
    * Map<YEAR, Map<MONTH, Map<WEEK, List<DayEntry>>>>
-   * @return Map<YEAR, Map<MONTH, Map<WEEK, List<DayEntry>>>>
+   * @return <code>Map<YEAR, Map<MONTH, Map<WEEK, List<DayEntry>>>></code>
    */
+  @SuppressLint("UseSparseArrays")
   public Map<Integer, Map<Integer, Map<Integer, List<DayEntry>>>> getDays() {
     Map<Integer, Map<Integer, Map<Integer, List<DayEntry>>>> list = new HashMap<>();
-    for(DayEntry de : days) {
+    for(DayEntry de : mDays) {
       Integer y = de.getDay().getYear();
       Integer m = de.getDay().getMonth();
       int w = de.getDay().toCalendar().get(Calendar.WEEK_OF_YEAR);
       if(!list.containsKey(y))
-        list.put(y, new HashMap<Integer, Map<Integer, List<DayEntry>>>());
+        list.put(y, new HashMap<>());
       if(!list.get(y).containsKey(m))
-        list.get(y).put(m, new HashMap<Integer, List<DayEntry>>());
+        list.get(y).put(m, new HashMap<>());
       if(!list.get(y).get(m).containsKey(w))
-        list.get(y).get(m).put(w, new ArrayList<DayEntry>());
+        list.get(y).get(m).put(w, new ArrayList<>());
       list.get(y).get(m).get(w).add(de);
     }
     return list;
@@ -86,49 +88,44 @@ public class DaysFactory {
   }
 
   public DayEntry getCurrentDay() {
-    for(DayEntry d : days)
+    for(DayEntry d : mDays)
       if(d.getDay().dateString().equals(WorkTimeDay.now().dateString())) {
         return d;
       }
-    DayEntry d = new DayEntry(sql.getContext(), WorkTimeDay.now(), DayType.ERROR, DayType.ERROR);
-    days.add(d);
+    DayEntry d = new DayEntry(mSql.getContext(), WorkTimeDay.now(), DayType.ERROR, DayType.ERROR);
+    mDays.add(d);
     return d;
   }
 
   public Map<String, DayEntry> toDaysMap() {
     Map<String, DayEntry> map = new HashMap<>();
-    for(DayEntry de : days) map.put(de.getDay().dateString(), de);
+    for(DayEntry de : mDays) map.put(de.getDay().dateString(), de);
     return map;
   }
 
-  public double checkForDayDateAndCopy(DayEntry current) {
-    for(DayEntry de : days) {
+  public void checkForDayDateAndCopy(DayEntry current) {
+    for(DayEntry de : mDays) {
       if(de.getDay().dateString().equals(current.getDay().dateString())) {
         current.copy(de);
         // Calculate Pay
-        return de.getWorkTimePay();
+        de.getWorkTimePay();
       }
     }
-    return 0.0;
   }
 
   public void remove(final DayEntry de) {
-    for(int i = 0; i < days.size(); i++)
-      if(de.match(days.get(i))) {
-        days.remove(i);
+    for(int i = 0; i < mDays.size(); i++)
+      if(de.match(mDays.get(i))) {
+        mDays.remove(i);
         break;
       }
-    sql.removeDay(de);
+    mSql.removeDay(de);
   }
 
   public void add(final DayEntry de) {
-    days.add(de);
-    sql.insertDay(de);
-    Collections.sort(days, new Comparator<DayEntry>() {
-      @Override
-      public int compare(DayEntry a, DayEntry b) {
-        return a.getDay().compareTo(b.getDay());
-      }
-    });
+    mDays.add(de);
+    mSql.insertDay(de);
+    Comparator<DayEntry> comp = (a, b) -> a.getDay().compareTo(b.getDay());
+    mDays.sort(comp);
   }
 }

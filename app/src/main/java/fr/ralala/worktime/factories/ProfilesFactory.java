@@ -1,10 +1,6 @@
 package fr.ralala.worktime.factories;
 
-
-
-
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -21,39 +17,41 @@ import fr.ralala.worktime.sql.SqlFactory;
  *******************************************************************************
  */
 public class ProfilesFactory {
-  private final List<DayEntry> profiles;
-  private SqlFactory sql = null;
+  private final List<DayEntry> mProfiles;
+  private SqlFactory mSql = null;
 
   public ProfilesFactory() {
-    profiles = new ArrayList<>();
+    mProfiles = new ArrayList<>();
   }
 
   public void reload(final SqlFactory sql) {
-    this.sql = sql;
-    profiles.clear();
-    profiles.addAll(sql.getProfiles());
+    mSql = sql;
+    mProfiles.clear();
+    mProfiles.addAll(sql.getProfiles());
   }
 
   public void resetProfilesLearningWeight() {
-    for(DayEntry p : profiles) {
+    for(DayEntry p : mProfiles) {
       if(p.getLearningWeight() > 0) {
         p.setLearningWeight(0);
-        sql.updateProfile(p);
+        mSql.updateProfile(p);
       }
     }
   }
 
   public void updateProfilesLearningWeight(DayEntry profile, int weightLimit, boolean fromClear) {
-    for(DayEntry p : profiles) {
+    boolean selected = false;
+    for(DayEntry p : mProfiles) {
       int weight = p.getLearningWeight();
       int max = weightLimit*2;
       if(profile != null && p.getName().equals(profile.getName())) {
         p.setLearningWeight(weight < max ? ++weight : max);
-        sql.updateProfile(p);
+        mSql.updateProfile(p);
+        selected = true;
       } else if(weight > 0) {
-        if(fromClear)
+        if(fromClear || selected)
           p.setLearningWeight(p.getLearningWeight() - 1);
-        sql.updateProfile(p);
+        mSql.updateProfile(p);
       }
     }
   }
@@ -61,7 +59,7 @@ public class ProfilesFactory {
   public DayEntry getHighestLearningWeight() {
     DayEntry profile = null;
     int weight = 0;
-    for(DayEntry p : profiles) {
+    for(DayEntry p : mProfiles) {
       if(weight == 0 || weight <= p.getLearningWeight()) {
         weight = p.getLearningWeight();
         profile = p;
@@ -72,26 +70,21 @@ public class ProfilesFactory {
   }
 
   public List<DayEntry> list() {
-    return profiles;
+    return mProfiles;
   }
 
   public void remove(final DayEntry de) {
-    profiles.remove(de);
-    sql.removeProfile(de);
+    mProfiles.remove(de);
+    mSql.removeProfile(de);
   }
 
   public void add(final DayEntry de) {
-    profiles.add(de);
-    sql.insertProfile(de);
-    Collections.sort(profiles, new Comparator<DayEntry>() {
-      @Override
-      public int compare(DayEntry a, DayEntry b) {
-        return a.getName().compareTo(b.getName());
-      }
-    });
+    mProfiles.add(de);
+    mSql.insertProfile(de);
+    mProfiles.sort(Comparator.comparing(DayEntry::getName));
   }
   public DayEntry getByName(final String name) {
-    for(DayEntry de : profiles) {
+    for(DayEntry de : mProfiles) {
       if(de.getName().equals(name))
         return de;
     }

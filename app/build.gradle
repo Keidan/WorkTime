@@ -6,25 +6,25 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    compile 'com.android.support:appcompat-v7:23.4.0'
-    compile 'com.android.support:support-v4:23.4.0'
-    compile 'com.android.support:design:23.4.0'
-    compile 'com.android.support:percent:23.0.0'
+    implementation 'com.android.support:appcompat-v7:27.0.1'
+    implementation 'com.android.support:support-v4:27.0.1'
+    implementation 'com.android.support:design:27.0.1'
+    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
+    implementation 'com.android.support:support-compat:27.0.1'
     testCompile 'junit:junit:4.12'
-    compile 'com.squareup.okhttp:okhttp:2.7.5'
-    compile 'com.squareup.okhttp3:okhttp:3.5.0'
-    compile files('libs/poi-3.15.jar')
-    compile group: 'org.achartengine', name: 'achartengine', version: '1.2.0'
+    implementation 'com.squareup.okhttp:okhttp:2.7.5'
+    implementation 'com.squareup.okhttp3:okhttp:3.7.0'
+    implementation files('libs/poi-3.15.jar')
 }
 
 
 android {
     defaultConfig {
         applicationId "fr.ralala.worktime"
-        minSdkVersion 23
-        targetSdkVersion 23
-        versionCode 20
-        versionName "1.21"
+        minSdkVersion 24
+        targetSdkVersion 26
+        versionCode 21
+        versionName "2.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     signingConfigs {
@@ -35,8 +35,7 @@ android {
             storePassword 'myStorePassword'
         }
     }
-    compileSdkVersion 23
-    buildToolsVersion "23.0.3"
+    compileSdkVersion 27
     buildTypes {
         release {
             minifyEnabled true
@@ -46,10 +45,14 @@ android {
         }
         debug {
             // to debug ProGuard rules
-            minifyEnabled true
+            minifyEnabled false
             signingConfig signingConfigs.config
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules-debug.pro'
         }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
 
     packagingOptions {

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest package="fr.ralala.worktime"
+<manifest xmlns:tools="http://schemas.android.com/tools"
+    package="fr.ralala.worktime"
           xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
@@ -15,7 +16,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".activities.MainActivity"
+            android:name=".ui.activities.MainActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/app_name"
             android:launchMode="singleTop"
@@ -29,20 +30,20 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activities.SettingsActivity"
-            android:parentActivityName=".activities.MainActivity">
+            android:name=".ui.activities.SettingsActivity"
+            android:parentActivityName=".ui.activities.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activities.MainActivity"/>
+                android:value=".ui.activities.MainActivity"/>
         </activity>
         <activity
-            android:name=".activities.SettingsImportExportActivity"
-            android:parentActivityName=".activities.SettingsActivity">
+            android:name=".ui.activities.SettingsImportExportActivity"
+            android:parentActivityName=".ui.activities.SettingsActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activities.SettingsActivity"/>
+                android:value=".ui.activities.SettingsActivity"/>
         </activity>
-        <activity android:name=".activities.FileChooserActivity"/>
+        <activity android:name=".ui.activities.FileChooserActivity"/>
         <activity
             android:name="com.dropbox.core.android.AuthActivity"
             android:configChanges="orientation|keyboard"
@@ -59,23 +60,24 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activities.DayActivity"
-            android:parentActivityName=".activities.MainActivity">
+            android:name=".ui.activities.DayActivity"
+            android:parentActivityName=".ui.activities.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activities.MainActivity"/>
+                android:value=".ui.activities.MainActivity"/>
         </activity>
         <activity
-            android:name=".activities.PublicHolidayActivity"
-            android:parentActivityName=".activities.MainActivity">
+            android:name=".ui.activities.PublicHolidayActivity"
+            android:parentActivityName=".ui.activities.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activities.MainActivity"/>
+                android:value=".ui.activities.MainActivity"/>
         </activity>
 
         <service android:name=".services.DropboxAutoExportService"/>
         <service android:name=".services.QuickAccessService"/>
-        <receiver android:name=".quickaccess.QuickAccessNotificationReceiver">
+        <receiver android:name=".ui.quickaccess.QuickAccessNotificationReceiver"
+            tools:ignore="ExportedReceiver">
             <intent-filter>
                 <category android:name="fr.ralala.worktime.services.PAUSE"/>
 
@@ -85,7 +87,7 @@
             android:icon="@mipmap/ic_launcher"
             android:enabled="true"
             android:label="@string/app_name"
-            android:name=".widgets.DayWidgetProvider1x1" >
+            android:name=".ui.widgets.DayWidgetProvider1x1" >
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_ENABLED" />
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -101,7 +103,7 @@
             android:icon="@mipmap/ic_launcher"
             android:enabled="true"
             android:label="@string/app_name"
-            android:name=".widgets.DayWidgetProvider4x1" >
+            android:name=".ui.widgets.DayWidgetProvider4x1" >
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_ENABLED" />
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />

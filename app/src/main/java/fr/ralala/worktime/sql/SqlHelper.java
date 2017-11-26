@@ -3,6 +3,7 @@ package fr.ralala.worktime.sql;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.os.Process;
 import android.util.Log;
 
 import java.io.File;
@@ -114,28 +115,9 @@ import fr.ralala.worktime.MainApplication;
   @Override
   public void onUpgrade(final SQLiteDatabase db, final int oldVersion,
                         final int newVersion) {
-    if(oldVersion == 1 && newVersion == 2) {
-      db.execSQL("ALTER TABLE " + TABLE_PROFILES + " RENAME TO " + TABLE_PROFILES + "_v" + oldVersion);
-      db.execSQL("ALTER TABLE " + TABLE_DAYS + " RENAME TO " + TABLE_DAYS + "_v" + oldVersion);
-      db.execSQL(CREATE_BDD_DAYS);
-      db.execSQL(CREATE_BDD_PROFILES);
-    }
-    else if(oldVersion == 2 && newVersion == 3) {
-      db.execSQL("ALTER TABLE " + TABLE_PROFILES + " RENAME TO " + TABLE_PROFILES + "_v" + oldVersion);
-      db.execSQL(CREATE_BDD_PROFILES);
-    }
-    else if(oldVersion == 3 && newVersion == 4) {
-      db.execSQL("ALTER TABLE " + TABLE_PROFILES + " RENAME TO " + TABLE_PROFILES + "_v" + oldVersion);
-      db.execSQL("ALTER TABLE " + TABLE_DAYS + " RENAME TO " + TABLE_DAYS + "_v" + oldVersion);
-      db.execSQL("ALTER TABLE " + TABLE_PUBLIC_HOLIDAYS + " RENAME TO " + TABLE_PUBLIC_HOLIDAYS + "_v" + oldVersion);
-      db.execSQL(CREATE_BDD_PUBLIC_HOLIDAYS);
-      db.execSQL(CREATE_BDD_PROFILES);
-      db.execSQL(CREATE_BDD_DAYS);
-    }
-    else if(oldVersion == 4 && newVersion == 5) {
-      db.execSQL(CREATE_BDD_SETTINGS);
-      db.execSQL("ALTER TABLE " + TABLE_SETTINGS + " RENAME TO " + TABLE_SETTINGS + "_v" + oldVersion);
-      db.execSQL(CREATE_BDD_SETTINGS);
+    if(oldVersion < 5) {
+      Log.e(getClass().getSimpleName(), "Version not supported");
+      Process.killProcess(0);
     }
     else if(oldVersion == 5 && newVersion == 6) {
       db.execSQL("ALTER TABLE " + TABLE_PROFILES + " RENAME TO " + TABLE_PROFILES + "_v" + oldVersion);
@@ -148,11 +130,6 @@ import fr.ralala.worktime.MainApplication;
   // Copy to sdcard for debug use
   public static String copyDatabase(final Context c, final String name,
                                     final String folder) throws Exception {
-    return copyDatabase(c, name, folder, name, true);
-  }
-  private static String copyDatabase(final Context c, final String name,
-                                     final String folder,
-                                    final String filename, boolean date) throws Exception{
     MainApplication.getApp(c).getSql().settingsSave();
     final String databasePath = c.getDatabasePath(name).getPath();
     final File f = new File(databasePath);
@@ -166,8 +143,9 @@ import fr.ralala.worktime.MainApplication;
 
         final File directory = new File(folder);
         if (!directory.exists())
+          //noinspection ResultOfMethodCallIgnored
           directory.mkdir();
-        File out = new File(directory, !date ? filename : (new SimpleDateFormat("yyyyMMdd_HHmm", Locale.US).format(new Date()) + "_" + name));
+        File out = new File(directory, new SimpleDateFormat("yyyyMMdd_HHmm", Locale.US).format(new Date()) + "_" + name);
         myOutput = new FileOutputStream(out);
         myInput = new FileInputStream(databasePath);
 

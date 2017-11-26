@@ -11,10 +11,6 @@ package fr.ralala.worktime.sql;
  */
 public interface SqlConstants {
   int    VERSION_BDD                   = 6;
-  int VERSION_MIN_MORNING_AFTERNOON    = 2;
-  int VERSION_MIN_RECURRENCE_LEGAL_WT  = 4;
-  int VERSION_MIN_SETTINGS             = 5;
-  int VERSION_MIN_BREAK_MA             = 6;
   String DB_NAME                       = "work_time.sqlite3";
   String TABLE_PUBLIC_HOLIDAYS         = "public_holidays";
   String TABLE_DAYS                    = "days";

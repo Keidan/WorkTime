@@ -16,39 +16,39 @@ import android.support.annotation.NonNull;
  *******************************************************************************
  */
 public class FileChooserOption implements Comparable<FileChooserOption> {
-  private String name;
-  private String data;
-  private String path;
-  private Drawable icon;
+  private String mName;
+  private String mData;
+  private String mPath;
+  private Drawable mIcon;
 
   public FileChooserOption(final String n, final String d, final String p, final Drawable i) {
-    name = n;
-    data = d;
-    path = p;
-    icon = i;
+    mName = n;
+    mData = d;
+    mPath = p;
+    mIcon = i;
   }
 
   public String getName() {
-    return name;
+    return mName;
   }
 
   public String getData() {
-    return data;
+    return mData;
   }
 
   public String getPath() {
-    return path;
+    return mPath;
   }
 
   public Drawable getIcon() {
-    return icon;
+    return mIcon;
   }
 
   @SuppressLint("DefaultLocale")
   @Override
   public int compareTo(@NonNull final FileChooserOption o) {
-    if (this.name != null)
-      return this.name.toLowerCase(Locale.getDefault()).compareTo(
+    if (this.mName != null)
+      return this.mName.toLowerCase(Locale.getDefault()).compareTo(
           o.getName().toLowerCase());
     else
       throw new IllegalArgumentException();
