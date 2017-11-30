@@ -185,7 +185,7 @@
             <TextView
                 android:id="@+id/tvLblStartAfternoon"
                 android:layout_marginTop="@dimen/activity_day_tvLblStartAfternoon_layout_marginTop"
-                android:text="@string/start_morning"
+                android:text="@string/start_afternoon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:layout_constraintLeft_toLeftOf="parent"
@@ -193,7 +193,7 @@
             <TextView
                 android:id="@+id/tvLblEndAfternoon"
                 android:layout_marginTop="@dimen/activity_day_tvLblEndAfternoon_layout_marginTop"
-                android:text="@string/end_morning"
+                android:text="@string/end_afternoon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:layout_constraintStart_toEndOf="@+id/guidelineLbl55"
