@@ -16,7 +16,6 @@
     <string name="sickness">Maladie</string>
     <string name="holidays">Cong\u00E9</string>
     <string name="unpaid">Non pay\u00E9</string>
-    <string name="monthly_ceiling">Plafond mensuel</string>
     <string name="work_time">Temps de travail</string>
     <string name="work_days">Jours de travail</string>
     <string name="monthly_hours">Heures mensuel</string>
@@ -50,7 +49,6 @@
     <string name="error_invalid_start">Heure de d\u00E9part non valide.</string>
     <string name="error_invalid_end">Heure d\'arriv\u00E9e non valide.</string>
     <string name="error_invalid_start_end_morning">Les horaires de d\u00E9part et d\'arriv\u00E9e du matin sont invalides.</string>
-    <string name="error_invalid_start_end_afternoon">Les horaires de d\u00E9part et d\'arriv\u00E9e de l\'apr\u00E8s midi sont invalides.</string>
     <string name="error_invalid_legal_worktime">Le temps de travail l\u00E9gal n\'est pas valable.</string>
     <string name="error_widget_sql">Impossible d\'ouvrir la base de donn\u00E9es SQL</string>
     <string name="text_for">pour</string>
@@ -66,7 +64,12 @@
     <string name="pref_title_hourly_rate">Taux horaire</string>
     <string name="pref_summary_hourly_rate">Montant utilis\u00E9 pour le taux horaire.</string>
     <string name="pref_title_database">Base de donn\u00E9es</string>
+    <string name="pref_summary_database">Cette section vous permet de g\u00E9rer l\'imlportation/exportation de la base de donn\u00E9es</string>
     <string name="pref_title_import_export">Importation/Exportation</string>
+    <string name="pref_title_display">Affichage</string>
+    <string name="pref_summary_display">Cette section vous permet de g\u00E9rer la configuration de l\'affichage</string>
+    <string name="pref_title_excel_export">Exportation Excel</string>
+    <string name="pref_summary_excel_export">Cette section vous permet de g\u00E9rer la configuration de l\'exportation Excel</string>
     <string name="pref_title_export">Exportation</string>
     <string name="pref_title_import">Importation</string>
     <string name="pref_title_import_export_auto_save">Exportation automatique</string>
@@ -89,7 +92,7 @@
     <string name="pref_summary_day_row_height">Hauteur des rang\u00E9es de la liste des jours dans la fen\u00EAtre de temps de travail.</string>
     <string name="pref_title_day_row_height">Hauteur des lignes</string>
     <string name="pref_title_learning">Apprentissage des profils</string>
-    <string name="pref_summary_learning">Cette section permet de g\u00E9rer l\'apprentissage du profil de pr\u00E9f\u00E9rence utilis\u00E9 par l\'insertion des jours de la vue principale.</string>
+    <string name="pref_summary_learning">Cette section vous permet de g\u00E9rer l\'apprentissage du profil de pr\u00E9f\u00E9rence utilis\u00E9 par l\'insertion des jours de la vue principale.</string>
     <string name="pref_summary_learning_threshold">Permet de g\u00E9rer le seuil de l\'apprentissage.</string>
     <string name="pref_title_learning_threshold">Seuil de l\'apprentissage</string>
     <string name="pref_title_learning_clear">Effacer les apprentissages</string>
@@ -129,7 +132,7 @@
     <string name="error_dropbox_upload">Impossible d\'uploader le fichier</string>
     <string name="error_dropbox_download">Impossible de t\u00E9l\u00E9chareger le fichier</string>
     <string name="error_dropbox_list_directory">Impossible de r\u00E9cup\u00E9rer la list des fichiers</string>
-    <string name="data_transfer">Transfert des donn\u00E9es</string>
+    <string name="data_transfer">Transfert des donn\u00E9es, veuillez patienter&#8230;</string>
     <string name="error_no_files">Pas de fichier trouv\u00E9</string>
     <string name="box_select_db_file">S\u00E9lection</string>
     <string name="pref_title_infos">Informations</string>
@@ -154,4 +157,5 @@
     <string name="tv_break_widget">Pause: </string>
     <string name="tv_afternoon_widget">Apr\u00E8s-midi: </string>
     <string name="tv_worktime_widget">Travail: </string>
+    <string name="loading">Chargement&#8230;</string>
 </resources>

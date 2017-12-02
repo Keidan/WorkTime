@@ -12,6 +12,7 @@
         android:name=".MainApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
+        android:roundIcon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
@@ -30,18 +31,46 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ui.activities.SettingsActivity"
+            android:name=".ui.activities.settings.SettingsActivity"
             android:parentActivityName=".ui.activities.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".ui.activities.MainActivity"/>
         </activity>
         <activity
-            android:name=".ui.activities.SettingsImportExportActivity"
-            android:parentActivityName=".ui.activities.SettingsActivity">
+            android:name=".ui.activities.settings.SettingsDatabaseActivity"
+            android:parentActivityName=".ui.activities.settings.SettingsActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".ui.activities.SettingsActivity"/>
+                android:value=".ui.activities.settings.SettingsActivity"/>
+        </activity>
+        <activity
+            android:name=".ui.activities.settings.SettingsDisplayActivity"
+            android:parentActivityName=".ui.activities.settings.SettingsActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ui.activities.settings.SettingsActivity"/>
+        </activity>
+        <activity
+            android:name=".ui.activities.settings.SettingsExcelExportActivity"
+            android:parentActivityName=".ui.activities.settings.SettingsActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ui.activities.settings.SettingsActivity"/>
+        </activity>
+        <activity
+            android:name=".ui.activities.settings.SettingsLearningActivity"
+            android:parentActivityName=".ui.activities.settings.SettingsActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ui.activities.settings.SettingsActivity"/>
+        </activity>
+        <activity
+            android:name=".ui.activities.settings.SettingsImportExportActivity"
+            android:parentActivityName=".ui.activities.settings.SettingsDatabaseActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ui.activities.settings.SettingsDatabaseActivity"/>
         </activity>
         <activity android:name=".ui.activities.FileChooserActivity"/>
         <activity

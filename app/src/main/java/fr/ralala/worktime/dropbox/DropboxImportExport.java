@@ -1,10 +1,10 @@
 package fr.ralala.worktime.dropbox;
 
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Environment;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 
 import com.dropbox.core.v2.files.FileMetadata;
@@ -34,7 +34,7 @@ import fr.ralala.worktime.ui.utils.UIHelper;
 public class DropboxImportExport implements DropboxListener{
   private static final String PATH = "";
   private DropboxHelper mHelper = null;
-  private ProgressDialog mDialog = null;
+  private AlertDialog mDialog = null;
   private File mFile = null;
   private Context mContext = null;
   private DropboxUploaded mDropboxUploaded = null;
@@ -57,7 +57,7 @@ public class DropboxImportExport implements DropboxListener{
     mDropboxDownloaded = null;
     if(mHelper.connect(c, c.getString(R.string.app_key))) {
       if(mDialog == null)
-        mDialog = buildProgress(c);
+        mDialog = UIHelper.showProgressDialog(c, R.string.data_transfer);
       mDialog.show();
       new ListFolderTask(mHelper.getClient(), this).execute(PATH);
     }
@@ -67,7 +67,7 @@ public class DropboxImportExport implements DropboxListener{
     mContext = c;
     mDropboxUploaded = dropboxUploaded;
     if(mDialog == null && displayDialog)
-      mDialog = buildProgress(c);
+      mDialog = UIHelper.showProgressDialog(c, R.string.data_transfer);
     if(mHelper.connect(c, c.getString(R.string.app_key))) {
       if(mDialog != null)
         mDialog.show();
@@ -93,14 +93,6 @@ public class DropboxImportExport implements DropboxListener{
       mFile.delete();
       mFile = null;
     }
-  }
-
-  private ProgressDialog buildProgress(final Context c) {
-    final ProgressDialog dialog = new ProgressDialog(c);
-    dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-    dialog.setCancelable(false);
-    dialog.setMessage(c.getString(R.string.data_transfer));
-    return dialog;
   }
 
   @Override

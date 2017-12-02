@@ -93,9 +93,9 @@
     <dimen name="activity_day_etAmount_paddingTop">2dp</dimen>
     <!-- activity_public_holiday.xml -->
     <dimen name="activity_public_holiday_etName_layout_width">0dp</dimen>
-    <dimen name="activity_public_holiday_etName_layout_marginStart">10sp</dimen>
+    <dimen name="activity_public_holiday_etName_layout_marginStart">10dp</dimen>
     <dimen name="activity_public_holiday_dpDate_layout_width">0dp</dimen>
-    <dimen name="activity_public_holiday_dpDate_layout_marginStart">10sp</dimen>
+    <dimen name="activity_public_holiday_dpDate_layout_marginStart">10dp</dimen>
     <dimen name="activity_public_holiday_ckRecurrence_layout_width">0dp</dimen>
     <!-- fragment_export.xml -->
     <dimen name="fragment_export_btExport_layout_marginBottom">5dp</dimen>
@@ -167,34 +167,41 @@
     <dimen name="listview_item_menu_layout_width">30dp</dimen>
     <dimen name="listview_item_menu_layout_height">50dp</dimen>
     <!-- widget_day1x1.xml -->
-    <dimen name="widget_day1x1_tvMonth_layout_margin">4sp</dimen>
-    <dimen name="widget_day1x1_tvDay_layout_marginStart">4sp</dimen>
-    <dimen name="widget_day1x1_tvDay_layout_marginEnd">4sp</dimen>
-    <dimen name="widget_day1x1_tvWorkTime_layout_margin">4sp</dimen>
+    <dimen name="widget_day1x1_tvMonth_layout_margin">4dp</dimen>
+    <dimen name="widget_day1x1_tvDay_layout_marginStart">4dp</dimen>
+    <dimen name="widget_day1x1_tvDay_layout_marginEnd">4dp</dimen>
+    <dimen name="widget_day1x1_tvWorkTime_layout_margin">4dp</dimen>
     <!-- widget_day4x1.xml -->
-    <dimen name="widget_day4x1_tvDate_layout_margin">4sp</dimen>
+    <dimen name="widget_day4x1_tvDate_layout_margin">4dp</dimen>
     <dimen name="widget_day4x1_tvLblMorning_layout_weight">1</dimen>
     <dimen name="widget_day4x1_tvLblMorning_layout_width">0px</dimen>
-    <dimen name="widget_day4x1_tvLblMorning_layout_margin">4sp</dimen>
+    <dimen name="widget_day4x1_tvLblMorning_layout_margin">4dp</dimen>
     <dimen name="widget_day4x1_tvMorning_layout_weight">1</dimen>
     <dimen name="widget_day4x1_tvMorning_layout_width">0px</dimen>
-    <dimen name="widget_day4x1_tvMorning_layout_margin">4sp</dimen>
+    <dimen name="widget_day4x1_tvMorning_layout_margin">4dp</dimen>
     <dimen name="widget_day4x1_tvLblBreak_layout_weight">1</dimen>
     <dimen name="widget_day4x1_tvLblBreak_layout_width">0px</dimen>
-    <dimen name="widget_day4x1_tvLblBreak_layout_margin">4sp</dimen>
+    <dimen name="widget_day4x1_tvLblBreak_layout_margin">4dp</dimen>
     <dimen name="widget_day4x1_tvBreak_layout_weight">1</dimen>
     <dimen name="widget_day4x1_tvBreak_layout_width">0px</dimen>
-    <dimen name="widget_day4x1_tvBreak_layout_margin">4sp</dimen>
+    <dimen name="widget_day4x1_tvBreak_layout_margin">4dp</dimen>
     <dimen name="widget_day4x1_tvLblAfternoon_layout_weight">1</dimen>
     <dimen name="widget_day4x1_tvLblAfternoon_layout_width">0px</dimen>
-    <dimen name="widget_day4x1_tvLblAfternoon_layout_margin">4sp</dimen>
+    <dimen name="widget_day4x1_tvLblAfternoon_layout_margin">4dp</dimen>
     <dimen name="widget_day4x1_tvAfternoon_layout_weight">1</dimen>
     <dimen name="widget_day4x1_tvAfternoon_layout_width">0px</dimen>
-    <dimen name="widget_day4x1_tvAfternoon_layout_margin">4sp</dimen>
+    <dimen name="widget_day4x1_tvAfternoon_layout_margin">4dp</dimen>
     <dimen name="widget_day4x1_tvLblWorkTime_layout_weight">1</dimen>
     <dimen name="widget_day4x1_tvLblWorkTime_layout_width">0px</dimen>
-    <dimen name="widget_day4x1_tvLblWorkTime_layout_margin">4sp</dimen>
+    <dimen name="widget_day4x1_tvLblWorkTime_layout_margin">4dp</dimen>
     <dimen name="widget_day4x1_tvWorkTime_layout_weight">1</dimen>
     <dimen name="widget_day4x1_tvWorkTime_layout_width">0px</dimen>
-    <dimen name="widget_day4x1_tvWorkTime_layout_margin">4sp</dimen>
+    <dimen name="widget_day4x1_tvWorkTime_layout_margin">4dp</dimen>
+    <!-- progress_dialog -->
+    <dimen name="progress_dialog_textSize">18sp</dimen>
+    <dimen name="progress_dialog_layout_marginTop">20dp</dimen>
+    <dimen name="progress_dialog_text_layout_marginTop">15dp</dimen>
+    <dimen name="progress_dialog_layout_marginStart">10dp</dimen>
+    <dimen name="progress_dialog_layout_marginEnd">10dp</dimen>
+    <dimen name="progress_dialog_layout_marginBottom">10dp</dimen>
 </resources>

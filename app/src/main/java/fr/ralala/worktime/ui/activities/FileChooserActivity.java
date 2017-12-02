@@ -4,13 +4,14 @@ import java.io.File;
 
 import fr.ralala.worktime.R;
 import fr.ralala.worktime.models.FileChooserOption;
+import fr.ralala.worktime.ui.utils.UIHelper;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -34,7 +35,7 @@ public class FileChooserActivity extends AbstractFileChooserActivity {
   private static final int MSG_CANCEL = 2;
   private FileChooserOption opt = null;
   private Handler handler = null;
-  private ProgressDialog progress = null;
+  private AlertDialog progress = null;
   public enum ErrorStatus {
     NO_ERROR, CANCEL, ERROR_NOT_MOUNTED, ERROR_CANT_READ
   }
@@ -64,7 +65,8 @@ public class FileChooserActivity extends AbstractFileChooserActivity {
 
   @Override
   protected void onFileSelected(final FileChooserOption opt) {
-    progress = ProgressDialog.show(this, "", "Loading...", true);
+    progress = UIHelper.showProgressDialog(this, R.string.loading);
+    progress.show();
     // useful code, variables declarations...
     new Thread((new Runnable() {
       @Override

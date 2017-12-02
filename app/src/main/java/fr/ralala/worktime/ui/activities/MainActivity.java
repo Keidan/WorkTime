@@ -18,6 +18,7 @@ import android.view.MotionEvent;
 
 import fr.ralala.worktime.MainApplication;
 import fr.ralala.worktime.R;
+import fr.ralala.worktime.ui.activities.settings.SettingsActivity;
 import fr.ralala.worktime.ui.changelog.ChangeLog;
 import fr.ralala.worktime.ui.changelog.ChangeLogIds;
 import fr.ralala.worktime.ui.fragments.AppFragmentsFactory;

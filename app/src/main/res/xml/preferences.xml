@@ -1,13 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" android:key="prefScreen">
     <PreferenceCategory android:title="@string/pref_title_settings" android:key="prefCatSettings" >
-        <ListPreference
-            android:key="prefDefaultHome"
-            android:defaultValue="0"
-            android:entries="@array/entries_fragments"
-            android:summary="@string/pref_fragments_summary"
-            android:entryValues="@array/values_fragments"
-            android:title="@string/pref_fragments_title" />
         <fr.ralala.worktime.ui.dialogs.TimePreferenceDialog
             android:key="prefWorkTimeByDay"
             android:title="@string/pref_title_work_time_by_day"
@@ -25,81 +18,18 @@
             android:summary="@string/pref_summary_currency"
             android:title="@string/pref_title_currency"
             android:inputType="text" />
-        <CheckBoxPreference
-            android:key="prefHideWage"
-            android:defaultValue="false"
-            android:summary="@string/pref_summary_hide_wage"
-            android:title="@string/pref_title_hide_wage" />
-        <EditTextPreference
-            android:key="prefDayRowsHeight"
-            android:defaultValue="44"
-            android:summary="@string/pref_summary_day_row_height"
-            android:title="@string/pref_title_day_row_height"
-            android:inputType="numberDecimal" />
-        <CheckBoxPreference
-            android:key="prefScrollToCurrentDay"
-            android:defaultValue="false"
-            android:summary="@string/pref_summary_scroll_to_current_day"
-            android:title="@string/pref_title_scroll_to_current_day" />
-        <CheckBoxPreference
-            android:key="prefHideExitButton"
-            android:defaultValue="false"
-            android:summary="@string/pref_summary_hide_exit_button"
-            android:title="@string/pref_title_hide_exit_button" />
-    </PreferenceCategory>
-    <PreferenceCategory android:title="@string/pref_title_export" android:key="prefCatExport" >
-        <CheckBoxPreference
-            android:key="prefExportMailEnable"
-            android:defaultValue="true"
-            android:summary="@string/pref_summary_export_mail_enable"
-            android:title="@string/pref_title_export_mail_enable" />
-        <EditTextPreference
-            android:enabled="true"
-            android:key="prefExportMail"
-            android:defaultValue=""
-            android:summary="@string/pref_summary_export_mail"
-            android:title="@string/pref_title_export_mail"
-            android:inputType="textEmailAddress" />
-        <CheckBoxPreference
-            android:key="prefExportHideWage"
-            android:defaultValue="false"
-            android:summary="@string/pref_summary_hide_wage"
-            android:title="@string/pref_title_hide_wage" />
-    </PreferenceCategory>
-    <PreferenceCategory android:title="@string/pref_title_learning" android:key="prefCatWeight" >
-        <Preference
-            android:key="prefCatWeightLabel"
-            android:title="@null"
+        <Preference android:key="prefSelectDisplay"
+            android:summary="@string/pref_summary_display"
+            android:title="@string/pref_title_display" />
+        <Preference android:key="prefSelectExcelExport"
+            android:summary="@string/pref_summary_excel_export"
+            android:title="@string/pref_title_excel_export" />
+        <Preference android:key="prefSelectLearning"
             android:summary="@string/pref_summary_learning"
-            android:selectable="false"/>
-        <EditTextPreference
-            android:key="prefWeightDepth"
-            android:defaultValue="5"
-            android:summary="@string/pref_summary_learning_threshold"
-            android:title="@string/pref_title_learning_threshold"
-            android:inputType="numberDecimal" />
-        <Preference
-            android:key="prefWeightClear"
-            android:title="@string/pref_title_learning_clear"
-            android:summary="@string/pref_summary_learning_clear"/>
-    </PreferenceCategory>
-    <PreferenceCategory android:title="@string/pref_title_database" android:key="prefCatDatabase" >
-        <CheckBoxPreference
-            android:key="prefImportExportAutoSave"
-            android:defaultValue="false"
-            android:summary="@string/pref_summary_import_export_auto_save"
-            android:title="@string/pref_title_import_export_auto_save" />
-        <ListPreference
-            android:key="prefImportExportAutoSavePeriodicity"
-            android:defaultValue="0"
-            android:entries="@array/entries_periodicity"
-            android:summary="@string/pref_fragments_summary_periodicity"
-            android:entryValues="@array/values_periodicity"
-            android:title="@string/pref_fragments_title_periodicity" />
-        <Preference
-            android:key="prefImportExport"
-            android:title="@string/pref_title_import_export"
-            android:summary="@string/pref_summary_import_export"/>
+            android:title="@string/pref_title_learning" />
+        <Preference android:key="prefSelectDatabaseExport"
+            android:summary="@string/pref_summary_database"
+            android:title="@string/pref_title_database" />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/pref_title_infos" >
         <Preference

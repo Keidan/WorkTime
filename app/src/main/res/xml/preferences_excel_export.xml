@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" android:key="prefScreenExcelExport">
+    <PreferenceCategory android:title="@string/pref_title_export" android:key="prefCatExport" >
+        <CheckBoxPreference
+            android:key="prefExportMailEnable"
+            android:defaultValue="true"
+            android:summary="@string/pref_summary_export_mail_enable"
+            android:title="@string/pref_title_export_mail_enable" />
+        <EditTextPreference
+            android:enabled="true"
+            android:key="prefExportMail"
+            android:defaultValue=""
+            android:summary="@string/pref_summary_export_mail"
+            android:title="@string/pref_title_export_mail"
+            android:inputType="textEmailAddress" />
+        <CheckBoxPreference
+            android:key="prefExportHideWage"
+            android:defaultValue="false"
+            android:summary="@string/pref_summary_hide_wage"
+            android:title="@string/pref_title_hide_wage" />
+    </PreferenceCategory>
+</PreferenceScreen>

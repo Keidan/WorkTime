@@ -1,4 +1,4 @@
-package fr.ralala.worktime.ui.activities;
+package fr.ralala.worktime.ui.activities.settings;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -24,6 +24,8 @@ import fr.ralala.worktime.R;
 import fr.ralala.worktime.dropbox.DropboxImportExport;
 import fr.ralala.worktime.services.DropboxAutoExportService;
 import fr.ralala.worktime.sql.SqlHelper;
+import fr.ralala.worktime.ui.activities.AbstractFileChooserActivity;
+import fr.ralala.worktime.ui.activities.FileChooserActivity;
 import fr.ralala.worktime.utils.AndroidHelper;
 import fr.ralala.worktime.ui.utils.UIHelper;
 
@@ -38,32 +40,32 @@ import fr.ralala.worktime.ui.utils.UIHelper;
  *******************************************************************************
  */
 public class SettingsImportExportActivity extends PreferenceActivity implements Preference.OnPreferenceClickListener {
-  public static final String       PREFS_KEY_EXPORT_TO_DEVICE                 = "prefExportToDevice";
-  public static final String       PREFS_KEY_IMPORT_FROM_DEVICE               = "prefImportFromDevice";
-  public static final String       PREFS_KEY_EXPORT_TO_DROPBOX                = "prefExportToDropbox";
-  public static final String       PREFS_KEY_IMPORT_FROM_DROPBOX              = "prefImportFromDropbox";
+  public static final String PREFS_KEY_EXPORT_TO_DEVICE = "prefExportToDevice";
+  public static final String PREFS_KEY_IMPORT_FROM_DEVICE = "prefImportFromDevice";
+  public static final String PREFS_KEY_EXPORT_TO_DROPBOX = "prefExportToDropbox";
+  public static final String PREFS_KEY_IMPORT_FROM_DROPBOX = "prefImportFromDropbox";
 
-  private MyPreferenceFragment prefFrag                       = null;
-  private MainApplication app = null;
+  private MyPreferenceFragment mPrefFrag = null;
+  private MainApplication mApp = null;
 
   @Override
   public void onCreate(final Bundle savedInstanceState) {
     AndroidHelper.openAnimation(this);
     super.onCreate(savedInstanceState);
-    app = MainApplication.getApp(this);
-    prefFrag = new MyPreferenceFragment();
+    mApp = MainApplication.getApp(this);
+    mPrefFrag = new MyPreferenceFragment();
     getFragmentManager().beginTransaction()
-      .replace(android.R.id.content, prefFrag).commit();
+      .replace(android.R.id.content, mPrefFrag).commit();
     getFragmentManager().executePendingTransactions();
     android.support.v7.app.ActionBar actionBar = AppCompatDelegate.create(this, null).getSupportActionBar();
     if(actionBar != null) {
       actionBar.setDisplayShowHomeEnabled(true);
       actionBar.setDisplayHomeAsUpEnabled(true);
     }
-    prefFrag.findPreference(PREFS_KEY_EXPORT_TO_DEVICE).setOnPreferenceClickListener(this);
-    prefFrag.findPreference(PREFS_KEY_IMPORT_FROM_DEVICE).setOnPreferenceClickListener(this);
-    prefFrag.findPreference(PREFS_KEY_EXPORT_TO_DROPBOX).setOnPreferenceClickListener(this);
-    prefFrag.findPreference(PREFS_KEY_IMPORT_FROM_DROPBOX).setOnPreferenceClickListener(this);
+    mPrefFrag.findPreference(PREFS_KEY_EXPORT_TO_DEVICE).setOnPreferenceClickListener(this);
+    mPrefFrag.findPreference(PREFS_KEY_IMPORT_FROM_DEVICE).setOnPreferenceClickListener(this);
+    mPrefFrag.findPreference(PREFS_KEY_EXPORT_TO_DROPBOX).setOnPreferenceClickListener(this);
+    mPrefFrag.findPreference(PREFS_KEY_IMPORT_FROM_DROPBOX).setOnPreferenceClickListener(this);
   }
 
   @Override
@@ -86,12 +88,12 @@ public class SettingsImportExportActivity extends PreferenceActivity implements 
 
   @Override
   public boolean onPreferenceClick(final Preference preference) {
-    if (preference.equals(prefFrag.findPreference(PREFS_KEY_EXPORT_TO_DROPBOX))) {
-      DropboxAutoExportService.setNeedUpdate(app, false);
-      app.getDropboxImportExport().exportDatabase(this, true, null);
-    } else if (preference.equals(prefFrag.findPreference(PREFS_KEY_IMPORT_FROM_DROPBOX))) {
-      app.getDropboxImportExport().importDatabase(this);
-    } else if (preference.equals(prefFrag.findPreference(PREFS_KEY_EXPORT_TO_DEVICE))) {
+    if (preference.equals(mPrefFrag.findPreference(PREFS_KEY_EXPORT_TO_DROPBOX))) {
+      DropboxAutoExportService.setNeedUpdate(mApp, false);
+      mApp.getDropboxImportExport().exportDatabase(this, true, null);
+    } else if (preference.equals(mPrefFrag.findPreference(PREFS_KEY_IMPORT_FROM_DROPBOX))) {
+      mApp.getDropboxImportExport().importDatabase(this);
+    } else if (preference.equals(mPrefFrag.findPreference(PREFS_KEY_EXPORT_TO_DEVICE))) {
       Map<String, String> extra = new HashMap<>();
       extra.put(AbstractFileChooserActivity.FILECHOOSER_TYPE_KEY, "" + AbstractFileChooserActivity.FILECHOOSER_TYPE_DIRECTORY_ONLY);
       extra.put(AbstractFileChooserActivity.FILECHOOSER_TITLE_KEY, getString(R.string.pref_title_export));
@@ -100,7 +102,7 @@ public class SettingsImportExportActivity extends PreferenceActivity implements 
         .getExternalStorageDirectory().getAbsolutePath());
       extra.put(AbstractFileChooserActivity.FILECHOOSER_SHOW_KEY, "" + AbstractFileChooserActivity.FILECHOOSER_SHOW_DIRECTORY_ONLY);
       myStartActivity(extra, FileChooserActivity.class, FileChooserActivity.FILECHOOSER_SELECTION_TYPE_DIRECTORY);
-    } else if (preference.equals(prefFrag.findPreference(PREFS_KEY_IMPORT_FROM_DEVICE))) {
+    } else if (preference.equals(mPrefFrag.findPreference(PREFS_KEY_IMPORT_FROM_DEVICE))) {
       Map<String, String> extra = new HashMap<>();
       extra.put(AbstractFileChooserActivity.FILECHOOSER_TYPE_KEY, "" + AbstractFileChooserActivity.FILECHOOSER_TYPE_FILE_AND_DIRECTORY);
       extra.put(AbstractFileChooserActivity.FILECHOOSER_TITLE_KEY, getString(R.string.pref_title_import));

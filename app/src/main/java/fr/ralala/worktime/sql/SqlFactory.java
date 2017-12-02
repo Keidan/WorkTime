@@ -13,12 +13,17 @@ import java.util.Comparator;
 import java.util.List;
 
 import fr.ralala.worktime.R;
-import fr.ralala.worktime.ui.activities.SettingsActivity;
+import fr.ralala.worktime.ui.activities.settings.SettingsActivity;
 import fr.ralala.worktime.models.DayEntry;
 import fr.ralala.worktime.models.DayType;
 import fr.ralala.worktime.models.Setting;
 import fr.ralala.worktime.models.WorkTimeDay;
 import fr.ralala.worktime.services.DropboxAutoExportService;
+import fr.ralala.worktime.ui.activities.settings.SettingsDatabaseActivity;
+import fr.ralala.worktime.ui.activities.settings.SettingsDisplayActivity;
+import fr.ralala.worktime.ui.activities.settings.SettingsExcelExportActivity;
+import fr.ralala.worktime.ui.activities.settings.SettingsImportExportActivity;
+import fr.ralala.worktime.ui.activities.settings.SettingsLearningActivity;
 import fr.ralala.worktime.utils.AndroidHelper;
 
 /**
@@ -104,20 +109,20 @@ public class SqlFactory implements SqlConstants {
   public void settingsSave() {
     getBdd().delete(TABLE_SETTINGS, null, null);
     SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext.getApplicationContext());
-    addSetting(prefs, SettingsActivity.PREFS_KEY_DEFAULT_HOME, SettingsActivity.PREFS_DEFVAL_DEFAULT_HOME);
-    addSetting(prefs, SettingsActivity.PREFS_KEY_PROFILES_WEIGHT_DEPTH, SettingsActivity.PREFS_DEFVAL_PROFILES_WEIGHT_DEPTH);
-    addSetting(prefs, SettingsActivity.PREFS_KEY_DAY_ROWS_HEIGHT, SettingsActivity.PREFS_DEFVAL_DAY_ROWS_HEIGHT);
+    addSetting(prefs, SettingsDisplayActivity.PREFS_KEY_DEFAULT_HOME, SettingsDisplayActivity.PREFS_DEFVAL_DEFAULT_HOME);
+    addSetting(prefs, SettingsLearningActivity.PREFS_KEY_PROFILES_WEIGHT_DEPTH, SettingsLearningActivity.PREFS_DEFVAL_PROFILES_WEIGHT_DEPTH);
+    addSetting(prefs, SettingsDisplayActivity.PREFS_KEY_DAY_ROWS_HEIGHT, SettingsDisplayActivity.PREFS_DEFVAL_DAY_ROWS_HEIGHT);
     addSetting(prefs, SettingsActivity.PREFS_KEY_WORKTIME_BY_DAY, SettingsActivity.PREFS_DEFVAL_WORKTIME_BY_DAY);
     addSetting(prefs, SettingsActivity.PREFS_KEY_AMOUNT_BY_HOUR, SettingsActivity.PREFS_DEFVAL_AMOUNT_BY_HOUR);
     addSetting(prefs, SettingsActivity.PREFS_KEY_CURRENCY, SettingsActivity.PREFS_DEFVAL_CURRENCY);
-    addSetting(prefs, SettingsActivity.PREFS_KEY_EMAIL, SettingsActivity.PREFS_DEFVAL_EMAIL);
-    addSetting(prefs, SettingsActivity.PREFS_KEY_EMAIL_ENABLE, SettingsActivity.PREFS_DEFVAL_EMAIL_ENABLE.equals("true"));
-    addSetting(prefs, SettingsActivity.PREFS_KEY_HIDE_WAGE, SettingsActivity.PREFS_DEFVAL_HIDE_WAGE.equals("true"));
-    addSetting(prefs, SettingsActivity.PREFS_KEY_EXPORT_HIDE_WAGE, SettingsActivity.PREFS_DEFVAL_EXPORT_HIDE_WAGE.equals("true"));
-    addSetting(prefs, SettingsActivity.PREFS_KEY_SCROLL_TO_CURRENT_DAY, SettingsActivity.PREFS_DEFVAL_SCROLL_TO_CURRENT_DAY.equals("true"));
-    addSetting(prefs, SettingsActivity.PREFS_KEY_HIDE_EXIT_BUTTON, SettingsActivity.PREFS_DEFVAL_HIDE_EXIT_BUTTON.equals("true"));
-    addSetting(prefs, SettingsActivity.PREFS_KEY_IMPORT_EXPORT_AUTO_SAVE, SettingsActivity.PREFS_DEFVAL_IMPORT_EXPORT_AUTO_SAVE.equals("false"));
-    addSetting(prefs, SettingsActivity.PREFS_KEY_IMPORT_EXPORT_AUTO_SAVE_PERIODICITY, SettingsActivity.PREFS_DEFVAL_IMPORT_EXPORT_AUTO_SAVE_PERIODICITY);
+    addSetting(prefs, SettingsExcelExportActivity.PREFS_KEY_EMAIL, SettingsExcelExportActivity.PREFS_DEFVAL_EMAIL);
+    addSetting(prefs, SettingsExcelExportActivity.PREFS_KEY_EMAIL_ENABLE, SettingsExcelExportActivity.PREFS_DEFVAL_EMAIL_ENABLE.equals("true"));
+    addSetting(prefs, SettingsDisplayActivity.PREFS_KEY_HIDE_WAGE, SettingsDisplayActivity.PREFS_DEFVAL_HIDE_WAGE.equals("true"));
+    addSetting(prefs, SettingsExcelExportActivity.PREFS_KEY_EXPORT_HIDE_WAGE, SettingsExcelExportActivity.PREFS_DEFVAL_EXPORT_HIDE_WAGE.equals("true"));
+    addSetting(prefs, SettingsDisplayActivity.PREFS_KEY_SCROLL_TO_CURRENT_DAY, SettingsDisplayActivity.PREFS_DEFVAL_SCROLL_TO_CURRENT_DAY.equals("true"));
+    addSetting(prefs, SettingsDisplayActivity.PREFS_KEY_HIDE_EXIT_BUTTON, SettingsDisplayActivity.PREFS_DEFVAL_HIDE_EXIT_BUTTON.equals("true"));
+    addSetting(prefs, SettingsDatabaseActivity.PREFS_KEY_IMPORT_EXPORT_AUTO_SAVE, SettingsDatabaseActivity.PREFS_DEFVAL_IMPORT_EXPORT_AUTO_SAVE.equals("false"));
+    addSetting(prefs, SettingsDatabaseActivity.PREFS_KEY_IMPORT_EXPORT_AUTO_SAVE_PERIODICITY, SettingsDatabaseActivity.PREFS_DEFVAL_IMPORT_EXPORT_AUTO_SAVE_PERIODICITY);
     addSetting(prefs, DropboxAutoExportService.KEY_NEED_UPDATE, DropboxAutoExportService.DEFVAL_NEED_UPDATE.equals("false"));
   }
 
@@ -129,14 +134,14 @@ public class SqlFactory implements SqlConstants {
         String value = c.getString(NUM_SETTINGS_VALUE);
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext.getApplicationContext());
         SharedPreferences.Editor edit = prefs.edit();
-        if(name.equals(SettingsActivity.PREFS_KEY_DEFAULT_HOME) || name.equals(SettingsActivity.PREFS_KEY_PROFILES_WEIGHT_DEPTH)
-            || name.equals(SettingsActivity.PREFS_KEY_DAY_ROWS_HEIGHT) || name.equals(SettingsActivity.PREFS_KEY_WORKTIME_BY_DAY)
+        if(name.equals(SettingsDisplayActivity.PREFS_KEY_DEFAULT_HOME) || name.equals(SettingsLearningActivity.PREFS_KEY_PROFILES_WEIGHT_DEPTH)
+            || name.equals(SettingsDisplayActivity.PREFS_KEY_DAY_ROWS_HEIGHT) || name.equals(SettingsActivity.PREFS_KEY_WORKTIME_BY_DAY)
             || name.equals(SettingsActivity.PREFS_KEY_AMOUNT_BY_HOUR) || name.equals(SettingsActivity.PREFS_KEY_CURRENCY )
-            || name.equals(SettingsActivity.PREFS_KEY_EMAIL) || name.equals(SettingsActivity.PREFS_KEY_IMPORT_EXPORT_AUTO_SAVE_PERIODICITY))
+            || name.equals(SettingsExcelExportActivity.PREFS_KEY_EMAIL) || name.equals(SettingsDatabaseActivity.PREFS_KEY_IMPORT_EXPORT_AUTO_SAVE_PERIODICITY))
           edit.putString(name, value);
-        else if(name.equals(SettingsActivity.PREFS_KEY_EMAIL_ENABLE) || name.equals(SettingsActivity.PREFS_KEY_HIDE_WAGE)
-            || name.equals(SettingsActivity.PREFS_KEY_EXPORT_HIDE_WAGE) || name.equals(SettingsActivity.PREFS_KEY_SCROLL_TO_CURRENT_DAY)
-            || name.equals(SettingsActivity.PREFS_KEY_HIDE_EXIT_BUTTON) || name.equals(SettingsActivity.PREFS_KEY_IMPORT_EXPORT_AUTO_SAVE)
+        else if(name.equals(SettingsExcelExportActivity.PREFS_KEY_EMAIL_ENABLE) || name.equals(SettingsDisplayActivity.PREFS_KEY_HIDE_WAGE)
+            || name.equals(SettingsExcelExportActivity.PREFS_KEY_EXPORT_HIDE_WAGE) || name.equals(SettingsDisplayActivity.PREFS_KEY_SCROLL_TO_CURRENT_DAY)
+            || name.equals(SettingsDisplayActivity.PREFS_KEY_HIDE_EXIT_BUTTON) || name.equals(SettingsDatabaseActivity.PREFS_KEY_IMPORT_EXPORT_AUTO_SAVE)
             || name.equals(DropboxAutoExportService.KEY_NEED_UPDATE))
           edit.putBoolean(name, value.equals("1"));
         if(settings != null)

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" android:key="prefScreenDisplay">
+    <PreferenceCategory android:title="@string/pref_title_settings" android:key="prefCatSettings" >
+        <ListPreference
+            android:key="prefDefaultHome"
+            android:defaultValue="0"
+            android:entries="@array/entries_fragments"
+            android:summary="@string/pref_fragments_summary"
+            android:entryValues="@array/values_fragments"
+            android:title="@string/pref_fragments_title" />
+        <CheckBoxPreference
+            android:key="prefHideWage"
+            android:defaultValue="false"
+            android:summary="@string/pref_summary_hide_wage"
+            android:title="@string/pref_title_hide_wage" />
+        <EditTextPreference
+            android:key="prefDayRowsHeight"
+            android:defaultValue="44"
+            android:summary="@string/pref_summary_day_row_height"
+            android:title="@string/pref_title_day_row_height"
+            android:inputType="numberDecimal" />
+        <CheckBoxPreference
+            android:key="prefScrollToCurrentDay"
+            android:defaultValue="false"
+            android:summary="@string/pref_summary_scroll_to_current_day"
+            android:title="@string/pref_title_scroll_to_current_day" />
+        <CheckBoxPreference
+            android:key="prefHideExitButton"
+            android:defaultValue="false"
+            android:summary="@string/pref_summary_hide_exit_button"
+            android:title="@string/pref_title_hide_exit_button" />
+    </PreferenceCategory>
+</PreferenceScreen>

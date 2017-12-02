@@ -16,7 +16,9 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.PopupMenu;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.CycleInterpolator;
 import android.view.animation.TranslateAnimation;
 import android.widget.ArrayAdapter;
@@ -46,6 +48,18 @@ import fr.ralala.worktime.models.WorkTimeDay;
  *******************************************************************************
  */
 public class UIHelper {
+
+  public static AlertDialog showProgressDialog(Context context, int message) {
+    LayoutInflater layoutInflater = LayoutInflater.from(context);
+    final ViewGroup nullParent = null;
+    View view = layoutInflater.inflate(R.layout.progress_dialog, nullParent);
+    AlertDialog progress = new AlertDialog.Builder(context).create();
+    TextView tv = view.findViewById(R.id.text);
+    tv.setText(message);
+    progress.setCancelable(false);
+    progress.setView(view);
+    return progress;
+  }
 
   public static void shakeError(TextView owner, String errText) {
     TranslateAnimation shake = new TranslateAnimation(0, 10, 0, 0);

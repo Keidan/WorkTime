@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" android:key="prefScreenLearning">
+    <PreferenceCategory android:title="@string/pref_title_learning" android:key="prefCatWeight" >
+        <Preference
+            android:key="prefCatWeightLabel"
+            android:title="@null"
+            android:summary="@string/pref_summary_learning"
+            android:selectable="false"/>
+        <EditTextPreference
+            android:key="prefWeightDepth"
+            android:defaultValue="5"
+            android:summary="@string/pref_summary_learning_threshold"
+            android:title="@string/pref_title_learning_threshold"
+            android:inputType="numberDecimal" />
+        <Preference
+            android:key="prefWeightClear"
+            android:title="@string/pref_title_learning_clear"
+            android:summary="@string/pref_summary_learning_clear"/>
+    </PreferenceCategory>
+</PreferenceScreen>
