@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.os.Environment;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
+import android.widget.ArrayAdapter;
 
 import com.dropbox.core.v2.files.FileMetadata;
 import com.dropbox.core.v2.files.ListFolderResult;
@@ -152,7 +153,7 @@ public class DropboxImportExport implements DropboxListener{
     if (list.isEmpty())
       UIHelper.toast_long(mContext, mContext.getString(R.string.error_no_files));
     else {
-      computeAndLoad(mContext, list, new UIHelper.AlertDialogListListener<Metadata>() {
+      computeAndLoad(mContext, list, new AlertDialogListListener<Metadata>() {
         @Override
         public void onClick(final Metadata m) {
           try {
@@ -188,12 +189,12 @@ public class DropboxImportExport implements DropboxListener{
     AndroidHelper.restartApplication(c, -1);
   }
 
-  public static <T, V> void computeAndLoad(final Context c, final List<T> list, UIHelper.AlertDialogListListener<V> yes) {
+  public static <T, V> void computeAndLoad(final Context c, final List<T> list, AlertDialogListListener<V> yes) {
     List<String> files = compute(list);
     if(files.isEmpty())
       UIHelper.toast_long(c, c.getString(R.string.error_no_files));
     else {
-      UIHelper.showAlertDialog(c, R.string.box_select_db_file, files, yes);
+      showAlertDialog(c, R.string.box_select_db_file, files, yes);
     }
   }
 
@@ -212,5 +213,45 @@ public class DropboxImportExport implements DropboxListener{
       }
     }
     return files;
+  }
+
+  private static class ListItem<T> {
+    public String name;
+    T value;
+
+    ListItem(final String name, final T value) {
+      this.name = name;
+      this.value = value;
+    }
+
+    public String toString() {
+      return name;
+    }
+  }
+
+  public interface AlertDialogListListener<T> {
+    void onClick(T t);
+  }
+
+  @SuppressWarnings("unchecked")
+  private static <T> void showAlertDialog(final Context c, final int title, List<T> list, final AlertDialogListListener yes) {
+    AlertDialog.Builder builder = new AlertDialog.Builder(c);
+    builder.setTitle(c.getResources().getString(title));
+    builder.setIcon(android.R.drawable.ic_dialog_alert);
+    List<ListItem> items = new ArrayList<>();
+    for(T s : list) {
+      String ss = new File(s.toString()).getName();
+      if(ss.endsWith("\"}")) ss = ss.substring(0, ss.length() - 2);
+      items.add(new ListItem<>(ss, s));
+    }
+    final ArrayAdapter<ListItem> arrayAdapter = new ArrayAdapter<>(c, android.R.layout.select_dialog_item, items);
+    builder.setNegativeButton(c.getString(R.string.cancel), (dialog, which) -> dialog.dismiss());
+
+    builder.setAdapter(arrayAdapter, (dialog, which) -> {
+      dialog.dismiss();
+      ListItem li = arrayAdapter.getItem(which);
+      if(yes != null && li != null) yes.onClick(li.value);
+    });
+    builder.show();
   }
 }

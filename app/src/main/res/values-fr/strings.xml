@@ -94,8 +94,10 @@
     <string name="pref_title_learning">Apprentissage des profils</string>
     <string name="pref_summary_learning">Cette section vous permet de g\u00E9rer l\'apprentissage du profil de pr\u00E9f\u00E9rence utilis\u00E9 par l\'insertion des jours de la vue principale.</string>
     <string name="pref_summary_learning_threshold">Permet de g\u00E9rer le seuil de l\'apprentissage.</string>
-    <string name="pref_title_learning_threshold">Seuil de l\'apprentissage</string>
-    <string name="pref_title_learning_clear">Effacer les apprentissages</string>
+    <string name="pref_title_learning_list">Liste</string>
+    <string name="pref_summary_learning_list">Liste des profils d\'apprentissage.</string>
+    <string name="pref_title_learning_threshold">Seuil</string>
+    <string name="pref_title_learning_clear">Effacer</string>
     <string name="pref_summary_learning_clear">Effacer toutes les valeurs d\'apprentissation.</string>
     <string name="pref_fragments_title">Accueil par d\u00E9faut</string>
     <string name="pref_fragments_summary">S\u00E9lectionne l\'accueil par d\u00E9faut \u00E0 afficher au d\u00E9but de l\'application..</string>
@@ -158,4 +160,6 @@
     <string name="tv_afternoon_widget">Apr\u00E8s-midi: </string>
     <string name="tv_worktime_widget">Travail: </string>
     <string name="loading">Chargement&#8230;</string>
+    <string name="reset_profile">Remise \u00E0 z\u00E9ro</string>
+    <string name="confirm_reset_profile">Voulez-vous vraiment remettre \u00E0 z\u00E9ro les apprentissages?</string>
 </resources>

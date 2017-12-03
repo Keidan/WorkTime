@@ -21,18 +21,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.CycleInterpolator;
 import android.view.animation.TranslateAnimation;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
-import java.io.File;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
 import java.util.Locale;
 
 import fr.ralala.worktime.R;
@@ -170,47 +166,6 @@ public class UIHelper {
     alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, c.getResources().getString(R.string.ok), (dialog, which) -> dialog.dismiss());
     alertDialog.show();
   }
-
-  private static class ListItem<T> {
-    public String name;
-    T value;
-
-    ListItem(final String name, final T value) {
-      this.name = name;
-      this.value = value;
-    }
-
-    public String toString() {
-      return name;
-    }
-  }
-
-  public interface AlertDialogListListener<T> {
-    void onClick(T t);
-  }
-
-  @SuppressWarnings("unchecked")
-  public static <T> void showAlertDialog(final Context c, final int title, List<T> list, final AlertDialogListListener yes) {
-    AlertDialog.Builder builder = new AlertDialog.Builder(c);
-    builder.setTitle(c.getResources().getString(title));
-    builder.setIcon(android.R.drawable.ic_dialog_alert);
-    List<ListItem> items = new ArrayList<>();
-    for(T s : list) {
-      String ss = new File(s.toString()).getName();
-      if(ss.endsWith("\"}")) ss = ss.substring(0, ss.length() - 2);
-      items.add(new ListItem<>(ss, s));
-    }
-    final ArrayAdapter<ListItem> arrayAdapter = new ArrayAdapter<>(c, android.R.layout.select_dialog_singlechoice, items);
-    builder.setNegativeButton(c.getString(R.string.cancel), (dialog, which) -> dialog.dismiss());
-
-    builder.setAdapter(arrayAdapter, (dialog, which) -> {
-      dialog.dismiss();
-      ListItem li = arrayAdapter.getItem(which);
-      if(yes != null && li != null) yes.onClick(li.value);
-    });
-    builder.show();
-  }
-
 
   public static void forcePopupMenuIcons(final PopupMenu popup) {
     try {

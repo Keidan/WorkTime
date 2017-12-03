@@ -13,6 +13,10 @@
             android:title="@string/pref_title_learning_threshold"
             android:inputType="numberDecimal" />
         <Preference
+            android:key="prefWeightList"
+            android:title="@string/pref_title_learning_list"
+            android:summary="@string/pref_summary_learning_list"/>
+        <Preference
             android:key="prefWeightClear"
             android:title="@string/pref_title_learning_clear"
             android:summary="@string/pref_summary_learning_clear"/>

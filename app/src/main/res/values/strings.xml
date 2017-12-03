@@ -102,8 +102,10 @@
     <string name="pref_title_learning">Learning of profiles</string>
     <string name="pref_summary_learning">This section allows you to manage the learning of the profile of preference used by the insertion of the days of the main view.</string>
     <string name="pref_summary_learning_threshold">Allows to manage the learning threshold.</string>
-    <string name="pref_title_learning_threshold">Learning threshold</string>
-    <string name="pref_title_learning_clear">Clear learning</string>
+    <string name="pref_title_learning_threshold">Threshold</string>
+    <string name="pref_title_learning_list">List</string>
+    <string name="pref_summary_learning_list">List learning profiles.</string>
+    <string name="pref_title_learning_clear">Clear</string>
     <string name="pref_summary_learning_clear">Clear all the learning values.</string>
     <string name="pref_fragments_title">Default home</string>
     <string name="pref_fragments_summary">Selects the default home to display at the start of the application.</string>
@@ -168,4 +170,6 @@
     <string name="tv_afternoon_widget">Afternoon: </string>
     <string name="tv_worktime_widget">Worktime: </string>
     <string name="loading">Loading&#8230;</string>
+    <string name="reset_profile">Reset</string>
+    <string name="confirm_reset_profile">Do you really want to reset learnings?</string>
 </resources>

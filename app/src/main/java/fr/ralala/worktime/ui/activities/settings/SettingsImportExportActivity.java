@@ -139,7 +139,7 @@ public class SettingsImportExportActivity extends PreferenceActivity implements 
             files.add(f);
         }
         files.sort(Comparator.comparing(File::lastModified));
-        DropboxImportExport.computeAndLoad(this, files, new UIHelper.AlertDialogListListener<String>() {
+        DropboxImportExport.computeAndLoad(this, files, new DropboxImportExport.AlertDialogListListener<String>() {
           @Override
           public void onClick(String s) {
             try {

@@ -5,11 +5,18 @@ import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
 import android.support.v4.app.NavUtils;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatDelegate;
 import android.view.MenuItem;
+import android.widget.ArrayAdapter;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
 import fr.ralala.worktime.MainApplication;
 import fr.ralala.worktime.R;
+import fr.ralala.worktime.models.DayEntry;
 import fr.ralala.worktime.ui.utils.UIHelper;
 import fr.ralala.worktime.utils.AndroidHelper;
 
@@ -26,6 +33,7 @@ public class SettingsLearningActivity extends PreferenceActivity implements Pref
   public static final String       PREFS_DEFVAL_PROFILES_WEIGHT_DEPTH               = "5";
   public static final String       PREFS_KEY_PROFILES_WEIGHT_CLEAR                  = "prefWeightClear";
   public static final String       PREFS_KEY_PROFILES_WEIGHT_DEPTH                  = "prefWeightDepth";
+  public static final String       PREFS_KEY_PROFILES_LIST                          = "prefWeightList";
 
   private MyPreferenceFragment mPrefFrag = null;
   private MainApplication mApp = null;
@@ -49,6 +57,7 @@ public class SettingsLearningActivity extends PreferenceActivity implements Pref
     mApp = (MainApplication)getApplicationContext();
 
     mPrefFrag.findPreference(PREFS_KEY_PROFILES_WEIGHT_CLEAR).setOnPreferenceClickListener(this);
+    mPrefFrag.findPreference(PREFS_KEY_PROFILES_LIST).setOnPreferenceClickListener(this);
   }
 
   @Override
@@ -84,8 +93,32 @@ public class SettingsLearningActivity extends PreferenceActivity implements Pref
   @Override
   public boolean onPreferenceClick(final Preference preference) {
     if (preference.equals(mPrefFrag.findPreference(PREFS_KEY_PROFILES_WEIGHT_CLEAR))) {
-      mApp.getProfilesFactory().resetProfilesLearningWeight();
-      UIHelper.toast(this, R.string.profiles_weight_reseted);
+      AlertDialog.Builder builder = new AlertDialog.Builder(this);
+      builder.setTitle(getString(R.string.reset_profile));
+      builder.setIcon(android.R.drawable.ic_dialog_alert);
+      builder.setCancelable(true);
+      builder.setPositiveButton(getString(R.string.ok), (dialog, which) -> {
+        dialog.dismiss();
+        mApp.getProfilesFactory().resetProfilesLearningWeight();
+        UIHelper.toast(this, R.string.profiles_weight_reseted);
+      });
+      builder.setNegativeButton(getString(R.string.cancel), (dialog, which) -> dialog.dismiss());
+      builder.setMessage(R.string.confirm_reset_profile);
+      builder.show();
+    } else if (preference.equals(mPrefFrag.findPreference(PREFS_KEY_PROFILES_LIST))) {
+      AlertDialog.Builder builder = new AlertDialog.Builder(this);
+      builder.setTitle(getString(R.string.pref_summary_learning_list));
+      builder.setIcon(android.R.drawable.ic_dialog_info);
+      builder.setCancelable(true);
+      List<String> items = new ArrayList<>();
+      for(DayEntry profile : mApp.getProfilesFactory().list()) {
+        String text = String.format(Locale.US,"%02d", profile.getLearningWeight()) + " - " + profile.getName();
+        items.add(text);
+      }
+      final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(this, android.R.layout.select_dialog_item, items);
+      builder.setPositiveButton(getString(R.string.ok), (dialog, which) -> dialog.dismiss());
+      builder.setAdapter(arrayAdapter, (dialog, which) -> dialog.dismiss());
+      builder.show();
     }
     return true;
   }
