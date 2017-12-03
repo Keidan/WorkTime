@@ -210,6 +210,8 @@ public class StatisticsFragment extends Fragment implements View.OnClickListener
                   if (currentView == CurrentView.YEARS || currentView == CurrentView.MONTHS || currentView == CurrentView.WEEKS || currentView == CurrentView.DAYS || currentDayIndex == nDay) {
                     if ((de.getTypeMorning() == DayType.PUBLIC_HOLIDAY && de.getTypeAfternoon() == DayType.PUBLIC_HOLIDAY) || (de.getTypeMorning() == DayType.HOLIDAY && de.getTypeAfternoon() == DayType.HOLIDAY))
                       continue;
+                    if(!de.isValidMorningType() && !de.isValidAfternoonType())
+                      continue;
                     Integer e = 0;
                     String x_label = "";
                     if (currentView == CurrentView.YEARS) {
