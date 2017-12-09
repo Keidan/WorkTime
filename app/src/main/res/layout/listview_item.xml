@@ -2,7 +2,7 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/rl"
-    android:layout_height="fill_parent"
+    android:layout_height="wrap_content"
     android:layout_width="fill_parent"
     android:padding="@dimen/listview_item_rl_padding">
     <TextView android:id="@+id/name"
@@ -20,14 +20,4 @@
               android:textColor="@color/listview_item_info"
               android:typeface="monospace"
               android:textSize="@dimen/listview_item_info_textSize"/>
-    <ImageView
-        android:id="@+id/menu"
-        android:layout_width="@dimen/listview_item_menu_layout_width"
-        android:layout_height="@dimen/listview_item_menu_layout_height"
-        android:layout_gravity="end"
-        android:focusable="true"
-        android:clickable="true"
-        android:src="@mipmap/ic_dots_3"
-        android:contentDescription="@null"
-        android:layout_alignParentEnd="true"/>
 </RelativeLayout>

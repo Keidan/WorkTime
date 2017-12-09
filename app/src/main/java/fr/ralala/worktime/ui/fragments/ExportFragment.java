@@ -116,12 +116,12 @@ public class ExportFragment extends Fragment implements AdapterView.OnItemSelect
   public void onClick(View v) {
     final List<ExportListViewArrayAdapter.ExportEntry> entries = mLvAdapter.getCheckedItems();
     if(entries.isEmpty()) {
-      UIHelper.snack(getActivity(), R.string.export_no_items);
+      UIHelper.snack(getActivity(), getString(R.string.export_no_items));
       return;
     }
     final String email = mApp.getEMail();
     if(mApp.isExportMailEnabled() && email.isEmpty()) {
-      UIHelper.snack(getActivity(), R.string.export_email_not_set);
+      UIHelper.snack(getActivity(), getString(R.string.export_email_not_set));
       return;
     }
 

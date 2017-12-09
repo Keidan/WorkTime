@@ -93,6 +93,7 @@ public class PublicHolidaysFactory {
   public void remove(final DayEntry de) {
     mPublicHolidays.remove(de);
     mSql.removePublicHoliday(de);
+    sort();
   }
 
   /**
@@ -100,7 +101,14 @@ public class PublicHolidaysFactory {
    * @param de The entry to add.
    */
   public void add(final DayEntry de) {
-    mPublicHolidays.add(de);
+    boolean found = false;
+    for(DayEntry d : mPublicHolidays)
+      if(d.getName().equals(de.getName())) {
+        found = true;
+        break;
+      }
+    if(!found)
+      mPublicHolidays.add(de);
     mSql.insertPublicHoliday(de);
     sort();
   }
@@ -114,7 +122,7 @@ public class PublicHolidaysFactory {
             SortComparator.SORT_BY_DATE)));
   }
 
-  private enum  SortComparator implements Comparator<DayEntry> {
+  public enum  SortComparator implements Comparator<DayEntry> {
     SORT_BY_RECURRENCE {
       public int compare(DayEntry a, DayEntry b) {
         return Boolean.compare(a.isRecurrence(), b.isRecurrence());

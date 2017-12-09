@@ -4,7 +4,11 @@ import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.LinearGradient;
+import android.graphics.Paint;
+import android.graphics.RectF;
 import android.graphics.Shader;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -14,8 +18,11 @@ import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.RectShape;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.PopupMenu;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,8 +33,6 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.util.Calendar;
 import java.util.Locale;
 
@@ -44,6 +49,41 @@ import fr.ralala.worktime.models.WorkTimeDay;
  *******************************************************************************
  */
 public class UIHelper {
+
+  /**
+   * Called by ItemTouchHelper on RecyclerView's onDraw callback.
+   * @param activity An activity instance.
+   * @param c The canvas which RecyclerView is drawing its children.
+   * @param viewHolder The ViewHolder which is being interacted by the User or it was interacted and simply animating to its original position.
+   * @param dX The amount of horizontal displacement caused by user's action.
+   * @param actionState The type of interaction on the View. Is either ACTION_STATE_DRAG or ACTION_STATE_SWIPE.
+   */
+  public static void onRecyclerViewChildDrawWithEditAndDelete(Activity activity, Canvas c, RecyclerView.ViewHolder viewHolder, float dX, int actionState) {
+    Bitmap icon;
+    final Paint paint = new Paint();
+    if(actionState == ItemTouchHelper.ACTION_STATE_SWIPE){
+      View itemView = viewHolder.itemView;
+      float height = (float) itemView.getBottom() - (float) itemView.getTop();
+      float width = height / 3;
+      if(dX != 0) {
+        if (dX > 0) {
+          paint.setColor(ResourcesCompat.getColor(activity.getResources(), R.color.item_edit, activity.getTheme()));
+          RectF background = new RectF((float) itemView.getLeft(), (float) itemView.getTop(), dX, (float) itemView.getBottom());
+          c.drawRect(background, paint);
+          icon = BitmapFactory.decodeResource(activity.getResources(), R.mipmap.ic_edit);
+          RectF icon_dest = new RectF((float) itemView.getLeft() + width, (float) itemView.getTop() + width, (float) itemView.getLeft() + 2 * width, (float) itemView.getBottom() - width);
+          c.drawBitmap(icon, null, icon_dest, paint);
+        } else {
+          paint.setColor(ResourcesCompat.getColor(activity.getResources(), R.color.item_delete, activity.getTheme()));
+          RectF background = new RectF((float) itemView.getRight() + dX, (float) itemView.getTop(), (float) itemView.getRight(), (float) itemView.getBottom());
+          c.drawRect(background, paint);
+          icon = BitmapFactory.decodeResource(activity.getResources(), R.mipmap.ic_delete);
+          RectF icon_dest = new RectF((float) itemView.getRight() - 2 * width, (float) itemView.getTop() + width, (float) itemView.getRight() - width, (float) itemView.getBottom() - width);
+          c.drawBitmap(icon, null, icon_dest, paint);
+        }
+      }
+    }
+  }
 
   /**
    * Displays a progress dialog.
@@ -113,23 +153,29 @@ public class UIHelper {
   /**
    * Opens a snack.
    * @param activity The associated activity.
-   * @param resId The snack message.
+   * @param msg The snack message.
    */
-  public static void snack(final Activity activity, int resId) {
-    snack(activity, activity.getString(resId));
+  public static void snack(final Activity activity, String msg) {
+    snack(activity, msg, null, null);
   }
 
   /**
    * Opens a snack.
    * @param activity The associated activity.
    * @param msg The snack message.
+   * @param actionLabel null for default label (Hide), the label.
+   * @param clickListener Click listener (view = null ; snackbar.dismiss() is called after the event).
    */
-  public static void snack(final Activity activity, String msg) {
+  public static void snack(final Activity activity, String msg, String actionLabel, View.OnClickListener clickListener) {
     final View cl = activity.findViewById(R.id.coordinatorLayout);
     final Snackbar snackbar = Snackbar
         .make(cl, msg, Snackbar.LENGTH_LONG);
-    snackbar.setAction(R.string.snack_hide, (view) -> snackbar.dismiss());
-
+    snackbar.setAction(
+        actionLabel == null ? activity.getString(R.string.snack_hide) : actionLabel, (view) -> {
+          if(clickListener != null)
+            clickListener.onClick(null);
+          snackbar.dismiss();
+        });
     snackbar.show();
   }
 
@@ -215,30 +261,6 @@ public class UIHelper {
     alertDialog.setMessage(message);
     alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, c.getResources().getString(R.string.ok), (dialog, which) -> dialog.dismiss());
     alertDialog.show();
-  }
-
-  /**
-   * Forces the display of the icons in a popup menu
-   * @param popup The popup menu
-   */
-  public static void forcePopupMenuIcons(final PopupMenu popup) {
-    try {
-      Field[] fields = popup.getClass().getDeclaredFields();
-      for (Field field : fields) {
-        if ("mPopup".equals(field.getName())) {
-          field.setAccessible(true);
-          Object menuPopupHelper = field.get(popup);
-          Class<?> classPopupHelper = Class.forName(menuPopupHelper
-              .getClass().getName());
-          Method setForceIcons = classPopupHelper.getMethod(
-              "setForceShowIcon", boolean.class);
-          setForceIcons.invoke(menuPopupHelper, true);
-          break;
-        }
-      }
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
   }
 
   /**

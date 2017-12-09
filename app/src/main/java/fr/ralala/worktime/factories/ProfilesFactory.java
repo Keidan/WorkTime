@@ -104,6 +104,7 @@ public class ProfilesFactory {
   public void remove(final DayEntry de) {
     mProfiles.remove(de);
     mSql.removeProfile(de);
+    mProfiles.sort(Comparator.comparing(DayEntry::getName));
   }
 
   /**
@@ -111,7 +112,14 @@ public class ProfilesFactory {
    * @param de The entry to add.
    */
   public void add(final DayEntry de) {
-    mProfiles.add(de);
+    boolean found = false;
+    for(DayEntry d : mProfiles)
+      if(d.getName().equals(de.getName())) {
+        found = true;
+        break;
+      }
+    if(!found)
+      mProfiles.add(de);
     mSql.insertProfile(de);
     mProfiles.sort(Comparator.comparing(DayEntry::getName));
   }

@@ -164,8 +164,6 @@
     <!-- listview_item.xml -->
     <dimen name="listview_item_rl_padding">10dp</dimen>
     <dimen name="listview_item_info_textSize">12sp</dimen>
-    <dimen name="listview_item_menu_layout_width">30dp</dimen>
-    <dimen name="listview_item_menu_layout_height">50dp</dimen>
     <!-- widget_day1x1.xml -->
     <dimen name="widget_day1x1_tvMonth_layout_margin">4dp</dimen>
     <dimen name="widget_day1x1_tvDay_layout_marginStart">4dp</dimen>
