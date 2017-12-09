@@ -6,8 +6,8 @@
     <string name="changelog_show_full">plus&#8230;</string>
     <string name="navigation_drawer_close">Fermer le tiroir de navigation</string>
     <string name="navigation_drawer_open">Ouvrir le tiroir de navigation</string>
-    <string name="help_profile">Balayez de gauche \u00E0 droite pour modifier et de droite \u00E0 gauche pour supprimer.</string>
-    <string name="help_public_holidays">Balayez de gauche \u00E0 droite pour modifier et de droite \u00E0 gauche pour supprimer.</string>
+    <string name="help_profile">Balayez l\'entr\u00E9e pour une action.</string>
+    <string name="help_public_holidays">Balayez l\'entr\u00E9e pour une action.</string>
     <string name="public_holidays_removed">Jour f\u00E9ri\u00E9 retir\u00E9.</string>
     <string name="profile_removed">Profil retir\u00E9.</string>
     <string name="undo">ANNULER</string>
