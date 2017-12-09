@@ -206,6 +206,27 @@ public class UIHelper {
   /**
    * Displays a confirm dialog.
    * @param c The Android context.
+   * @param cancelable Cancelable state.
+   * @param message The dialog message.
+   * @param yes Listener used when the 'yes' button is clicked.
+   * @param no Listener used when the 'no' button is clicked.
+   */
+  public static void showConfirmDialog(final Context c, boolean cancelable,
+                                       String message, final android.view.View.OnClickListener yes, final android.view.View.OnClickListener no) {
+    new AlertDialog.Builder(c)
+        .setCancelable(cancelable)
+        .setMessage(message)
+        .setPositiveButton(android.R.string.yes, (dialog, whichButton) -> {
+          if(yes != null) yes.onClick(null);
+        })
+        .setNegativeButton(android.R.string.no, (dialog, whichButton) -> {
+          if(no != null) no.onClick(null);
+        }).show();
+  }
+
+  /**
+   * Displays a confirm dialog.
+   * @param c The Android context.
    * @param title The dialog title.
    * @param message The dialog message.
    * @param yes Listener used when the 'yes' button is clicked.

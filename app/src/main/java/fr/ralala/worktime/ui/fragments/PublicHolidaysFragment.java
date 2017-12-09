@@ -158,13 +158,17 @@ public class PublicHolidaysFragment extends Fragment implements View.OnClickList
         if (direction == ItemTouchHelper.LEFT){
           final DayEntry de = mAdapter.getItem(position);
           if(de == null) return;
-          mAdapter.removeItem(de);
-          mApp.getPublicHolidaysFactory().remove(de);
-          UIHelper.snack(mActivity, getString(R.string.public_holidays_removed),
-              getString(R.string.undo), (v) -> {
-                mAdapter.addItem(de);
-                mApp.getPublicHolidaysFactory().add(de);
-          });
+          UIHelper.showConfirmDialog(getActivity(), false,
+              (getString(R.string.delete_public_holiday) + " '" + de.getName() + "'" + getString(R.string.help)),
+              (v) -> {
+                mAdapter.removeItem(de);
+                mApp.getPublicHolidaysFactory().remove(de);
+                UIHelper.snack(mActivity, getString(R.string.public_holidays_removed),
+                    getString(R.string.undo), (nullview) -> {
+                      mAdapter.addItem(de);
+                      mApp.getPublicHolidaysFactory().add(de);
+                    });
+          }, (v) -> mRecyclerView.getAdapter().notifyItemChanged(viewHolder.getAdapterPosition()));
         } else {
           DayEntry de = mAdapter.getItem(position);
           if(de == null) return;

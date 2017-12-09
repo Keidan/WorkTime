@@ -11,6 +11,8 @@
     <string name="public_holidays_removed">Jour f\u00E9ri\u00E9 retir\u00E9.</string>
     <string name="profile_removed">Profil retir\u00E9.</string>
     <string name="undo">ANNULER</string>
+    <string name="delete_profile">\u00CAtes-vous s\u00fbr de vouloir supprimer le profil</string>
+    <string name="delete_public_holiday">\u00CAtes-vous s\u00fbr de vouloir supprimer le jour f\u00E9ri\u00E9</string>
     <string name="exit">Sortir</string>
     <string name="settings">Param\u00E8tres</string>
     <string name="profile">Profil</string>

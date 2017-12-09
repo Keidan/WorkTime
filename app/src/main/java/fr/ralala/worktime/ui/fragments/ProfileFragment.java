@@ -160,13 +160,17 @@ public class ProfileFragment  extends Fragment implements View.OnClickListener {
         if (direction == ItemTouchHelper.LEFT){
           DayEntry de = mAdapter.getItem(position);
           if(de == null) return;
-          mAdapter.removeItem(de);
-          mApp.getProfilesFactory().remove(de);
-          UIHelper.snack(mActivity, getString(R.string.profile_removed),
-              getString(R.string.undo), (v) -> {
-                mAdapter.addItem(de);
-                mApp.getProfilesFactory().add(de);
-          });
+          UIHelper.showConfirmDialog(getActivity(), false,
+              (getString(R.string.delete_public_holiday) + " '" + de.getName() + "'" + getString(R.string.help)),
+              (v) -> {
+                mAdapter.removeItem(de);
+                mApp.getProfilesFactory().remove(de);
+                UIHelper.snack(mActivity, getString(R.string.profile_removed),
+                    getString(R.string.undo), (nullview) -> {
+                      mAdapter.addItem(de);
+                      mApp.getProfilesFactory().add(de);
+                    });
+          }, (v) -> mRecyclerView.getAdapter().notifyItemChanged(viewHolder.getAdapterPosition()));
         } else {
           DayEntry de = mAdapter.getItem(position);
           if(de == null) return;
