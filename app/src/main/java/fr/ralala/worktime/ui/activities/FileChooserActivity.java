@@ -40,13 +40,22 @@ public class FileChooserActivity extends AbstractFileChooserActivity {
     NO_ERROR, CANCEL, ERROR_NOT_MOUNTED, ERROR_CANT_READ
   }
 
+  /**
+   * Called when the activity is created.
+   * @param savedInstanceState The saved instance state.
+   */
   @Override
   public void onCreate(final Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     handler = new IncomingHandler(this);
   }
-  
 
+
+  /**
+   * Called when the options item is clicked (cancel).
+   * @param item The selected menu.
+   * @return boolean
+   */
   @Override
   public boolean onOptionsItemSelected(final MenuItem item) {
     if (item.getItemId() == R.id.action_cancel) {
@@ -54,8 +63,12 @@ public class FileChooserActivity extends AbstractFileChooserActivity {
     }
     return false;
   }
-  
 
+  /**
+   * Called when the options menu is clicked.
+   * @param menu The selected menu.
+   * @return boolean
+   */
   @Override
   public boolean onCreateOptionsMenu(final Menu menu) {
       // Inflate the menu; this adds items to the action bar if it is present.
@@ -63,6 +76,10 @@ public class FileChooserActivity extends AbstractFileChooserActivity {
       return true;
   }
 
+  /**
+   * Called when a file is selected.
+   * @param opt The file chooser option.
+   */
   @Override
   protected void onFileSelected(final FileChooserOption opt) {
     progress = UIHelper.showProgressDialog(this, R.string.loading);
@@ -99,6 +116,9 @@ public class FileChooserActivity extends AbstractFileChooserActivity {
 
   }
 
+  /**
+   * Called to handle the click on the back button.
+   */
   @Override
   public void onBackPressed() {
     File parent = currentDir.getParentFile();
@@ -110,17 +130,28 @@ public class FileChooserActivity extends AbstractFileChooserActivity {
       fill(currentDir);
     }
   }
-  
+
+  /**
+   * Cancel the file chooser.
+   */
   private void cancel() {
     finish();
   }
 
+  /**
+   * Called when the activity is destroyed.
+   */
   @Override
   public void onDestroy() {
     super.onDestroy();
     cancel();
   }
 
+  /**
+   * Compute the the response.
+   * @param userObject The user object.
+   * @return ErrorStatus
+   */
   public ErrorStatus doComputeHandler(final FileChooserOption userObject) {
     opt = userObject;
     if (opt == null)
@@ -135,6 +166,9 @@ public class FileChooserActivity extends AbstractFileChooserActivity {
     return ErrorStatus.NO_ERROR;
   }
 
+  /**
+   * Handle a success response.
+   */
   public void onSuccessHandler() {
     final Intent returnIntent = new Intent();
     int result = RESULT_CANCELED;
@@ -151,10 +185,16 @@ public class FileChooserActivity extends AbstractFileChooserActivity {
     cancel();
   }
 
+  /**
+   * Handle a cancel request.
+   */
   public void onCancelHandler() {
 
   }
 
+  /**
+   * Handle an error.
+   */
   public void onErrorHandler() {
     opt = null;
     final Intent returnIntent = new Intent();
@@ -162,6 +202,10 @@ public class FileChooserActivity extends AbstractFileChooserActivity {
     onBackPressed();
   }
 
+  /**
+   * Tests id the sdcard is mounted.
+   * @return boolean
+   */
   private boolean isMountedSdcard() {
     final String state = Environment.getExternalStorageState();
     return (Environment.MEDIA_MOUNTED.equals(state) || Environment.MEDIA_MOUNTED_READ_ONLY.equals(state));

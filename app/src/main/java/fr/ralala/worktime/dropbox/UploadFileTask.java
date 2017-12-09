@@ -30,12 +30,22 @@ public class UploadFileTask extends AsyncTask<String, Void, FileMetadata> {
   private final WeakReference<Context> mWeakContext;
 
 
+  /**
+   * Creates a task.
+   * @param context The Android contexte.
+   * @param dbxClient Dropbox client.
+   * @param callback Dropbox client.
+   */
   UploadFileTask(Context context, DbxClientV2 dbxClient, DropboxListener callback) {
     mWeakContext = new WeakReference<>(context);
     mDbxClient = dbxClient;
     mCallback = callback;
   }
 
+  /**
+   * Executed when the task is finished.
+   * @param result The task result.
+   */
   @Override
   protected void onPostExecute(FileMetadata result) {
     super.onPostExecute(result);
@@ -48,6 +58,11 @@ public class UploadFileTask extends AsyncTask<String, Void, FileMetadata> {
     }
   }
 
+  /**
+   * Executed in background.
+   * @param params [0]=localUri, [1]=remote folder path
+   * @return FileMetadata
+   */
   @Override
   protected FileMetadata doInBackground(String... params) {
     Context context = mWeakContext.get();

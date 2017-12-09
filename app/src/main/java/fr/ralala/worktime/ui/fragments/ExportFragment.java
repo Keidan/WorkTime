@@ -52,6 +52,13 @@ public class ExportFragment extends Fragment implements AdapterView.OnItemSelect
   private Spinner sp = null;
   private MainApplication app = null;
 
+  /**
+   * Called when the fragment is created.
+   * @param inflater The fragment inflater.
+   * @param container The fragment container.
+   * @param savedInstanceState The saved instance state.
+   * @return The created view.
+   */
   @Override
   public View onCreateView(@NonNull final LayoutInflater inflater,
                            final ViewGroup container, final Bundle savedInstanceState) {
@@ -90,6 +97,10 @@ public class ExportFragment extends Fragment implements AdapterView.OnItemSelect
     return rootView;
   }
 
+  /**
+   * Called when the fragment is resumed.
+   */
+  @Override
   public void onResume() {
     super.onResume();
     if(app.isResumeAfterActivity()) {
@@ -97,7 +108,10 @@ public class ExportFragment extends Fragment implements AdapterView.OnItemSelect
       app.setResumeAfterActivity(false);
     }
   }
-
+  /**
+   * Called when the user click on a button (export).
+   * @param v The clicked view.
+   */
   @Override
   public void onClick(View v) {
     final List<ExportListViewArrayAdapter.ExportEntry> entries = lvAdapter.getCheckedItems();
@@ -122,6 +136,12 @@ public class ExportFragment extends Fragment implements AdapterView.OnItemSelect
       exportXLS(entries, email, file);
   }
 
+  /**
+   * Exports the selected entries in a XLS file.
+   * @param entries The entries to export.
+   * @param email The email address used to send the file.
+   * @param file The file name.
+   */
   private void exportXLS(List<ExportListViewArrayAdapter.ExportEntry> entries, String email, File file) {
     try {
       ExcelHelper excel = new ExcelHelper(file);
@@ -195,15 +215,30 @@ public class ExportFragment extends Fragment implements AdapterView.OnItemSelect
     }
   }
 
+  /**
+   * Called when the user click on the dropdown list.
+   * @param parentView See official javadoc.
+   * @param selectedItemView See official javadoc.
+   * @param position See official javadoc.
+   * @param id See official javadoc.
+   */
   @Override
   public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
     reload(Integer.parseInt(sp.getSelectedItem().toString()));
   }
 
+  /**
+   * See official javadoc.
+   * @param parentView See official javadoc.
+   */
   @Override
   public void onNothingSelected(AdapterView<?> parentView) {
   }
 
+  /**
+   * Reloads the available month associated to the desired year.
+   * @param year The desired year.
+   */
   private void reload(int year) {
     lvAdapter.clear();
     Locale locale = getResources().getConfiguration().getLocales().get(0);

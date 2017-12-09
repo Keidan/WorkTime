@@ -27,12 +27,22 @@ public class DownloadFileTask extends AsyncTask<FileMetadata, Void, File> {
   private Exception mException;
   private final WeakReference<Context> mWeakContext;
 
+  /**
+   * Creates the task.
+   * @param context The Android context.
+   * @param dbxClient The dropbox client.
+   * @param callback The dropbox listener.
+   */
   DownloadFileTask(Context context, DbxClientV2 dbxClient, DropboxListener callback) {
     mWeakContext = new WeakReference<>(context);
     mDbxClient = dbxClient;
     mCallback = callback;
   }
 
+  /**
+   * Executed when the task is finished.
+   * @param result The task result.
+   */
   @Override
   protected void onPostExecute(File result) {
     super.onPostExecute(result);
@@ -43,6 +53,11 @@ public class DownloadFileTask extends AsyncTask<FileMetadata, Void, File> {
     }
   }
 
+  /**
+   * Executed in background.
+   * @param params [0]=FileMetadata
+   * @return File
+   */
   @Override
   protected File doInBackground(FileMetadata... params) {
     FileMetadata metadata = params[0];

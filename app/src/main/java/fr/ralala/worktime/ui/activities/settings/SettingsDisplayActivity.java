@@ -9,7 +9,7 @@ import android.view.MenuItem;
 
 import fr.ralala.worktime.MainApplication;
 import fr.ralala.worktime.R;
-import fr.ralala.worktime.utils.AndroidHelper;
+import fr.ralala.worktime.ui.utils.UIHelper;
 
 /**
  *******************************************************************************
@@ -33,9 +33,13 @@ public class SettingsDisplayActivity extends PreferenceActivity {
   public static final String       PREFS_KEY_HIDE_EXIT_BUTTON                       = "prefHideExitButton";
 
 
+  /**
+   * Called when the activity is created.
+   * @param savedInstanceState The saved instance state.
+   */
   @Override
   public void onCreate(final Bundle savedInstanceState) {
-    AndroidHelper.openAnimation(this);
+    UIHelper.openAnimation(this);
     super.onCreate(savedInstanceState);
     MyPreferenceFragment prefFrag = new MyPreferenceFragment();
     getFragmentManager().beginTransaction()
@@ -49,24 +53,38 @@ public class SettingsDisplayActivity extends PreferenceActivity {
     }
   }
 
+  /**
+   * Called when the activity is resumed.
+   */
   @Override
   public void onResume() {
     super.onResume();
     MainApplication.getApp(this).getSql().settingsLoad(null);
   }
 
+  /**
+   * Called when the activity is paused.
+   */
   @Override
   public void onPause() {
     super.onPause();
     MainApplication.getApp(this).getSql().settingsSave();
   }
 
+  /**
+   * Called to handle the click on the back button.
+   */
   @Override
   public void onBackPressed() {
     super.onBackPressed();
-    AndroidHelper.closeAnimation(this);
+    UIHelper.closeAnimation(this);
   }
 
+  /**
+   * Called when the options item is clicked (home).
+   * @param item The selected menu.
+   * @return boolean
+   */
   @Override
   public boolean onOptionsItemSelected(MenuItem item) {
     switch (item.getItemId())

@@ -94,11 +94,23 @@ import fr.ralala.worktime.MainApplication;
     + COL_SETTINGS_VALUE
     + " TEXT NOT NULL);";
 
+  /**
+   * Creates a new SDLite helper.
+   * @param context The Android context.
+   * @param name The data base name.
+   * @param factory The database factory.
+   * @param version The database version.
+   */
   SqlHelper(final Context context, final String name,
                    final SQLiteDatabase.CursorFactory factory, final int version) {
     super(context, name, factory, version);
   }
 
+
+  /**
+   * Called when the database must be created.
+   * @param db The db context.
+   */
   @Override
   public void onCreate(final SQLiteDatabase db) {
     db.execSQL(CREATE_BDD_PUBLIC_HOLIDAYS);
@@ -107,11 +119,21 @@ import fr.ralala.worktime.MainApplication;
     db.execSQL(CREATE_BDD_SETTINGS);
   }
 
+  /**
+   * Called when the database is opened.
+   * @param db The db context.
+   */
   @Override
   public void onOpen(final SQLiteDatabase db) {
     onCreate(db);
   }
 
+  /**
+   * Called when the database need an upgrade.
+   * @param db The db context.
+   * @param oldVersion The old db version.
+   * @param newVersion The new db version.
+   */
   @Override
   public void onUpgrade(final SQLiteDatabase db, final int oldVersion,
                         final int newVersion) {
@@ -127,7 +149,13 @@ import fr.ralala.worktime.MainApplication;
     }
   }
 
-  // Copy to sdcard for debug use
+  /**
+   * Loads the database.
+   * @param c The Android contexte.
+   * @param name The database name.
+   * @param folder The output folder.
+   * @throws Exception If an exception is reached.
+   */
   public static String copyDatabase(final Context c, final String name,
                                     final String folder) throws Exception {
     MainApplication.getApp(c).getSql().settingsSave();
@@ -174,6 +202,13 @@ import fr.ralala.worktime.MainApplication;
     return output;
   }
 
+  /**
+   * Loads the database.
+   * @param c The Android contexte.
+   * @param name The database name.
+   * @param in The input file.
+   * @throws Exception If an exception is reached.
+   */
   public static void loadDatabase(Context c, final String name, File in) throws Exception{
     MainApplication.getApp(c).getSql().settingsLoad(null);
     final String databasePath = c.getDatabasePath(name).getPath();

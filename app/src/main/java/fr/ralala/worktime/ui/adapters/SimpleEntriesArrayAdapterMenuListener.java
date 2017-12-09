@@ -11,6 +11,15 @@ package fr.ralala.worktime.ui.adapters;
  *******************************************************************************
  */
 public interface SimpleEntriesArrayAdapterMenuListener<T> {
+  /**
+   * Called when the edit button is clicked.
+   * @param t The clicked entry object.
+   */
   void onMenuEdit(T t);
+
+  /**
+   * Called when the delete button is clicked.
+   * @param t The clicked entry object.
+   */
   void onMenuDelete(T t);
 }

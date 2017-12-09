@@ -21,17 +21,30 @@ public enum DayType {
   UNPAID(4),
   ERROR(5);
 
+  /**
+   * Creates an enum entry.
+   * @param value The int value.
+   */
   DayType(final int value) {
     mValue = value;
   }
 
   private final int mValue;
 
+  /**
+   * Returns the associated value.
+   * @return int
+   */
   public int value() {
     return mValue;
   }
 
 
+  /**
+   * Converts an integer value to enum value.
+   * @param value The integer value.
+   * @return DayType
+   */
   public static DayType compute(int value) {
     switch (value) {
       case 0: return DayType.AT_WORK;
@@ -43,6 +56,11 @@ public enum DayType {
     }
   }
 
+  /**
+   * Converts a String value to enum value.
+   * @param value The String value.
+   * @return DayType
+   */
   public static DayType compute(final Context c, String value) {
     if(value.equals(c.getString(R.string.at_work)))
       return DayType.AT_WORK;
@@ -58,6 +76,11 @@ public enum DayType {
       return DayType.ERROR;
   }
 
+  /**
+   * Converts the enum to a String value.
+   * @param c Android context.
+   * @return String
+   */
   public String string(final Context c) {
     switch (this) {
       case AT_WORK: return c.getString(R.string.at_work);
@@ -69,6 +92,12 @@ public enum DayType {
     return c.getString(R.string.error);
   }
 
+  /**
+   * Returns the String value of the specified enum.
+   * @param c The Android context.
+   * @param dt The day type to convert.
+   * @return String.
+   */
   public static String getText(final Context c, final DayType dt) {
     return dt.string(c);
   }

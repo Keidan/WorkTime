@@ -20,16 +20,26 @@ public class ProfilesFactory {
   private final List<DayEntry> mProfiles;
   private SqlFactory mSql = null;
 
+  /**
+   * Creates the factory.
+   */
   public ProfilesFactory() {
     mProfiles = new ArrayList<>();
   }
 
+  /**
+   * Reloads the entries from the SQLite databases.
+   * @param sql The SQLite factory.
+   */
   public void reload(final SqlFactory sql) {
     mSql = sql;
     mProfiles.clear();
     mProfiles.addAll(sql.getProfiles());
   }
 
+  /**
+   * Resets the profiles weight.
+   */
   public void resetProfilesLearningWeight() {
     for(DayEntry p : mProfiles) {
       if(p.getLearningWeight() > 0) {
@@ -39,6 +49,12 @@ public class ProfilesFactory {
     }
   }
 
+  /**
+   * Updates all learning weight (+1 for the current entry and -1 for others).
+   * @param profile The selected profile.
+   * @param weightLimit The weight limit.
+   * @param fromClear Called from clear.
+   */
   public void updateProfilesLearningWeight(DayEntry profile, int weightLimit, boolean fromClear) {
     boolean selected = false;
     for(DayEntry p : mProfiles) {
@@ -56,6 +72,10 @@ public class ProfilesFactory {
     }
   }
 
+  /**
+   * Returns an entry with the highest learning weight.
+   * @return DayEntry
+   */
   public DayEntry getHighestLearningWeight() {
     DayEntry profile = null;
     int weight = 0;
@@ -69,20 +89,38 @@ public class ProfilesFactory {
     return profile;
   }
 
+  /**
+   * Returns the list of profiles.
+   * @return List<DayEntry>
+   */
   public List<DayEntry> list() {
     return mProfiles;
   }
 
+  /**
+   * Removes an existing entry.
+   * @param de The entry to remove.
+   */
   public void remove(final DayEntry de) {
     mProfiles.remove(de);
     mSql.removeProfile(de);
   }
 
+  /**
+   * Adds a new entry.
+   * @param de The entry to add.
+   */
   public void add(final DayEntry de) {
     mProfiles.add(de);
     mSql.insertProfile(de);
     mProfiles.sort(Comparator.comparing(DayEntry::getName));
   }
+
+  /**
+   * Returns a profile by name.
+   * @param name The profile name
+   * @return DayEntry
+   */
   public DayEntry getByName(final String name) {
     for(DayEntry de : mProfiles) {
       if(de.getName().equals(name))

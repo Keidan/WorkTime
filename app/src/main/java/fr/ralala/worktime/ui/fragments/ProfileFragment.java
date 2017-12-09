@@ -33,11 +33,17 @@ public class ProfileFragment  extends Fragment implements SimpleEntriesArrayAdap
   private ProfilesEntriesArrayAdapter adapter = null;
   private MainApplication app = null;
 
+  /**
+   * Called when the fragment is created.
+   * @param inflater The fragment inflater.
+   * @param container The fragment container.
+   * @param savedInstanceState The saved instance state.
+   * @return The created view.
+   */
   @Override
   public View onCreateView(@NonNull final LayoutInflater inflater,
                            final ViewGroup container, final Bundle savedInstanceState) {
     final ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_profile, container, false);
-
     ListView lv = rootView.findViewById(R.id.profiles);
     FloatingActionButton fab = rootView.findViewById(R.id.fab);
     fab.setOnClickListener(this);
@@ -48,6 +54,10 @@ public class ProfileFragment  extends Fragment implements SimpleEntriesArrayAdap
     return rootView;
   }
 
+  /**
+   * Called when the fragment is resumed.
+   */
+  @Override
   public void onResume() {
     super.onResume();
     if(app.isResumeAfterActivity()) {
@@ -56,18 +66,31 @@ public class ProfileFragment  extends Fragment implements SimpleEntriesArrayAdap
     }
   }
 
+  /**
+   * Called when the user click on a button (fab).
+   * @param view The clicked view.
+   */
   @Override
   public void onClick(View view) {
     app.setResumeAfterActivity(true);
     DayActivity.startActivity(getActivity(), "null", false);
   }
 
-
+  /**
+   * Called when the edit button is clicked.
+   * @param de The clicked entry object.
+   */
+  @Override
   public void onMenuEdit(DayEntry de) {
     app.setResumeAfterActivity(true);
     DayActivity.startActivity(getActivity(), de.getName(), false);
   }
 
+  /**
+   * Called when the delete button is clicked.
+   * @param de The clicked entry object.
+   */
+  @Override
   public void onMenuDelete(DayEntry de) {
     app.getProfilesFactory().remove(de);
     adapter.remove(de);

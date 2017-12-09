@@ -40,6 +40,12 @@ public class ExportListViewArrayAdapter extends ArrayAdapter<ExportListViewArray
     RelativeLayout rl;
   }
 
+  /**
+   * Creates the array adapter.
+   * @param context The Android context.
+   * @param textViewResourceId The resource id of the container.
+   * @param objects The objects list.
+   */
   public ExportListViewArrayAdapter(final Context context, final int textViewResourceId,
                                     final List<ExportEntry> objects) {
     super(context, textViewResourceId, objects);
@@ -50,6 +56,10 @@ public class ExportListViewArrayAdapter extends ArrayAdapter<ExportListViewArray
   }
 
 
+  /**
+   * Returns the checked items.
+   * @return <code>List<ExportEntry></code>
+   */
   public List<ExportEntry> getCheckedItems() {
     List<ExportEntry> array = new ArrayList<>();
     for(int i=0;i<items.size();i++) {
@@ -60,11 +70,23 @@ public class ExportListViewArrayAdapter extends ArrayAdapter<ExportListViewArray
     return array;
   }
 
+  /**
+   * Returns an items at a specific position.
+   * @param i The item index.
+   * @return The item.
+   */
   @Override
   public ExportEntry getItem(final int i) {
     return items.get(i);
   }
 
+  /**
+   * Returns the current view.
+   * @param position The view position.
+   * @param convertView The view to convert.
+   * @param parent The parent.
+   * @return The new view.
+   */
   @Override
   public @NonNull
   View getView(final int position, final View convertView,

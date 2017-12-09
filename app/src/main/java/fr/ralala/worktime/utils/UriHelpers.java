@@ -83,6 +83,14 @@ public final class UriHelpers {
     return null;
   }
 
+  /**
+   * Returns the data column.
+   * @param context The Android context.
+   * @param uri The input Uri.
+   * @param selection The selection value.
+   * @param selectionArgs The selection arguments.
+   * @return String
+   */
   private static String getDataColumn(Context context, Uri uri, String selection,
                                       String[] selectionArgs) {
 
@@ -108,14 +116,29 @@ public final class UriHelpers {
   }
 
 
+  /**
+   * Test if the Uri authority match with an external storage document.
+   * @param uri The input Uri
+   * @return boolean
+   */
   private static boolean isExternalStorageDocument(Uri uri) {
     return "com.android.externalstorage.documents".equals(uri.getAuthority());
   }
 
+  /**
+   * Test if the Uri authority match with a downloads document.
+   * @param uri The input Uri
+   * @return boolean
+   */
   private static boolean isDownloadsDocument(Uri uri) {
     return "com.android.providers.downloads.documents".equals(uri.getAuthority());
   }
 
+  /**
+   * Test if the Uri authority match with an media document.
+   * @param uri The input Uri
+   * @return boolean
+   */
   private static boolean isMediaDocument(Uri uri) {
     return "com.android.providers.media.documents".equals(uri.getAuthority());
   }

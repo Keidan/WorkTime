@@ -35,6 +35,11 @@ public class AppFragmentsFactory {
   private MainApplication app = null;
   private NavigationView navigationView = null;
 
+  /**
+   * Creates the fragments factory.
+   * @param app The application context.
+   * @param navigationView The application navigation view.
+   */
   public AppFragmentsFactory(final MainApplication app, final NavigationView navigationView) {
     this.app = app;
     this.navigationView = navigationView;
@@ -53,10 +58,18 @@ public class AppFragmentsFactory {
     currentFragment = workTimeFragment;
   }
 
+  /**
+   * Returns the default home index.
+   * @return int
+   */
   public int getDefaultHomeIndex() {
     return app.getDefaultHome();
   }
 
+  /**
+   * Returns the default home ID (android).
+   * @return int
+   */
   public int getDefaultHomeId() {
     switch(app.getDefaultHome()) {
       case IDX_PROFILE:
@@ -75,6 +88,10 @@ public class AppFragmentsFactory {
     }
   }
 
+  /**
+   * Returns the default home fragment.
+   * @return Fragment
+   */
   private Fragment getDefaultHomeView() {
     switch(app.getDefaultHome()) {
       case IDX_QUICK_ACCESS:
@@ -93,11 +110,19 @@ public class AppFragmentsFactory {
     }
   }
 
+  /**
+   * Called when the backPressed event is caught in the main activity.
+   * @return true if the backPressed is consumed by a fragment.
+   */
   public boolean consumeBackPressed() {
     Fragment fragment = currentFragment;
     return fragment != null && StatisticsFragment.class.isInstance(fragment) && ((StatisticsFragment)fragment).consumeBackPressed();
   }
 
+  /**
+   * Called when the activity is resumed.
+   * @param aca The main activity.
+   */
   public void onResume(final AppCompatActivity aca) {
     navigationView.getMenu().getItem(IDX_EXIT).setVisible(!app.isHideExitButton());
     Fragment fragment = currentFragment;
@@ -121,10 +146,18 @@ public class AppFragmentsFactory {
     }
   }
 
+  /**
+   * Return the current fragment.
+   * @return Fragment.
+   */
   public Fragment getCurrentFragment() {
     return currentFragment;
   }
 
+  /**
+   * Changes the current fragment based on its index in the navigation view.
+   * @param idx The index.
+   */
   public void setCurrentToFragment(int idx) {
     switch (idx) {
       case IDX_QUICK_ACCESS:

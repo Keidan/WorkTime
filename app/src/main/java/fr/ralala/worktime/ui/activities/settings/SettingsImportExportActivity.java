@@ -26,7 +26,6 @@ import fr.ralala.worktime.services.DropboxAutoExportService;
 import fr.ralala.worktime.sql.SqlHelper;
 import fr.ralala.worktime.ui.activities.AbstractFileChooserActivity;
 import fr.ralala.worktime.ui.activities.FileChooserActivity;
-import fr.ralala.worktime.utils.AndroidHelper;
 import fr.ralala.worktime.ui.utils.UIHelper;
 
 
@@ -48,9 +47,13 @@ public class SettingsImportExportActivity extends PreferenceActivity implements 
   private MyPreferenceFragment mPrefFrag = null;
   private MainApplication mApp = null;
 
+  /**
+   * Called when the activity is created.
+   * @param savedInstanceState The saved instance state.
+   */
   @Override
   public void onCreate(final Bundle savedInstanceState) {
-    AndroidHelper.openAnimation(this);
+    UIHelper.openAnimation(this);
     super.onCreate(savedInstanceState);
     mApp = MainApplication.getApp(this);
     mPrefFrag = new MyPreferenceFragment();
@@ -68,12 +71,20 @@ public class SettingsImportExportActivity extends PreferenceActivity implements 
     mPrefFrag.findPreference(PREFS_KEY_IMPORT_FROM_DROPBOX).setOnPreferenceClickListener(this);
   }
 
+  /**
+   * Called to handle the click on the back button.
+   */
   @Override
   public void onBackPressed() {
     super.onBackPressed();
-    AndroidHelper.closeAnimation(this);
+    UIHelper.closeAnimation(this);
   }
 
+  /**
+   * Called when the options item is clicked (home).
+   * @param item The selected menu.
+   * @return boolean
+   */
   @Override
   public boolean onOptionsItemSelected(MenuItem item) {
     switch (item.getItemId())
@@ -85,7 +96,11 @@ public class SettingsImportExportActivity extends PreferenceActivity implements 
     return super.onOptionsItemSelected(item);
   }
 
-
+  /**
+   * Called when a preference is clicked.
+   * @param preference The preference.
+   * @return boolean
+   */
   @Override
   public boolean onPreferenceClick(final Preference preference) {
     if (preference.equals(mPrefFrag.findPreference(PREFS_KEY_EXPORT_TO_DROPBOX))) {
@@ -115,6 +130,12 @@ public class SettingsImportExportActivity extends PreferenceActivity implements 
     return true;
   }
 
+  /**
+   * Called when the file chooser is disposed with a result.
+   * @param requestCode The request code.
+   * @param resultCode The result code.
+   * @param data The Intent data.
+   */
   @Override
   protected void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
     // Check which request we're responding to
@@ -125,7 +146,7 @@ public class SettingsImportExportActivity extends PreferenceActivity implements 
           SqlHelper.copyDatabase(this, SqlHelper.DB_NAME, dir);
           UIHelper.toast(this, getString(R.string.export_success));
         } catch(Exception e) {
-          UIHelper.toast_long(this, getString(R.string.error) + ": " + e.getMessage());
+          UIHelper.toastLong(this, getString(R.string.error) + ": " + e.getMessage());
           Log.e(getClass().getSimpleName(), "Error: " + e.getMessage(), e);
         }
       }
@@ -145,7 +166,7 @@ public class SettingsImportExportActivity extends PreferenceActivity implements 
             try {
               DropboxImportExport.loadDb(SettingsImportExportActivity.this, new File(s));
             } catch (Exception e) {
-              UIHelper.toast_long(SettingsImportExportActivity.this, getString(R.string.error) + ": " + e.getMessage());
+              UIHelper.toastLong(SettingsImportExportActivity.this, getString(R.string.error) + ": " + e.getMessage());
               Log.e(getClass().getSimpleName(), "Error: " + e.getMessage(), e);
             }
           }
@@ -154,6 +175,12 @@ public class SettingsImportExportActivity extends PreferenceActivity implements 
     }
   }
 
+  /**
+   * Starts an activity.
+   * @param extra The extra data.
+   * @param c The Android context.
+   * @param code The request code.
+   */
   private void myStartActivity(Map<String, String> extra, Class<?> c, int code) {
     final Intent i = new Intent(getApplicationContext(), c);
     if(extra != null) {

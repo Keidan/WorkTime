@@ -21,6 +21,11 @@ public class QuickAccessNotificationReceiver extends BroadcastReceiver {
 
   public static final String KEY_PAUSE = "fr.ralala.worktime.services.PAUSE";
 
+  /**
+   * Called when the service receive a notification from the activity
+   * @param context The Android context.
+   * @param intent The notification intent.
+   */
   @Override
   public void onReceive(Context context, Intent intent) {
     MainApplication app = MainApplication.getApp(context);

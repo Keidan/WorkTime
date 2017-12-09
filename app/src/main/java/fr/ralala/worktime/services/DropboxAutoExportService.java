@@ -29,6 +29,9 @@ public class DropboxAutoExportService extends Service implements DropboxImportEx
   public static final String KEY_NEED_UPDATE = "dropboxKeyNeedUpdate";
   public static final String DEFVAL_NEED_UPDATE = "false";
 
+  /**
+   * Called when the service is created.
+   */
   @Override
   public void onCreate() {
     mApp = MainApplication.getApp(this);
@@ -72,6 +75,11 @@ public class DropboxAutoExportService extends Service implements DropboxImportEx
     }
   }
 
+  /**
+   * Changes the value of the needUpdate field.
+   * @param app Application context.
+   * @param b needUpdate state.
+   */
   public static void setNeedUpdate(MainApplication app, boolean b) {
     SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(app.getApplicationContext());
     SharedPreferences.Editor ed = prefs.edit();
@@ -82,6 +90,10 @@ public class DropboxAutoExportService extends Service implements DropboxImportEx
       app.disableDbUpdateFromOnloadSettings();
   }
 
+  /**
+   * Tests if the database is exportable.
+   * @return boolean
+   */
   private boolean isExportable() {
     Calendar c = WorkTimeDay.now().toCalendar();
     int p = mApp.getExportAutoSavePeriodicity();
@@ -95,6 +107,9 @@ public class DropboxAutoExportService extends Service implements DropboxImportEx
       (p == 7 && c.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY));
   }
 
+  /**
+   * Called when the service is destroyed.
+   */
   @Override
   public void onDestroy() {
     boolean cond = false;
@@ -109,17 +124,30 @@ public class DropboxAutoExportService extends Service implements DropboxImportEx
     Process.killProcess(android.os.Process.myPid());
   }
 
+  /**
+   * Called when the service is binded.
+   * @param intent Not used.
+   * @return null
+   */
   @Override
   public IBinder onBind(final Intent intent) {
     return null;
   }
 
 
+  /**
+   * File uploaded to dropbox.
+   * @param error True on error.
+   */
   @Override
   public void dropboxUploaded(final boolean error) {
     stopSelf();
   }
 
+  /**
+   * File downloaded from dropbox.
+   * @param error True on error.
+   */
   @Override
   public void dropboxDownloaded(final boolean error) {
     stopSelf();

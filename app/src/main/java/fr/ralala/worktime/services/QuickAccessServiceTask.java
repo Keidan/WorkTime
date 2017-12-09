@@ -24,11 +24,18 @@ public class QuickAccessServiceTask extends TimerTask{
   private String mTextLabel = "";
   private boolean mNeg = false;
 
+  /**
+   * Creates the service task.
+   * @param app The application context.
+   */
   QuickAccessServiceTask(MainApplication app) {
     mApp = app;
     mTextLabel = app.getString(R.string.work_time) + ": ";
   }
 
+  /**
+   * Run method.
+   */
   @Override
   public void run() {
     DayEntry de = mApp.getDaysFactory().getCurrentDay();
@@ -68,6 +75,11 @@ public class QuickAccessServiceTask extends TimerTask{
     mApp.getQuickAccessNotification().update(text, mApp.isQuickAccessPause());
   }
 
+  /**
+   * Updates the quicktime value.
+   * @param we The current work time entry.
+   * @return WorkTimeDay
+   */
   private WorkTimeDay update(WorkTimeDay we) {
     int h = we.getHours();
     int m = we.getMinutes();

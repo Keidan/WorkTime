@@ -45,6 +45,12 @@ import fr.ralala.worktime.models.WorkTimeDay;
  */
 public class UIHelper {
 
+  /**
+   * Displays a progress dialog.
+   * @param context The Android context.
+   * @param message The progress message.
+   * @return AlertDialog
+   */
   public static AlertDialog showProgressDialog(Context context, int message) {
     LayoutInflater layoutInflater = LayoutInflater.from(context);
     final ViewGroup nullParent = null;
@@ -57,6 +63,11 @@ public class UIHelper {
     return progress;
   }
 
+  /**
+   * Shake a view on error.
+   * @param owner The owner view.
+   * @param errText The error text.
+   */
   public static void shakeError(TextView owner, String errText) {
     TranslateAnimation shake = new TranslateAnimation(0, 10, 0, 0);
     shake.setDuration(500);
@@ -69,6 +80,11 @@ public class UIHelper {
     }
   }
 
+  /**
+   * Changes the view background with a gradient effect.
+   * @param view The output view.
+   * @param colors The gradient colors.
+   */
   public static void applyLinearGradient(final View view, final int ...colors) {
     Drawable[] layers = new Drawable[1];
 
@@ -94,11 +110,20 @@ public class UIHelper {
     view.setBackground(composite);
   }
 
-
+  /**
+   * Opens a snack.
+   * @param activity The associated activity.
+   * @param resId The snack message.
+   */
   public static void snack(final Activity activity, int resId) {
     snack(activity, activity.getString(resId));
   }
 
+  /**
+   * Opens a snack.
+   * @param activity The associated activity.
+   * @param msg The snack message.
+   */
   public static void snack(final Activity activity, String msg) {
     final View cl = activity.findViewById(R.id.coordinatorLayout);
     final Snackbar snackbar = Snackbar
@@ -108,6 +133,14 @@ public class UIHelper {
     snackbar.show();
   }
 
+  /**
+   * Displays a confirm dialog.
+   * @param c The Android context.
+   * @param title The dialog title.
+   * @param message The dialog message.
+   * @param yes Listener used when the 'yes' button is clicked.
+   * @param no Listener used when the 'no' button is clicked.
+   */
   public static void showConfirmDialog(final Context c, final String title,
                                        String message, final android.view.View.OnClickListener yes,
                                        final android.view.View.OnClickListener no) {
@@ -123,11 +156,23 @@ public class UIHelper {
         }).show();
   }
 
+  /**
+   * Opens a date picker dialog.
+   * @param c The Android context.
+   * @param current The current date.
+   * @param li The listener used when the date is selected.
+   */
   public static void openDatePicker(final Context c, final Calendar current, DatePickerDialog.OnDateSetListener li) {
     DatePickerDialog dpd = new DatePickerDialog(c, li, current.get(Calendar.YEAR), current.get(Calendar.MONTH), current.get(Calendar.DAY_OF_MONTH));
     dpd.show();
   }
 
+  /**
+   * Opens a time picker dialog.
+   * @param c The Android context.
+   * @param current The current time.
+   * @param tv The output text view.
+   */
   public static void openTimePicker(final Context c, final WorkTimeDay current, final TextView tv) {
     tv.setText(current.timeString());
     AlertDialog.Builder builder = new AlertDialog.Builder(c);
@@ -158,7 +203,12 @@ public class UIHelper {
     }
   }
 
-  /* tool function used to display a message box */
+  /**
+   * Displays an alert dialog.
+   * @param c The Android context.
+   * @param title The alert dialog title.
+   * @param message The alert dialog message.
+   */
   public static void showAlertDialog(final Context c, final int title, final String message) {
     AlertDialog alertDialog = new AlertDialog.Builder(c).create();
     alertDialog.setTitle(c.getResources().getString(title));
@@ -167,6 +217,10 @@ public class UIHelper {
     alertDialog.show();
   }
 
+  /**
+   * Forces the display of the icons in a popup menu
+   * @param popup The popup menu
+   */
   public static void forcePopupMenuIcons(final PopupMenu popup) {
     try {
       Field[] fields = popup.getClass().getDeclaredFields();
@@ -187,6 +241,12 @@ public class UIHelper {
     }
   }
 
+  /**
+   * Displays a toast.
+   * @param c The Android context.
+   * @param message The toast message.
+   * @param timer The toast duration.
+   */
   public static void toast(final Context c, final String message, final int timer) {
     /* Create a toast with the launcher icon */
     Toast toast = Toast.makeText(c, message, timer);
@@ -203,19 +263,55 @@ public class UIHelper {
     toast.show();
   }
 
-  public static void toast_long(final Context c, final int message) {
+  /**
+   * Displays a long toast.
+   * @param c The Android context.
+   * @param message The toast message.
+   */
+  public static void toastLong(final Context c, final int message) {
     toast(c, c.getResources().getString(message), Toast.LENGTH_LONG);
   }
 
-  public static void toast_long(final Context c, final String message) {
+  /**
+   * Displays a long toast.
+   * @param c The Android context.
+   * @param message The toast message.
+   */
+  public static void toastLong(final Context c, final String message) {
     toast(c, message, Toast.LENGTH_LONG);
   }
 
+  /**
+   * Displays a short toast.
+   * @param c The Android context.
+   * @param message The toast message.
+   */
   public static void toast(final Context c, final String message) {
     toast(c, message, Toast.LENGTH_SHORT);
   }
 
+  /**
+   * Displays a short toast.
+   * @param c The Android context.
+   * @param message The toast message.
+   */
   public static void toast(final Context c, final int message) {
     toast(c, c.getResources().getString(message));
+  }
+
+  /**
+   * Starts a transition effect (slide) when the activity is opened.
+   * @param a The activity to animate.
+   */
+  public static void openAnimation(final Activity a) {
+    a.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+  }
+
+  /**
+   * Starts a transition effect (slide) when the activity is closed.
+   * @param a The activity to animate.
+   */
+  public static void closeAnimation(final Activity a) {
+    a.overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
   }
 }

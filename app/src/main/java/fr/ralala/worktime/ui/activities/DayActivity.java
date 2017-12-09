@@ -74,7 +74,12 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
   private boolean fromClear = false;
   private boolean fromWidget = false;
 
-
+  /**
+   * Starts an activity.
+   * @param ctx The Android context.
+   * @param date The date used for the extra part.
+   * @param profile True from a profile.
+   */
   public static void startActivity(final Context ctx, final String date, final boolean profile) {
     Intent intent = new Intent(ctx, DayActivity.class);
     intent.putExtra(DAY_ACTIVITY_EXTRA_DATE, date);
@@ -82,13 +87,19 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
     ctx.startActivity(intent);
   }
 
+  /**
+   * Called to handle the click on the back button.
+   */
   @Override
   public void onBackPressed() {
     super.onBackPressed();
-    AndroidHelper.closeAnimation(this);
+    UIHelper.closeAnimation(this);
     clearFromWidget();
   }
 
+  /**
+   * Clear is required from a widget.
+   */
   private void clearFromWidget() {
     if(fromWidget) {
       app.setLastWidgetOpen(System.currentTimeMillis());
@@ -99,15 +110,22 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
     }
   }
 
+  /**
+   * Called when the activity is paused.
+   */
   @Override
   public void onPause() {
     super.onPause();
     clearFromWidget();
   }
 
+  /**
+   * Called when the activity is created.
+   * @param savedInstanceState The saved instance state.
+   */
   @Override
   protected void onCreate(Bundle savedInstanceState) {
-    AndroidHelper.openAnimation(this);
+    UIHelper.openAnimation(this);
     super.onCreate(savedInstanceState);
     app = MainApplication.getApp(this);
     setContentView(R.layout.activity_day);
@@ -265,6 +283,9 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
     }
   }
 
+  /**
+   * Called when the activity is resumed.
+   */
   @Override
   public void onResume() {
     super.onResume();
@@ -292,6 +313,11 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
     }
   }
 
+  /**
+   * Called when the options menu is clicked.
+   * @param menu The selected menu.
+   * @return boolean
+   */
   @Override
   public boolean onCreateOptionsMenu(final Menu menu) {
     MenuInflater inflater = getMenuInflater();
@@ -303,6 +329,11 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
     return true;
   }
 
+  /**
+   * Called when the options item is clicked (home and cancel).
+   * @param item The selected menu.
+   * @return boolean
+   */
   @Override
   public boolean onOptionsItemSelected(final MenuItem item) {
     switch (item.getItemId()) {
@@ -332,6 +363,10 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
     return false;
   }
 
+  /**
+   * Called when a button is clicked (fab, tvStartMorning, tvEndMorning, tvStartAfternoon, tvEndAfternoon, tvAdditionalBreak and tvLegalWorktime).
+   * @param v The view clicked.
+   */
   public void onClick(final View v) {
     if(v.equals(fab)) {
       DayEntry newEntry = new DayEntry(this, de.getDay().toCalendar(),
@@ -419,11 +454,22 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
       UIHelper.openTimePicker(this, wtdLegalWorktime, tvLegalWorktime);
   }
 
+  /**
+   * Called when an item is selected.
+   * @param adapterView The adapter view.
+   * @param view The selected view.
+   * @param i The view index in the adapter.
+   * @param l Not used.
+   */
   @Override
   public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
     selectProfile(i);
   }
 
+  /**
+   * Called when a profile is selected.
+   * @param indexInAdapter The index in the adapter.
+   */
   private void selectProfile(int indexInAdapter) {
     if(spProfilesAdapter != null) {
       String name = spProfilesAdapter.getItem(indexInAdapter);
@@ -448,6 +494,10 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
     }
   }
 
+  /**
+   * Refresh the internal components.
+   * @param de The current day entry.
+   */
   private void refreshStartEndPause(DayEntry de) {
     wtdStartMorning = de.getStartMorning().clone();
     wtdEndMorning = de.getEndMorning().clone();
@@ -459,6 +509,10 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
     wtdLegalWorktime = de.getLegalWorktime().clone();
   }
 
+  /**
+   * See official javadoc.
+   * @param adapterView See official javadoc.
+   */
   @Override
   public void onNothingSelected(AdapterView<?> adapterView) {
 

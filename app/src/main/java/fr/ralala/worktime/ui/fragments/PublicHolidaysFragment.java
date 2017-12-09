@@ -33,6 +33,13 @@ public class PublicHolidaysFragment extends Fragment implements SimpleEntriesArr
   private PublicHolidaysEntriesArrayAdapter adapter = null;
   private MainApplication app = null;
 
+  /**
+   * Called when the fragment is created.
+   * @param inflater The fragment inflater.
+   * @param container The fragment container.
+   * @param savedInstanceState The saved instance state.
+   * @return The created view.
+   */
   @Override
   public View onCreateView(@NonNull final LayoutInflater inflater,
                            final ViewGroup container, final Bundle savedInstanceState) {
@@ -50,6 +57,11 @@ public class PublicHolidaysFragment extends Fragment implements SimpleEntriesArr
     fab.setOnClickListener(this);
     return rootView;
   }
+
+  /**
+   * Called when the fragment is resumed.
+   */
+  @Override
   public void onResume() {
     super.onResume();
     if(app.isResumeAfterActivity()) {
@@ -58,22 +70,44 @@ public class PublicHolidaysFragment extends Fragment implements SimpleEntriesArr
     }
   }
 
+  /**
+   * Called when the edit button is clicked.
+   * @param de The clicked entry object.
+   */
+  @Override
   public void onMenuEdit(DayEntry de) {
     app.setResumeAfterActivity(true);
     PublicHolidayActivity.startActivity(getActivity(), de.getName());
   }
 
+  /**
+   * Called when the delete button is clicked.
+   * @param de The clicked entry object.
+   */
+  @Override
   public void onMenuDelete(DayEntry de) {
     app.getPublicHolidaysFactory().remove(de);
     adapter.remove(de);
   }
 
+  /**
+   * Called when the user click on a button (fab).
+   * @param view The clicked view.
+   */
+  @Override
   public void onClick(View view) {
     app.setResumeAfterActivity(true);
     PublicHolidayActivity.startActivity(getActivity(), "null");
   }
 
 
+  /**
+   * Creates an animation when the adapter is updated.
+   * @param transit See official javadoc.
+   * @param enter See official javadoc.
+   * @param nextAnim See official javadoc.
+   * @return Animation
+   */
   @Override
   public Animation onCreateAnimation(int transit, boolean enter, int nextAnim) {
     Animation anim = AnimationUtils.loadAnimation(getActivity(), nextAnim);

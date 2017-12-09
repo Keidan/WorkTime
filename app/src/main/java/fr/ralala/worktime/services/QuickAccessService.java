@@ -24,6 +24,9 @@ public class QuickAccessService extends Service {
   private MainApplication mApp = null;
   private Timer mTimer = null;
 
+  /**
+   * Called when the service is created.
+   */
   @Override
   public void onCreate() {
     mApp = MainApplication.getApp(this);
@@ -45,6 +48,9 @@ public class QuickAccessService extends Service {
     mTimer.scheduleAtFixedRate(new QuickAccessServiceTask(mApp), 0, 1000);
   }
 
+  /**
+   * Called when the service is destroyed.
+   */
   @Override
   public void onDestroy() {
     super.onDestroy();
@@ -56,6 +62,11 @@ public class QuickAccessService extends Service {
     }
   }
 
+  /**
+   * Called when the service is binded.
+   * @param intent Not used.
+   * @return null
+   */
   @Override
   public IBinder onBind(final Intent intent) {
     return null;

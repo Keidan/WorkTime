@@ -26,11 +26,21 @@ public class DropboxHelper {
 
   private DropboxHelper() { }
 
+  /**
+   * Returns the helper instance.
+   * @return DropboxHelper
+   */
   static DropboxHelper helper() {
     if(mHelper == null) mHelper = new DropboxHelper();
     return mHelper;
   }
 
+  /**
+   * Established the connection with dropbox
+   * @param ctx The Android context.
+   * @param appkey The application key.
+   * @return boolean
+   */
   boolean connect(final Context ctx, final String appkey) {
     Context c = ctx.getApplicationContext();
     mHelper.loadToken(c);
@@ -42,6 +52,11 @@ public class DropboxHelper {
     return true;
   }
 
+  /**
+   * Tests if the configuration has the required token.
+   * @param ctx The Android context.
+   * @return boolean
+   */
   private boolean hasToken(final Context ctx) {
     Context c = ctx.getApplicationContext();
     SharedPreferences prefs = c.getSharedPreferences(LABEL, Context.MODE_PRIVATE);
@@ -49,6 +64,10 @@ public class DropboxHelper {
     return accessToken != null;
   }
 
+  /**
+   * Loads the dropbox token.
+   * @param ctx The Android context.
+   */
   private void loadToken(final Context ctx) {
     Context c = ctx.getApplicationContext();
     SharedPreferences prefs = c.getSharedPreferences(LABEL, Context.MODE_PRIVATE);
@@ -64,6 +83,10 @@ public class DropboxHelper {
     }
   }
 
+  /**
+   * Initializes the dropbox contexts.
+   * @param accessToken The access token to use.
+   */
   private void initDropBox(String accessToken) {
     if (mDbxClient == null) {
       DbxRequestConfig requestConfig = DbxRequestConfig.newBuilder(getClass().getPackage().getName())
@@ -73,6 +96,10 @@ public class DropboxHelper {
     }
   }
 
+  /**
+   * Returns the instance of the dropbox client.
+   * @return DbxClientV2
+   */
   DbxClientV2 getClient() {
     if (mDbxClient == null) {
       throw new IllegalStateException("Client not initialized.");

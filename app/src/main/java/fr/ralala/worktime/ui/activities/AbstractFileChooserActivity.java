@@ -17,7 +17,6 @@ import android.widget.ListView;
 
 import fr.ralala.worktime.ui.adapters.FileChooserArrayAdapter;
 import fr.ralala.worktime.models.FileChooserOption;
-import fr.ralala.worktime.utils.AndroidHelper;
 import fr.ralala.worktime.R;
 import fr.ralala.worktime.ui.utils.UIHelper;
 
@@ -71,7 +70,11 @@ public abstract class AbstractFileChooserActivity extends AppCompatActivity impl
     }
     return true;
   };
-  
+
+  /**
+   * Confirm dialog.
+   * @param o The selected option.
+   */
   private void confirm(final FileChooserOption o) {
     UIHelper.showConfirmDialog(
             this,
@@ -80,11 +83,15 @@ public abstract class AbstractFileChooserActivity extends AppCompatActivity impl
         (view) -> onFileSelected(null));
   }
 
+  /**
+   * Called when the activity is created.
+   * @param savedInstanceState The saved instance state.
+   */
   @Override
   public void onCreate(final Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.fragment_filechooser);
-    AndroidHelper.openAnimation(this);
+    UIHelper.openAnimation(this);
     listview = findViewById(R.id.list);
     Bundle b = getIntent().getExtras();
     if (b != null && b.containsKey(FILECHOOSER_TYPE_KEY))
@@ -108,15 +115,22 @@ public abstract class AbstractFileChooserActivity extends AppCompatActivity impl
     fill(currentDir);
     listview.setOnItemLongClickListener(longClick);
     listview.setOnItemClickListener(this);
-    UIHelper.toast_long(this, R.string.chooser_long_press_message);
+    UIHelper.toastLong(this, R.string.chooser_long_press_message);
   }
 
+  /**
+   * Called to handle the click on the back button.
+   */
   @Override
   public void onBackPressed() {
     super.onBackPressed();
-    AndroidHelper.closeAnimation(this);
+    UIHelper.closeAnimation(this);
   }
 
+  /**
+   * Fill the list.
+   * @param f The new root folder.
+   */
   @SuppressWarnings("deprecation")
   protected void fill(final File f) {
     final File[] dirs = f.listFiles();
@@ -150,7 +164,12 @@ public abstract class AbstractFileChooserActivity extends AppCompatActivity impl
     // } else
     // adapter.reload(dir);
   }
-  
+
+  /**
+   * Tests if the input file is in the filter list.
+   * @param file The file to test.
+   * @return boolean
+   */
   public boolean isFiltered(final File file) {
     StringTokenizer token = new StringTokenizer(fileFilter, ",");
     while(token.hasMoreTokens()) {
@@ -161,6 +180,13 @@ public abstract class AbstractFileChooserActivity extends AppCompatActivity impl
     return false;
   }
 
+  /**
+   * Called when an item is clicked.
+   * @param l The adapter view.
+   * @param v The clicked view.
+   * @param position The position in the adapter.
+   * @param id Not used.
+   */
   @Override
   public void onItemClick(final AdapterView<?> l, final View v,
       final int position, final long id) {
@@ -175,9 +201,17 @@ public abstract class AbstractFileChooserActivity extends AppCompatActivity impl
       confirm(o);
   }
 
+  /**
+   * Called when a file is selected.
+   * @param opt The selected option.
+   */
   protected void onFileSelected(final FileChooserOption opt) {
   }
 
+  /**
+   * Returns the user message.
+   * @return String
+   */
   public String getUserMessage() {
     return userMessage;
   }

@@ -28,26 +28,51 @@ public class ChangeLogIds {
     this.rawChangelog = rawChangelog;
   }
 
+  /**
+   * Returns the String resource for the label of the OK button.
+   * @return int
+   */
   int getStringChangelogOkButton() {
     return stringChangelogOkButton;
   }
 
+  /**
+   * Returns the String resource for the background.
+   * @return int
+   */
   int getStringBackgroundColor() {
     return stringBackgroundColor;
   }
 
+  /**
+   * Returns the String resource for the title.
+   * @return int
+   */
   int getStringChangelogTitle() {
     return stringChangelogTitle;
   }
 
+  /**
+   * Returns the String resource for the full title.
+   * @return int
+   */
   int getStringChangelogFullTitle() {
     return stringChangelogFullTitle;
   }
 
+  /**
+   * Returns the String resource for show full field.
+   * @return int
+   */
   int getStringChangelogShowFull() {
     return stringChangelogShowFull;
   }
 
+
+  /**
+   * Returns the resource id of the changelog file.
+   * @return int
+   */
   int getRawChangelog() {
     return rawChangelog;
   }

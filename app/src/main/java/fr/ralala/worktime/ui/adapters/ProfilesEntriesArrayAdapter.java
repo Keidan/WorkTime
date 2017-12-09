@@ -42,6 +42,13 @@ public class ProfilesEntriesArrayAdapter extends ArrayAdapter<DayEntry> {
     ImageView menu;
   }
 
+  /**
+   * Creates the array adapter.
+   * @param context The Android context.
+   * @param textViewResourceId The resource id of the container.
+   * @param objects The objects list.
+   * @param listener The listener used for the popup menu.
+   */
   public ProfilesEntriesArrayAdapter(final Context context, final int textViewResourceId,
                                      final List<DayEntry> objects,
                                      final SimpleEntriesArrayAdapterMenuListener<DayEntry> listener) {
@@ -52,11 +59,23 @@ public class ProfilesEntriesArrayAdapter extends ArrayAdapter<DayEntry> {
     this.listener = listener;
   }
 
+  /**
+   * Returns an items at a specific position.
+   * @param i The item index.
+   * @return The item.
+   */
   @Override
   public DayEntry getItem(final int i) {
     return items.get(i);
   }
 
+  /**
+   * Returns the current view.
+   * @param position The view position.
+   * @param convertView The view to convert.
+   * @param parent The parent.
+   * @return The new view.
+   */
   @Override
   public @NonNull View getView(final int position, final View convertView,
                @NonNull final ViewGroup parent) {

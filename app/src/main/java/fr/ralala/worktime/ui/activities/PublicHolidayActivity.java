@@ -20,7 +20,6 @@ import fr.ralala.worktime.R;
 import fr.ralala.worktime.models.DayEntry;
 import fr.ralala.worktime.models.DayType;
 import fr.ralala.worktime.models.WorkTimeDay;
-import fr.ralala.worktime.utils.AndroidHelper;
 import fr.ralala.worktime.ui.utils.UIHelper;
 
 /**
@@ -41,21 +40,33 @@ public class PublicHolidayActivity extends AppCompatActivity implements View.OnC
   private DatePicker tdate = null;
   private CheckBox ckRecurrence = null;
 
+  /**
+   * Starts an activity.
+   * @param ctx The Android context.
+   * @param name The extra name.
+   */
   public static void startActivity(final Context ctx, final String name) {
     Intent intent = new Intent(ctx, PublicHolidayActivity.class);
     intent.putExtra(PUBLIC_HOLIDAY_ACTIVITY_EXTRA_NAME, name);
     ctx.startActivity(intent);
   }
 
+  /**
+   * Called to handle the click on the back button.
+   */
   @Override
   public void onBackPressed() {
     super.onBackPressed();
-    AndroidHelper.closeAnimation(this);
+    UIHelper.closeAnimation(this);
   }
 
+  /**
+   * Called when the activity is created.
+   * @param savedInstanceState The saved instance state.
+   */
   @Override
   protected void onCreate(Bundle savedInstanceState) {
-    AndroidHelper.openAnimation(this);
+    UIHelper.openAnimation(this);
     super.onCreate(savedInstanceState);
     app = MainApplication.getApp(this);
     setContentView(R.layout.activity_public_holiday);
@@ -102,6 +113,11 @@ public class PublicHolidayActivity extends AppCompatActivity implements View.OnC
     }
   }
 
+  /**
+   * Called when the options menu is clicked.
+   * @param menu The selected menu.
+   * @return boolean
+   */
   @Override
   public boolean onCreateOptionsMenu(final Menu menu) {
     MenuInflater inflater = getMenuInflater();
@@ -111,6 +127,11 @@ public class PublicHolidayActivity extends AppCompatActivity implements View.OnC
     return true;
   }
 
+  /**
+   * Called when the options item is clicked (home and cancel).
+   * @param item The selected menu.
+   * @return boolean
+   */
   @Override
   public boolean onOptionsItemSelected(final MenuItem item) {
     switch (item.getItemId()) {
@@ -124,6 +145,10 @@ public class PublicHolidayActivity extends AppCompatActivity implements View.OnC
     return false;
   }
 
+  /**
+   * Called when a button is clicked (fab).
+   * @param v The view clicked.
+   */
   public void onClick(final View v) {
     if(v.equals(fab)) {
       final String name = tname.getText().toString().trim();

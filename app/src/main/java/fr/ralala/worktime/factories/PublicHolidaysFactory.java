@@ -28,10 +28,17 @@ public class PublicHolidaysFactory {
   private final List<DayEntry> mPublicHolidays;
   private SqlFactory mSql = null;
 
+  /**
+   * Creates the factory.
+   */
   public PublicHolidaysFactory() {
     mPublicHolidays = new ArrayList<>();
   }
 
+  /**
+   * Reloads the entries from the SQLite databases.
+   * @param sql The SQLite factory.
+   */
   public void reload(final SqlFactory sql) {
     mSql = sql;
     mPublicHolidays.clear();
@@ -39,10 +46,19 @@ public class PublicHolidaysFactory {
     sort();
   }
 
+  /**
+   * Returns the list of public holidays.
+   * @return List<DayEntry>
+   */
   public List<DayEntry> list() {
     return mPublicHolidays;
   }
 
+  /**
+   * Tests id the current date is a public holiday.
+   * @param currentDate The current date.
+   * @return boolean
+   */
   public boolean isPublicHolidays(WorkTimeDay currentDate) {
     for(DayEntry de : mPublicHolidays) {
       if((de.getTypeMorning() == DayType.PUBLIC_HOLIDAY && de.getTypeAfternoon() == DayType.PUBLIC_HOLIDAY) && de.matchSimpleDate(currentDate))
@@ -51,6 +67,11 @@ public class PublicHolidaysFactory {
     return false;
   }
 
+  /**
+   * Tests the validity of the input entry.
+   * @param de The netry to test.
+   * @return boolean
+   */
   public boolean testValidity(final DayEntry de) {
     for(DayEntry d : mPublicHolidays) {
       WorkTimeDay d_day = d.getDay();
@@ -65,22 +86,34 @@ public class PublicHolidaysFactory {
     return true;
   }
 
+  /**
+   * Removes an entry.
+   * @param de The entry to delete.
+   */
   public void remove(final DayEntry de) {
     mPublicHolidays.remove(de);
     mSql.removePublicHoliday(de);
   }
 
+  /**
+   * Adds a new entry.
+   * @param de The entry to add.
+   */
   public void add(final DayEntry de) {
     mPublicHolidays.add(de);
     mSql.insertPublicHoliday(de);
     sort();
   }
 
+  /**
+   * Sorts the entries.
+   */
   private void sort() {
     mPublicHolidays.sort(SortComparator.comparator(
         SortComparator.getComparator(SortComparator.SORT_BY_RECURRENCE,
             SortComparator.SORT_BY_DATE)));
   }
+
   private enum  SortComparator implements Comparator<DayEntry> {
     SORT_BY_RECURRENCE {
       public int compare(DayEntry a, DayEntry b) {
@@ -105,10 +138,20 @@ public class PublicHolidaysFactory {
       }
     },;
 
+    /**
+     * Compares entry.
+     * @param other The comparator entry.
+     * @return Comparator<DayEntry>
+     */
     public static Comparator<DayEntry> comparator(final Comparator<DayEntry> other) {
       return (o1, o2) -> -1 * other.compare(o1, o2);
     }
 
+    /**
+     * Returns the comparate to use.
+     * @param multipleOptions Multiple comparator.
+     * @return Comparator<DayEntry>
+     */
     public static Comparator<DayEntry> getComparator(final SortComparator... multipleOptions) {
       return (o1, o2) -> {
         for (SortComparator option : multipleOptions) {

@@ -26,20 +26,38 @@ public class QuickAccessNotification {
   private Context mContext = null;
   private boolean mVisible = false;
 
+  /**
+   * Creates the quick access notification object.
+   * @param c The Android context.
+   * @param id The notification id.
+   */
   public QuickAccessNotification(final Context c, final int id) {
     mContext = c;
     mNfyId = id;
   }
 
+  /**
+   * Removes the notification.
+   * @param c The Android contexte.
+   */
   public void remove(final Context c) {
     NotificationManagerCompat.from(c).cancel(mNfyId);
     mVisible = false;
   }
 
+  /**
+   * Tests if the notification is visible.
+   * @return boolean
+   */
   public boolean isVisible() {
     return mVisible;
   }
 
+  /**
+   * Updates the current notification.
+   * @param text The new text to display.
+   * @param pause True if the pause icon should be used.
+   */
   public void update(String text, boolean pause){
     if(mNfyBuilder == null)
       set(text);
@@ -59,6 +77,10 @@ public class QuickAccessNotification {
     NotificationManagerCompat.from(mContext).notify(mNfyId, mNfy);
   }
 
+  /**
+   * Sets the system notification.
+   * @param text The init text.
+   */
   public void set(String text){
     mNfyBuilder = new NotificationCompat.Builder(mContext, "MyChannelId_0");
     mNfyBuilder.setSmallIcon(R.mipmap.ic_launcher)

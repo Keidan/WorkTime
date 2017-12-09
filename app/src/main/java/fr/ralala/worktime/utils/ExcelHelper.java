@@ -35,6 +35,10 @@ public class ExcelHelper {
   private File mFile = null;
   private CreationHelper mCreateHelper = null;
 
+  /**
+   * Creates the Excel helper object and initialize the required objects.
+   * @param file
+   */
   public ExcelHelper(final File file) {
     mFile = file;
     mWorkbook = new HSSFWorkbook();  // or new XSSFWorkbook();
@@ -60,11 +64,20 @@ public class ExcelHelper {
     mTimesDateBold.setDataFormat(df.getFormat("[h]:mm;@"));
   }
 
+  /**
+   * Creates a new sheet.
+   * @param sheetTitle The sheet title.
+   * @return Sheet
+   */
   public Sheet createSheet(final String sheetTitle) {
     mWorkbook.createSheet(sheetTitle);
     return mWorkbook.getSheet(sheetTitle);
   }
 
+  /**
+   * Writes the file.
+   * @throws IOException Called when an IO exception is thrown.
+   */
   public void write() throws IOException {
     FileOutputStream fileOut = new FileOutputStream(mFile);
     mWorkbook.write(fileOut);
@@ -72,33 +85,78 @@ public class ExcelHelper {
     mWorkbook.close();
   }
 
+  /**
+   * Creates a horizontal header.
+   * @param sheet The current sheet
+   * @param row The current row index.
+   * @param column The first column index.
+   * @param headers The  list oif header.
+   */
   public void createHorizontalHeader(Sheet sheet, int row, int column, String[] headers) {
     for(String header : headers)
       addLabel(sheet, row, column++, header, true);
   }
 
+  /**
+   * Adds a new formula.
+   * @param sheet The current sheet
+   * @param row The current row index.
+   * @param column The first column index.
+   * @param formula The formula to add.
+   */
   public void addFormula(Sheet sheet, int row, int column, StringBuilder formula) {
     addFormula(sheet, row, column, formula.toString());
   }
 
+  /**
+   * Adds a new formula.
+   * @param sheet The current sheet
+   * @param row The current row index.
+   * @param column The first column index.
+   * @param formula The formula to add.
+   */
   private void addFormula(Sheet sheet, int row, int column, String formula) {
     Cell cell = getCell(sheet, row, column);
     cell.setCellStyle(mTimesDateBold);
     cell.setCellFormula(formula);
   }
 
+  /**
+   * Adds a new label.
+   * @param sheet The current sheet
+   * @param row The current row index.
+   * @param column The first column index.
+   * @param s The label text.
+   * @param bold Font style (bold or normal)
+   */
   public void addLabel(Sheet sheet, int row, int column, String s, boolean bold) {
     Cell cell = getCell(sheet, row, column);
     cell.setCellValue(mCreateHelper.createRichTextString(s));
     cell.setCellStyle(bold ? mTimesBold : mTimes);
   }
 
+  /**
+   * Adds a new time.
+   * @param sheet The current sheet
+   * @param row The current row index.
+   * @param column The first column index.
+   * @param s The label text.
+   * @param bold Font style (bold or normal)
+   * @throws ParseException Called when a parse exception is thrown.
+   */
   public void addTime(Sheet sheet, int row, int column, String s, boolean bold) throws ParseException {
     Cell cell = getCell(sheet, row, column);
     cell.setCellFormula("TIME(" + s.replaceAll(":", ",") + ",00)"); // 00:00:00
     cell.setCellStyle(bold ? mTimesDateBold : mTimesDate);
   }
 
+  /**
+   *
+   * @param sheet The current sheet
+   * @param row The current row index.
+   * @param column The first column index.
+   * @param val
+   */
   public void addNumber(Sheet sheet, int row, int column,
                          double val) {
     Cell cell = getCell(sheet, row, column);
@@ -106,6 +164,13 @@ public class ExcelHelper {
     cell.setCellStyle(mTimes);
   }
 
+  /**
+   * Returns a specific cell.
+   * @param sheet The current sheet
+   * @param row The current row index.
+   * @param column The first column index.
+   * @return Cell.
+   */
   private Cell getCell(Sheet sheet, int row, int column) {
     Iterator<Row> itr = sheet.rowIterator();
     Row r = null;

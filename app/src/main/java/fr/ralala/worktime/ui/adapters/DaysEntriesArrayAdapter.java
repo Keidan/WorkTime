@@ -50,6 +50,12 @@ public class DaysEntriesArrayAdapter extends ArrayAdapter<DayEntry> {
     ColorStateList tvOverColors = null;
   }
 
+  /**
+   * Creates the array adapter.
+   * @param context The Android context.
+   * @param textViewResourceId The resource id of the container.
+   * @param objects The objects list.
+   */
   public DaysEntriesArrayAdapter(final Context context, final int textViewResourceId,
                                            final List<DayEntry> objects) {
     super(context, textViewResourceId, objects);
@@ -58,11 +64,23 @@ public class DaysEntriesArrayAdapter extends ArrayAdapter<DayEntry> {
     this.items = objects;
   }
 
+  /**
+   * Returns an items at a specific position.
+   * @param i The item index.
+   * @return The item.
+   */
   @Override
   public DayEntry getItem(final int i) {
     return items.get(i);
   }
 
+  /**
+   * Returns the current view.
+   * @param position The view position.
+   * @param convertView The view to convert.
+   * @param parent The parent.
+   * @return The new view.
+   */
   @Override
   public @NonNull View getView(final int position, final View convertView,
                       @NonNull final ViewGroup parent) {
@@ -210,15 +228,30 @@ public class DaysEntriesArrayAdapter extends ArrayAdapter<DayEntry> {
     return v;
   }
 
+  /**
+   * Sets the row height.
+   * @param v The current TextView.
+   */
   private void setRowHeight(TextView v) {
     v.setMinHeight(0); // Min Height
     v.setMinimumHeight(0); // Min Height
     v.setHeight(((MainApplication)c.getApplicationContext()).getDayRowsHeight()); // Height
   }
 
+  /**
+   * Tests if the morning value of the day entry is valid or not.
+   * @param t The day entry to test.
+   * @return boolean
+   */
   private boolean isNotValidMorning(DayEntry t) {
     return (t.getTypeMorning() != DayType.AT_WORK || (!t.getStartMorning().isValidTime() && !t.getEndMorning().isValidTime()));
   }
+
+  /**
+   * Tests if the afternoon value of the day entry is valid or not.
+   * @param t The day entry to test.
+   * @return boolean
+   */
   private boolean isNotValidAfternoon(DayEntry t) {
     return (t.getTypeAfternoon() != DayType.AT_WORK || (!t.getStartAfternoon().isValidTime() && !t.getEndAfternoon().isValidTime()));
   }

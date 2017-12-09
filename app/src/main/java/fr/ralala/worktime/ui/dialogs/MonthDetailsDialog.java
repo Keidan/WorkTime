@@ -48,11 +48,21 @@ public class MonthDetailsDialog implements DialogInterface.OnClickListener {
   }
 
 
+  /**
+   * Creates the dialog used to display the details of a month.
+   * @param activity The main activity.
+   * @param app The main application.
+   */
   public MonthDetailsDialog(final Activity activity, final MainApplication app) {
     this.activity = activity;
     this.app = app;
   }
 
+  /**
+   * Reloads the details.
+   * @param month The selected month.
+   * @param year The selected year.
+   */
   public void reloadDetails(int month, int year) {
     final String currency = app.getCurrency();
     Resources r = activity.getResources();
@@ -121,6 +131,17 @@ public class MonthDetailsDialog implements DialogInterface.OnClickListener {
     alertDialog = dialogBuilder.create();
   }
 
+  /**
+   * Adds a new row.
+   * @param r The application resource.
+   * @param gl GridLayout container.
+   * @param row The current row.
+   * @param week The current week.
+   * @param wt The work time value.
+   * @param ot The over time value.
+   * @param wage The wage value.
+   * @param currency The currency.
+   */
   private void addRow(Resources r, GridLayout gl, int row, int week, String wt, String ot, double wage, String currency) {
     GridLayout.LayoutParams param;
     for(int j = 0; j < 6; ++j) {
@@ -160,10 +181,18 @@ public class MonthDetailsDialog implements DialogInterface.OnClickListener {
     }
   }
 
+  /**
+   * Opens the dialog.
+   */
   public void open() {
     alertDialog.show();
   }
 
+  /**
+   * Called when the user click on the OK button.
+   * @param dialog Not used.
+   * @param whichButton Not used.
+   */
   public void onClick(DialogInterface dialog, int whichButton) {
     dialog.dismiss();
   }

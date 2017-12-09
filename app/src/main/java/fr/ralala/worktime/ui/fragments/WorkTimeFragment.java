@@ -58,6 +58,13 @@ public class WorkTimeFragment extends Fragment implements View.OnClickListener, 
   private MainApplication app = null;
   private MonthDetailsDialog monthDetailsDialog = null;
 
+  /**
+   * Called when the fragment is created.
+   * @param inflater The fragment inflater.
+   * @param container The fragment container.
+   * @param savedInstanceState The saved instance state.
+   * @return The created view.
+   */
   @Override
   public View onCreateView(@NonNull final LayoutInflater inflater,
                            final ViewGroup container, final Bundle savedInstanceState) {
@@ -120,11 +127,22 @@ public class WorkTimeFragment extends Fragment implements View.OnClickListener, 
     return rootView;
   }
 
+  /**
+   * Called when the fragment is resumed.
+   */
+  @Override
   public void onResume() {
     super.onResume();
     updateAll();
   }
 
+  /**
+   * Called when the user click on a specific date.
+   * @param adapterView The adapter view.
+   * @param view The view.
+   * @param i The view position.
+   * @param l See official javadoc (not used here).
+   */
   @Override
   public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
     if(AndroidHelper.isServiceRunning(getActivity(), QuickAccessService.class)) {
@@ -139,6 +157,10 @@ public class WorkTimeFragment extends Fragment implements View.OnClickListener, 
     DayActivity.startActivity(getActivity(), de.getDay().dateString(), true);
   }
 
+  /**
+   * Called when a button is clicked (previous, next and details).
+   * @param v The clicked view.
+   */
   public void onClick(final View v) {
     if(v.equals(btPreviousMonth)) {
       app.getCurrentDate().add(Calendar.MONTH, -1);
@@ -156,11 +178,17 @@ public class WorkTimeFragment extends Fragment implements View.OnClickListener, 
     }
   }
 
+  /**
+   * Updates the top and the dates part.
+   */
   public void updateAll() {
     updateTop();
     updateDates();
   }
 
+  /**
+   * Updates the top of the view.
+   */
   private void updateTop() {
     /* init the top components */
     int month = app.getCurrentDate().get(Calendar.MONTH);
@@ -173,10 +201,17 @@ public class WorkTimeFragment extends Fragment implements View.OnClickListener, 
     tvYear.setText(String.valueOf(app.getCurrentDate().get(Calendar.YEAR)));
   }
 
+  /**
+   * Returns 5% of the total visible items.
+   * @return int
+   */
   private int at5Percent() {
     return (int)(lvAdapter.getCount()*(5.0f/100.0f));
   }
 
+  /**
+   * Updates the dates.
+   */
   private void updateDates() {
     lvAdapter.clear();
     int minDay = 1;
@@ -256,10 +291,16 @@ public class WorkTimeFragment extends Fragment implements View.OnClickListener, 
   }
 
 
+  /**
+   * Called when the user sweeps from left to right.
+   */
   public void leftToRightSwipe() {
     btNextMonth.callOnClick();
   }
 
+  /**
+   * Called when the user sweeps from right to left.
+   */
   public void rightToLeftSwipe() {
     btPreviousMonth.callOnClick();
   }

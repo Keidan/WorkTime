@@ -49,6 +49,10 @@ public class MainActivity extends RuntimePermissionsActivity implements Navigati
   private DrawerLayout drawer = null;
   private AppFragmentsFactory fragments = null;
 
+  /**
+   * Called when the activity is created.
+   * @param savedInstanceState The saved instance state.
+   */
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -92,17 +96,28 @@ public class MainActivity extends RuntimePermissionsActivity implements Navigati
       changeLog.getLogDialog().show();
   }
 
-
+  /**
+   * Returns the instance of the SwipeDetector.
+   * @return SwipeDetector
+   */
   public SwipeDetector getSwipeDetector() {
     return swipeDetector;
   }
 
+  /**
+   * Called when the permissions are granted.
+   * @param requestCode The request code.
+   */
   @Override
   public void onPermissionsGranted(final int requestCode) {
-    //AndroidHelper.toast_long(this, R.string.permissions_read_ext_storage_done);
+    //AndroidHelper.toastLong(this, R.string.permissions_read_ext_storage_done);
 
   }
 
+  /**
+   * Called when the activity is resumed.
+   */
+  @Override
   public void onResume() {
     super.onResume();
     if(app.getLastWidgetOpen() != 0L) {
@@ -119,11 +134,18 @@ public class MainActivity extends RuntimePermissionsActivity implements Navigati
       app.initOnLoadTables();
   }
 
+  /**
+   * Called to handle the click on the back button.
+   */
+  @Override
   public void onDestroy() {
     cleanup();
     super.onDestroy();
   }
 
+  /**
+   * Cleanup the resources.
+   */
   private void cleanup() {
     if(app != null) {
       if(app.isExportAutoSave()) {
@@ -135,6 +157,9 @@ public class MainActivity extends RuntimePermissionsActivity implements Navigati
     AndroidHelper.killServiceIfRunning(this, QuickAccessService.class);
   }
 
+  /**
+   * Called to handle the click on the back button.
+   */
   @Override
   public void onBackPressed() {
     if(!fragments.consumeBackPressed()) {
@@ -157,6 +182,11 @@ public class MainActivity extends RuntimePermissionsActivity implements Navigati
     }
   }
 
+  /**
+   * Called when an item is selected in the navigation view.
+   * @param item The selected item.
+   * @return boolean
+   */
   @SuppressWarnings("StatementWithEmptyBody")
   @Override
   public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -164,12 +194,21 @@ public class MainActivity extends RuntimePermissionsActivity implements Navigati
     return true;
   }
 
+  /**
+   * Dispatch the touch event.
+   * @param ev The event.
+   * @return false if the event is not consumed.
+   */
   @Override
   public boolean dispatchTouchEvent(MotionEvent ev){
     boolean b = super.dispatchTouchEvent(ev);
     return WorkTimeFragment.class.isInstance(fragments.getCurrentFragment()) ? swipeDetector.onTouchEvent(ev) : b;
   }
 
+  /**
+   * Displays a specific view.
+   * @param viewId The view id to display.
+   */
   public void displayView(int viewId) {
     String title = getString(R.string.app_title);
 

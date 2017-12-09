@@ -15,7 +15,7 @@ import fr.ralala.worktime.MainApplication;
 import fr.ralala.worktime.R;
 import fr.ralala.worktime.ui.changelog.ChangeLog;
 import fr.ralala.worktime.ui.changelog.ChangeLogIds;
-import fr.ralala.worktime.utils.AndroidHelper;
+import fr.ralala.worktime.ui.utils.UIHelper;
 
 /**
  *******************************************************************************
@@ -44,9 +44,13 @@ public class SettingsActivity extends PreferenceActivity implements Preference.O
   private MyPreferenceFragment mPrefFrag = null;
   private ChangeLog mChangeLog = null;
 
+  /**
+   * Called when the activity is created.
+   * @param savedInstanceState The saved instance state.
+   */
   @Override
   public void onCreate(final Bundle savedInstanceState) {
-    AndroidHelper.openAnimation(this);
+    UIHelper.openAnimation(this);
     super.onCreate(savedInstanceState);
     mPrefFrag = new MyPreferenceFragment();
     getFragmentManager().beginTransaction()
@@ -85,24 +89,38 @@ public class SettingsActivity extends PreferenceActivity implements Preference.O
 
   }
 
+  /**
+   * Called when the activity is resumed.
+   */
   @Override
   public void onResume() {
     super.onResume();
     MainApplication.getApp(this).getSql().settingsLoad(null);
   }
 
+  /**
+   * Called when the activity is paused.
+   */
   @Override
   public void onPause() {
     super.onPause();
     MainApplication.getApp(this).getSql().settingsSave();
   }
 
+  /**
+   * Called to handle the click on the back button.
+   */
   @Override
   public void onBackPressed() {
     super.onBackPressed();
-    AndroidHelper.closeAnimation(this);
+    UIHelper.closeAnimation(this);
   }
 
+  /**
+   * Called when the options item is clicked (home).
+   * @param item The selected menu.
+   * @return boolean
+   */
   @Override
   public boolean onOptionsItemSelected(MenuItem item) {
     switch (item.getItemId())
@@ -114,7 +132,11 @@ public class SettingsActivity extends PreferenceActivity implements Preference.O
     return super.onOptionsItemSelected(item);
   }
 
-
+  /**
+   * Called when a preference is clicked.
+   * @param preference The preference.
+   * @return boolean
+   */
   @Override
   public boolean onPreferenceClick(final Preference preference) {
     if (preference.equals(mPrefFrag.findPreference(PREFS_KEY_SELECT_DISPLAY))) {

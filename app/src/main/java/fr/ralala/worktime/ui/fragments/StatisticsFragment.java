@@ -104,6 +104,10 @@ public class StatisticsFragment extends Fragment implements View.OnClickListener
     }
   }
 
+  /**
+   * Called when backPressed is consumed.
+   * @return boolean
+   */
   public boolean consumeBackPressed() {
     if(currentView == CurrentView.YEARS) {
       if (lastBackPressed + BACK_TIME_DELAY > System.currentTimeMillis()) {
@@ -126,6 +130,13 @@ public class StatisticsFragment extends Fragment implements View.OnClickListener
     return true;
   }
 
+  /**
+   * Adds a day entry.
+   * @param entries The netries list.
+   * @param key The list key.
+   * @param de The current day entry.
+   * @param x_label The x label.
+   */
   private void addDayEntry(Map<Integer, ChartEntry> entries, Integer key, DayEntry de, String x_label) {
     if(!entries.containsKey(key)) {
       entries.put(key, new ChartEntry());
@@ -144,6 +155,13 @@ public class StatisticsFragment extends Fragment implements View.OnClickListener
     entries.get(key).pause = de.getPause();
   }
 
+  /**
+   * Called when the fragment is created.
+   * @param inflater The fragment inflater.
+   * @param container The fragment container.
+   * @param savedInstanceState The saved instance state.
+   * @return The created view.
+   */
   @Override
   public View onCreateView(@NonNull final LayoutInflater inflater,
                            final ViewGroup container, final Bundle savedInstanceState) {
@@ -164,17 +182,29 @@ public class StatisticsFragment extends Fragment implements View.OnClickListener
   }
 
 
+  /**
+   * Called when the user click on a bar.
+   * @param view The current view.
+   */
   @Override
   public void onClick(View view) {
     currentView = CurrentView.YEARS;
     redrawChart();
   }
 
+  /**
+   * Called when the configuration is changed.
+   * @param newConfig The new configuration.
+   */
+  @Override
   public void onConfigurationChanged(Configuration newConfig) {
     super.onConfigurationChanged(newConfig);
     redrawChart();
   }
 
+  /**
+   * Redraw the charts view.
+   */
   public void redrawChart() {
     String title = null;
     int nYear = 0;
@@ -253,19 +283,39 @@ public class StatisticsFragment extends Fragment implements View.OnClickListener
 
   }
 
+  /**
+   * Called when the view is resumed.
+   */
+  @Override
   public void onResume() {
     super.onResume();
     redrawChart();
   }
 
+  /**
+   * Converts the time to a double value.
+   * @param w The time to convert.
+   * @return double
+   */
   private double toDouble(WorkTimeDay w) {
     return Double.parseDouble(w.timeString().replaceAll(":", "\\."));
   }
+
+  /**
+   * Converts a double to a time string.
+   * @param d The double to convert.
+   * @return String
+   */
   private String fromDouble(double d) {
     DecimalFormat df = new DecimalFormat("#00.00");
     return df.format(d).replaceAll(",", ":");
   }
 
+  /**
+   * Initializes the multi render.
+   * @param title Milti render title.
+   * @param legendHours Legend used for the hours.
+   */
   private void initMultiRender(final String title, final String legendHours) {
     final MainActivity activity = (MainActivity)getActivity();
     if(activity == null) return;
@@ -331,6 +381,13 @@ public class StatisticsFragment extends Fragment implements View.OnClickListener
     multiRenderer.setYTitle(legendHours == null ? "" : legendHours);
   }
 
+  /**
+   * Draw the bars chart.
+   * @param width Chart width.
+   * @param title Chart title.
+   * @param legendHours Legend for the hours.
+   * @param values Bars value.
+   */
   private void drawBarChart(final int width, final String title, final String legendHours, final @NonNull Map<Integer, ChartEntry> values) {
     if(datasetBar != null)
       datasetBar.clear();
@@ -441,7 +498,11 @@ public class StatisticsFragment extends Fragment implements View.OnClickListener
     chartContainer.addView(chartView);
   }
 
-
+  /**
+   * Draw a pie chart.
+   * @param title Chart title.
+   * @param values Pie values.
+   */
   private void drawPieChart(final String title, final @NonNull Map<Integer, ChartEntry> values) {
     initMultiRender(title, null);
     final CategorySeries dataset = new CategorySeries("title");
@@ -484,10 +545,24 @@ public class StatisticsFragment extends Fragment implements View.OnClickListener
     chartContainer.addView(chartView);
   }
 
+  /**
+   * Gets the percentage of a value.
+   * @param max Max value.
+   * @param percent Required percent.
+   * @return double.
+   */
   private double getPercentOf(final double max, final int percent) {
     return (max * percent / 100);
   }
 
+  /**
+   * Adds a bar entry.
+   * @param textColor The text color.
+   * @param inColor The bar color.
+   * @param key The XYSeries title.
+   * @param index The XYSeries index.
+   * @param value The XYSeries value.
+   */
   private void addBarChartEntry(int textColor, int inColor, int key, int index, double value) {
     XYSeriesRenderer renderer = new XYSeriesRenderer();
     renderer.setChartValuesTextSize(30);
@@ -502,6 +577,13 @@ public class StatisticsFragment extends Fragment implements View.OnClickListener
     multiRenderer.addSeriesRenderer(renderer);
   }
 
+  /**
+   * Adds pie entry.
+   * @param dataset The owner dataset.
+   * @param inColor The background color.
+   * @param category The category name.
+   * @param value The category value.
+   */
   private void addPieChartEntry(CategorySeries dataset, int inColor, String category, double value) {
     SimpleSeriesRenderer  renderer = new SimpleSeriesRenderer();
     renderer.setColor(inColor);

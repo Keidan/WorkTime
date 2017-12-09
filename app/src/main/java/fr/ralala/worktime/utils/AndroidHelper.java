@@ -26,6 +26,11 @@ import fr.ralala.worktime.ui.utils.UIHelper;
  */
 public class AndroidHelper {
 
+  /**
+   * Updates a widget.
+   * @param context The Android context.
+   * @param widgetClass The widget class.
+   */
   public static void updateWidget(final Context context, final Class<?> widgetClass) {
     int ids[] = AppWidgetManager.getInstance(context).getAppWidgetIds(new ComponentName(context, widgetClass));
     if(ids == null || ids.length == 0) return;
@@ -35,6 +40,12 @@ public class AndroidHelper {
     context.sendBroadcast(intent);
   }
 
+  /**
+   * Test if a specific service is in running state.
+   * @param context The Android context.
+   * @param serviceClass The service class
+   * @return boolean
+   */
   public static boolean isServiceRunning(final Context context,
                                          final Class<?> serviceClass) {
     if(context == null) return false;
@@ -50,11 +61,21 @@ public class AndroidHelper {
     return false;
   }
 
+  /**
+   * Kill a specific service (if running)
+   * @param context The Android context.
+   * @param serviceClass The service class.
+   */
   public static void killServiceIfRunning(final Context context, final Class<?> serviceClass) {
     if(isServiceRunning(context, serviceClass))
       context.stopService(new Intent(context, serviceClass));
   }
 
+  /**
+   * Restarts the current application.
+   * @param c The Android context.
+   * @param string The string to display before the restart (null = none).
+   */
   public static void restartApplication(final Context c, final String string) {
     if(string != null)
       UIHelper.toast(c, string);
@@ -68,19 +89,24 @@ public class AndroidHelper {
     Runtime.getRuntime().exit(0);
   }
 
+  /**
+   * Restarts the current application.
+   * @param c The Android context.
+   * @param string_id The string to display before the restart (-1 = none).
+   */
   public static void restartApplication(final Context c, final int string_id) {
     restartApplication(c, string_id == -1 ? null : c.getString(string_id));
   }
 
-
-
-  public static void openAnimation(final Activity a) {
-    a.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-  }
-  public static void closeAnimation(final Activity a) {
-    a.overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
-  }
-
+  /**
+   * Sent an email using the Android Intent.
+   * @param activity The activity context.
+   * @param mailto The email to address.
+   * @param attachment The email attachment.
+   * @param subject The email subject.
+   * @param body The email body.
+   * @param senderMsg The sender email address.
+   */
   public static void sentMailTo(final Activity activity, String mailto, Uri attachment, String subject, String body, String senderMsg) {
     Intent emailIntent = new Intent(Intent.ACTION_SEND);
     emailIntent .setType("application/excel");
@@ -92,11 +118,20 @@ public class AndroidHelper {
     activity.startActivity(Intent.createChooser(emailIntent , senderMsg));
   }
 
+  /**
+   * Returns the month in string format.
+   * @param month The current month (0-11)
+   * @return String.
+   */
   public static String getMonthString(int month) {
     String[] months = new DateFormatSymbols().getMonths();
     return months[month].substring(0, 1).toUpperCase() + months[month].substring(1);
   }
 
+  /**
+   * Tells Android that the system should start a short vibration (100ms).
+   * @param c The Android context.
+   */
   public static void vibrate(final Context c) {
     Vibrator v = (Vibrator) c.getSystemService(Context.VIBRATOR_SERVICE);
     if(v != null)

@@ -26,6 +26,12 @@ import fr.ralala.worktime.ui.utils.UIHelper;
 public class DayWidgetProvider4x1 extends AppWidgetProvider {
   public static final String ACTION_FROM_WIDGET = "ACTION_FROM_WIDGET_4x1";
 
+  /**
+   * Called when the widget receive an update request.
+   * @param context The Android context.
+   * @param appWidgetManager The applocation widget manager.
+   * @param appWidgetIds The widget ids.
+   */
   @Override
   public void onUpdate(final Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
     MainApplication app = MainApplication.getApp(context);

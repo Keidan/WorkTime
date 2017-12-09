@@ -42,17 +42,32 @@ public class DropboxImportExport implements DropboxListener{
   private DropboxDownloaded mDropboxDownloaded = null;
 
 
+  /**
+   * Creates the import/export instance.
+   */
   public DropboxImportExport() {
     mHelper = DropboxHelper.helper();
   }
 
   public interface DropboxUploaded {
+    /**
+     * File uploaded to dropbox.
+     * @param error True on error.
+     */
     void dropboxUploaded(final boolean error);
   }
   public interface DropboxDownloaded {
+    /**
+     * File downloaded from dropbox.
+     * @param error True on error.
+     */
     void dropboxDownloaded(final boolean error);
   }
 
+  /**
+   * Imports the data base.
+   * @param c The Android context.
+   */
   public void importDatabase(final Context c) {
     mContext = c;
     mDropboxDownloaded = null;
@@ -64,6 +79,13 @@ public class DropboxImportExport implements DropboxListener{
     }
   }
 
+  /**
+   * Exports the database.
+   * @param c The Android context.
+   * @param displayDialog True to display a dialog box.
+   * @param dropboxUploaded The export listener.
+   * @return boolean
+   */
   public boolean exportDatabase(final Context c, boolean displayDialog, final DropboxUploaded dropboxUploaded) {
     mContext = c;
     mDropboxUploaded = dropboxUploaded;
@@ -81,13 +103,16 @@ public class DropboxImportExport implements DropboxListener{
         safeRemove();
         if(mDialog != null)
           mDialog.dismiss();
-        UIHelper.toast_long(c, c.getString(R.string.error) + ": " + e.getMessage());
+        UIHelper.toastLong(c, c.getString(R.string.error) + ": " + e.getMessage());
         Log.e(getClass().getSimpleName(), "Error: " + e.getMessage(), e);
       }
     }
     return false;
   }
 
+  /**
+   * Removes safely
+   */
   private void safeRemove() {
     if(mFile != null) {
       //noinspection ResultOfMethodCallIgnored
@@ -96,6 +121,10 @@ public class DropboxImportExport implements DropboxListener{
     }
   }
 
+  /**
+   * Called when the upload on dropbox is complete.
+   * @param result The upload result.
+   */
   @Override
   public void onDropboxUploadComplete(FileMetadata result) {
     if(mDialog != null)
@@ -106,6 +135,10 @@ public class DropboxImportExport implements DropboxListener{
       mDropboxUploaded.dropboxUploaded(false);
   }
 
+  /**
+   * Called when the upload on dropbox is finished on error.
+   * @param e Error exception.
+   */
   @Override
   public void onDropboxUploadError(Exception e) {
     if(mDialog != null)
@@ -117,6 +150,10 @@ public class DropboxImportExport implements DropboxListener{
       mDropboxUploaded.dropboxUploaded(true);
   }
 
+  /**
+   * Called when the download on dropbox is complete.
+   * @param result The upload result.
+   */
   @Override
   public void onDroptboxDownloadComplete(File result) {
     if(mDialog != null)
@@ -124,7 +161,7 @@ public class DropboxImportExport implements DropboxListener{
     try {
       loadDb(mContext, result);
     } catch(Exception e) {
-      UIHelper.toast_long(mContext, mContext.getString(R.string.error) + ": " + e.getMessage());
+      UIHelper.toastLong(mContext, mContext.getString(R.string.error) + ": " + e.getMessage());
       Log.e(getClass().getSimpleName(), "Error: " + e.getMessage(), e);
     }
     safeRemove();
@@ -132,6 +169,10 @@ public class DropboxImportExport implements DropboxListener{
       mDropboxDownloaded.dropboxDownloaded(false);
   }
 
+  /**
+   * Called when the download on dropbox is finished on error.
+   * @param e Error exception.
+   */
   @Override
   public void onDroptboxDownloadError(Exception e) {
     if(mDialog != null)
@@ -144,6 +185,10 @@ public class DropboxImportExport implements DropboxListener{
   }
 
 
+  /**
+   * Called when the recovery of the file list of the dropbox is complete.
+   * @param result The listing result.
+   */
   @Override
   public void onDroptboxListFoderDataLoaded(ListFolderResult result) {
     if(mDialog != null)
@@ -151,7 +196,7 @@ public class DropboxImportExport implements DropboxListener{
     List<Metadata> list = result.getEntries();
     list.sort(Comparator.comparing(Metadata::getName));
     if (list.isEmpty())
-      UIHelper.toast_long(mContext, mContext.getString(R.string.error_no_files));
+      UIHelper.toastLong(mContext, mContext.getString(R.string.error_no_files));
     else {
       computeAndLoad(mContext, list, new AlertDialogListListener<Metadata>() {
         @Override
@@ -161,7 +206,7 @@ public class DropboxImportExport implements DropboxListener{
               mDialog.show();
             new DownloadFileTask(mContext, mHelper.getClient(), DropboxImportExport.this).execute((FileMetadata)m);
           } catch (Exception e) {
-            UIHelper.toast_long(mContext, mContext.getString(R.string.error) + ": " + e.getMessage());
+            UIHelper.toastLong(mContext, mContext.getString(R.string.error) + ": " + e.getMessage());
             Log.e(getClass().getSimpleName(), "Error: " + e.getMessage(), e);
           }
         }
@@ -169,6 +214,10 @@ public class DropboxImportExport implements DropboxListener{
     }
   }
 
+  /**
+   * Called when the recovery of the file list of the dropbox is finished on error.
+   * @param e Error exception.
+   */
   @Override
   public void onDroptboxListFoderError(Exception e) {
     if(mDialog != null)
@@ -179,6 +228,12 @@ public class DropboxImportExport implements DropboxListener{
       mDropboxDownloaded.dropboxDownloaded(true);
   }
 
+  /**
+   * Loads the database.
+   * @param c The Android context.
+   * @param file The db file to load.
+   * @throws Exception If an exception is thrown.
+   */
   public static void loadDb(final Context c, File file) throws Exception{
     SqlHelper.loadDatabase(c, SqlHelper.DB_NAME, file);
     MainApplication app = MainApplication.getApp(c);
@@ -189,15 +244,31 @@ public class DropboxImportExport implements DropboxListener{
     AndroidHelper.restartApplication(c, -1);
   }
 
+
+  /**
+   * Prepares the files retrieved from dropbox and display the content in a dialog box.
+   * @param c The Android context.
+   * @param list The file list.
+   * @param yes Yes listener (dialog box)
+   * @param <T> File type.
+   * @param <V> Value type.
+   */
   public static <T, V> void computeAndLoad(final Context c, final List<T> list, AlertDialogListListener<V> yes) {
     List<String> files = compute(list);
     if(files.isEmpty())
-      UIHelper.toast_long(c, c.getString(R.string.error_no_files));
+      UIHelper.toastLong(c, c.getString(R.string.error_no_files));
     else {
       showAlertDialog(c, R.string.box_select_db_file, files, yes);
     }
   }
 
+  /**
+   * Prepares the list.
+   * @param list The output list.
+   * @param <T> File type.
+   * @param <V> Value type.
+   * @return List<V>
+   */
   @SuppressWarnings("unchecked")
   private static <T, V> List<V> compute(final List<T> list) {
     List<V> files = new ArrayList<>();
@@ -230,9 +301,21 @@ public class DropboxImportExport implements DropboxListener{
   }
 
   public interface AlertDialogListListener<T> {
+    /**
+     * Called when the yes button is clicked.
+     * @param t The associated object.
+     */
     void onClick(T t);
   }
 
+  /**
+   * Displays an alert dialog with the files list retrieved from dropbox.
+   * @param c The Android context.
+   * @param title The dialog title.
+   * @param list The list to display.
+   * @param yes Yes listener (dialog box)
+   * @param <T> File type.
+   */
   @SuppressWarnings("unchecked")
   private static <T> void showAlertDialog(final Context c, final int title, List<T> list, final AlertDialogListListener yes) {
     AlertDialog.Builder builder = new AlertDialog.Builder(c);

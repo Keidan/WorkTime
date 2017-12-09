@@ -40,22 +40,38 @@ public class SqlFactory implements SqlConstants {
   private SqlHelper mHelper = null;
   private Context mContext = null;
 
+  /**
+   * Returns the Android context.
+   * @return Context
+   */
   public Context getContext() {
     return mContext;
   }
 
+  /**
+   * Creates the factory.
+   * @param context The Android context.
+   * @throws Exception If an exception is reached.
+   */
   public SqlFactory(final Context context) throws Exception {
     mHelper = new SqlHelper(context, DB_NAME, null, VERSION_BDD);
     mContext = context;
   }
-  
+
+  /**
+   * Returns the BDD context.
+   * @return SQLiteDatabase
+   */
   private SQLiteDatabase getBdd() {
     if(mDdd == null || !mDdd.isOpen())
       mDdd = mHelper.getWritableDatabase();
     return mDdd;
   }
 
-  public void open(Context c) {
+  /**
+   * Opens the SQLite connection.
+   */
+  public void open() {
     int version = 0;
     /* Merge V5 */
     if(isTableExists(TABLE_DAYS + "_v5")) {
@@ -81,13 +97,21 @@ public class SqlFactory implements SqlConstants {
 
 
     if(version != 0)
-      AndroidHelper.restartApplication(c, mContext.getString(R.string.restart_from_db_update_vn) + " " + (version + 1));
+      AndroidHelper.restartApplication(mContext, mContext.getString(R.string.restart_from_db_update_vn) + " " + (version + 1));
   }
 
+  /**
+   * Closes the SQLite connection.
+   */
   public void close() {
     getBdd().close();
   }
 
+  /**
+   * Tests if the table exists.
+   * @param tableName The table name to test.
+   * @return boolean
+   */
   private boolean isTableExists(String tableName) {
     Cursor cursor = getBdd().rawQuery("select DISTINCT tbl_name from sqlite_master where tbl_name = '"+tableName+"'", null);
     if(cursor!=null) {
@@ -100,12 +124,19 @@ public class SqlFactory implements SqlConstants {
     return false;
   }
 
+  /**
+   * Updates a profile.
+   * @param de The profile to update.
+   */
   public void updateProfile(final DayEntry de) {
     final ContentValues values = new ContentValues();
     values.put(COL_PROFILES_LEARNING_WEIGHT, "" + de.getLearningWeight());
     getBdd().update(TABLE_PROFILES, values, COL_PROFILES_NAME + "='"+de.getName().replaceAll("'", "\\'") + "'", null);
   }
 
+  /**
+   * Saves the application settings.
+   */
   public void settingsSave() {
     getBdd().delete(TABLE_SETTINGS, null, null);
     SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext.getApplicationContext());
@@ -126,6 +157,10 @@ public class SqlFactory implements SqlConstants {
     addSetting(prefs, DropboxAutoExportService.KEY_NEED_UPDATE, DropboxAutoExportService.DEFVAL_NEED_UPDATE.equals("false"));
   }
 
+  /**
+   * Loads the application settings.
+   * @param settings The settings list.
+   */
   public void settingsLoad(List<Setting> settings) {
     final Cursor c = getBdd().rawQuery("SELECT * FROM " + TABLE_SETTINGS, null);
     if (c.moveToFirst()) {
@@ -152,12 +187,25 @@ public class SqlFactory implements SqlConstants {
     c.close();
   }
 
+  /**
+   * Adds a setting
+   * @param prefs The application preference.
+   * @param key The preference key.
+   * @param defvalue The default value.
+   */
   private void addSetting(SharedPreferences prefs, String key, String defvalue) {
     final ContentValues values = new ContentValues();
     values.put(COL_SETTINGS_NAME, key);
     values.put(COL_SETTINGS_VALUE, prefs.getString(key, defvalue));
     getBdd().insert(TABLE_SETTINGS, null, values);
   }
+
+  /**
+   * Adds a setting
+   * @param prefs The application preference.
+   * @param key The preference key.
+   * @param defvalue The default value.
+   */
   private void addSetting(SharedPreferences prefs, String key, boolean defvalue) {
     final ContentValues values = new ContentValues();
     values.put(COL_SETTINGS_NAME, key);
@@ -165,6 +213,10 @@ public class SqlFactory implements SqlConstants {
     getBdd().insert(TABLE_SETTINGS, null, values);
   }
 
+  /**
+   * Insets a profile.
+   * @param de The profile to add.
+   */
   public void insertProfile(final DayEntry de) {
     final ContentValues values = new ContentValues();
     values.put(COL_PROFILES_NAME, de.getName().replaceAll("'", "\\'"));
@@ -181,6 +233,10 @@ public class SqlFactory implements SqlConstants {
     getBdd().insert(TABLE_PROFILES, null, values);
   }
 
+  /**
+   * Inserts a day.
+   * @param de The day to insert.
+   */
   public void insertDay(final DayEntry de) {
     final ContentValues values = new ContentValues();
     values.put(COL_DAYS_CURRENT, de.getDay().dateString());
@@ -195,6 +251,10 @@ public class SqlFactory implements SqlConstants {
     getBdd().insert(TABLE_DAYS, null, values);
   }
 
+  /**
+   * Inserts a public holiday.
+   * @param de The public holiday to insert.
+   */
   public void insertPublicHoliday(final DayEntry de) {
     final ContentValues values = new ContentValues();
     values.put(COL_PUBLIC_HOLIDAYS_NAME, de.getName().replaceAll("'", "\\'"));
@@ -203,10 +263,19 @@ public class SqlFactory implements SqlConstants {
     getBdd().insert(TABLE_PUBLIC_HOLIDAYS, null, values);
   }
 
+  /**
+   * Returns the list of public holidays.
+   * @return List<DayEntry>
+   */
   public List<DayEntry> getPublicHolidays() {
     return getPublicHolidays(TABLE_PUBLIC_HOLIDAYS);
   }
 
+  /**
+   * Returns the list of public holidays.
+   * @param tablename The table name.
+   * @return List<DayEntry>
+   */
   private List<DayEntry> getPublicHolidays(String tablename) {
     final List<DayEntry> list = new ArrayList<>();
     final Cursor c = getBdd().rawQuery("SELECT * FROM " + tablename, null);
@@ -227,6 +296,12 @@ public class SqlFactory implements SqlConstants {
     return list;
   }
 
+  /**
+   * Returns an integer value from a string.
+   * @param s The int in String
+   * @param def The default value.
+   * @return int
+   */
   private int getInt(String s, int def) {
     try {
       return Integer.parseInt(s);
@@ -234,10 +309,20 @@ public class SqlFactory implements SqlConstants {
       return def;
     }
   }
+
+  /**
+   * Returns the list of days.
+   * @return List<DayEntry>
+   */
   public List<DayEntry> getDays() {
     return getDays(TABLE_DAYS);
   }
 
+  /**
+   * Returns the list of days.
+   * @param tablename The table name.
+   * @return List<DayEntry>
+   */
   private List<DayEntry> getDays(String tablename) {
     final List<DayEntry> list = new ArrayList<>();
     final Cursor c = getBdd().rawQuery("SELECT * FROM " + tablename, null);
@@ -277,9 +362,19 @@ public class SqlFactory implements SqlConstants {
     return list;
   }
 
+  /**
+   * Returns the list of profiles.
+   * @return List<DayEntry>
+   */
   public List<DayEntry> getProfiles() {
     return getProfiles(TABLE_PROFILES);
   }
+
+  /**
+   * Returns the list of profiles.
+   * @param tablename The table name.
+   * @return List<DayEntry>
+   */
   private List<DayEntry> getProfiles(String tablename) {
     final List<DayEntry> list = new ArrayList<>();
     final Cursor c = getBdd().rawQuery("SELECT * FROM " + tablename, null);
@@ -324,18 +419,34 @@ public class SqlFactory implements SqlConstants {
     return list;
   }
 
+  /**
+   * Removes a public holiday.
+   * @param de The entry to remove.
+   */
   public void removePublicHoliday(final DayEntry de) {
     getBdd().delete(TABLE_PUBLIC_HOLIDAYS, COL_PUBLIC_HOLIDAYS_NAME + " = \"" + de.getName() + "\"", null);
   }
 
+  /**
+   * Removes a day.
+   * @param de The entry to remove.
+   */
   public void removeDay(final DayEntry de) {
     getBdd().delete(TABLE_DAYS, COL_DAYS_CURRENT + " = \"" + de.getDay().dateString() + "\"", null);
   }
 
+  /**
+   * Removes a profile.
+   * @param de The entry to remove.
+   */
   public void removeProfile(final DayEntry de) {
     getBdd().delete(TABLE_PROFILES, COL_PROFILES_NAME + " = \"" + de.getName() + "\"", null);
   }
 
+  /**
+   * Removes a table.
+   * @param tablename The table name.
+   */
   private void removeTable(final String tablename) {
     getBdd().execSQL("DROP TABLE IF EXISTS " + tablename + ";");
   }

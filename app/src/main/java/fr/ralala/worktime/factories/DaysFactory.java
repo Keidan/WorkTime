@@ -30,23 +30,34 @@ public class DaysFactory {
   private final List<DayEntry> mDays;
   private SqlFactory mSql = null;
 
+  /**
+   * Creates the factory.
+   */
   public DaysFactory() {
     mDays = new ArrayList<>();
   }
 
+  /**
+   * Reloads the entries from the SQLite databases.
+   * @param sql The SQLite factory.
+   */
   public void reload(final SqlFactory sql) {
     mSql = sql;
     mDays.clear();
     mDays.addAll(sql.getDays());
   }
 
+  /**
+   * Returns the list of days.
+   * @return List<DayEntry>
+   */
   public List<DayEntry> list() {
     return mDays;
   }
 
 
   /**
-   * This function return a list formatted as follow:
+   * Returns a list formatted as follow:
    * Map<YEAR, Map<MONTH, Map<WEEK, List<DayEntry>>>>
    * @return <code>Map<YEAR, Map<MONTH, Map<WEEK, List<DayEntry>>>></code>
    */
@@ -68,6 +79,14 @@ public class DaysFactory {
     return list;
   }
 
+  /**
+   * Returns the list of work time day of a week.
+   * @param map The main list.
+   * @param week The associated week.
+   * @param month The week month.
+   * @param year The week year.
+   * @return WorkTimeDay
+   */
   public WorkTimeDay getWorkTimeDayFromWeek(Map<String, DayEntry> map, int week, int month, int year) {
     WorkTimeDay ret = new WorkTimeDay();
     Calendar ctime = Calendar.getInstance();
@@ -87,6 +106,10 @@ public class DaysFactory {
     return ret;
   }
 
+  /**
+   * Returns the current day.
+   * @return DayEntry
+   */
   public DayEntry getCurrentDay() {
     for(DayEntry d : mDays)
       if(d.getDay().dateString().equals(WorkTimeDay.now().dateString())) {
@@ -97,12 +120,20 @@ public class DaysFactory {
     return d;
   }
 
+  /**
+   * Converts days to a map.
+   * @return Map<String, DayEntry>
+   */
   public Map<String, DayEntry> toDaysMap() {
     Map<String, DayEntry> map = new HashMap<>();
     for(DayEntry de : mDays) map.put(de.getDay().dateString(), de);
     return map;
   }
 
+  /**
+   * Copies the current entry and calculate the pay.
+   * @param current The current entry.
+   */
   public void checkForDayDateAndCopy(DayEntry current) {
     for(DayEntry de : mDays) {
       if(de.getDay().dateString().equals(current.getDay().dateString())) {
@@ -113,6 +144,10 @@ public class DaysFactory {
     }
   }
 
+  /**
+   * Removes an entry.
+   * @param de The entry to delete.
+   */
   public void remove(final DayEntry de) {
     for(int i = 0; i < mDays.size(); i++)
       if(de.match(mDays.get(i))) {
@@ -122,6 +157,10 @@ public class DaysFactory {
     mSql.removeDay(de);
   }
 
+  /**
+   * Adds a new entry.
+   * @param de The entry to add.
+   */
   public void add(final DayEntry de) {
     mDays.add(de);
     mSql.insertDay(de);

@@ -39,6 +39,13 @@ public class QuickAccessFragment extends Fragment implements OnClickListener {
   private TextView tvTime = null;
   private Blink blink = null;
 
+  /**
+   * Called when the fragment is created.
+   * @param inflater The fragment inflater.
+   * @param container The fragment container.
+   * @param savedInstanceState The saved instance state.
+   * @return The created view.
+   */
   @Override
   public View onCreateView(@NonNull final LayoutInflater inflater,
                            final ViewGroup container, final Bundle savedInstanceState) {
@@ -57,6 +64,9 @@ public class QuickAccessFragment extends Fragment implements OnClickListener {
     return rootView;
   }
 
+  /**
+   * Called when the fragment is resumed.
+   */
   @Override
   public void onResume() {
     super.onResume();
@@ -74,6 +84,9 @@ public class QuickAccessFragment extends Fragment implements OnClickListener {
     updateText(app.getDaysFactory().getCurrentDay(), false, false);
   }
 
+  /**
+   * Called when the fragment is destroyed.
+   */
   @Override
   public void onDestroy() {
     if(blink != null) {
@@ -83,6 +96,10 @@ public class QuickAccessFragment extends Fragment implements OnClickListener {
     super.onDestroy();
   }
 
+  /**
+   * Called when the user click on a button (start finalize).
+   * @param v The clicked view.
+   */
   @Override
   public void onClick(View v) {
     Activity activity = getActivity();
@@ -117,6 +134,9 @@ public class QuickAccessFragment extends Fragment implements OnClickListener {
     }
   }
 
+  /**
+   * Class used to blink(:) and update the time label.
+   */
   class Blink extends Thread {
     private boolean end = false;
 
@@ -154,9 +174,20 @@ public class QuickAccessFragment extends Fragment implements OnClickListener {
     }
   }
 
+  /**
+   * Tests if the service is started.
+   * @return boolean
+   */
   private boolean isStarted() {
     return AndroidHelper.isServiceRunning(getContext(), QuickAccessService.class);
   }
+
+  /**
+   * Updates the time text.
+   * @param d The current time entry
+   * @param reset True to reset the text.
+   * @param post True to post the treatment in the UI thread.
+   */
   private void updateText(DayEntry d, final boolean reset, final boolean post) {
     if(!post) {
       WorkTimeDay w = d.getWorkTime();
