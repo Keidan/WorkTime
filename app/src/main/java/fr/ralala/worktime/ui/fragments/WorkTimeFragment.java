@@ -46,17 +46,17 @@ import fr.ralala.worktime.ui.utils.UIHelper;
  */
 public class WorkTimeFragment extends Fragment implements View.OnClickListener, AdapterView.OnItemClickListener, SwipeDetector.SwipeDetectorListener {
 
-  private ImageButton btPreviousMonth = null;
-  private ImageButton btNextMonth = null;
-  private RelativeLayout rlDetails = null;
-  private TextView tvMonth = null;
-  private TextView tvYear = null;
-  private TextView tvWorkDays = null;
-  private TextView tvMonthlyHours = null;
-  private DaysEntriesArrayAdapter lvAdapter = null;
-  private ListView days = null;
-  private MainApplication app = null;
-  private MonthDetailsDialog monthDetailsDialog = null;
+  private ImageButton mBtPreviousMonth = null;
+  private ImageButton mBtNextMonth = null;
+  private RelativeLayout mRlDetails = null;
+  private TextView mTvMonth = null;
+  private TextView mTvYear = null;
+  private TextView mTvWorkDays = null;
+  private TextView mTvMonthlyHours = null;
+  private DaysEntriesArrayAdapter mLvAdapter = null;
+  private ListView mDays = null;
+  private MainApplication mApp = null;
+  private MonthDetailsDialog mMonthDetailsDialog = null;
 
   /**
    * Called when the fragment is created.
@@ -72,55 +72,55 @@ public class WorkTimeFragment extends Fragment implements View.OnClickListener, 
     MainActivity a = (MainActivity)getActivity();
     if(a != null)
       a.getSwipeDetector().setSwipeDetectorListener(this);
-    app = MainApplication.getApp(getActivity());
-    //app.getCurrentDate().setTime(new Date());
+    mApp = MainApplication.getApp(getActivity());
+    //mApp.getCurrentDate().setTime(new Date());
 
-    monthDetailsDialog = new MonthDetailsDialog(getActivity(), app);
+    mMonthDetailsDialog = new MonthDetailsDialog(getActivity(), mApp);
 
-    rlDetails = rootView.findViewById(R.id.rlDetails);
-    btPreviousMonth = rootView.findViewById(R.id.btPreviousMonth);
-    btNextMonth = rootView.findViewById(R.id.btNextMonth);
-    tvMonth = rootView.findViewById(R.id.tvMonth);
-    tvYear = rootView.findViewById(R.id.tvYear);
-    tvWorkDays = rootView.findViewById(R.id.tvWorkDays);
-    tvMonthlyHours = rootView.findViewById(R.id.tvMonthlyHours);
-    days = rootView.findViewById(R.id.days);
+    mRlDetails = rootView.findViewById(R.id.rlDetails);
+    mBtPreviousMonth = rootView.findViewById(R.id.btPreviousMonth);
+    mBtNextMonth = rootView.findViewById(R.id.btNextMonth);
+    mTvMonth = rootView.findViewById(R.id.tvMonth);
+    mTvYear = rootView.findViewById(R.id.tvYear);
+    mTvWorkDays = rootView.findViewById(R.id.tvWorkDays);
+    mTvMonthlyHours = rootView.findViewById(R.id.tvMonthlyHours);
+    mDays = rootView.findViewById(R.id.days);
 
-    rlDetails.setOnClickListener(this);
-    btPreviousMonth.setOnClickListener(this);
-    btNextMonth.setOnClickListener(this);
+    mRlDetails.setOnClickListener(this);
+    mBtPreviousMonth.setOnClickListener(this);
+    mBtNextMonth.setOnClickListener(this);
 
-    lvAdapter = new DaysEntriesArrayAdapter(
+    mLvAdapter = new DaysEntriesArrayAdapter(
       getContext(), R.layout.days_listview_item, new ArrayList<>());
-    days.setAdapter(lvAdapter);
-    days.setOnItemClickListener(this);
+    mDays.setAdapter(mLvAdapter);
+    mDays.setOnItemClickListener(this);
     LinearLayout llYearMonth = rootView.findViewById(R.id.llYearMonth);
     llYearMonth.setOnClickListener((v) ->
-        UIHelper.openDatePicker(getActivity(), app.getCurrentDate(), (view, selectedYear, selectedMonth, selectedDay) -> {
-        app.getCurrentDate().set(Calendar.YEAR, selectedYear);
-        app.getCurrentDate().set(Calendar.MONTH, selectedMonth);
-        app.getCurrentDate().set(Calendar.DAY_OF_MONTH, selectedDay);
+        UIHelper.openDatePicker(getActivity(), mApp.getCurrentDate(), (view, selectedYear, selectedMonth, selectedDay) -> {
+          mApp.getCurrentDate().set(Calendar.YEAR, selectedYear);
+          mApp.getCurrentDate().set(Calendar.MONTH, selectedMonth);
+          mApp.getCurrentDate().set(Calendar.DAY_OF_MONTH, selectedDay);
         updateAll();
       })
     );
 
-    days.setOnScrollListener(new AbsListView.OnScrollListener(){
+    mDays.setOnScrollListener(new AbsListView.OnScrollListener(){
       public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
       }
       public void onScrollStateChanged(AbsListView view, int scrollState) {
-        if (view.getId() == days.getId()) {
-          final int currentFirstVisibleItem = days.getFirstVisiblePosition();
-          boolean isScrollingUp = (currentFirstVisibleItem < app.getLastFirstVisibleItem());
+        if (view.getId() == mDays.getId()) {
+          final int currentFirstVisibleItem = mDays.getFirstVisiblePosition();
+          boolean isScrollingUp = (currentFirstVisibleItem < mApp.getLastFirstVisibleItem());
           /* change the visibility if 5% of the list is displayed or hidden */
           int k = at5Percent();
-          if(!isScrollingUp && currentFirstVisibleItem > k && rlDetails.getVisibility() == View.VISIBLE)
-            rlDetails.setVisibility(View.GONE);
-          else if(isScrollingUp && currentFirstVisibleItem < k && rlDetails.getVisibility() == View.GONE)
-            rlDetails.setVisibility(View.VISIBLE);
-          else if(currentFirstVisibleItem == 0 && rlDetails.getVisibility() != View.VISIBLE)
-            rlDetails.setVisibility(View.VISIBLE);
+          if(!isScrollingUp && currentFirstVisibleItem > k && mRlDetails.getVisibility() == View.VISIBLE)
+            mRlDetails.setVisibility(View.GONE);
+          else if(isScrollingUp && currentFirstVisibleItem < k && mRlDetails.getVisibility() == View.GONE)
+            mRlDetails.setVisibility(View.VISIBLE);
+          else if(currentFirstVisibleItem == 0 && mRlDetails.getVisibility() != View.VISIBLE)
+            mRlDetails.setVisibility(View.VISIBLE);
           /* store previous item */
-          app.setLastFirstVisibleItem(currentFirstVisibleItem);
+          mApp.setLastFirstVisibleItem(currentFirstVisibleItem);
         }
       }
     });
@@ -149,7 +149,7 @@ public class WorkTimeFragment extends Fragment implements View.OnClickListener, 
       UIHelper.toast(getActivity(), R.string.service_running);
       return;
     }
-    DayEntry de = lvAdapter.getItem(i);
+    DayEntry de = mLvAdapter.getItem(i);
     if(de == null || de.getTypeMorning() == DayType.PUBLIC_HOLIDAY || de.getTypeAfternoon() == DayType.PUBLIC_HOLIDAY) {
       UIHelper.toast(getActivity(), R.string.error_editing_public_holiday);
       return;
@@ -162,19 +162,19 @@ public class WorkTimeFragment extends Fragment implements View.OnClickListener, 
    * @param v The clicked view.
    */
   public void onClick(final View v) {
-    if(v.equals(btPreviousMonth)) {
-      app.getCurrentDate().add(Calendar.MONTH, -1);
-      app.setLastFirstVisibleItem(0);
+    if(v.equals(mBtPreviousMonth)) {
+      mApp.getCurrentDate().add(Calendar.MONTH, -1);
+      mApp.setLastFirstVisibleItem(0);
       updateAll();
-    } else if(v.equals(btNextMonth)) {
-      app.getCurrentDate().add(Calendar.MONTH, 1);
-      app.setLastFirstVisibleItem(0);
+    } else if(v.equals(mBtNextMonth)) {
+      mApp.getCurrentDate().add(Calendar.MONTH, 1);
+      mApp.setLastFirstVisibleItem(0);
       updateAll();
-    } else if(v.equals(rlDetails)) {
-      monthDetailsDialog.reloadDetails(
-        app.getCurrentDate().get(Calendar.MONTH),
-        app.getCurrentDate().get(Calendar.YEAR));
-      monthDetailsDialog.open();
+    } else if(v.equals(mRlDetails)) {
+      mMonthDetailsDialog.reloadDetails(
+          mApp.getCurrentDate().get(Calendar.MONTH),
+          mApp.getCurrentDate().get(Calendar.YEAR));
+      mMonthDetailsDialog.open();
     }
   }
 
@@ -191,14 +191,14 @@ public class WorkTimeFragment extends Fragment implements View.OnClickListener, 
    */
   private void updateTop() {
     /* init the top components */
-    int month = app.getCurrentDate().get(Calendar.MONTH);
+    int month = mApp.getCurrentDate().get(Calendar.MONTH);
     String smonth = AndroidHelper.getMonthString(month);
     final String ss_month = String.format(Locale.US, "%02d", month + 1);
-    final String ss_maxDay = String.format(Locale.US, "%02d", app.getCurrentDate().getActualMaximum(Calendar.DAY_OF_MONTH));
+    final String ss_maxDay = String.format(Locale.US, "%02d", mApp.getCurrentDate().getActualMaximum(Calendar.DAY_OF_MONTH));
     smonth += "\n01/" + ss_month + " - " + ss_maxDay + "/" + ss_month;
-    tvMonth.setText(smonth);
-    tvYear.setText(String.valueOf(app.getCurrentDate().get(Calendar.YEAR)));
-    tvYear.setText(String.valueOf(app.getCurrentDate().get(Calendar.YEAR)));
+    mTvMonth.setText(smonth);
+    mTvYear.setText(String.valueOf(mApp.getCurrentDate().get(Calendar.YEAR)));
+    mTvYear.setText(String.valueOf(mApp.getCurrentDate().get(Calendar.YEAR)));
   }
 
   /**
@@ -206,59 +206,59 @@ public class WorkTimeFragment extends Fragment implements View.OnClickListener, 
    * @return int
    */
   private int at5Percent() {
-    return (int)(lvAdapter.getCount()*(5.0f/100.0f));
+    return (int)(mLvAdapter.getCount()*(5.0f/100.0f));
   }
 
   /**
    * Updates the dates.
    */
   private void updateDates() {
-    lvAdapter.clear();
+    mLvAdapter.clear();
     int minDay = 1;
-    int maxDay = app.getCurrentDate().getActualMaximum(Calendar.DAY_OF_MONTH);
+    int maxDay = mApp.getCurrentDate().getActualMaximum(Calendar.DAY_OF_MONTH);
     List<DayEntry> wDays = new ArrayList<>();
     int index = 0;
     double realwDays = 0.0;
-    int currentDay = app.getCurrentDate().get(Calendar.DAY_OF_MONTH);
+    int currentDay = mApp.getCurrentDate().get(Calendar.DAY_OF_MONTH);
     /* get first week */
-    app.getCurrentDate().set(Calendar.DAY_OF_MONTH, 1);
-    int firstWeek = app.getCurrentDate().get(Calendar.WEEK_OF_YEAR);
+    mApp.getCurrentDate().set(Calendar.DAY_OF_MONTH, 1);
+    int firstWeek = mApp.getCurrentDate().get(Calendar.WEEK_OF_YEAR);
     WorkTimeDay wtdTotalWorkTime = new WorkTimeDay();
     WorkTimeDay wtdnow = WorkTimeDay.now();
     /* loop for each days in the month */
     for(int day = minDay; day <= maxDay; ++day) {
-      app.getCurrentDate().set(Calendar.DAY_OF_MONTH, day);
-      DayEntry de = new DayEntry(getActivity(), app.getCurrentDate(), DayType.ERROR, DayType.ERROR);
-      de.setAmountByHour(app.getAmountByHour()); /* set default amount */
+      mApp.getCurrentDate().set(Calendar.DAY_OF_MONTH, day);
+      DayEntry de = new DayEntry(getActivity(), mApp.getCurrentDate(), DayType.ERROR, DayType.ERROR);
+      de.setAmountByHour(mApp.getAmountByHour()); /* set default amount */
       /* Force public holiday */
-      if(app.getPublicHolidaysFactory().isPublicHolidays(de.getDay())) {
+      if(mApp.getPublicHolidaysFactory().isPublicHolidays(de.getDay())) {
         de.setTypeMorning(DayType.PUBLIC_HOLIDAY);
         de.setTypeAfternoon(DayType.PUBLIC_HOLIDAY);
       }
-      int now = app.getCurrentDate().get(Calendar.DAY_OF_WEEK);
+      int now = mApp.getCurrentDate().get(Calendar.DAY_OF_WEEK);
       /* reload data if the current day is already inserted */
-      app.getDaysFactory().checkForDayDateAndCopy(de);
+      mApp.getDaysFactory().checkForDayDateAndCopy(de);
       /* count working day */
-      if(now != Calendar.SUNDAY && now != Calendar.SATURDAY && !app.getPublicHolidaysFactory().isPublicHolidays(de.getDay())) {
+      if(now != Calendar.SUNDAY && now != Calendar.SATURDAY && !mApp.getPublicHolidaysFactory().isPublicHolidays(de.getDay())) {
         wDays.add(de);
         if(de.getTypeMorning() == DayType.AT_WORK) realwDays += 0.5;
         if(de.getTypeAfternoon() == DayType.AT_WORK) realwDays += 0.5;
       }
-      lvAdapter.add(de);
-      if(app.isScrollToCurrentDay() && app.getLastFirstVisibleItem() == 0 && de.getDay().dateString().equals(wtdnow.dateString())) {
-        app.setLastFirstVisibleItem(index);
+      mLvAdapter.add(de);
+      if(mApp.isScrollToCurrentDay() && mApp.getLastFirstVisibleItem() == 0 && de.getDay().dateString().equals(wtdnow.dateString())) {
+        mApp.setLastFirstVisibleItem(index);
       }
-      else if(app.getLastFirstVisibleItem() == 0) index++;
+      else if(mApp.getLastFirstVisibleItem() == 0) index++;
     }
-    Map<String, DayEntry> map = app.getDaysFactory().toDaysMap();
+    Map<String, DayEntry> map = mApp.getDaysFactory().toDaysMap();
     int min = (firstWeek == 52 ? 1 : firstWeek);
     for(int w = min; w <= min + 6; ++w) {
-      WorkTimeDay wtdWorkTimeFromWeek =  app.getDaysFactory().getWorkTimeDayFromWeek(map, w, app.getCurrentDate().get(Calendar.MONTH), app.getCurrentDate().get(Calendar.YEAR));
+      WorkTimeDay wtdWorkTimeFromWeek =  mApp.getDaysFactory().getWorkTimeDayFromWeek(map, w, mApp.getCurrentDate().get(Calendar.MONTH), mApp.getCurrentDate().get(Calendar.YEAR));
       if(wtdWorkTimeFromWeek.isValidTime())
         wtdTotalWorkTime.addTime(wtdWorkTimeFromWeek);
     }
     /* reload work day label */
-    app.getCurrentDate().set(Calendar.DAY_OF_MONTH, currentDay);
+    mApp.getCurrentDate().set(Calendar.DAY_OF_MONTH, currentDay);
     int n = Integer.parseInt((""+realwDays).split("\\.")[1]);
     String workDays = getString(R.string.work_days) + ": ";
     if(n != 0)
@@ -266,27 +266,27 @@ public class WorkTimeFragment extends Fragment implements View.OnClickListener, 
     else
       workDays += String.format(Locale.US, "%02d/%02d", (int)realwDays, wDays.size());
     workDays += " " + getString(R.string.days_lower_case);
-    tvWorkDays.setText(workDays);
+    mTvWorkDays.setText(workDays);
 
     /* substract legal working time */
-    WorkTimeDay wtdEstimatedMonthlyHours = app.getEstimatedHours(wDays);
+    WorkTimeDay wtdEstimatedMonthlyHours = mApp.getEstimatedHours(wDays);
     String monthlyHours = getString(R.string.monthly_hours) + ": " +
       String.format(Locale.US, "%d:%02d/%d:%02d",
         wtdTotalWorkTime.getHours(), wtdTotalWorkTime.getMinutes(),
         wtdEstimatedMonthlyHours.getHours(), wtdEstimatedMonthlyHours.getMinutes());
 
-    tvMonthlyHours.setText(monthlyHours);
-    lvAdapter.notifyDataSetChanged();
+    mTvMonthlyHours.setText(monthlyHours);
+    mLvAdapter.notifyDataSetChanged();
     /* restores the scroll position and reloads the adapter else the listview seems not agree with the call of setSelection */
-    days.setAdapter(days.getAdapter());
-    days.setSelection(app.getLastFirstVisibleItem());
-    if(app.isScrollToCurrentDay()) {
+    mDays.setAdapter(mDays.getAdapter());
+    mDays.setSelection(mApp.getLastFirstVisibleItem());
+    if(mApp.isScrollToCurrentDay()) {
         /* change the visibility if 5% of the list is displayed or hidden */
       int k = at5Percent();
-      if((app.getLastFirstVisibleItem() == 0 || app.getLastFirstVisibleItem() < k) && rlDetails.getVisibility() != View.VISIBLE)
-        rlDetails.setVisibility(View.VISIBLE);
-      else if (app.getLastFirstVisibleItem() > k && rlDetails.getVisibility() == View.VISIBLE)
-        rlDetails.setVisibility(View.GONE);
+      if((mApp.getLastFirstVisibleItem() == 0 || mApp.getLastFirstVisibleItem() < k) && mRlDetails.getVisibility() != View.VISIBLE)
+        mRlDetails.setVisibility(View.VISIBLE);
+      else if (mApp.getLastFirstVisibleItem() > k && mRlDetails.getVisibility() == View.VISIBLE)
+        mRlDetails.setVisibility(View.GONE);
     }
   }
 
@@ -295,14 +295,14 @@ public class WorkTimeFragment extends Fragment implements View.OnClickListener, 
    * Called when the user sweeps from left to right.
    */
   public void leftToRightSwipe() {
-    btNextMonth.callOnClick();
+    mBtNextMonth.callOnClick();
   }
 
   /**
    * Called when the user sweeps from right to left.
    */
   public void rightToLeftSwipe() {
-    btPreviousMonth.callOnClick();
+    mBtPreviousMonth.callOnClick();
   }
 
 }

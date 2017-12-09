@@ -30,8 +30,8 @@ import fr.ralala.worktime.models.DayEntry;
  */
 public class PublicHolidaysFragment extends Fragment implements SimpleEntriesArrayAdapterMenuListener<DayEntry>, View.OnClickListener{
 
-  private PublicHolidaysEntriesArrayAdapter adapter = null;
-  private MainApplication app = null;
+  private PublicHolidaysEntriesArrayAdapter mAdapter = null;
+  private MainApplication mApp = null;
 
   /**
    * Called when the fragment is created.
@@ -48,10 +48,10 @@ public class PublicHolidaysFragment extends Fragment implements SimpleEntriesArr
     ListView lv = rootView.findViewById(R.id.public_holidays);
     FloatingActionButton fab = rootView.findViewById(R.id.fab);
 
-    app = MainApplication.getApp(getContext());
-    adapter = new PublicHolidaysEntriesArrayAdapter(
-      getContext(), R.layout.listview_item, app.getPublicHolidaysFactory().list(), this);
-    lv.setAdapter(adapter);
+    mApp = MainApplication.getApp(getContext());
+    mAdapter = new PublicHolidaysEntriesArrayAdapter(
+      getContext(), R.layout.listview_item, mApp.getPublicHolidaysFactory().list(), this);
+    lv.setAdapter(mAdapter);
 
 
     fab.setOnClickListener(this);
@@ -64,9 +64,9 @@ public class PublicHolidaysFragment extends Fragment implements SimpleEntriesArr
   @Override
   public void onResume() {
     super.onResume();
-    if(app.isResumeAfterActivity()) {
-      adapter.notifyDataSetChanged();
-    app.setResumeAfterActivity(false);
+    if(mApp.isResumeAfterActivity()) {
+      mAdapter.notifyDataSetChanged();
+      mApp.setResumeAfterActivity(false);
     }
   }
 
@@ -76,7 +76,7 @@ public class PublicHolidaysFragment extends Fragment implements SimpleEntriesArr
    */
   @Override
   public void onMenuEdit(DayEntry de) {
-    app.setResumeAfterActivity(true);
+    mApp.setResumeAfterActivity(true);
     PublicHolidayActivity.startActivity(getActivity(), de.getName());
   }
 
@@ -86,8 +86,8 @@ public class PublicHolidaysFragment extends Fragment implements SimpleEntriesArr
    */
   @Override
   public void onMenuDelete(DayEntry de) {
-    app.getPublicHolidaysFactory().remove(de);
-    adapter.remove(de);
+    mApp.getPublicHolidaysFactory().remove(de);
+    mAdapter.remove(de);
   }
 
   /**
@@ -96,7 +96,7 @@ public class PublicHolidaysFragment extends Fragment implements SimpleEntriesArr
    */
   @Override
   public void onClick(View view) {
-    app.setResumeAfterActivity(true);
+    mApp.setResumeAfterActivity(true);
     PublicHolidayActivity.startActivity(getActivity(), "null");
   }
 
@@ -118,7 +118,7 @@ public class PublicHolidaysFragment extends Fragment implements SimpleEntriesArr
       public void onAnimationRepeat(Animation animation) { }
       @Override
       public void onAnimationEnd(Animation animation) {
-        adapter.notifyDataSetChanged();
+        mAdapter.notifyDataSetChanged();
       }
     });
     return anim;

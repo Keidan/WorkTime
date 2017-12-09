@@ -10,22 +10,22 @@ package fr.ralala.worktime.ui.changelog;
  *******************************************************************************
  */
 public class ChangeLogIds {
-  private int stringBackgroundColor    = 0;
-  private int stringChangelogTitle     = 0;
-  private int stringChangelogFullTitle = 0;
-  private int stringChangelogShowFull  = 0;
-  private int stringChangelogOkButton  = 0;
-  private int rawChangelog             = 0;
+  private int mStringBackgroundColor    = 0;
+  private int mStringChangelogTitle     = 0;
+  private int mStringChangelogFullTitle = 0;
+  private int mStringChangelogShowFull  = 0;
+  private int mStringChangelogOkButton  = 0;
+  private int mRawChangelog             = 0;
 
   public ChangeLogIds(final int rawChangelog, final int stringChangelogOkButton, final int stringBackgroundColor,
       final int stringChangelogTitle, final int stringChangelogFullTitle,
       final int stringChangelogShowFull) {
-    this.stringChangelogOkButton = stringChangelogOkButton;
-    this.stringBackgroundColor = stringBackgroundColor;
-    this.stringChangelogTitle = stringChangelogTitle;
-    this.stringChangelogFullTitle = stringChangelogFullTitle;
-    this.stringChangelogShowFull = stringChangelogShowFull;
-    this.rawChangelog = rawChangelog;
+    mStringChangelogOkButton = stringChangelogOkButton;
+    mStringBackgroundColor = stringBackgroundColor;
+    mStringChangelogTitle = stringChangelogTitle;
+    mStringChangelogFullTitle = stringChangelogFullTitle;
+    mStringChangelogShowFull = stringChangelogShowFull;
+    mRawChangelog = rawChangelog;
   }
 
   /**
@@ -33,7 +33,7 @@ public class ChangeLogIds {
    * @return int
    */
   int getStringChangelogOkButton() {
-    return stringChangelogOkButton;
+    return mStringChangelogOkButton;
   }
 
   /**
@@ -41,7 +41,7 @@ public class ChangeLogIds {
    * @return int
    */
   int getStringBackgroundColor() {
-    return stringBackgroundColor;
+    return mStringBackgroundColor;
   }
 
   /**
@@ -49,7 +49,7 @@ public class ChangeLogIds {
    * @return int
    */
   int getStringChangelogTitle() {
-    return stringChangelogTitle;
+    return mStringChangelogTitle;
   }
 
   /**
@@ -57,7 +57,7 @@ public class ChangeLogIds {
    * @return int
    */
   int getStringChangelogFullTitle() {
-    return stringChangelogFullTitle;
+    return mStringChangelogFullTitle;
   }
 
   /**
@@ -65,7 +65,7 @@ public class ChangeLogIds {
    * @return int
    */
   int getStringChangelogShowFull() {
-    return stringChangelogShowFull;
+    return mStringChangelogShowFull;
   }
 
 
@@ -74,7 +74,7 @@ public class ChangeLogIds {
    * @return int
    */
   int getRawChangelog() {
-    return rawChangelog;
+    return mRawChangelog;
   }
 
 }

@@ -35,9 +35,9 @@ import fr.ralala.worktime.ui.utils.UIHelper;
  */
 public class DaysEntriesArrayAdapter extends ArrayAdapter<DayEntry> {
 
-  private Context c = null;
-  private int id = 0;
-  private List<DayEntry> items = null;
+  private Context mContext = null;
+  private int mId = 0;
+  private List<DayEntry> mItems = null;
 
   private class ViewHolder {
     LinearLayout llDay = null;
@@ -59,9 +59,9 @@ public class DaysEntriesArrayAdapter extends ArrayAdapter<DayEntry> {
   public DaysEntriesArrayAdapter(final Context context, final int textViewResourceId,
                                            final List<DayEntry> objects) {
     super(context, textViewResourceId, objects);
-    this.c = context;
-    this.id = textViewResourceId;
-    this.items = objects;
+    mContext = context;
+    mId = textViewResourceId;
+    mItems = objects;
   }
 
   /**
@@ -71,7 +71,7 @@ public class DaysEntriesArrayAdapter extends ArrayAdapter<DayEntry> {
    */
   @Override
   public DayEntry getItem(final int i) {
-    return items.get(i);
+    return mItems.get(i);
   }
 
   /**
@@ -86,11 +86,11 @@ public class DaysEntriesArrayAdapter extends ArrayAdapter<DayEntry> {
                       @NonNull final ViewGroup parent) {
     View v = convertView;
     ViewHolder holder;
-    final DayEntry t = items.get(position);
+    final DayEntry t = mItems.get(position);
     if (v == null) {
-      final LayoutInflater vi = (LayoutInflater) c.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+      final LayoutInflater vi = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
       assert vi != null;
-      v = vi.inflate(id, null);
+      v = vi.inflate(mId, null);
       holder = new ViewHolder();
       holder.llDay = v.findViewById(R.id.llDay);
       holder.tvDay = v.findViewById(R.id.tvDay);
@@ -118,37 +118,37 @@ public class DaysEntriesArrayAdapter extends ArrayAdapter<DayEntry> {
       int bg_morning;
       int bg_afternoon;
       if (t.matchSimpleDate(today)) {
-        bg_afternoon = bg_morning = c.getResources().getColor(R.color.green, null);
+        bg_afternoon = bg_morning = mContext.getResources().getColor(R.color.green, null);
       } else {
         if (cal.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY && t.getTypeMorning() != DayType.PUBLIC_HOLIDAY)
-          bg_morning = c.getResources().getColor(R.color.blue_1, null);
+          bg_morning = mContext.getResources().getColor(R.color.blue_1, null);
         else if (cal.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY && t.getTypeMorning() != DayType.PUBLIC_HOLIDAY)
-          bg_morning = c.getResources().getColor(R.color.blue_2, null);
+          bg_morning = mContext.getResources().getColor(R.color.blue_2, null);
         else
           bg_morning = (t.getTypeMorning() == DayType.HOLIDAY) ?
-            c.getResources().getColor(R.color.purple, null) :
+              mContext.getResources().getColor(R.color.purple, null) :
             (t.getTypeMorning() == DayType.PUBLIC_HOLIDAY) ?
-              c.getResources().getColor(R.color.purple2, null) :
+                mContext.getResources().getColor(R.color.purple2, null) :
               (t.getTypeMorning() == DayType.UNPAID) ?
-                c.getResources().getColor(R.color.red, null) :
+                  mContext.getResources().getColor(R.color.red, null) :
                 (t.getTypeMorning() == DayType.SICKNESS) ?
-                  c.getResources().getColor(R.color.orange, null) :
-                  c.getResources().getColor(android.R.color.transparent, null);
+                    mContext.getResources().getColor(R.color.orange, null) :
+                    mContext.getResources().getColor(android.R.color.transparent, null);
 
         if (cal.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY && t.getTypeAfternoon() != DayType.PUBLIC_HOLIDAY)
-          bg_afternoon = c.getResources().getColor(R.color.blue_1, null);
+          bg_afternoon = mContext.getResources().getColor(R.color.blue_1, null);
         else if (cal.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY && t.getTypeAfternoon() != DayType.PUBLIC_HOLIDAY)
-          bg_afternoon = c.getResources().getColor(R.color.blue_2, null);
+          bg_afternoon = mContext.getResources().getColor(R.color.blue_2, null);
         else
           bg_afternoon = (t.getTypeAfternoon() == DayType.HOLIDAY) ?
-            c.getResources().getColor(R.color.purple, null) :
+            mContext.getResources().getColor(R.color.purple, null) :
             (t.getTypeAfternoon() == DayType.PUBLIC_HOLIDAY) ?
-              c.getResources().getColor(R.color.purple2, null) :
+              mContext.getResources().getColor(R.color.purple2, null) :
               (t.getTypeAfternoon() == DayType.UNPAID) ?
-                c.getResources().getColor(R.color.red, null) :
+                mContext.getResources().getColor(R.color.red, null) :
                 (t.getTypeAfternoon() == DayType.SICKNESS) ?
-                  c.getResources().getColor(R.color.orange, null) :
-                  c.getResources().getColor(android.R.color.transparent, null);
+                  mContext.getResources().getColor(R.color.orange, null) :
+                  mContext.getResources().getColor(android.R.color.transparent, null);
       }
       if(bg_morning == bg_afternoon) {
         holder.llDay.setBackgroundColor(bg_morning);
@@ -160,7 +160,7 @@ public class DaysEntriesArrayAdapter extends ArrayAdapter<DayEntry> {
       /* Update the texts */
       if (holder.tvDay != null) {
         holder.tvDay.setText((String.format(Locale.US, "%02d", cal.get(Calendar.DAY_OF_MONTH)) + " " +
-          DayEntry.getDayString2lt(c, cal.get(Calendar.DAY_OF_WEEK))));
+          DayEntry.getDayString2lt(mContext, cal.get(Calendar.DAY_OF_WEEK))));
       }
       if (holder.tvStart != null) {
         if (isNotValidMorning(t))
@@ -214,9 +214,9 @@ public class DaysEntriesArrayAdapter extends ArrayAdapter<DayEntry> {
             holder.tvOver.setTypeface(Typeface.MONOSPACE, Typeface.BOLD);
             holder.tvOver.setGravity(Gravity.END);
             if (overtime < 0) {
-              holder.tvOver.setTextColor(c.getResources().getColor(R.color.over_neg, null));
+              holder.tvOver.setTextColor(mContext.getResources().getColor(R.color.over_neg, null));
             } else if (overtime > 0) {
-              holder.tvOver.setTextColor(c.getResources().getColor(R.color.over_pos, null));
+              holder.tvOver.setTextColor(mContext.getResources().getColor(R.color.over_pos, null));
             } else {
               holder.tvOver.setTextColor(holder.tvOverColors);
             }
@@ -235,7 +235,7 @@ public class DaysEntriesArrayAdapter extends ArrayAdapter<DayEntry> {
   private void setRowHeight(TextView v) {
     v.setMinHeight(0); // Min Height
     v.setMinimumHeight(0); // Min Height
-    v.setHeight(((MainApplication)c.getApplicationContext()).getDayRowsHeight()); // Height
+    v.setHeight(((MainApplication)mContext.getApplicationContext()).getDayRowsHeight()); // Height
   }
 
   /**

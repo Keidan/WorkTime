@@ -30,8 +30,8 @@ import fr.ralala.worktime.models.DayEntry;
  */
 public class ProfileFragment  extends Fragment implements SimpleEntriesArrayAdapterMenuListener<DayEntry>, View.OnClickListener {
 
-  private ProfilesEntriesArrayAdapter adapter = null;
-  private MainApplication app = null;
+  private ProfilesEntriesArrayAdapter mAdapter = null;
+  private MainApplication mApp = null;
 
   /**
    * Called when the fragment is created.
@@ -47,10 +47,10 @@ public class ProfileFragment  extends Fragment implements SimpleEntriesArrayAdap
     ListView lv = rootView.findViewById(R.id.profiles);
     FloatingActionButton fab = rootView.findViewById(R.id.fab);
     fab.setOnClickListener(this);
-    app = MainApplication.getApp(getContext());
-    adapter = new ProfilesEntriesArrayAdapter(
-      getContext(), R.layout.listview_item, app.getProfilesFactory().list(), this);
-    lv.setAdapter(adapter);
+    mApp = MainApplication.getApp(getContext());
+    mAdapter = new ProfilesEntriesArrayAdapter(
+      getContext(), R.layout.listview_item, mApp.getProfilesFactory().list(), this);
+    lv.setAdapter(mAdapter);
     return rootView;
   }
 
@@ -60,9 +60,9 @@ public class ProfileFragment  extends Fragment implements SimpleEntriesArrayAdap
   @Override
   public void onResume() {
     super.onResume();
-    if(app.isResumeAfterActivity()) {
-      adapter.notifyDataSetChanged();
-      app.setResumeAfterActivity(false);
+    if(mApp.isResumeAfterActivity()) {
+      mAdapter.notifyDataSetChanged();
+      mApp.setResumeAfterActivity(false);
     }
   }
 
@@ -72,7 +72,7 @@ public class ProfileFragment  extends Fragment implements SimpleEntriesArrayAdap
    */
   @Override
   public void onClick(View view) {
-    app.setResumeAfterActivity(true);
+    mApp.setResumeAfterActivity(true);
     DayActivity.startActivity(getActivity(), "null", false);
   }
 
@@ -82,7 +82,7 @@ public class ProfileFragment  extends Fragment implements SimpleEntriesArrayAdap
    */
   @Override
   public void onMenuEdit(DayEntry de) {
-    app.setResumeAfterActivity(true);
+    mApp.setResumeAfterActivity(true);
     DayActivity.startActivity(getActivity(), de.getName(), false);
   }
 
@@ -92,7 +92,7 @@ public class ProfileFragment  extends Fragment implements SimpleEntriesArrayAdap
    */
   @Override
   public void onMenuDelete(DayEntry de) {
-    app.getProfilesFactory().remove(de);
-    adapter.remove(de);
+    mApp.getProfilesFactory().remove(de);
+    mAdapter.remove(de);
   }
 }

@@ -33,12 +33,12 @@ import fr.ralala.worktime.ui.utils.UIHelper;
  */
 public class PublicHolidayActivity extends AppCompatActivity implements View.OnClickListener {
   public static final String PUBLIC_HOLIDAY_ACTIVITY_EXTRA_NAME = "PUBLIC_HOLIDAY_ACTIVITY_EXTRA_NAME_name";
-  private MainApplication app = null;
-  private DayEntry de = null;
-  private FloatingActionButton fab = null;
-  private EditText tname = null;
-  private DatePicker tdate = null;
-  private CheckBox ckRecurrence = null;
+  private MainApplication mApp = null;
+  private DayEntry mDe = null;
+  private FloatingActionButton mFab = null;
+  private EditText mTname = null;
+  private DatePicker mTdate = null;
+  private CheckBox mCkRecurrence = null;
 
   /**
    * Starts an activity.
@@ -68,7 +68,7 @@ public class PublicHolidayActivity extends AppCompatActivity implements View.OnC
   protected void onCreate(Bundle savedInstanceState) {
     UIHelper.openAnimation(this);
     super.onCreate(savedInstanceState);
-    app = MainApplication.getApp(this);
+    mApp = MainApplication.getApp(this);
     setContentView(R.layout.activity_public_holiday);
     android.support.v7.app.ActionBar actionBar = getDelegate().getSupportActionBar();
     if(actionBar != null) {
@@ -81,35 +81,35 @@ public class PublicHolidayActivity extends AppCompatActivity implements View.OnC
       name = extras.getString(PUBLIC_HOLIDAY_ACTIVITY_EXTRA_NAME);
       if(name == null || name.equals("null")) name = "";
     }
-    List<DayEntry> days = app.getPublicHolidaysFactory().list();
+    List<DayEntry> days = mApp.getPublicHolidaysFactory().list();
     for(DayEntry de : days) {
       if(de.getName().equals(name)) {
-        this.de = de;
+        this.mDe = de;
         break;
       }
     }
-    if(de == null) {
-      de = new DayEntry(this, WorkTimeDay.now(), DayType.ERROR, DayType.ERROR);
-      de.setName(name);
+    if(mDe == null) {
+      mDe = new DayEntry(this, WorkTimeDay.now(), DayType.ERROR, DayType.ERROR);
+      mDe.setName(name);
     }
-    fab = findViewById(R.id.fab);
-    if(fab != null)
-      fab.setOnClickListener(this);
+    mFab = findViewById(R.id.fab);
+    if(mFab != null)
+      mFab.setOnClickListener(this);
 
-    ckRecurrence = findViewById(R.id.ckRecurrence);
-    tname = findViewById(R.id.etName);
-    tdate = findViewById(R.id.dpDate);
-    if(de != null) {
-      tname.setText(de.getName());
+    mCkRecurrence = findViewById(R.id.ckRecurrence);
+    mTname = findViewById(R.id.etName);
+    mTdate = findViewById(R.id.dpDate);
+    if(mDe != null) {
+      mTname.setText(mDe.getName());
       // set current date into datepicker
-      tdate.init(de.getDay().getYear(), de.getDay().getMonth() - 1, de.getDay().getDay(), null);
-      ckRecurrence.setChecked(de.isRecurrence());
+      mTdate.init(mDe.getDay().getYear(), mDe.getDay().getMonth() - 1, mDe.getDay().getDay(), null);
+      mCkRecurrence.setChecked(mDe.isRecurrence());
     } else {
-      tname.setText("");
+      mTname.setText("");
       WorkTimeDay now = WorkTimeDay.now();
       // set current date into datepicker
-      tdate.init(now.getYear(), now.getMonth() - 1, now.getDay(), null);
-      ckRecurrence.setChecked(false);
+      mTdate.init(now.getYear(), now.getMonth() - 1, now.getDay(), null);
+      mCkRecurrence.setChecked(false);
     }
   }
 
@@ -150,25 +150,25 @@ public class PublicHolidayActivity extends AppCompatActivity implements View.OnC
    * @param v The view clicked.
    */
   public void onClick(final View v) {
-    if(v.equals(fab)) {
-      final String name = tname.getText().toString().trim();
+    if(v.equals(mFab)) {
+      final String name = mTname.getText().toString().trim();
       if(name.isEmpty()) {
-        UIHelper.shakeError(tname, getString(R.string.error_no_name));
+        UIHelper.shakeError(mTname, getString(R.string.error_no_name));
         return;
       }
       WorkTimeDay wtd = new WorkTimeDay();
-      wtd.setDay(tdate.getDayOfMonth());
-      wtd.setMonth(tdate.getMonth() + 1);
-      wtd.setYear(tdate.getYear());
-      if(de != null) app.getPublicHolidaysFactory().remove(de); /* remove old entry */
+      wtd.setDay(mTdate.getDayOfMonth());
+      wtd.setMonth(mTdate.getMonth() + 1);
+      wtd.setYear(mTdate.getYear());
+      if(mDe != null) mApp.getPublicHolidaysFactory().remove(mDe); /* remove old entry */
       DayEntry de = new DayEntry(this, wtd, DayType.PUBLIC_HOLIDAY, DayType.PUBLIC_HOLIDAY);
-      if(app.getPublicHolidaysFactory().testValidity(de)) {
+      if(mApp.getPublicHolidaysFactory().testValidity(de)) {
         de.setName(name);
-        de.setRecurrence(ckRecurrence.isChecked());
-        app.getPublicHolidaysFactory().add(de);
+        de.setRecurrence(mCkRecurrence.isChecked());
+        mApp.getPublicHolidaysFactory().add(de);
         onBackPressed();
       } else {
-        UIHelper.shakeError(tname, getString(R.string.error_duplicate_public_holiday));
+        UIHelper.shakeError(mTname, getString(R.string.error_duplicate_public_holiday));
       }
     }
   }

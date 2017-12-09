@@ -1,17 +1,3 @@
-/**
- * Copyright (C) 2011-2013, Karsten Priegnitz
- *
- * Permission to use, copy, modify, and distribute this piece of software
- * for any purpose with or without fee is hereby granted, provided that
- * the above copyright notice and this permission notice appear in the
- * source code of all copies.
- *
- * It would be appreciated if you mention the author in your change log,
- * contributors list or the like.
- *
- * @author: Karsten Priegnitz
- * @see: http://code.google.com/p/android-change-log/
- */
 package fr.ralala.worktime.ui.changelog;
 
 import java.io.BufferedReader;
@@ -28,10 +14,24 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 import android.webkit.WebView;
 
+/**
+ * Copyright (C) 2011-2013, Karsten Priegnitz
+ *
+ * Permission to use, copy, modify, and distribute this piece of software
+ * for any purpose with or without fee is hereby granted, provided that
+ * the above copyright notice and this permission notice appear in the
+ * source code of all copies.
+ *
+ * It would be appreciated if you mention the author in your change log,
+ * contributors list or the like.
+ *
+ * author: Karsten Priegnitz
+ * see: http://code.google.com/p/android-change-log/
+ */
 public class ChangeLog {
-  private ChangeLogIds        ids         = null;
-  private final Context       context;
-  private String              lastVersion, thisVersion;
+  private ChangeLogIds        mIds         = null;
+  private final Context       mContext;
+  private String              mLastVersion, mThisVersion;
 
   // this is the key for storing the version name in SharedPreferences
   private static final String VERSION_KEY = "PREFS_VERSION_KEY";
@@ -59,21 +59,21 @@ public class ChangeLog {
    */
   private ChangeLog(final ChangeLogIds ids, final Context context,
       final SharedPreferences sp) {
-    this.context = context;
-    this.ids = ids;
+    mContext = context;
+    mIds = ids;
 
     // get version numbers
-    this.lastVersion = sp.getString(VERSION_KEY, NO_VERSION);
-    Log.d(TAG, "lastVersion: " + lastVersion);
+    mLastVersion = sp.getString(VERSION_KEY, NO_VERSION);
+    Log.d(TAG, "lastVersion: " + mLastVersion);
     try {
-      this.thisVersion = context.getPackageManager().getPackageInfo(
+      mThisVersion = context.getPackageManager().getPackageInfo(
           context.getPackageName(), 0).versionName;
     } catch (final NameNotFoundException e) {
-      this.thisVersion = NO_VERSION;
+      mThisVersion = NO_VERSION;
       Log.e(TAG, "could not get version name from manifest!");
       e.printStackTrace();
     }
-    Log.d(TAG, "appVersion: " + this.thisVersion);
+    Log.d(TAG, "appVersion: " + mThisVersion);
   }
 
   /**
@@ -81,7 +81,7 @@ public class ChangeLog {
    *         time
    */
   public boolean firstRun() {
-    return !this.lastVersion.equals(this.thisVersion);
+    return !mLastVersion.equals(mThisVersion);
   }
 
   /**
@@ -90,7 +90,7 @@ public class ChangeLog {
    *         and installed again.
    */
   private boolean firstRunEver() {
-    return NO_VERSION.equals(this.lastVersion);
+    return NO_VERSION.equals(mLastVersion);
   }
 
   /**
@@ -110,28 +110,28 @@ public class ChangeLog {
   }
 
   private AlertDialog getDialog(final boolean full) {
-    final WebView wv = new WebView(this.context);
+    final WebView wv = new WebView(mContext);
 
-    wv.setBackgroundColor(Color.parseColor(context.getResources().getString(
-        ids.getStringBackgroundColor())));
+    wv.setBackgroundColor(Color.parseColor(mContext.getResources().getString(
+        mIds.getStringBackgroundColor())));
     wv.loadDataWithBaseURL(null, this.getLog(full), "text/html", "UTF-8", null);
 
-    final AlertDialog.Builder builder = new AlertDialog.Builder(context);
+    final AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
     builder
         .setTitle(
-            context.getResources().getString(
-                full ? ids.getStringChangelogFullTitle() : ids
+            mContext.getResources().getString(
+                full ? mIds.getStringChangelogFullTitle() : mIds
                     .getStringChangelogTitle()))
         .setView(wv)
         .setCancelable(false)
         // OK button
         .setPositiveButton(
-            context.getResources().getString(ids.getStringChangelogOkButton()),
+            mContext.getResources().getString(mIds.getStringChangelogOkButton()),
             (dialog, which) -> updateVersionInPreferences());
 
     if (!full) {
       // "more ..." button
-      builder.setNegativeButton(ids.getStringChangelogShowFull(),
+      builder.setNegativeButton(mIds.getStringChangelogShowFull(),
           (dialog, which) -> getFullLogDialog().show());
     }
 
@@ -141,9 +141,9 @@ public class ChangeLog {
   private void updateVersionInPreferences() {
     // save new version number to preferences
     final SharedPreferences sp = PreferenceManager
-        .getDefaultSharedPreferences(context);
+        .getDefaultSharedPreferences(mContext);
     final SharedPreferences.Editor editor = sp.edit();
-    editor.putString(VERSION_KEY, thisVersion);
+    editor.putString(VERSION_KEY, mThisVersion);
     // // on SDK-Versions > 9 you should use this:
     // if(Build.VERSION.SDK_INT < Build.VERSION_CODES.GINGERBREAD) {
     // editor.commit();
@@ -174,8 +174,8 @@ public class ChangeLog {
     // read changelog.txt file
     sb = new StringBuffer();
     try {
-      final InputStream ins = context.getResources().openRawResource(
-          ids.getRawChangelog());
+      final InputStream ins = mContext.getResources().openRawResource(
+          mIds.getRawChangelog());
       final BufferedReader br = new BufferedReader(new InputStreamReader(ins));
 
       String line;
@@ -190,7 +190,7 @@ public class ChangeLog {
           final String version = line.substring(1).trim();
           // stop output?
           if (!full) {
-            if (this.lastVersion.equals(version)) {
+            if (mLastVersion.equals(version)) {
               advanceToEOVS = true;
             } else if (version.equals(EOCL)) {
               advanceToEOVS = false;

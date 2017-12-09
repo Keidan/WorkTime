@@ -28,10 +28,10 @@ import fr.ralala.worktime.R;
  */
 public class ExportListViewArrayAdapter extends ArrayAdapter<ExportListViewArrayAdapter.ExportEntry>  {
 
-  private Context c = null;
-  private int id = 0;
-  private List<ExportEntry> items = null;
-  private SparseBooleanArray sparseBooleanArray;
+  private Context mContext = null;
+  private int mId = 0;
+  private List<ExportEntry> mItems = null;
+  private SparseBooleanArray mSparseBooleanArray;
 
   private class ViewHolder {
     TextView text;
@@ -49,10 +49,10 @@ public class ExportListViewArrayAdapter extends ArrayAdapter<ExportListViewArray
   public ExportListViewArrayAdapter(final Context context, final int textViewResourceId,
                                     final List<ExportEntry> objects) {
     super(context, textViewResourceId, objects);
-    this.c = context;
-    this.id = textViewResourceId;
-    this.items = objects;
-    sparseBooleanArray = new SparseBooleanArray();
+    mContext = context;
+    mId = textViewResourceId;
+    mItems = objects;
+    mSparseBooleanArray = new SparseBooleanArray();
   }
 
 
@@ -62,9 +62,9 @@ public class ExportListViewArrayAdapter extends ArrayAdapter<ExportListViewArray
    */
   public List<ExportEntry> getCheckedItems() {
     List<ExportEntry> array = new ArrayList<>();
-    for(int i=0;i<items.size();i++) {
-      if(sparseBooleanArray.get(i)) {
-        array.add(items.get(i));
+    for(int i=0;i<mItems.size();i++) {
+      if(mSparseBooleanArray.get(i)) {
+        array.add(mItems.get(i));
       }
     }
     return array;
@@ -77,7 +77,7 @@ public class ExportListViewArrayAdapter extends ArrayAdapter<ExportListViewArray
    */
   @Override
   public ExportEntry getItem(final int i) {
-    return items.get(i);
+    return mItems.get(i);
   }
 
   /**
@@ -94,9 +94,9 @@ public class ExportListViewArrayAdapter extends ArrayAdapter<ExportListViewArray
     View v = convertView;
     ViewHolder holder;
     if (v == null) {
-      final LayoutInflater vi = (LayoutInflater) c.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+      final LayoutInflater vi = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
       assert vi != null;
-      v = vi.inflate(id, null);
+      v = vi.inflate(mId, null);
       holder = new ViewHolder();
       final ViewHolder vh = holder;
       holder.text = v.findViewById(R.id.text);
@@ -104,11 +104,11 @@ public class ExportListViewArrayAdapter extends ArrayAdapter<ExportListViewArray
       holder.chkItem = v.findViewById(R.id.chkItem);
       holder.rl = v.findViewById(R.id.rl);
       holder.chkItem.setOnCheckedChangeListener((buttonView, isChecked) -> {
-        sparseBooleanArray.put((Integer) buttonView.getTag(), isChecked);
+        mSparseBooleanArray.put((Integer) buttonView.getTag(), isChecked);
         if(vh.rl != null) {
           vh.rl.setBackgroundColor(vh.chkItem.isChecked() ?
-            c.getResources().getColor(R.color.blue_1, null) :
-            c.getResources().getColor(android.R.color.transparent, null));
+              mContext.getResources().getColor(R.color.blue_1, null) :
+              mContext.getResources().getColor(android.R.color.transparent, null));
         }
       });
       v.setTag(holder);
@@ -116,7 +116,7 @@ public class ExportListViewArrayAdapter extends ArrayAdapter<ExportListViewArray
         /* We recycle a View that already exists */
       holder = (ViewHolder) v.getTag();
     }
-    final ExportEntry ee = items.get(position);
+    final ExportEntry ee = mItems.get(position);
     if (ee != null) {
       if (holder.text != null)
         holder.text.setText(ee.text);
@@ -124,7 +124,7 @@ public class ExportListViewArrayAdapter extends ArrayAdapter<ExportListViewArray
         holder.info.setText(ee.info);
       if(holder.chkItem != null) {
         holder.chkItem.setTag(position);
-        holder.chkItem.setChecked(sparseBooleanArray.get(position));
+        holder.chkItem.setChecked(mSparseBooleanArray.get(position));
       }
     }
     return v;

@@ -33,11 +33,11 @@ import fr.ralala.worktime.utils.AndroidHelper;
  *******************************************************************************
  */
 public class QuickAccessFragment extends Fragment implements OnClickListener {
-  private MainApplication app = null;
-  private Button btFinalize = null;
-  private ToggleButton btStart = null;
-  private TextView tvTime = null;
-  private Blink blink = null;
+  private MainApplication mApp = null;
+  private Button mBtFinalize = null;
+  private ToggleButton mBtStart = null;
+  private TextView mTvTime = null;
+  private Blink mBlink = null;
 
   /**
    * Called when the fragment is created.
@@ -51,16 +51,16 @@ public class QuickAccessFragment extends Fragment implements OnClickListener {
                            final ViewGroup container, final Bundle savedInstanceState) {
     final ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_quick_access, container, false);
 
-    btFinalize = rootView.findViewById(R.id.btFinalize);
-    btStart = rootView.findViewById(R.id.btStart);
-    tvTime = rootView.findViewById(R.id.tvTime);
+    mBtFinalize = rootView.findViewById(R.id.btFinalize);
+    mBtStart = rootView.findViewById(R.id.btStart);
+    mTvTime = rootView.findViewById(R.id.tvTime);
 
-    btFinalize.setOnClickListener(this);
-    btStart.setOnClickListener(this);
-    btFinalize.setVisibility(View.GONE);
+    mBtFinalize.setOnClickListener(this);
+    mBtStart.setOnClickListener(this);
+    mBtFinalize.setVisibility(View.GONE);
 
-    tvTime.setText(getString(R.string.default_time));
-    app = MainApplication.getApp(getContext());
+    mTvTime.setText(getString(R.string.default_time));
+    mApp = MainApplication.getApp(getContext());
     return rootView;
   }
 
@@ -70,18 +70,18 @@ public class QuickAccessFragment extends Fragment implements OnClickListener {
   @Override
   public void onResume() {
     super.onResume();
-    if(blink == null) {
-      blink = new Blink();
-      blink.start();
+    if(mBlink == null) {
+      mBlink = new Blink();
+      mBlink.start();
     }
-    if(isStarted() || app.getQuickAccessNotification().isVisible()) {
-      btStart.setChecked(true);
-      btFinalize.setVisibility(View.VISIBLE);
+    if(isStarted() || mApp.getQuickAccessNotification().isVisible()) {
+      mBtStart.setChecked(true);
+      mBtFinalize.setVisibility(View.VISIBLE);
     } else {
-      btStart.setChecked(false);
-      btFinalize.setVisibility(View.GONE);
+      mBtStart.setChecked(false);
+      mBtFinalize.setVisibility(View.GONE);
     }
-    updateText(app.getDaysFactory().getCurrentDay(), false, false);
+    updateText(mApp.getDaysFactory().getCurrentDay(), false, false);
   }
 
   /**
@@ -89,9 +89,9 @@ public class QuickAccessFragment extends Fragment implements OnClickListener {
    */
   @Override
   public void onDestroy() {
-    if(blink != null) {
-      blink.kill();
-      blink = null;
+    if(mBlink != null) {
+      mBlink.kill();
+      mBlink = null;
     }
     super.onDestroy();
   }
@@ -104,33 +104,33 @@ public class QuickAccessFragment extends Fragment implements OnClickListener {
   public void onClick(View v) {
     Activity activity = getActivity();
     if(activity == null) return;
-    if(v.equals(btStart)) {
+    if(v.equals(mBtStart)) {
       String text = getString(R.string.work_time) + ": ";
-      text += tvTime.getText() + ":00";
-      if(btStart.isChecked()) {
-        app.setQuickAccessPause(false);
-        btFinalize.setVisibility(View.VISIBLE);
-        app.getQuickAccessNotification().set(text);
+      text += mTvTime.getText() + ":00";
+      if(mBtStart.isChecked()) {
+        mApp.setQuickAccessPause(false);
+        mBtFinalize.setVisibility(View.VISIBLE);
+        mApp.getQuickAccessNotification().set(text);
       } else {
-        app.setQuickAccessPause(true);
-        app.getQuickAccessNotification().update(null, app.isQuickAccessPause());
+        mApp.setQuickAccessPause(true);
+        mApp.getQuickAccessNotification().update(null, mApp.isQuickAccessPause());
       }
-      if(!app.isQuickAccessPause()) {
+      if(!mApp.isQuickAccessPause()) {
         if(!isStarted()) {
           activity.startService(new Intent(activity, QuickAccessService.class));
         }
       } else if(isStarted())  {
         activity.stopService(new Intent(activity, QuickAccessService.class));
       }
-    } else if(v.equals(btFinalize)) {
-      app.setQuickAccessPause(true);
-      btStart.setChecked(false);
-      btFinalize.setVisibility(View.GONE);
-      DayEntry de = app.getDaysFactory().getCurrentDay();
-      app.getDaysFactory().remove(de);
-      app.getDaysFactory().add(de);
+    } else if(v.equals(mBtFinalize)) {
+      mApp.setQuickAccessPause(true);
+      mBtStart.setChecked(false);
+      mBtFinalize.setVisibility(View.GONE);
+      DayEntry de = mApp.getDaysFactory().getCurrentDay();
+      mApp.getDaysFactory().remove(de);
+      mApp.getDaysFactory().add(de);
       activity.stopService(new Intent(activity, QuickAccessService.class));
-      app.getQuickAccessNotification().remove(activity);
+      mApp.getQuickAccessNotification().remove(activity);
     }
   }
 
@@ -155,21 +155,21 @@ public class QuickAccessFragment extends Fragment implements OnClickListener {
         }
         boolean restore = true;
         /* updated from the notification */
-        if(isStarted() && !btStart.isChecked() && !app.isQuickAccessPause()) {
-          btStart.post(() -> btStart.setChecked(true));
-        } else if(!isStarted() && btStart.isChecked()) {
-          btStart.post(() -> btStart.setChecked(false));
+        if(isStarted() && !mBtStart.isChecked() && !mApp.isQuickAccessPause()) {
+          mBtStart.post(() -> mBtStart.setChecked(true));
+        } else if(!isStarted() && mBtStart.isChecked()) {
+          mBtStart.post(() -> mBtStart.setChecked(false));
         }
-        while(app.isQuickAccessPause()) try {
+        while(mApp.isQuickAccessPause()) try {
           if(restore) {
-            updateText(app.getDaysFactory().getCurrentDay(), true, true);
+            updateText(mApp.getDaysFactory().getCurrentDay(), true, true);
             restore = false;
           }
           sleep(delay);
         } catch (InterruptedException e) {
           return;
         }
-        updateText(app.getDaysFactory().getCurrentDay(), false, true);
+        updateText(mApp.getDaysFactory().getCurrentDay(), false, true);
       }
     }
   }
@@ -191,21 +191,21 @@ public class QuickAccessFragment extends Fragment implements OnClickListener {
   private void updateText(DayEntry d, final boolean reset, final boolean post) {
     if(!post) {
       WorkTimeDay w = d.getWorkTime();
-      tvTime.setText(String.format(Locale.US, "%02d:%02d", w.getHours(), w.getMinutes()));
+      mTvTime.setText(String.format(Locale.US, "%02d:%02d", w.getHours(), w.getMinutes()));
     } else {
-      tvTime.post(() -> {
-        String text = tvTime.getText().toString();
+      mTvTime.post(() -> {
+        String text = mTvTime.getText().toString();
         if (reset) {
-          tvTime.setText(text.replaceAll(" ", ":"));
+          mTvTime.setText(text.replaceAll(" ", ":"));
         } else {
           boolean space = text.contains(" ");
-          DayEntry dd = app.getDaysFactory().getCurrentDay();
+          DayEntry dd = mApp.getDaysFactory().getCurrentDay();
           WorkTimeDay w = dd.getWorkTime();
           if(w.getHours() < 0 || w.getMinutes() < 0)
             text = String.format(Locale.US, "-%02d%s%02d", Math.abs(w.getHours()), space ? ":" : " ", Math.abs(w.getMinutes()));
           else
             text = String.format(Locale.US, "%02d%s%02d", w.getHours(), space ? ":" : " ", w.getMinutes());
-          tvTime.setText(text);
+          mTvTime.setText(text);
         }
       });
     }

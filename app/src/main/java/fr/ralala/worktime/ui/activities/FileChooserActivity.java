@@ -33,9 +33,9 @@ public class FileChooserActivity extends AbstractFileChooserActivity {
   private static final int MSG_ERR    = 0;
   private static final int MSG_OK     = 1;
   private static final int MSG_CANCEL = 2;
-  private FileChooserOption opt = null;
-  private Handler handler = null;
-  private AlertDialog progress = null;
+  private FileChooserOption mOpt = null;
+  private Handler mHandler = null;
+  private AlertDialog mProgress = null;
   public enum ErrorStatus {
     NO_ERROR, CANCEL, ERROR_NOT_MOUNTED, ERROR_CANT_READ
   }
@@ -47,7 +47,7 @@ public class FileChooserActivity extends AbstractFileChooserActivity {
   @Override
   public void onCreate(final Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    handler = new IncomingHandler(this);
+    mHandler = new IncomingHandler(this);
   }
 
 
@@ -82,8 +82,8 @@ public class FileChooserActivity extends AbstractFileChooserActivity {
    */
   @Override
   protected void onFileSelected(final FileChooserOption opt) {
-    progress = UIHelper.showProgressDialog(this, R.string.loading);
-    progress.show();
+    mProgress = UIHelper.showProgressDialog(this, R.string.loading);
+    mProgress.show();
     // useful code, variables declarations...
     new Thread((new Runnable() {
       @Override
@@ -95,18 +95,18 @@ public class FileChooserActivity extends AbstractFileChooserActivity {
             Message msg;
             ErrorStatus status = doComputeHandler(opt);
             if (status == ErrorStatus.CANCEL) {
-              msg = handler.obtainMessage(MSG_CANCEL, this);
+              msg = mHandler.obtainMessage(MSG_CANCEL, this);
               // sends the message to our handler
-              handler.sendMessage(msg);
+              mHandler.sendMessage(msg);
             } else if (status != ErrorStatus.NO_ERROR) {
               // error management, creates an error message
-              msg = handler.obtainMessage(MSG_ERR, this);
+              msg = mHandler.obtainMessage(MSG_ERR, this);
               // sends the message to our handler
-              handler.sendMessage(msg);
+              mHandler.sendMessage(msg);
             } else {
-              msg = handler.obtainMessage(MSG_OK, this);
+              msg = mHandler.obtainMessage(MSG_OK, this);
               // sends the message to our handler
-              handler.sendMessage(msg);
+              mHandler.sendMessage(msg);
             }
           }
         });
@@ -121,13 +121,13 @@ public class FileChooserActivity extends AbstractFileChooserActivity {
    */
   @Override
   public void onBackPressed() {
-    File parent = currentDir.getParentFile();
-    if (parent == null || parent.equals(defaultDir.getParentFile())) {
+    File parent = mCurrentDir.getParentFile();
+    if (parent == null || parent.equals(mDefaultDir.getParentFile())) {
       super.onBackPressed();
       cancel();
     } else {
-      currentDir = parent;
-      fill(currentDir);
+      mCurrentDir = parent;
+      fill(mCurrentDir);
     }
   }
 
@@ -153,14 +153,14 @@ public class FileChooserActivity extends AbstractFileChooserActivity {
    * @return ErrorStatus
    */
   public ErrorStatus doComputeHandler(final FileChooserOption userObject) {
-    opt = userObject;
-    if (opt == null)
+    mOpt = userObject;
+    if (mOpt == null)
       return ErrorStatus.CANCEL; /* cancel action */
     if (!isMountedSdcard())
       return ErrorStatus.ERROR_NOT_MOUNTED;
 
-    final File file = new File(new File(opt.getPath()).getParent(),
-        opt.getName());
+    final File file = new File(new File(mOpt.getPath()).getParent(),
+        mOpt.getName());
     if (!file.canRead())
       return ErrorStatus.ERROR_CANT_READ;
     return ErrorStatus.NO_ERROR;
@@ -172,16 +172,16 @@ public class FileChooserActivity extends AbstractFileChooserActivity {
   public void onSuccessHandler() {
     final Intent returnIntent = new Intent();
     int result = RESULT_CANCELED;
-    if (opt != null) {
-      final File file = new File(new File(opt.getPath()).getParent(),
-          opt.getName());
+    if (mOpt != null) {
+      final File file = new File(new File(mOpt.getPath()).getParent(),
+          mOpt.getName());
       returnIntent.putExtra(FILECHOOSER_SELECTION_KEY, file.getAbsolutePath());
       if(getUserMessage() != null)
         returnIntent.putExtra(FILECHOOSER_USER_MESSAGE, getUserMessage());
       result = RESULT_OK;
     }
     setResult(result, returnIntent);
-    opt = null;
+    mOpt = null;
     cancel();
   }
 
@@ -196,7 +196,7 @@ public class FileChooserActivity extends AbstractFileChooserActivity {
    * Handle an error.
    */
   public void onErrorHandler() {
-    opt = null;
+    mOpt = null;
     final Intent returnIntent = new Intent();
     setResult(RESULT_CANCELED, returnIntent);
     onBackPressed();
@@ -226,18 +226,18 @@ public class FileChooserActivity extends AbstractFileChooserActivity {
         case MSG_ERR:
           final String err = "Activity compute failed !";
           Log.e(getClass().getSimpleName(), err);
-          if (adaptee.progress.isShowing())
-            adaptee.progress.dismiss();
+          if (adaptee.mProgress.isShowing())
+            adaptee.mProgress.dismiss();
           Toast.makeText(adaptee, err, Toast.LENGTH_SHORT).show();
           adaptee.onErrorHandler();
           break;
         case MSG_OK:
-          if (adaptee.progress.isShowing())
-            adaptee.progress.dismiss();
+          if (adaptee.mProgress.isShowing())
+            adaptee.mProgress.dismiss();
           adaptee.onSuccessHandler();
           break;
         case MSG_CANCEL:
-          if (adaptee.progress.isShowing()) adaptee.progress.dismiss();
+          if (adaptee.mProgress.isShowing()) adaptee.mProgress.dismiss();
           adaptee.onCancelHandler();
           break;
         default: // should never happen

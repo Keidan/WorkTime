@@ -26,9 +26,9 @@ import fr.ralala.worktime.models.FileChooserOption;
  */
 public class FileChooserArrayAdapter extends ArrayAdapter<FileChooserOption> {
 
-  private final Context      c;
-  private final int          id;
-  private final List<FileChooserOption> items;
+  private final Context mContext;
+  private final int mId;
+  private final List<FileChooserOption> mItems;
 
   /**
    * Creates the array adapter.
@@ -39,9 +39,9 @@ public class FileChooserArrayAdapter extends ArrayAdapter<FileChooserOption> {
   public FileChooserArrayAdapter(final Context context, final int textViewResourceId,
                                     final List<FileChooserOption> objects) {
     super(context, textViewResourceId, objects);
-    c = context;
-    id = textViewResourceId;
-    items = objects;
+    mContext = context;
+    mId = textViewResourceId;
+    mItems = objects;
   }
 
   /**
@@ -51,7 +51,7 @@ public class FileChooserArrayAdapter extends ArrayAdapter<FileChooserOption> {
    */
   @Override
   public FileChooserOption getItem(final int i) {
-    return items.get(i);
+    return mItems.get(i);
   }
 
   /**
@@ -66,12 +66,12 @@ public class FileChooserArrayAdapter extends ArrayAdapter<FileChooserOption> {
                @NonNull final ViewGroup parent) {
     View v = convertView;
     if (v == null) {
-      final LayoutInflater vi = (LayoutInflater) c
+      final LayoutInflater vi = (LayoutInflater) mContext
           .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
       assert vi != null;
-      v = vi.inflate(id, null);
+      v = vi.inflate(mId, null);
     }
-    final FileChooserOption o = items.get(position);
+    final FileChooserOption o = mItems.get(position);
     if (o != null) {
       final ImageView i1 = v.findViewById(R.id.icon);
       final TextView t1 = v.findViewById(R.id.name);

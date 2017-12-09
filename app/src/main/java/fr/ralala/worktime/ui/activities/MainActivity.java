@@ -13,6 +13,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 
@@ -41,13 +42,13 @@ import fr.ralala.worktime.ui.utils.UIHelper;
 public class MainActivity extends RuntimePermissionsActivity implements NavigationView.OnNavigationItemSelectedListener {
   private static final int PERMISSIONS_REQUEST = 30;
   private static final int BACK_TIME_DELAY = 2000;
-  private static long lastBackPressed = -1;
-  private boolean viewIsAtHome = false;
-  private MainApplication app = null;
-  private NavigationView navigationView = null;
-  private SwipeDetector swipeDetector = null;
-  private DrawerLayout drawer = null;
-  private AppFragmentsFactory fragments = null;
+  private static long mLastBackPressed = -1;
+  private boolean mViewIsAtHome = false;
+  private MainApplication mApp = null;
+  private NavigationView mNavigationView = null;
+  private SwipeDetector mSwipeDetector = null;
+  private DrawerLayout mDrawer = null;
+  private AppFragmentsFactory mFragments = null;
 
   /**
    * Called when the activity is created.
@@ -59,23 +60,23 @@ public class MainActivity extends RuntimePermissionsActivity implements Navigati
     setContentView(R.layout.activity_main);
     Toolbar toolbar = findViewById(R.id.toolbar);
     setSupportActionBar(toolbar);
-    swipeDetector = new SwipeDetector(this);
-    drawer = findViewById(R.id.drawer_layout);
+    mSwipeDetector = new SwipeDetector(this);
+    mDrawer = findViewById(R.id.drawer_layout);
     ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-      this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-    drawer.addDrawerListener(toggle);
+      this, mDrawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+    mDrawer.addDrawerListener(toggle);
     toggle.syncState();
 
-    navigationView = findViewById(R.id.nav_view);
-    if(navigationView != null) {
-      navigationView.setNavigationItemSelectedListener(this);
-      navigationView.getMenu().getItem(0).setChecked(true);
+    mNavigationView = findViewById(R.id.nav_view);
+    if(mNavigationView != null) {
+      mNavigationView.setNavigationItemSelectedListener(this);
+      mNavigationView.getMenu().getItem(0).setChecked(true);
     }
-    app = MainApplication.getApp(this);
-    fragments = new AppFragmentsFactory(app, navigationView);
-    displayView(fragments.getDefaultHomeId());
+    mApp = MainApplication.getApp(this);
+    mFragments = new AppFragmentsFactory(mApp, mNavigationView);
+    displayView(mFragments.getDefaultHomeId());
     /* load SQL */
-    if(!app.openSql(this)) finish();
+    if(!mApp.openSql(this)) finish();
 
     String[] perms = new String[]{
       Manifest.permission.READ_EXTERNAL_STORAGE,
@@ -101,7 +102,7 @@ public class MainActivity extends RuntimePermissionsActivity implements Navigati
    * @return SwipeDetector
    */
   public SwipeDetector getSwipeDetector() {
-    return swipeDetector;
+    return mSwipeDetector;
   }
 
   /**
@@ -120,18 +121,18 @@ public class MainActivity extends RuntimePermissionsActivity implements Navigati
   @Override
   public void onResume() {
     super.onResume();
-    if(app.getLastWidgetOpen() != 0L) {
-      long elapsed = System.currentTimeMillis() - app.getLastWidgetOpen();
+    if(mApp.getLastWidgetOpen() != 0L) {
+      long elapsed = System.currentTimeMillis() - mApp.getLastWidgetOpen();
       if(elapsed <= 500) {
-        app.setLastWidgetOpen(0L);
+        mApp.setLastWidgetOpen(0L);
         finish();
         return;
       }
     }
     AndroidHelper.killServiceIfRunning(this, DropboxAutoExportService.class);
-    fragments.onResume(this);
-    if(app.isExportAutoSave())
-      app.initOnLoadTables();
+    mFragments.onResume(this);
+    if(mApp.isExportAutoSave())
+      mApp.initOnLoadTables();
   }
 
   /**
@@ -147,12 +148,12 @@ public class MainActivity extends RuntimePermissionsActivity implements Navigati
    * Cleanup the resources.
    */
   private void cleanup() {
-    if(app != null) {
-      if(app.isExportAutoSave()) {
+    if(mApp != null) {
+      if(mApp.isExportAutoSave()) {
         startService(new Intent(this, DropboxAutoExportService.class));
       }
-      app.getSql().close();
-      app.getQuickAccessNotification().remove(this);
+      mApp.getSql().close();
+      mApp.getQuickAccessNotification().remove(this);
     }
     AndroidHelper.killServiceIfRunning(this, QuickAccessService.class);
   }
@@ -162,15 +163,15 @@ public class MainActivity extends RuntimePermissionsActivity implements Navigati
    */
   @Override
   public void onBackPressed() {
-    if(!fragments.consumeBackPressed()) {
-      if (viewIsAtHome)
-        drawer.openDrawer(Gravity.START);
+    if(!mFragments.consumeBackPressed()) {
+      if (mViewIsAtHome)
+        mDrawer.openDrawer(Gravity.START);
       else { //if the current view is not the News fragment
-        displayView(fragments.getDefaultHomeId()); //display the home fragment
-        navigationView.getMenu().getItem(fragments.getDefaultHomeIndex()).setChecked(true); /* select home title */
+        displayView(mFragments.getDefaultHomeId()); //display the home fragment
+        mNavigationView.getMenu().getItem(mFragments.getDefaultHomeIndex()).setChecked(true); /* select home title */
         return;
       }
-      if (lastBackPressed + BACK_TIME_DELAY > System.currentTimeMillis()) {
+      if (mLastBackPressed + BACK_TIME_DELAY > System.currentTimeMillis()) {
         cleanup();
         super.onBackPressed();
         //Process.killProcess(android.os.Process.myPid());
@@ -178,7 +179,7 @@ public class MainActivity extends RuntimePermissionsActivity implements Navigati
       } else {
         UIHelper.toast(this, R.string.on_double_back_exit_text);
       }
-      lastBackPressed = System.currentTimeMillis();
+      mLastBackPressed = System.currentTimeMillis();
     }
   }
 
@@ -202,7 +203,7 @@ public class MainActivity extends RuntimePermissionsActivity implements Navigati
   @Override
   public boolean dispatchTouchEvent(MotionEvent ev){
     boolean b = super.dispatchTouchEvent(ev);
-    return WorkTimeFragment.class.isInstance(fragments.getCurrentFragment()) ? swipeDetector.onTouchEvent(ev) : b;
+    return WorkTimeFragment.class.isInstance(mFragments.getCurrentFragment()) ? mSwipeDetector.onTouchEvent(ev) : b;
   }
 
   /**
@@ -212,37 +213,37 @@ public class MainActivity extends RuntimePermissionsActivity implements Navigati
   public void displayView(int viewId) {
     String title = getString(R.string.app_title);
 
-    viewIsAtHome = fragments.getDefaultHomeId() == viewId;
+    mViewIsAtHome = mFragments.getDefaultHomeId() == viewId;
     switch (viewId) {
       case R.id.nav_quickaccess:
-        fragments.setCurrentToFragment(AppFragmentsFactory.IDX_QUICK_ACCESS);
+        mFragments.setCurrentToFragment(AppFragmentsFactory.IDX_QUICK_ACCESS);
         title = getString(R.string.quickaccess);
         break;
       case R.id.nav_profile:
-        fragments.setCurrentToFragment(AppFragmentsFactory.IDX_PROFILE);
+        mFragments.setCurrentToFragment(AppFragmentsFactory.IDX_PROFILE);
         title  = getString(R.string.profile);
         break;
       case R.id.nav_public_holidays:
-        fragments.setCurrentToFragment(AppFragmentsFactory.IDX_PUBLIC_HOLIDAY);
+        mFragments.setCurrentToFragment(AppFragmentsFactory.IDX_PUBLIC_HOLIDAY);
         title = getString(R.string.public_holidays);
         break;
       case R.id.nav_export:
-        fragments.setCurrentToFragment(AppFragmentsFactory.IDX_EXPORT);
+        mFragments.setCurrentToFragment(AppFragmentsFactory.IDX_EXPORT);
         title = getString(R.string.export);
         break;
       case R.id.nav_statistics:
-        fragments.setCurrentToFragment(AppFragmentsFactory.IDX_STATISTICS);
+        mFragments.setCurrentToFragment(AppFragmentsFactory.IDX_STATISTICS);
         title = getString(R.string.statistics);
         break;
       case R.id.nav_worktime:
-        fragments.setCurrentToFragment(AppFragmentsFactory.IDX_WORK_TIME);
+        mFragments.setCurrentToFragment(AppFragmentsFactory.IDX_WORK_TIME);
         title = getString(R.string.work_time);
         break;
       case R.id.nav_settings:
-        app.setResumeAfterActivity(true);
-        fragments.setCurrentToFragment(-1);
+        mApp.setResumeAfterActivity(true);
+        mFragments.setCurrentToFragment(-1);
         startActivity(new Intent(this, SettingsActivity.class));
-        if(drawer != null) drawer.closeDrawer(GravityCompat.START);
+        if(mDrawer != null) mDrawer.closeDrawer(GravityCompat.START);
         return;
       case R.id.nav_exit:
         cleanup();
@@ -250,15 +251,15 @@ public class MainActivity extends RuntimePermissionsActivity implements Navigati
         Process.killProcess(android.os.Process.myPid());
         return;
       default:
-        fragments.setCurrentToFragment(-1);
+        mFragments.setCurrentToFragment(-1);
         break;
 
     }
 
-    if (fragments.getCurrentFragment() != null) {
+    if (mFragments.getCurrentFragment() != null) {
       FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
       ft.setCustomAnimations(R.anim.fadein, R.anim.fadeout);
-      ft.replace(R.id.content_frame, fragments.getCurrentFragment());
+      ft.replace(R.id.content_frame, mFragments.getCurrentFragment());
       ft.commit();
     }
 
@@ -267,7 +268,7 @@ public class MainActivity extends RuntimePermissionsActivity implements Navigati
       getSupportActionBar().setTitle(title);
     }
 
-    if(drawer != null) drawer.closeDrawer(GravityCompat.START);
+    if(mDrawer != null) mDrawer.closeDrawer(GravityCompat.START);
 
   }
 }

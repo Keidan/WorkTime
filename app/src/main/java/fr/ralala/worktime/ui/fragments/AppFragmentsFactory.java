@@ -25,15 +25,15 @@ public class AppFragmentsFactory {
   public static final int IDX_EXPORT = 4;
   public static final int IDX_STATISTICS = 6;
   private static final int IDX_EXIT = 7;
-  private Fragment quickAccessFragment = null;
-  private Fragment profileFragment = null;
-  private Fragment publicHolidaysFragment = null;
-  private Fragment exportFragment = null;
-  private Fragment workTimeFragment = null;
-  private Fragment statisticsFragment = null;
-  private Fragment currentFragment = null;
-  private MainApplication app = null;
-  private NavigationView navigationView = null;
+  private Fragment mQuickAccessFragment = null;
+  private Fragment mProfileFragment = null;
+  private Fragment mPublicHolidaysFragment = null;
+  private Fragment mExportFragment = null;
+  private Fragment mWorkTimeFragment = null;
+  private Fragment mStatisticsFragment = null;
+  private Fragment mCurrentFragment = null;
+  private MainApplication mApp = null;
+  private NavigationView mNavigationView = null;
 
   /**
    * Creates the fragments factory.
@@ -41,21 +41,21 @@ public class AppFragmentsFactory {
    * @param navigationView The application navigation view.
    */
   public AppFragmentsFactory(final MainApplication app, final NavigationView navigationView) {
-    this.app = app;
-    this.navigationView = navigationView;
-    if(quickAccessFragment == null)
-      quickAccessFragment = new QuickAccessFragment();
-    if(profileFragment == null)
-      profileFragment = new ProfileFragment();
-    if(publicHolidaysFragment == null)
-      publicHolidaysFragment = new PublicHolidaysFragment();
-    if(exportFragment == null)
-      exportFragment = new ExportFragment();
-    if(statisticsFragment == null)
-      statisticsFragment = new StatisticsFragment();
-    if(workTimeFragment == null)
-      workTimeFragment = new WorkTimeFragment();
-    currentFragment = workTimeFragment;
+    mApp = app;
+    mNavigationView = navigationView;
+    if(mQuickAccessFragment == null)
+      mQuickAccessFragment = new QuickAccessFragment();
+    if(mProfileFragment == null)
+      mProfileFragment = new ProfileFragment();
+    if(mPublicHolidaysFragment == null)
+      mPublicHolidaysFragment = new PublicHolidaysFragment();
+    if(mExportFragment == null)
+      mExportFragment = new ExportFragment();
+    if(mStatisticsFragment == null)
+      mStatisticsFragment = new StatisticsFragment();
+    if(mWorkTimeFragment == null)
+      mWorkTimeFragment = new WorkTimeFragment();
+    mCurrentFragment = mWorkTimeFragment;
   }
 
   /**
@@ -63,7 +63,7 @@ public class AppFragmentsFactory {
    * @return int
    */
   public int getDefaultHomeIndex() {
-    return app.getDefaultHome();
+    return mApp.getDefaultHome();
   }
 
   /**
@@ -71,7 +71,7 @@ public class AppFragmentsFactory {
    * @return int
    */
   public int getDefaultHomeId() {
-    switch(app.getDefaultHome()) {
+    switch(mApp.getDefaultHome()) {
       case IDX_PROFILE:
         return (R.id.nav_profile);
       case IDX_PUBLIC_HOLIDAY:
@@ -93,20 +93,20 @@ public class AppFragmentsFactory {
    * @return Fragment
    */
   private Fragment getDefaultHomeView() {
-    switch(app.getDefaultHome()) {
+    switch(mApp.getDefaultHome()) {
       case IDX_QUICK_ACCESS:
-        return quickAccessFragment;
+        return mQuickAccessFragment;
       case IDX_PROFILE:
-        return profileFragment;
+        return mProfileFragment;
       case IDX_PUBLIC_HOLIDAY:
-        return publicHolidaysFragment;
+        return mPublicHolidaysFragment;
       case IDX_EXPORT:
-        return exportFragment;
+        return mExportFragment;
       case IDX_STATISTICS:
-        return statisticsFragment;
+        return mStatisticsFragment;
       case IDX_WORK_TIME:
       default:
-        return workTimeFragment;
+        return mWorkTimeFragment;
     }
   }
 
@@ -115,7 +115,7 @@ public class AppFragmentsFactory {
    * @return true if the backPressed is consumed by a fragment.
    */
   public boolean consumeBackPressed() {
-    Fragment fragment = currentFragment;
+    Fragment fragment = mCurrentFragment;
     return fragment != null && StatisticsFragment.class.isInstance(fragment) && ((StatisticsFragment)fragment).consumeBackPressed();
   }
 
@@ -124,25 +124,25 @@ public class AppFragmentsFactory {
    * @param aca The main activity.
    */
   public void onResume(final AppCompatActivity aca) {
-    navigationView.getMenu().getItem(IDX_EXIT).setVisible(!app.isHideExitButton());
-    Fragment fragment = currentFragment;
+    mNavigationView.getMenu().getItem(IDX_EXIT).setVisible(!mApp.isHideExitButton());
+    Fragment fragment = mCurrentFragment;
     if(fragment != null) {
       final FragmentTransaction ft = aca.getSupportFragmentManager().beginTransaction();
       ft.setCustomAnimations(R.anim.fadein, R.anim.fadeout);
       ft.replace(R.id.content_frame, fragment);
       ft.commit();
       if(QuickAccessFragment.class.isInstance(fragment))
-        navigationView.getMenu().getItem(IDX_QUICK_ACCESS).setChecked(true); /* select quick access title */
+        mNavigationView.getMenu().getItem(IDX_QUICK_ACCESS).setChecked(true); /* select quick access title */
       else if(ProfileFragment.class.isInstance(fragment))
-        navigationView.getMenu().getItem(IDX_PROFILE).setChecked(true); /* select profile title */
+        mNavigationView.getMenu().getItem(IDX_PROFILE).setChecked(true); /* select profile title */
       else if(PublicHolidaysFragment.class.isInstance(fragment))
-        navigationView.getMenu().getItem(IDX_PUBLIC_HOLIDAY).setChecked(true); /* select public holidays title */
+        mNavigationView.getMenu().getItem(IDX_PUBLIC_HOLIDAY).setChecked(true); /* select public holidays title */
       else if(ExportFragment.class.isInstance(fragment))
-        navigationView.getMenu().getItem(IDX_EXPORT).setChecked(true); /* select export title */
+        mNavigationView.getMenu().getItem(IDX_EXPORT).setChecked(true); /* select export title */
       else if(WorkTimeFragment.class.isInstance(fragment))
-        navigationView.getMenu().getItem(IDX_WORK_TIME).setChecked(true); /* select work title */
+        mNavigationView.getMenu().getItem(IDX_WORK_TIME).setChecked(true); /* select work title */
       else if(StatisticsFragment.class.isInstance(fragment))
-        navigationView.getMenu().getItem(IDX_STATISTICS).setChecked(true); /* select charts title */
+        mNavigationView.getMenu().getItem(IDX_STATISTICS).setChecked(true); /* select charts title */
     }
   }
 
@@ -151,7 +151,7 @@ public class AppFragmentsFactory {
    * @return Fragment.
    */
   public Fragment getCurrentFragment() {
-    return currentFragment;
+    return mCurrentFragment;
   }
 
   /**
@@ -161,25 +161,25 @@ public class AppFragmentsFactory {
   public void setCurrentToFragment(int idx) {
     switch (idx) {
       case IDX_QUICK_ACCESS:
-        currentFragment = quickAccessFragment;
+        mCurrentFragment = mQuickAccessFragment;
         break;
       case IDX_PROFILE:
-        currentFragment = profileFragment;
+        mCurrentFragment = mProfileFragment;
         break;
       case IDX_PUBLIC_HOLIDAY:
-        currentFragment = publicHolidaysFragment;
+        mCurrentFragment = mPublicHolidaysFragment;
         break;
       case IDX_EXPORT:
-        currentFragment = exportFragment;
+        mCurrentFragment = mExportFragment;
         break;
       case IDX_STATISTICS:
-        currentFragment = statisticsFragment;
+        mCurrentFragment = mStatisticsFragment;
         break;
       case IDX_WORK_TIME:
-        currentFragment = workTimeFragment;
+        mCurrentFragment = mWorkTimeFragment;
         break;
       default:
-        currentFragment = getDefaultHomeView();
+        mCurrentFragment = getDefaultHomeView();
         break;
     }
   }

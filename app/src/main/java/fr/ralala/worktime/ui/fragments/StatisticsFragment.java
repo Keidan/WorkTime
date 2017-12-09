@@ -57,19 +57,19 @@ import fr.ralala.worktime.ui.utils.UIHelper;
  */
 public class StatisticsFragment extends Fragment implements View.OnClickListener {
   private static final int BACK_TIME_DELAY = 2000;
-  private static long lastBackPressed = -1;
-  private MainApplication app = null;
-  private LinearLayout chartContainer = null;
-  private CurrentView currentView = CurrentView.YEARS;
-  private DisplayMetrics metrics = null;
-  private int currentYearIndex = 0;
-  private int currentMonthIndex = 0;
-  private int currentWeekIndex = 0;
-  private int currentDayIndex = 0;
-  private XYMultipleSeriesRenderer multiRenderer = null;
-  private XYMultipleSeriesDataset datasetBar = null;
-  private GraphicalView chartView = null;
-  private View rootView = null;
+  private static long mLastBackPressed = -1;
+  private MainApplication mApp = null;
+  private LinearLayout mChartContainer = null;
+  private CurrentView mCurrentView = CurrentView.YEARS;
+  private DisplayMetrics mMetrics = null;
+  private int mCurrentYearIndex = 0;
+  private int mCurrentMonthIndex = 0;
+  private int mCurrentWeekIndex = 0;
+  private int mCurrentDayIndex = 0;
+  private XYMultipleSeriesRenderer mMultiRenderer = null;
+  private XYMultipleSeriesDataset mDatasetBar = null;
+  private GraphicalView mChartView = null;
+  private View mRootView = null;
 
   private enum CurrentView{
     YEARS,
@@ -109,23 +109,23 @@ public class StatisticsFragment extends Fragment implements View.OnClickListener
    * @return boolean
    */
   public boolean consumeBackPressed() {
-    if(currentView == CurrentView.YEARS) {
-      if (lastBackPressed + BACK_TIME_DELAY > System.currentTimeMillis()) {
+    if(mCurrentView == CurrentView.YEARS) {
+      if (mLastBackPressed + BACK_TIME_DELAY > System.currentTimeMillis()) {
         return false;
       } else {
         UIHelper.toast(getContext(), R.string.on_double_back_back_text);
         AndroidHelper.vibrate(getContext());
       }
-      lastBackPressed = System.currentTimeMillis();
+      mLastBackPressed = System.currentTimeMillis();
     }
-    else if(currentView == CurrentView.DETAIL)
-      currentView = CurrentView.DAYS;
-    else if(currentView == CurrentView.DAYS)
-      currentView = CurrentView.WEEKS;
-    else if(currentView == CurrentView.WEEKS)
-      currentView = CurrentView.MONTHS;
-    else if(currentView == CurrentView.MONTHS)
-      currentView = CurrentView.YEARS;
+    else if(mCurrentView == CurrentView.DETAIL)
+      mCurrentView = CurrentView.DAYS;
+    else if(mCurrentView == CurrentView.DAYS)
+      mCurrentView = CurrentView.WEEKS;
+    else if(mCurrentView == CurrentView.WEEKS)
+      mCurrentView = CurrentView.MONTHS;
+    else if(mCurrentView == CurrentView.MONTHS)
+      mCurrentView = CurrentView.YEARS;
     redrawChart();
     return true;
   }
@@ -166,17 +166,17 @@ public class StatisticsFragment extends Fragment implements View.OnClickListener
   public View onCreateView(@NonNull final LayoutInflater inflater,
                            final ViewGroup container, final Bundle savedInstanceState) {
     final ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_statistics, container, false);
-    this.rootView = rootView;
+    this.mRootView = rootView;
     final MainActivity activity = (MainActivity)getActivity();
     if(activity == null) return rootView;
-    app = (MainApplication)activity.getApplicationContext();
+    mApp = (MainApplication)activity.getApplicationContext();
     Button cancel = rootView.findViewById(R.id.cancel);
     cancel.setOnClickListener(this);
-    chartContainer = rootView.findViewById(R.id.graph);
-    metrics = new DisplayMetrics();
-    getActivity().getWindowManager().getDefaultDisplay().getMetrics(metrics);
+    mChartContainer = rootView.findViewById(R.id.graph);
+    mMetrics = new DisplayMetrics();
+    getActivity().getWindowManager().getDefaultDisplay().getMetrics(mMetrics);
     /* uses 80% of the screen */
-    chartContainer.getLayoutParams().height = (int)getPercentOf(metrics.heightPixels, 85);
+    mChartContainer.getLayoutParams().height = (int)getPercentOf(mMetrics.heightPixels, 85);
     redrawChart();
     return rootView;
   }
@@ -188,7 +188,7 @@ public class StatisticsFragment extends Fragment implements View.OnClickListener
    */
   @Override
   public void onClick(View view) {
-    currentView = CurrentView.YEARS;
+    mCurrentView = CurrentView.YEARS;
     redrawChart();
   }
 
@@ -213,53 +213,53 @@ public class StatisticsFragment extends Fragment implements View.OnClickListener
     int nDay;
     @SuppressLint("UseSparseArrays") Map<Integer, ChartEntry> entries = new HashMap<>();
 
-    Map<Integer, Map<Integer, Map<Integer, List<DayEntry>>>> years = app.getDaysFactory().getDays();
+    Map<Integer, Map<Integer, Map<Integer, List<DayEntry>>>> years = mApp.getDaysFactory().getDays();
     SortedSet<Integer> keysYears = new TreeSet<>(years.keySet());
-    if(currentView == CurrentView.YEARS)
-      rootView.findViewById(R.id.cancel).setVisibility(View.GONE);
+    if(mCurrentView == CurrentView.YEARS)
+      mRootView.findViewById(R.id.cancel).setVisibility(View.GONE);
     else
-      rootView.findViewById(R.id.cancel).setVisibility(View.VISIBLE);
+      mRootView.findViewById(R.id.cancel).setVisibility(View.VISIBLE);
 
     for (Integer year : keysYears) {
-      if(currentView == CurrentView.YEARS || currentYearIndex == nYear) {
-        if(currentView != CurrentView.YEARS) title = ""+year;
+      if(mCurrentView == CurrentView.YEARS || mCurrentYearIndex == nYear) {
+        if(mCurrentView != CurrentView.YEARS) title = ""+year;
         Map<Integer, Map<Integer, List<DayEntry>>> months = years.get(year);
         SortedSet<Integer> keysMonths = new TreeSet<>(months.keySet());
         nMonth = 0;
         for (Integer month : keysMonths) {
-          if(currentView == CurrentView.YEARS || currentView == CurrentView.MONTHS || currentMonthIndex == nMonth) {
+          if(mCurrentView == CurrentView.YEARS || mCurrentView == CurrentView.MONTHS || mCurrentMonthIndex == nMonth) {
             Map<Integer, List<DayEntry>> weeks = months.get(month);
             SortedSet<Integer> keysWeeks = new TreeSet<>(weeks.keySet());
             nWeek = 0;
             for (Integer week : keysWeeks) {
-              if(currentView == CurrentView.YEARS || currentView == CurrentView.MONTHS || currentView == CurrentView.WEEKS || currentWeekIndex == nWeek) {
+              if(mCurrentView == CurrentView.YEARS || mCurrentView == CurrentView.MONTHS || mCurrentView == CurrentView.WEEKS || mCurrentWeekIndex == nWeek) {
                 List<DayEntry> days = weeks.get(week);
                 nDay = 0;
                 for (DayEntry de : days) {
                   int day = de.getDay().getDay();
-                  if (currentView == CurrentView.YEARS || currentView == CurrentView.MONTHS || currentView == CurrentView.WEEKS || currentView == CurrentView.DAYS || currentDayIndex == nDay) {
+                  if (mCurrentView == CurrentView.YEARS || mCurrentView == CurrentView.MONTHS || mCurrentView == CurrentView.WEEKS || mCurrentView == CurrentView.DAYS || mCurrentDayIndex == nDay) {
                     if ((de.getTypeMorning() == DayType.PUBLIC_HOLIDAY && de.getTypeAfternoon() == DayType.PUBLIC_HOLIDAY) || (de.getTypeMorning() == DayType.HOLIDAY && de.getTypeAfternoon() == DayType.HOLIDAY))
                       continue;
                     if(!de.isValidMorningType() && !de.isValidAfternoonType())
                       continue;
                     Integer e = 0;
                     String x_label = "";
-                    if (currentView == CurrentView.YEARS) {
+                    if (mCurrentView == CurrentView.YEARS) {
                       e = year;
                       x_label = "" + e;
-                    } else if (currentView == CurrentView.MONTHS) {
+                    } else if (mCurrentView == CurrentView.MONTHS) {
                       e = month;
                       x_label = getResources().getStringArray(R.array.month_letter)[e - 1];
                       title = String.format(Locale.US, "%d", year);
-                    } else if (currentView == CurrentView.WEEKS) {
+                    } else if (mCurrentView == CurrentView.WEEKS) {
                       e = week;
                       x_label = getString(R.string.week_letter) + " " + e;
                       title = String.format(Locale.US, "%d %s", year, getResources().getStringArray(R.array.month_short)[month - 1]);
-                    } else if (currentView == CurrentView.DAYS) {
+                    } else if (mCurrentView == CurrentView.DAYS) {
                       e = de.getDay().toCalendar().get(Calendar.DAY_OF_WEEK) - 1;
                       x_label = getResources().getStringArray(R.array.days_letter)[e - 1] + " " + de.getDay().getDay();
                       title = String.format(Locale.US, "%d %s %s %d", year, getResources().getStringArray(R.array.month_short)[month - 1], getString(R.string.week), week);
-                    } else if (currentView == CurrentView.DETAIL) {
+                    } else if (mCurrentView == CurrentView.DETAIL) {
                       e = day;
                       title = String.format(Locale.US, "%d %s %d (%s %d)", day, getResources().getStringArray(R.array.month_short)[month - 1], year, getString(R.string.week), week);
                     }
@@ -276,8 +276,8 @@ public class StatisticsFragment extends Fragment implements View.OnClickListener
       }
       nYear++;
     }
-    if((currentView != CurrentView.DETAIL))
-      drawBarChart(metrics.widthPixels, title, getString(R.string.statistics_hours), entries);
+    if((mCurrentView != CurrentView.DETAIL))
+      drawBarChart(mMetrics.widthPixels, title, getString(R.string.statistics_hours), entries);
     else
       drawPieChart(title, entries);
 
@@ -320,65 +320,65 @@ public class StatisticsFragment extends Fragment implements View.OnClickListener
     final MainActivity activity = (MainActivity)getActivity();
     if(activity == null) return;
     int defaultColor = getResources().getColor(R.color.half_black, activity.getTheme());
-    if(multiRenderer != null) {
-      multiRenderer.clearXTextLabels();
-      multiRenderer.clearYTextLabels();
-      multiRenderer.removeAllRenderers();
+    if(mMultiRenderer != null) {
+      mMultiRenderer.clearXTextLabels();
+      mMultiRenderer.clearYTextLabels();
+      mMultiRenderer.removeAllRenderers();
     }
-    if(chartContainer != null)
-      chartContainer.removeAllViews();
+    if(mChartContainer != null)
+      mChartContainer.removeAllViews();
 
-    multiRenderer = new XYMultipleSeriesRenderer();
-    multiRenderer.setXLabels(0);
-    multiRenderer.setZoomButtonsVisible(false);
-    multiRenderer.setPanEnabled(false, false);
-    multiRenderer.setPanEnabled(false, false);
-    multiRenderer.setZoomRate(0.2f);
-    multiRenderer.setZoomEnabled(false, false);
-    multiRenderer.setMarginsColor(Color.argb(0x00, 0xff, 0x00, 0x00));
-    multiRenderer.setLegendTextSize(30);
-    multiRenderer.setChartTitleTextSize(30);
-    multiRenderer.setAxisTitleTextSize(30);
-    multiRenderer.setLabelsTextSize(40);
-    multiRenderer.setFitLegend(true);
-    multiRenderer.setShowGrid(false);
-    multiRenderer.setZoomEnabled(false);
-    multiRenderer.setExternalZoomEnabled(false);
-    multiRenderer.setAntialiasing(true);
-    multiRenderer.setInScroll(false);
-    multiRenderer.setShowLegend(false);
-    multiRenderer.setLegendHeight(30);
-    multiRenderer.setXLabelsAlign(Paint.Align.CENTER);
-    //multiRenderer.setYLabelsAlign(Paint.Align.LEFT);
+    mMultiRenderer = new XYMultipleSeriesRenderer();
+    mMultiRenderer.setXLabels(0);
+    mMultiRenderer.setZoomButtonsVisible(false);
+    mMultiRenderer.setPanEnabled(false, false);
+    mMultiRenderer.setPanEnabled(false, false);
+    mMultiRenderer.setZoomRate(0.2f);
+    mMultiRenderer.setZoomEnabled(false, false);
+    mMultiRenderer.setMarginsColor(Color.argb(0x00, 0xff, 0x00, 0x00));
+    mMultiRenderer.setLegendTextSize(30);
+    mMultiRenderer.setChartTitleTextSize(30);
+    mMultiRenderer.setAxisTitleTextSize(30);
+    mMultiRenderer.setLabelsTextSize(40);
+    mMultiRenderer.setFitLegend(true);
+    mMultiRenderer.setShowGrid(false);
+    mMultiRenderer.setZoomEnabled(false);
+    mMultiRenderer.setExternalZoomEnabled(false);
+    mMultiRenderer.setAntialiasing(true);
+    mMultiRenderer.setInScroll(false);
+    mMultiRenderer.setShowLegend(false);
+    mMultiRenderer.setLegendHeight(30);
+    mMultiRenderer.setXLabelsAlign(Paint.Align.CENTER);
+    //mMultiRenderer.setYLabelsAlign(Paint.Align.LEFT);
 
-    multiRenderer.setYAxisAlign(Paint.Align.LEFT, 0);
-    multiRenderer.setYLabelsAlign(Paint.Align.LEFT, 0);
-    multiRenderer.setYLabelsColor(0, defaultColor);
-    multiRenderer.setXLabelsColor(defaultColor);
-    multiRenderer.setLabelsColor(defaultColor);
-    multiRenderer.setGridColor(defaultColor);
-    multiRenderer.setAxesColor(defaultColor);
+    mMultiRenderer.setYAxisAlign(Paint.Align.LEFT, 0);
+    mMultiRenderer.setYLabelsAlign(Paint.Align.LEFT, 0);
+    mMultiRenderer.setYLabelsColor(0, defaultColor);
+    mMultiRenderer.setXLabelsColor(defaultColor);
+    mMultiRenderer.setLabelsColor(defaultColor);
+    mMultiRenderer.setGridColor(defaultColor);
+    mMultiRenderer.setAxesColor(defaultColor);
 
-    multiRenderer.setYLabels(10);
+    mMultiRenderer.setYLabels(10);
     //setting used to move the graph on xaxiz to .5 to the right
-    multiRenderer.setXAxisMin(-.5);
+    mMultiRenderer.setXAxisMin(-.5);
     //setting bar size or space between two bars
-    multiRenderer.setBarSpacing(0.5);
+    mMultiRenderer.setBarSpacing(0.5);
     //Setting background color of the graph to transparent
-    multiRenderer.setBackgroundColor(Color.TRANSPARENT);
-    multiRenderer.setApplyBackgroundColor(true);
+    mMultiRenderer.setBackgroundColor(Color.TRANSPARENT);
+    mMultiRenderer.setApplyBackgroundColor(true);
     //setting the margin size for the graph in the order top, left, bottom, right
-    multiRenderer.setMargins(new int[]{30, 30, 30, 30});
+    mMultiRenderer.setMargins(new int[]{30, 30, 30, 30});
 
-    if(currentView != CurrentView.DETAIL) {
-      multiRenderer.setChartTitle("");
-      multiRenderer.setXTitle(title);
+    if(mCurrentView != CurrentView.DETAIL) {
+      mMultiRenderer.setChartTitle("");
+      mMultiRenderer.setXTitle(title);
     } else {
-      multiRenderer.setChartTitle(title);
-      multiRenderer.setXTitle("");
+      mMultiRenderer.setChartTitle(title);
+      mMultiRenderer.setXTitle("");
     }
-    multiRenderer.setChartTitleTextSize(40);
-    multiRenderer.setYTitle(legendHours == null ? "" : legendHours);
+    mMultiRenderer.setChartTitleTextSize(40);
+    mMultiRenderer.setYTitle(legendHours == null ? "" : legendHours);
   }
 
   /**
@@ -389,16 +389,16 @@ public class StatisticsFragment extends Fragment implements View.OnClickListener
    * @param values Bars value.
    */
   private void drawBarChart(final int width, final String title, final String legendHours, final @NonNull Map<Integer, ChartEntry> values) {
-    if(datasetBar != null)
-      datasetBar.clear();
+    if(mDatasetBar != null)
+      mDatasetBar.clear();
     initMultiRender(title, legendHours);
 
-    datasetBar = new XYMultipleSeriesDataset();
+    mDatasetBar = new XYMultipleSeriesDataset();
 
     SortedSet<Integer> keys = new TreeSet<>(values.keySet());
     //setting max values to be display in x axis
-    multiRenderer.setXAxisMax(keys.size() + 1);
-    multiRenderer.setBarWidth((int) getPercentOf(width / multiRenderer.getXAxisMax(), 35));
+    mMultiRenderer.setXAxisMax(keys.size() + 1);
+    mMultiRenderer.setBarWidth((int) getPercentOf(width / mMultiRenderer.getXAxisMax(), 35));
     int i = 1;
     double max = 0.0, min = Double.MAX_VALUE;
 
@@ -443,7 +443,7 @@ public class StatisticsFragment extends Fragment implements View.OnClickListener
         seriesIdx++;
       }
 
-      multiRenderer.addXTextLabel(i, ce.x_label);
+      mMultiRenderer.addXTextLabel(i, ce.x_label);
       if (ce.dover >= ce.dwork) {
         if (max < ce.dover) max = ce.dover;
         if (min > ce.dwork) min = ce.dwork;
@@ -457,45 +457,45 @@ public class StatisticsFragment extends Fragment implements View.OnClickListener
     int orientation = getActivity().getResources().getConfiguration().orientation;
     int offsetPercent = orientation == Configuration.ORIENTATION_PORTRAIT ? 3 : 6;
     for (AnnotationEntry ae : annotations) {
-      datasetBar.getSeriesAt(ae.idx).addAnnotation(ae.annotation, ae.x, ae.y + getPercentOf(max, offsetPercent));
+      mDatasetBar.getSeriesAt(ae.idx).addAnnotation(ae.annotation, ae.x, ae.y + getPercentOf(max, offsetPercent));
     }
 
     //setting min max values to be display in y axis +- 10%
-    multiRenderer.setYAxisMax(max + getPercentOf(max, 10));
-    if (currentView == CurrentView.DAYS || currentView == CurrentView.WEEKS || currentView == CurrentView.MONTHS)
-      multiRenderer.setYAxisMin(0);
+    mMultiRenderer.setYAxisMax(max + getPercentOf(max, 10));
+    if (mCurrentView == CurrentView.DAYS || mCurrentView == CurrentView.WEEKS || mCurrentView == CurrentView.MONTHS)
+      mMultiRenderer.setYAxisMin(0);
     else
-      multiRenderer.setYAxisMin(min - getPercentOf(min, 10));
+      mMultiRenderer.setYAxisMin(min - getPercentOf(min, 10));
 
-    BarChart bchart = new BarChart(datasetBar, multiRenderer, BarChart.Type.STACKED);
-    chartView = new GraphicalView(getContext(), bchart);
+    BarChart bchart = new BarChart(mDatasetBar, mMultiRenderer, BarChart.Type.STACKED);
+    mChartView = new GraphicalView(getContext(), bchart);
 
-    multiRenderer.setSelectableBuffer(100);
-    chartView.setOnClickListener((v) -> {
+    mMultiRenderer.setSelectableBuffer(100);
+    mChartView.setOnClickListener((v) -> {
       // handle the click event on the chart
-      SeriesSelection seriesSelection = chartView.getCurrentSeriesAndPoint();
+      SeriesSelection seriesSelection = mChartView.getCurrentSeriesAndPoint();
       if (seriesSelection == null) {
         Log.e(getClass().getSimpleName(), "No chart element");
       } else {
         int x = ((int) seriesSelection.getXValue()) - 1;
-        if (currentView == CurrentView.YEARS) {
-          currentView = CurrentView.MONTHS;
-          currentYearIndex = x;
-        } else if (currentView == CurrentView.MONTHS) {
-          currentView = CurrentView.WEEKS;
-          currentMonthIndex = x;
-        } else if (currentView == CurrentView.WEEKS) {
-          currentView = CurrentView.DAYS;
-          currentWeekIndex = x;
-        } else if (currentView == CurrentView.DAYS) {
-          currentView = CurrentView.DETAIL;
-          currentDayIndex = x;
+        if (mCurrentView == CurrentView.YEARS) {
+          mCurrentView = CurrentView.MONTHS;
+          mCurrentYearIndex = x;
+        } else if (mCurrentView == CurrentView.MONTHS) {
+          mCurrentView = CurrentView.WEEKS;
+          mCurrentMonthIndex = x;
+        } else if (mCurrentView == CurrentView.WEEKS) {
+          mCurrentView = CurrentView.DAYS;
+          mCurrentWeekIndex = x;
+        } else if (mCurrentView == CurrentView.DAYS) {
+          mCurrentView = CurrentView.DETAIL;
+          mCurrentDayIndex = x;
         } else return;
         redrawChart();
       }
     });
 
-    chartContainer.addView(chartView);
+    mChartContainer.addView(mChartView);
   }
 
   /**
@@ -523,26 +523,26 @@ public class StatisticsFragment extends Fragment implements View.OnClickListener
       addPieChartEntry(dataset, cp, getString(R.string.statistics_break), toDouble(ce.pause));
       addPieChartEntry(dataset, ca, getString(R.string.statistics_afternoon), toDouble(ce.afternoon));
     }
-    PieChart pchart = new PieChart(dataset, multiRenderer);
-    chartView = new GraphicalView(getContext(), pchart);
-    multiRenderer.setSelectableBuffer(3);
-    chartView.setOnClickListener((v) -> {
+    PieChart pchart = new PieChart(dataset, mMultiRenderer);
+    mChartView = new GraphicalView(getContext(), pchart);
+    mMultiRenderer.setSelectableBuffer(3);
+    mChartView.setOnClickListener((v) -> {
       // handle the click event on the chart
-      SeriesSelection seriesSelection = chartView.getCurrentSeriesAndPoint();
+      SeriesSelection seriesSelection = mChartView.getCurrentSeriesAndPoint();
       if (seriesSelection == null) {
         Log.e(getClass().getSimpleName(), "No chart element");
       } else {
         int idx = seriesSelection.getPointIndex();
-        SimpleSeriesRenderer ssr = multiRenderer.getSeriesRendererAt(idx);
+        SimpleSeriesRenderer ssr = mMultiRenderer.getSeriesRendererAt(idx);
         ssr.setHighlighted(!ssr.isHighlighted());
         if(!ssr.isHighlighted())
           dataset.set(idx, titles[idx], seriesSelection.getValue());
         else
           dataset.set(idx, fromDouble(seriesSelection.getValue()), seriesSelection.getValue());
-        chartView.invalidate();
+        mChartView.invalidate();
       }
     });
-    chartContainer.addView(chartView);
+    mChartContainer.addView(mChartView);
   }
 
   /**
@@ -573,8 +573,8 @@ public class StatisticsFragment extends Fragment implements View.OnClickListener
     renderer.setDisplayChartValues(false);
     XYSeries series = new XYSeries(""+key);
     series.add(index, value);
-    datasetBar.addSeries(series);
-    multiRenderer.addSeriesRenderer(renderer);
+    mDatasetBar.addSeries(series);
+    mMultiRenderer.addSeriesRenderer(renderer);
   }
 
   /**
@@ -591,8 +591,8 @@ public class StatisticsFragment extends Fragment implements View.OnClickListener
     dataset.add(category, value);
     renderer.setHighlighted(false);
     renderer.setChartValuesFormat(NumberFormat.getPercentInstance());// Setting percentage
-    multiRenderer.setChartTitleTextSize(30);
-    multiRenderer.addSeriesRenderer(renderer);
+    mMultiRenderer.setChartTitleTextSize(30);
+    mMultiRenderer.addSeriesRenderer(renderer);
   }
 
 }

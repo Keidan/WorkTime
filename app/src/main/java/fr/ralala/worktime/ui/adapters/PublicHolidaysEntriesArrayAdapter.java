@@ -32,10 +32,10 @@ import fr.ralala.worktime.ui.utils.UIHelper;
  */
 public class PublicHolidaysEntriesArrayAdapter extends ArrayAdapter<DayEntry> {
 
-  private Context c = null;
-  private int id = 0;
-  private List<DayEntry> items = null;
-  private SimpleEntriesArrayAdapterMenuListener<DayEntry> listener = null;
+  private Context mContext = null;
+  private int mId = 0;
+  private List<DayEntry> mItems = null;
+  private SimpleEntriesArrayAdapterMenuListener<DayEntry> mListener = null;
 
   private class ViewHolder {
     TextView name;
@@ -54,10 +54,10 @@ public class PublicHolidaysEntriesArrayAdapter extends ArrayAdapter<DayEntry> {
                                            final List<DayEntry> objects,
                                            final SimpleEntriesArrayAdapterMenuListener<DayEntry> listener) {
     super(context, textViewResourceId, objects);
-    this.c = context;
-    this.id = textViewResourceId;
-    this.items = objects;
-    this.listener = listener;
+    mContext = context;
+    mId = textViewResourceId;
+    mItems = objects;
+    mListener = listener;
   }
 
   /**
@@ -67,7 +67,7 @@ public class PublicHolidaysEntriesArrayAdapter extends ArrayAdapter<DayEntry> {
    */
   @Override
   public DayEntry getItem(final int i) {
-    return items.get(i);
+    return mItems.get(i);
   }
 
   /**
@@ -83,9 +83,9 @@ public class PublicHolidaysEntriesArrayAdapter extends ArrayAdapter<DayEntry> {
     View v = convertView;
     ViewHolder holder;
     if (v == null) {
-      final LayoutInflater vi = (LayoutInflater) c.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+      final LayoutInflater vi = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
       assert vi != null;
-      v = vi.inflate(id, null);
+      v = vi.inflate(mId, null);
       holder = new ViewHolder();
       holder.name = v.findViewById(R.id.name);
       holder.info = v.findViewById(R.id.info);
@@ -96,7 +96,7 @@ public class PublicHolidaysEntriesArrayAdapter extends ArrayAdapter<DayEntry> {
       holder = (ViewHolder) v.getTag();
     }
 
-    final DayEntry t = items.get(position);
+    final DayEntry t = mItems.get(position);
     if (t != null) {
       if (holder.name != null)
         holder.name.setText(t.getName());
@@ -114,7 +114,7 @@ public class PublicHolidaysEntriesArrayAdapter extends ArrayAdapter<DayEntry> {
         holder.menu.setOnClickListener((vv) -> {
           switch (vv.getId()) {
             case R.id.menu:
-              final PopupMenu popup = new PopupMenu(c, vv);
+              final PopupMenu popup = new PopupMenu(mContext, vv);
               /* Force the icons display */
               UIHelper.forcePopupMenuIcons(popup);
               popup.getMenuInflater().inflate(R.menu.popup_listview_edit_delete,
@@ -122,10 +122,10 @@ public class PublicHolidaysEntriesArrayAdapter extends ArrayAdapter<DayEntry> {
               /* Init the default behaviour */
               popup.show();
               popup.setOnMenuItemClickListener((item) -> {
-                if (listener != null && R.id.edit == item.getItemId())
-                  listener.onMenuEdit(t);
-                else if (listener != null && R.id.delete == item.getItemId())
-                  listener.onMenuDelete(t);
+                if (mListener != null && R.id.edit == item.getItemId())
+                  mListener.onMenuEdit(t);
+                else if (mListener != null && R.id.delete == item.getItemId())
+                  mListener.onMenuDelete(t);
                 return true;
               });
               break;

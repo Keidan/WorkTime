@@ -19,9 +19,9 @@ import fr.ralala.worktime.R;
  *******************************************************************************
  */
 public class TimePreferenceDialog extends DialogPreference {
-  private int lastHour=0;
-  private int lastMinute=0;
-  private TimePicker picker=null;
+  private int mLastHour=0;
+  private int mLastMinute=0;
+  private TimePicker mPicker=null;
 
   /**
    * Extract the hours part of the time (00:00)
@@ -60,9 +60,9 @@ public class TimePreferenceDialog extends DialogPreference {
    */
   @Override
   protected View onCreateDialogView() {
-    picker = new TimePicker(getContext());
-    picker.setIs24HourView(true);
-    return picker;
+    mPicker = new TimePicker(getContext());
+    mPicker.setIs24HourView(true);
+    return mPicker;
   }
 
   /**
@@ -72,8 +72,8 @@ public class TimePreferenceDialog extends DialogPreference {
   @Override
   protected void onBindDialogView(View v) {
     super.onBindDialogView(v);
-    picker.setHour(lastHour);
-    picker.setMinute(lastMinute);
+    mPicker.setHour(mLastHour);
+    mPicker.setMinute(mLastMinute);
   }
 
   /**
@@ -85,10 +85,10 @@ public class TimePreferenceDialog extends DialogPreference {
     super.onDialogClosed(positiveResult);
 
     if (positiveResult) {
-      lastHour=picker.getHour();
-      lastMinute=picker.getMinute();
+      mLastHour=mPicker.getHour();
+      mLastMinute=mPicker.getMinute();
 
-      String time=String.valueOf(lastHour)+":"+String.valueOf(lastMinute);
+      String time=String.valueOf(mLastHour)+":"+String.valueOf(mLastMinute);
 
       if (callChangeListener(time)) {
         persistString(time);
@@ -126,7 +126,7 @@ public class TimePreferenceDialog extends DialogPreference {
       time=defaultValue.toString();
     }
 
-    lastHour=getHour(time);
-    lastMinute=getMinute(time);
+    mLastHour=getHour(time);
+    mLastMinute=getMinute(time);
   }
 }

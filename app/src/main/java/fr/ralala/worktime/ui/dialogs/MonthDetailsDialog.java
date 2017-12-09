@@ -37,9 +37,9 @@ import fr.ralala.worktime.utils.AndroidHelper;
  */
 public class MonthDetailsDialog implements DialogInterface.OnClickListener {
 
-  private Activity activity = null;
-  private MainApplication app = null;
-  private AlertDialog alertDialog = null;
+  private Activity mActivity = null;
+  private MainApplication mApp = null;
+  private AlertDialog mAlertDialog = null;
 
   private class Item {
     List<DayEntry> wDays = new ArrayList<>();
@@ -54,8 +54,8 @@ public class MonthDetailsDialog implements DialogInterface.OnClickListener {
    * @param app The main application.
    */
   public MonthDetailsDialog(final Activity activity, final MainApplication app) {
-    this.activity = activity;
-    this.app = app;
+    mActivity = activity;
+    mApp = app;
   }
 
   /**
@@ -64,12 +64,12 @@ public class MonthDetailsDialog implements DialogInterface.OnClickListener {
    * @param year The selected year.
    */
   public void reloadDetails(int month, int year) {
-    final String currency = app.getCurrency();
-    Resources r = activity.getResources();
+    final String currency = mApp.getCurrency();
+    Resources r = mActivity.getResources();
     /* Crete the dialog builder and set the title */
-    AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(activity);
+    AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(mActivity);
     dialogBuilder.setTitle(AndroidHelper.getMonthString(month) + " " + year);
-    GridLayout gl = new GridLayout(activity);
+    GridLayout gl = new GridLayout(mActivity);
     gl.setPadding(
       r.getDimensionPixelOffset(R.dimen.activity_horizontal_margin),
       r.getDimensionPixelOffset(R.dimen.activity_vertical_margin),
@@ -92,7 +92,7 @@ public class MonthDetailsDialog implements DialogInterface.OnClickListener {
     ctime.set(Calendar.YEAR, year);
     ctime.set(Calendar.MONTH, month);
     ctime.set(Calendar.DAY_OF_MONTH, 1);
-    Map<String, DayEntry> map = app.getDaysFactory().toDaysMap();
+    Map<String, DayEntry> map = mApp.getDaysFactory().toDaysMap();
     int maxDay = ctime.getMaximum(Calendar.DATE);
     @SuppressLint("UseSparseArrays") Map<Integer, Item> weeks = new HashMap<>();
     for(int day = 1; day <= maxDay; ++day) {
@@ -114,7 +114,7 @@ public class MonthDetailsDialog implements DialogInterface.OnClickListener {
     for(int idx = 0; idx < keys.size();++idx, ++row) {
       Integer w = keys.get(idx);
       Item i = weeks.get(w);
-      WorkTimeDay wtdEstimatedHours = app.getEstimatedHours(i.wDays);
+      WorkTimeDay wtdEstimatedHours = mApp.getEstimatedHours(i.wDays);
       WorkTimeDay wtdOver = i.w.clone().delTime(wtdEstimatedHours);
       totalWage += i.wage;
       addRow(r, gl, row, w,
@@ -127,8 +127,8 @@ public class MonthDetailsDialog implements DialogInterface.OnClickListener {
 
     /* attach the listeners and init the default values */
     dialogBuilder.setPositiveButton(R.string.ok, this);
-    if(alertDialog != null && alertDialog.isShowing()) alertDialog.dismiss();
-    alertDialog = dialogBuilder.create();
+    if(mAlertDialog != null && mAlertDialog.isShowing()) mAlertDialog.dismiss();
+    mAlertDialog = dialogBuilder.create();
   }
 
   /**
@@ -145,7 +145,7 @@ public class MonthDetailsDialog implements DialogInterface.OnClickListener {
   private void addRow(Resources r, GridLayout gl, int row, int week, String wt, String ot, double wage, String currency) {
     GridLayout.LayoutParams param;
     for(int j = 0; j < 6; ++j) {
-      TextView tvWeek = new TextView(activity);
+      TextView tvWeek = new TextView(mActivity);
       param =new GridLayout.LayoutParams();
       param.height = GridLayout.LayoutParams.WRAP_CONTENT;
       param.width = GridLayout.LayoutParams.WRAP_CONTENT;
@@ -174,7 +174,7 @@ public class MonthDetailsDialog implements DialogInterface.OnClickListener {
       else if (j == 4) {
           tvWeek.setText(") ");
           tvWeek.setGravity(Gravity.START);
-      } else if (!app.isHideWage() && j == 5) {
+      } else if (!mApp.isHideWage() && j == 5) {
         tvWeek.setText(String.format(Locale.US, "%.02f%s", wage, currency));
       }
       gl.addView(tvWeek);
@@ -185,7 +185,7 @@ public class MonthDetailsDialog implements DialogInterface.OnClickListener {
    * Opens the dialog.
    */
   public void open() {
-    alertDialog.show();
+    mAlertDialog.show();
   }
 
   /**
