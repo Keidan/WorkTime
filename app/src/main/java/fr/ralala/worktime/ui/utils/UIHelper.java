@@ -4,11 +4,7 @@ import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
 import android.graphics.LinearGradient;
-import android.graphics.Paint;
-import android.graphics.RectF;
 import android.graphics.Shader;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -18,10 +14,7 @@ import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.RectShape;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,42 +41,6 @@ import fr.ralala.worktime.models.WorkTimeDay;
  *******************************************************************************
  */
 public class UIHelper {
-  /**
-   * Called by ItemTouchHelper on RecyclerView's onDraw callback.
-   * @param activity An activity instance.
-   * @param paint The paint instance.
-   * @param c The canvas which RecyclerView is drawing its children.
-   * @param viewHolder The ViewHolder which is being interacted by the User or it was interacted and simply animating to its original position.
-   * @param dX The amount of horizontal displacement caused by user's action.
-   * @param actionState The type of interaction on the View. Is either ACTION_STATE_DRAG or ACTION_STATE_SWIPE.
-   */
-  public static void onRecyclerViewChildDrawWithEditAndDelete(Activity activity, Paint paint, Canvas c, RecyclerView.ViewHolder viewHolder, float dX, int actionState) {
-    Bitmap icon;
-    if(actionState == ItemTouchHelper.ACTION_STATE_SWIPE){
-      View itemView = viewHolder.itemView;
-      float height = (float) itemView.getBottom() - (float) itemView.getTop();
-      float width = height / 5;
-      if(dX != 0) {
-        if (dX > 0) {
-          viewHolder.itemView.setTranslationX(dX / 5);
-          paint.setColor(ResourcesCompat.getColor(activity.getResources(), R.color.item_edit, activity.getTheme()));
-          RectF background = new RectF((float) itemView.getLeft() + dX / 5, (float) itemView.getTop(), (float) itemView.getLeft(), (float) itemView.getBottom());
-          c.drawRect(background, paint);
-          icon = BitmapFactory.decodeResource(activity.getResources(), R.mipmap.ic_edit);
-          RectF icon_dest = new RectF((itemView.getLeft() + dX / 7), (float) itemView.getTop() + width, (float) itemView.getLeft() + dX / 20, (float) itemView.getBottom() - width);
-          c.drawBitmap(icon, null, icon_dest, paint);
-        } else {
-          viewHolder.itemView.setTranslationX(dX / 5);
-          paint.setColor(ResourcesCompat.getColor(activity.getResources(), R.color.item_delete, activity.getTheme()));
-          RectF background = new RectF((float) itemView.getRight() + dX / 5, (float) itemView.getTop(), (float) itemView.getRight(), (float) itemView.getBottom());
-          c.drawRect(background, paint);
-          icon = BitmapFactory.decodeResource(activity.getResources(), R.mipmap.ic_delete);
-          RectF icon_dest = new RectF((itemView.getRight() + dX / 7), (float) itemView.getTop() + width, (float) itemView.getRight() + dX / 20, (float) itemView.getBottom() - width);
-          c.drawBitmap(icon, null, icon_dest, paint);
-        }
-      }
-    }
-  }
 
   /**
    * Displays a progress dialog.
@@ -184,10 +141,9 @@ public class UIHelper {
    * @param c The Android context.
    * @param message The dialog message.
    * @param yes Listener used when the 'yes' button is clicked.
-   * @param no Listener used when the 'no' button is clicked.
    */
   public static void showConfirmDialog(final Context c,
-                                       String message, final android.view.View.OnClickListener yes, final android.view.View.OnClickListener no) {
+                                       String message, final android.view.View.OnClickListener yes) {
     new AlertDialog.Builder(c)
         .setCancelable(false)
         .setMessage(message)
@@ -195,7 +151,6 @@ public class UIHelper {
           if(yes != null) yes.onClick(null);
         })
         .setNegativeButton(android.R.string.no, (dialog, whichButton) -> {
-          if(no != null) no.onClick(null);
         }).show();
   }
 
