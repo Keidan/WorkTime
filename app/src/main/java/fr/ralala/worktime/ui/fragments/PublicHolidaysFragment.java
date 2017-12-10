@@ -3,6 +3,7 @@ package fr.ralala.worktime.ui.fragments;
 
 import android.app.Activity;
 import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -38,6 +39,7 @@ public class PublicHolidaysFragment extends Fragment implements View.OnClickList
   private MainApplication mApp = null;
   private RecyclerView mRecyclerView;
   private Activity mActivity;
+  private Paint mPaint = new Paint();
 
   /**
    * Called when the fragment is created.
@@ -158,7 +160,7 @@ public class PublicHolidaysFragment extends Fragment implements View.OnClickList
         if (direction == ItemTouchHelper.LEFT){
           final DayEntry de = mAdapter.getItem(position);
           if(de == null) return;
-          UIHelper.showConfirmDialog(getActivity(), false,
+          UIHelper.showConfirmDialog(getActivity(),
               (getString(R.string.delete_public_holiday) + " '" + de.getName() + "'" + getString(R.string.help)),
               (v) -> {
                 mAdapter.removeItem(de);
@@ -189,8 +191,8 @@ public class PublicHolidaysFragment extends Fragment implements View.OnClickList
        */
       @Override
       public void onChildDraw(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
-        UIHelper.onRecyclerViewChildDrawWithEditAndDelete(mActivity, c, viewHolder, dX, actionState);
-        super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
+        UIHelper.onRecyclerViewChildDrawWithEditAndDelete(mActivity, mPaint, c, viewHolder, dX, actionState);
+        //super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
       }
     };
     ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);

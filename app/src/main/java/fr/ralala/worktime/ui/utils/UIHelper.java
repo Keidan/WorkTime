@@ -48,62 +48,38 @@ import fr.ralala.worktime.models.WorkTimeDay;
  *******************************************************************************
  */
 public class UIHelper {
-
-  /**
-   * Returns the view width.
-   * @param view The view.
-   * @return float
-   */
-  private static float getViewWidth(View view) {
-    return Math.abs((float) view.getRight() - (float) view.getLeft());
-  }
-
-  /**
-   * Returns percent of the view width.
-   * @param view The view.
-   * @param percent The percent value.
-   * @return float
-   */
-  private static float percentWidthOf(View view, float percent) {
-    return getViewWidth(view)*(percent/100.0f);
-  }
-
   /**
    * Called by ItemTouchHelper on RecyclerView's onDraw callback.
    * @param activity An activity instance.
+   * @param paint The paint instance.
    * @param c The canvas which RecyclerView is drawing its children.
    * @param viewHolder The ViewHolder which is being interacted by the User or it was interacted and simply animating to its original position.
    * @param dX The amount of horizontal displacement caused by user's action.
    * @param actionState The type of interaction on the View. Is either ACTION_STATE_DRAG or ACTION_STATE_SWIPE.
    */
-  public static void onRecyclerViewChildDrawWithEditAndDelete(Activity activity, Canvas c, RecyclerView.ViewHolder viewHolder, float dX, int actionState) {
+  public static void onRecyclerViewChildDrawWithEditAndDelete(Activity activity, Paint paint, Canvas c, RecyclerView.ViewHolder viewHolder, float dX, int actionState) {
     Bitmap icon;
-    float percent = 11.f;
-    final Paint paint = new Paint();
     if(actionState == ItemTouchHelper.ACTION_STATE_SWIPE){
       View itemView = viewHolder.itemView;
       float height = (float) itemView.getBottom() - (float) itemView.getTop();
-      float width = height / 3;
+      float width = height / 5;
       if(dX != 0) {
         if (dX > 0) {
+          viewHolder.itemView.setTranslationX(dX / 5);
           paint.setColor(ResourcesCompat.getColor(activity.getResources(), R.color.item_edit, activity.getTheme()));
-          RectF background = new RectF((float) itemView.getLeft(), (float) itemView.getTop(), dX, (float) itemView.getBottom());
+          RectF background = new RectF((float) itemView.getLeft() + dX / 5, (float) itemView.getTop(), (float) itemView.getLeft(), (float) itemView.getBottom());
           c.drawRect(background, paint);
-          if(background.right >= percentWidthOf(itemView, percent)) {
-            icon = BitmapFactory.decodeResource(activity.getResources(), R.mipmap.ic_edit);
-            RectF icon_dest = new RectF((float) itemView.getLeft() + width, (float) itemView.getTop() + width, (float) itemView.getLeft() + 2 * width, (float) itemView.getBottom() - width);
-            c.drawBitmap(icon, null, icon_dest, paint);
-          }
+          icon = BitmapFactory.decodeResource(activity.getResources(), R.mipmap.ic_edit);
+          RectF icon_dest = new RectF((itemView.getLeft() + dX / 7), (float) itemView.getTop() + width, (float) itemView.getLeft() + dX / 20, (float) itemView.getBottom() - width);
+          c.drawBitmap(icon, null, icon_dest, paint);
         } else {
+          viewHolder.itemView.setTranslationX(dX / 5);
           paint.setColor(ResourcesCompat.getColor(activity.getResources(), R.color.item_delete, activity.getTheme()));
-          RectF background = new RectF((float) itemView.getRight() + dX, (float) itemView.getTop(), (float) itemView.getRight(), (float) itemView.getBottom());
+          RectF background = new RectF((float) itemView.getRight() + dX / 5, (float) itemView.getTop(), (float) itemView.getRight(), (float) itemView.getBottom());
           c.drawRect(background, paint);
-          float max = getViewWidth(itemView);
-          if(max - background.left >= percentWidthOf(itemView, percent)) {
-            icon = BitmapFactory.decodeResource(activity.getResources(), R.mipmap.ic_delete);
-            RectF icon_dest = new RectF((float) itemView.getRight() - 2 * width, (float) itemView.getTop() + width, (float) itemView.getRight() - width, (float) itemView.getBottom() - width);
-            c.drawBitmap(icon, null, icon_dest, paint);
-          }
+          icon = BitmapFactory.decodeResource(activity.getResources(), R.mipmap.ic_delete);
+          RectF icon_dest = new RectF((itemView.getRight() + dX / 7), (float) itemView.getTop() + width, (float) itemView.getRight() + dX / 20, (float) itemView.getBottom() - width);
+          c.drawBitmap(icon, null, icon_dest, paint);
         }
       }
     }
@@ -206,15 +182,14 @@ public class UIHelper {
   /**
    * Displays a confirm dialog.
    * @param c The Android context.
-   * @param cancelable Cancelable state.
    * @param message The dialog message.
    * @param yes Listener used when the 'yes' button is clicked.
    * @param no Listener used when the 'no' button is clicked.
    */
-  public static void showConfirmDialog(final Context c, boolean cancelable,
+  public static void showConfirmDialog(final Context c,
                                        String message, final android.view.View.OnClickListener yes, final android.view.View.OnClickListener no) {
     new AlertDialog.Builder(c)
-        .setCancelable(cancelable)
+        .setCancelable(false)
         .setMessage(message)
         .setPositiveButton(android.R.string.yes, (dialog, whichButton) -> {
           if(yes != null) yes.onClick(null);
