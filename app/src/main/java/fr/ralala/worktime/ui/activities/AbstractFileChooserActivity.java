@@ -4,10 +4,12 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.StringTokenizer;
 
 
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -30,6 +32,9 @@ import fr.ralala.worktime.ui.utils.UIHelper;
  *******************************************************************************
  */
 public abstract class AbstractFileChooserActivity extends AppCompatActivity implements AdapterView.OnItemClickListener{
+  private static final int SIZE_1KB = 0x400;
+  private static final int SIZE_1MB = 0x100000;
+  private static final int SIZE_1GB = 0x40000000;
   public static final String FILECHOOSER_TYPE_KEY = "type";
   public static final String FILECHOOSER_TITLE_KEY = "title";
   public static final String FILECHOOSER_MESSAGE_KEY = "message";
@@ -137,14 +142,16 @@ public abstract class AbstractFileChooserActivity extends AppCompatActivity impl
     this.setTitle(f.getAbsolutePath());
     final List<FileChooserOption> dir = new ArrayList<>();
     final List<FileChooserOption> fls = new ArrayList<>();
+    int ic_folder = UIHelper.getResIdFromAttribute(this, R.attr.ic_folder);
+    int ic_file = UIHelper.getResIdFromAttribute(this, R.attr.ic_file);
     try {
       for (final File ff : dirs) {
         if (ff.isDirectory())
-          dir.add(new FileChooserOption(ff.getName(), "Folder", ff.getAbsolutePath(), getResources().getDrawable(R.mipmap.ic_folder)));
+          dir.add(new FileChooserOption(ff.getName(), "Folder", ff.getAbsolutePath(), ContextCompat.getDrawable(this, ic_folder)));
         else if(mShow != FILECHOOSER_SHOW_DIRECTORY_ONLY) {
           if(isFiltered(ff))
-            fls.add(new FileChooserOption(ff.getName(), "File Size: " + ff.length(), ff
-                .getAbsolutePath(), getResources().getDrawable(R.mipmap.ic_file)));
+            fls.add(new FileChooserOption(ff.getName(), "File Size: " + getSizeToHuman(ff.length()), ff
+                .getAbsolutePath(), ContextCompat.getDrawable(this, ic_file)));
         }
       }
     } catch (final Exception e) {
@@ -160,6 +167,26 @@ public abstract class AbstractFileChooserActivity extends AppCompatActivity impl
         new FileChooserOption("..", "Parent Directory", f.getParent(), getResources().getDrawable(R.mipmap.ic_folder)));
     mAdapter = new FileChooserArrayAdapter(AbstractFileChooserActivity.this, R.layout.file_view, dir);
     mListview.setAdapter(mAdapter);
+  }
+
+
+
+  /**
+   * Converts the value to human representation.
+   * @param length The value to convert.
+   * @return String
+   */
+  private String getSizeToHuman(long length) {
+    String sf;
+    if (length < 1000) {
+      sf = String.format(Locale.US, "%d octet%s", length, length > 1 ? "s" : "");
+    } else if (length < 1000000)
+      sf = String.format(Locale.US, "%.02f", ((float) length / (float)SIZE_1KB)) + " Ko";
+    else if (length < 1000000000)
+      sf = String.format(Locale.US, "%.02f", ((float) length / (float)SIZE_1MB)) + " Mo";
+    else
+      sf = String.format(Locale.US, "%.02f", ((float) length / (float)SIZE_1GB)) + " Go";
+    return sf;
   }
 
   /**

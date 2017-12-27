@@ -6,6 +6,8 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="ic_file">@mipmap/ic_file</item>
+        <item name="ic_folder">@mipmap/ic_folder</item>
     </style>
 
     <style name="AppTheme.NoActionBar">

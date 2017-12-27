@@ -15,6 +15,7 @@ import android.graphics.drawable.shapes.RectShape;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,6 +42,20 @@ import fr.ralala.worktime.models.WorkTimeDay;
  *******************************************************************************
  */
 public class UIHelper {
+
+  /**
+   * Returns the res ID from the attrivutes.
+   * @param activity The context Activity.
+   * @param attr The attribute ID.
+   * @return int
+   */
+  public static int getResIdFromAttribute(final Activity activity, final int attr) {
+    if(attr==0)
+      return 0;
+    final TypedValue typedvalueattr = new TypedValue();
+    activity.getTheme().resolveAttribute(attr,typedvalueattr,true);
+    return typedvalueattr.resourceId;
+  }
 
   /**
    * Displays a progress dialog.
