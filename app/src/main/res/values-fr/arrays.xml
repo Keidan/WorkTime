@@ -1,97 +1,79 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <string-array name="month_long">
-        <item name="jan">Janvier</item>
-        <item name="feb">F\u00E9vrier</item>
-        <item name="mar">Mars</item>
-        <item name="apr">Avril</item>
-        <item name="may">Mai</item>
-        <item name="jun">Juin</item>
-        <item name="jul">Juillet</item>
-        <item name="aug">Ao\u00FBt</item>
-        <item name="sep">Septembre</item>
-        <item name="oct">Octobre</item>
-        <item name="nov">Novembre</item>
-        <item name="dec">D\u00E9cembre</item>
+        <item>Janvier</item>
+        <item>F\u00E9vrier</item>
+        <item>Mars</item>
+        <item>Avril</item>
+        <item>Mai</item>
+        <item>Juin</item>
+        <item>Juillet</item>
+        <item>Ao\u00FBt</item>
+        <item>Septembre</item>
+        <item>Octobre</item>
+        <item>Novembre</item>
+        <item>D\u00E9cembre</item>
     </string-array>
 
     <string-array name="month_short">
-        <item name="jan">Janv</item>
-        <item name="feb">F\u00E9vr</item>
-        <item name="mar">Mars</item>
-        <item name="apr">Avr</item>
-        <item name="may">Mai</item>
-        <item name="jun">Juin</item>
-        <item name="jul">Juil</item>
-        <item name="aug">Ao\u00FBt</item>
-        <item name="sep">Sept</item>
-        <item name="oct">Oct</item>
-        <item name="nov">Nov</item>
-        <item name="dec">D\u00E9c</item>
+        <item>Janv</item>
+        <item>F\u00E9vr</item>
+        <item>Mars</item>
+        <item>Avr</item>
+        <item>Mai</item>
+        <item>Juin</item>
+        <item>Juil</item>
+        <item>Ao\u00FBt</item>
+        <item>Sept</item>
+        <item>Oct</item>
+        <item>Nov</item>
+        <item>D\u00E9c</item>
     </string-array>
 
     <string-array name="month_letter">
-        <item name="jan">J</item>
-        <item name="feb">F</item>
-        <item name="mar">M</item>
-        <item name="apr">A</item>
-        <item name="may">M</item>
-        <item name="jun">J</item>
-        <item name="jul">J</item>
-        <item name="aug">A</item>
-        <item name="sep">S</item>
-        <item name="oct">O</item>
-        <item name="nov">N</item>
-        <item name="dec">D</item>
+        <item>J</item>
+        <item>F</item>
+        <item>M</item>
+        <item>A</item>
+        <item>M</item>
+        <item>J</item>
+        <item>J</item>
+        <item>A</item>
+        <item>S</item>
+        <item>O</item>
+        <item>N</item>
+        <item>D</item>
     </string-array>
 
     <string-array name="days_letter">
-        <item name="mon">L</item>
-        <item name="tue">M</item>
-        <item name="wed">M</item>
-        <item name="thu">J</item>
-        <item name="fri">V</item>
-        <item name="sat">S</item>
-        <item name="sun">D</item>
+        <item>L</item>
+        <item>M</item>
+        <item>M</item>
+        <item>J</item>
+        <item>V</item>
+        <item>S</item>
+        <item>D</item>
     </string-array>
 
     <string-array name="entries_fragments">
-        <item name="0">Acc\u00E8s rapide</item>
-        <item name="1">Temps de travail</item>
-        <item name="2">Profils</item>
-        <item name="3">Jours f\u00E9ri\u00E9s</item>
-        <item name="4">Exportation</item>
-        <item name="5">Graphiques</item>
-    </string-array>
-
-    <string-array name="values_fragments">
-        <item name="0">0</item>
-        <item name="1">1</item>
-        <item name="2">2</item>
-        <item name="3">3</item>
-        <item name="4">4</item>
-        <item name="5">5</item>
+        <item>Acc\u00E8s rapide</item>
+        <item>Temps de travail</item>
+        <item>Profils</item>
+        <item>Jours f\u00E9ri\u00E9s</item>
+        <item>Exportation</item>
+        <item>Graphiques</item>
     </string-array>
 
     <string-array name="entries_periodicity">
-        <item name="0">Tous les jours</item>
-        <item name="1">Lundi</item>
-        <item name="2">Mardi</item>
-        <item name="3">Mercredi</item>
-        <item name="4">Jeudi</item>
-        <item name="5">Vendredi</item>
-        <item name="6">Samedi</item>
-        <item name="7">Dimanche</item>
+        <item>Tous les jours</item>
+        <item>Lundi</item>
+        <item>Mardi</item>
+        <item>Mercredi</item>
+        <item>Jeudi</item>
+        <item>Vendredi</item>
+        <item>Samedi</item>
+        <item>Dimanche</item>
     </string-array>
 
-    <string-array name="values_periodicity">
-        <item name="0">0</item>
-        <item name="1">1</item>
-        <item name="2">2</item>
-        <item name="3">3</item>
-        <item name="4">4</item>
-        <item name="5">5</item>
-        <item name="6">6</item>
-        <item name="7">7</item>
-    </string-array>
 </resources>
