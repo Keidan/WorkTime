@@ -51,7 +51,6 @@ public class MainApplication extends Application  {
   private Calendar mCurrentDate = null;
   private boolean mQuickAccessPause = true;
   private QuickAccessNotification mQuickAccessNotification = null;
-  private boolean mResumeAfterActivity = false;
   private int mLastFirstVisibleItem = 0;
   private DropboxImportExport mDropboxImportExport = null;
   private List<DayEntry> mOnloadProfiles = null;
@@ -61,6 +60,7 @@ public class MainApplication extends Application  {
   private WorkTimeDay mLastQuickAccessBreak = null;
   private long mLastWidgetOpen = 0L;
   private MyActivityLifecycleCallbacks mLifeCycle;
+  private DayEntry mLastAdded;
 
 
   public MainApplication() {
@@ -83,6 +83,23 @@ public class MainApplication extends Application  {
     Class<?>[] classes = new Class<?>[] { MainActivity.class, DayActivity.class };
     registerActivityLifecycleCallbacks(mLifeCycle = new MyActivityLifecycleCallbacks(Arrays.asList(classes)));
   }
+
+  /**
+   * Sets the reference to the last added entry.
+   * @param de The DayEntry added.
+   */
+  public void setLastAdded(DayEntry de) {
+    mLastAdded = de;
+  }
+
+  /**
+   * Returns the reference to the last added entry.
+   * @return DayEntry
+   */
+  public DayEntry getLastAdded() {
+    return mLastAdded;
+  }
+
 
   /**
    * Returns the application ActivityLifecycleCallbacks
@@ -220,22 +237,6 @@ public class MainApplication extends Application  {
    */
   public boolean isQuickAccessPause() {
     return mQuickAccessPause;
-  }
-
-  /**
-   * Specifies if the automatic export service is resumed after the activity.
-   * @param resumeAfterActivity The new values.
-   */
-  public void setResumeAfterActivity(boolean resumeAfterActivity) {
-    mResumeAfterActivity = resumeAfterActivity;
-  }
-
-  /**
-   * Tests if the automatic export service is resumed after the activity.
-   * @return boolean
-   */
-  public boolean isResumeAfterActivity() {
-    return mResumeAfterActivity;
   }
 
   /**

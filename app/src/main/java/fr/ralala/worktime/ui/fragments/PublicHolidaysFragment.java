@@ -113,9 +113,10 @@ public class PublicHolidaysFragment extends Fragment implements View.OnClickList
   @Override
   public void onResume() {
     super.onResume();
-    if(mApp.isResumeAfterActivity()) {
-      mAdapter.notifyDataSetChanged();
-      mApp.setResumeAfterActivity(false);
+    DayEntry lastAdded = mApp.getLastAdded();
+    if(lastAdded != null) {
+      mAdapter.addItem(lastAdded);
+      mApp.setLastAdded(null);
     }
   }
 
@@ -125,7 +126,6 @@ public class PublicHolidaysFragment extends Fragment implements View.OnClickList
    */
   @Override
   public void onClick(View view) {
-    mApp.setResumeAfterActivity(true);
     PublicHolidayActivity.startActivity(getActivity(), "null");
   }
 
@@ -137,8 +137,7 @@ public class PublicHolidaysFragment extends Fragment implements View.OnClickList
   public void onClickEdit(int adapterPosition) {
     DayEntry de = mAdapter.getItem(adapterPosition);
     if(de == null) return;
-    mApp.setResumeAfterActivity(true);
-    PublicHolidayActivity.startActivity(getActivity(), de.getName());
+    PublicHolidayActivity.startActivity(getActivity(), de.getName() + "|" + de.getDay().dateString());
   }
 
   /**

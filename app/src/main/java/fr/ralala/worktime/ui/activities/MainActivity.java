@@ -240,7 +240,6 @@ public class MainActivity extends RuntimePermissionsActivity implements Navigati
         title = getString(R.string.work_time);
         break;
       case R.id.nav_settings:
-        mApp.setResumeAfterActivity(true);
         mFragments.setCurrentToFragment(-1);
         startActivity(new Intent(this, SettingsActivity.class));
         if(mDrawer != null) mDrawer.closeDrawer(GravityCompat.START);

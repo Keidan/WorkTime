@@ -418,8 +418,10 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
           mApp.getDaysFactory().remove(mDe);
           mApp.getProfilesFactory().updateProfilesLearningWeight(mSelectedProfile, mApp.getProfilesWeightDepth(), mFromClear);
           mFromClear = false;
-          if (newEntry.getStartMorning().isValidTime() || newEntry.getEndAfternoon().isValidTime())
+          if (newEntry.getStartMorning().isValidTime() || newEntry.getEndAfternoon().isValidTime()) {
             mApp.getDaysFactory().add(newEntry);
+            mApp.setLastAdded(newEntry);
+          }
           if(AndroidHelper.isServiceRunning(this, QuickAccessService.class))
             stopService(new Intent(this, QuickAccessService.class));
           AndroidHelper.updateWidget(this, DayWidgetProvider1x1.class);
@@ -436,6 +438,7 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
           if (newEntry.getStartMorning().isValidTime() || newEntry.getEndAfternoon().isValidTime()) {
             newEntry.setLearningWeight(mDe.getLearningWeight());
             mApp.getProfilesFactory().add(newEntry);
+            mApp.setLastAdded(newEntry);
           }
         }
       }

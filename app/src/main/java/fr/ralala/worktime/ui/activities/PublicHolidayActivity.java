@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -75,22 +76,28 @@ public class PublicHolidayActivity extends AppCompatActivity implements View.OnC
       actionBar.setDisplayShowHomeEnabled(true);
       actionBar.setDisplayHomeAsUpEnabled(true);
     }
-    String name =  "";
+    String extra =  "";
     if(getIntent().getExtras() != null) {
       Bundle extras = getIntent().getExtras();
-      name = extras.getString(PUBLIC_HOLIDAY_ACTIVITY_EXTRA_NAME);
-      if(name == null || name.equals("null")) name = "";
+      extra = extras.getString(PUBLIC_HOLIDAY_ACTIVITY_EXTRA_NAME);
+      if(extra == null || extra.equals("null")) extra = "";
     }
-    List<DayEntry> days = mApp.getPublicHolidaysFactory().list();
-    for(DayEntry de : days) {
-      if(de.getName().equals(name)) {
-        this.mDe = de;
-        break;
+    if(!extra.isEmpty()) {
+      int idx = extra.lastIndexOf('|');
+      String name = extra.substring(0, idx);
+      String date = extra.substring(idx + 1);
+      Log.e("TAG", "name: " + name + ", date:"+date);
+      List<DayEntry> days = mApp.getPublicHolidaysFactory().list();
+      for (DayEntry de : days) {
+        if (de.getName().equals(name) && de.getDay().dateString().equals(date)) {
+          this.mDe = de;
+          break;
+        }
       }
     }
     if(mDe == null) {
       mDe = new DayEntry(this, WorkTimeDay.now(), DayType.ERROR, DayType.ERROR);
-      mDe.setName(name);
+      mDe.setName("");
     }
     mFab = findViewById(R.id.fab);
     if(mFab != null)
@@ -166,6 +173,7 @@ public class PublicHolidayActivity extends AppCompatActivity implements View.OnC
         de.setName(name);
         de.setRecurrence(mCkRecurrence.isChecked());
         mApp.getPublicHolidaysFactory().add(de);
+        mApp.setLastAdded(de);
         onBackPressed();
       } else {
         UIHelper.shakeError(mTname, getString(R.string.error_duplicate_public_holiday));

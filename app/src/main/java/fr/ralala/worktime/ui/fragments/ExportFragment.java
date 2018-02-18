@@ -98,17 +98,6 @@ public class ExportFragment extends Fragment implements AdapterView.OnItemSelect
   }
 
   /**
-   * Called when the fragment is resumed.
-   */
-  @Override
-  public void onResume() {
-    super.onResume();
-    if(mApp.isResumeAfterActivity()) {
-      mLvAdapter.notifyDataSetChanged();
-      mApp.setResumeAfterActivity(false);
-    }
-  }
-  /**
    * Called when the user click on a button (export).
    * @param v The clicked view.
    */
@@ -125,7 +114,6 @@ public class ExportFragment extends Fragment implements AdapterView.OnItemSelect
       return;
     }
 
-    mApp.setResumeAfterActivity(false);
     final File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS),
       getString(R.string.app_name) + "_" + entries.get(0).year + ".xls");
     if(file.exists()) {

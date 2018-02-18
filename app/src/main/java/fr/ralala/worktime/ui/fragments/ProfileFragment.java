@@ -116,9 +116,10 @@ public class ProfileFragment  extends Fragment implements View.OnClickListener, 
   @Override
   public void onResume() {
     super.onResume();
-    if(mApp.isResumeAfterActivity()) {
-      mAdapter.notifyDataSetChanged();
-      mApp.setResumeAfterActivity(false);
+    DayEntry last = mApp.getLastAdded();
+    if(last != null) {
+      mAdapter.addItem(last);
+      mApp.setLastAdded(null);
     }
   }
 
@@ -128,7 +129,6 @@ public class ProfileFragment  extends Fragment implements View.OnClickListener, 
    */
   @Override
   public void onClick(View view) {
-    mApp.setResumeAfterActivity(true);
     DayActivity.startActivity(getActivity(), "null", false);
   }
   /**
@@ -139,7 +139,6 @@ public class ProfileFragment  extends Fragment implements View.OnClickListener, 
   public void onClickEdit(int adapterPosition) {
     DayEntry de = mAdapter.getItem(adapterPosition);
     if(de == null) return;
-    mApp.setResumeAfterActivity(true);
     DayActivity.startActivity(getActivity(), de.getName(), false);
   }
 
