@@ -203,7 +203,7 @@ public class DayEntry {
   public boolean matchSimpleDate(WorkTimeDay current) {
     boolean ret = (current.getMonth() == mDay.getMonth() && current.getDay() == mDay.getDay());
     /* simple holidays can change between each years */
-    if(!isRecurrence() && ret && mTypeMorning == DayType.HOLIDAY && mTypeAfternoon == DayType.HOLIDAY)
+    if(!isRecurrence() && ret)
       return current.getYear() == mDay.getYear();
     return ret;
   }
