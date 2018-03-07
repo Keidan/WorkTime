@@ -22,7 +22,6 @@ import fr.ralala.worktime.services.DropboxAutoExportService;
 import fr.ralala.worktime.ui.activities.settings.SettingsDatabaseActivity;
 import fr.ralala.worktime.ui.activities.settings.SettingsDisplayActivity;
 import fr.ralala.worktime.ui.activities.settings.SettingsExcelExportActivity;
-import fr.ralala.worktime.ui.activities.settings.SettingsImportExportActivity;
 import fr.ralala.worktime.ui.activities.settings.SettingsLearningActivity;
 import fr.ralala.worktime.utils.AndroidHelper;
 

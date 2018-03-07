@@ -240,6 +240,7 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
     mSpTypeMorning.setAdapter(spTypeAdapterMorning);
     spTypeAdapterMorning.add("");
     spTypeAdapterMorning.add(DayType.getText(this, DayType.AT_WORK));
+    spTypeAdapterMorning.add(DayType.getText(this, DayType.OFF));
     spTypeAdapterMorning.add(DayType.getText(this, DayType.HOLIDAY));
     spTypeAdapterMorning.add(DayType.getText(this, DayType.PUBLIC_HOLIDAY));
     spTypeAdapterMorning.add(DayType.getText(this, DayType.SICKNESS));
@@ -249,12 +250,14 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
     mSpTypeAfternoon.setAdapter(spTypeAdapterAfternoon);
     spTypeAdapterAfternoon.add("");
     spTypeAdapterAfternoon.add(DayType.getText(this, DayType.AT_WORK));
+    spTypeAdapterAfternoon.add(DayType.getText(this, DayType.OFF));
     spTypeAdapterAfternoon.add(DayType.getText(this, DayType.HOLIDAY));
     spTypeAdapterAfternoon.add(DayType.getText(this, DayType.PUBLIC_HOLIDAY));
     spTypeAdapterAfternoon.add(DayType.getText(this, DayType.SICKNESS));
     spTypeAdapterAfternoon.add(DayType.getText(this, DayType.UNPAID));
-    mSpTypeMorning.setSelection(mDe.getTypeMorning() == DayType.ERROR ? 0 : mDe.getTypeMorning().value() + 1);
-    mSpTypeAfternoon.setSelection(mDe.getTypeAfternoon() == DayType.ERROR ? 0 : mDe.getTypeAfternoon().value() + 1);
+
+    selectSpinner(mSpTypeMorning, mDe.getTypeMorning());
+    selectSpinner(mSpTypeAfternoon, mDe.getTypeAfternoon());
 
     if(mDisplayProfile) {
     /* build profiles spinner */
@@ -280,6 +283,20 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
       mEtAmount.setTextColor(mTvStartAfternoon.getTextColors());
       mEtAmount.setText(String.format(Locale.US, "%.02f",
         mDe.getAmountByHour() != 0 ? mDe.getAmountByHour() : mApp.getAmountByHour()).replaceAll(",", "."));
+    }
+  }
+
+  private void selectSpinner(Spinner sp, final DayType type) {
+    if(type == DayType.ERROR) {
+      sp.setSelection(0);
+    } else {
+      for(int i = 0; i < sp.getAdapter().getCount(); i++) {
+        DayType dt = DayType.compute(this, sp.getAdapter().getItem(i).toString());
+        if(dt == type) {
+          sp.setSelection(i);
+          break;
+        }
+      }
     }
   }
 
@@ -383,25 +400,25 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
       newEntry.setStartAfternoon(mTvStartAfternoon.getText().toString());
       newEntry.setLegalWorktime(mTvLegalWorktime.getText().toString());
       if(newEntry.getTypeMorning() != DayType.ERROR) {
-        if (newEntry.getStartMorning().getHours() == 0) {
+        if (newEntry.getStartMorning().getHours() == 0 && newEntry.getTypeMorning() != DayType.OFF) {
           UIHelper.shakeError(mTvStartMorning, getString(R.string.error_invalid_start));
           return;
-        } else if (newEntry.getEndMorning().getHours() == 0) {
+        } else if (newEntry.getEndMorning().getHours() == 0 && newEntry.getTypeMorning() != DayType.OFF) {
           UIHelper.shakeError(mTvEndMorning, getString(R.string.error_invalid_end));
           return;
-        } else if (mTvStartMorning.getText().toString().equals(mTvEndMorning.getText().toString())) {
+        } else if (mTvStartMorning.getText().toString().equals(mTvEndMorning.getText().toString()) && newEntry.getTypeMorning() != DayType.OFF) {
           UIHelper.shakeError(mTvStartMorning, getString(R.string.error_invalid_start_end_morning));
           UIHelper.shakeError(mTvEndMorning, getString(R.string.error_invalid_start_end_morning));
           return;
         }
       } else if(newEntry.getTypeAfternoon() != DayType.ERROR) {
-        if (newEntry.getStartAfternoon().getHours() == 0) {
+        if (newEntry.getStartAfternoon().getHours() == 0 && newEntry.getTypeAfternoon() != DayType.OFF) {
           UIHelper.shakeError(mTvStartAfternoon, getString(R.string.error_invalid_start));
           return;
-        } else if (newEntry.getEndAfternoon().getHours() == 0) {
+        } else if (newEntry.getEndAfternoon().getHours() == 0 && newEntry.getTypeAfternoon() != DayType.OFF) {
           UIHelper.shakeError(mTvEndAfternoon, getString(R.string.error_invalid_end));
           return;
-        } else if (mTvStartAfternoon.getText().toString().equals(mTvEndAfternoon.getText().toString())) {
+        } else if (mTvStartAfternoon.getText().toString().equals(mTvEndAfternoon.getText().toString()) && newEntry.getTypeAfternoon() != DayType.OFF) {
           UIHelper.shakeError(mTvStartAfternoon, getString(R.string.error_invalid_start_end_morning));
           UIHelper.shakeError(mTvEndAfternoon, getString(R.string.error_invalid_start_end_morning));
           return;
@@ -418,7 +435,7 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
           mApp.getDaysFactory().remove(mDe);
           mApp.getProfilesFactory().updateProfilesLearningWeight(mSelectedProfile, mApp.getProfilesWeightDepth(), mFromClear);
           mFromClear = false;
-          if (newEntry.getStartMorning().isValidTime() || newEntry.getEndAfternoon().isValidTime()) {
+          if (newEntry.getTypeAfternoon() == DayType.OFF || newEntry.getStartMorning().isValidTime() || newEntry.getEndAfternoon().isValidTime()) {
             mApp.getDaysFactory().add(newEntry);
             mApp.setLastAdded(newEntry);
           }
@@ -435,7 +452,7 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
 
         if(mDe.getName().isEmpty() || !mDe.match(newEntry)) {
           mApp.getProfilesFactory().remove(mDe);
-          if (newEntry.getStartMorning().isValidTime() || newEntry.getEndAfternoon().isValidTime()) {
+          if (newEntry.getTypeAfternoon() == DayType.OFF || newEntry.getStartMorning().isValidTime() || newEntry.getEndAfternoon().isValidTime()) {
             newEntry.setLearningWeight(mDe.getLearningWeight());
             mApp.getProfilesFactory().add(newEntry);
             mApp.setLastAdded(newEntry);
@@ -486,8 +503,8 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
           mTvAdditionalBreak.setText(de.getAdditionalBreak().timeString());
           mTvLegalWorktime.setText(de.getLegalWorktime().timeString());
           mEtAmount.setText(String.format(Locale.US, "%.02f", de.getAmountByHour()).replaceAll(",", "."));
-          mSpTypeMorning.setSelection(de.getTypeMorning() == DayType.ERROR ? 0 : de.getTypeMorning().value() + 1);
-          mSpTypeAfternoon.setSelection(de.getTypeAfternoon() == DayType.ERROR ? 0 : de.getTypeAfternoon().value() + 1);
+          selectSpinner(mSpTypeMorning, de.getTypeMorning());
+          selectSpinner(mSpTypeAfternoon, de.getTypeAfternoon());
           mEtName.setText(de.getName());
           refreshStartEndPause(de);
           mSelectedProfile = de;

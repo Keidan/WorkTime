@@ -29,6 +29,7 @@
     <string name="sickness">Sickness</string>
     <string name="holidays">Holidays</string>
     <string name="unpaid">Unpaid</string>
+    <string name="off">Off</string>
     <string name="statistics_hours">Hours</string>
     <string name="work_time">Work time</string>
     <string name="work_days">Work days</string>

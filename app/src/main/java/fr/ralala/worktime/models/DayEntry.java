@@ -105,6 +105,8 @@ public class DayEntry {
    * @return WorkTimeDay
    */
   public WorkTimeDay getPause() {
+    if(mTypeMorning == DayType.OFF || mTypeAfternoon == DayType.OFF)
+      return mAdditionalBreak;
     if(mStartAfternoon.timeString().equals("00:00"))
       return mStartAfternoon;
     WorkTimeDay wp = mStartAfternoon.clone();
@@ -151,11 +153,11 @@ public class DayEntry {
    * @return WorkTimeDay
    */
   public WorkTimeDay getWorkTime() {
-    WorkTimeDay wm = isValidMorningType() ? mEndMorning.clone() : new WorkTimeDay();
-    if(!wm.timeString().equals("00:00") && isValidMorningType())
+    WorkTimeDay wm = (getTypeMorning() != DayType.OFF && isValidMorningType()) ? mEndMorning.clone() : new WorkTimeDay();
+    if(!wm.timeString().equals("00:00") && isValidMorningType() && getTypeMorning() != DayType.OFF)
       wm.delTime(mStartMorning);
-    WorkTimeDay wa = isValidAfternoonType() ? mEndAfternoon.clone() : new WorkTimeDay();
-    if(!wa.timeString().equals("00:00") && isValidAfternoonType())
+    WorkTimeDay wa = (getTypeAfternoon() != DayType.OFF && isValidAfternoonType()) ? mEndAfternoon.clone() : new WorkTimeDay();
+    if(!wa.timeString().equals("00:00") && isValidAfternoonType() && getTypeAfternoon() != DayType.OFF)
       wa.delTime(mStartAfternoon);
     WorkTimeDay wt = wm.clone();
     wt.addTime(wa);

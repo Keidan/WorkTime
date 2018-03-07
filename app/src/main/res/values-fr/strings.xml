@@ -23,6 +23,7 @@
     <string name="sickness">Maladie</string>
     <string name="holidays">Cong\u00E9</string>
     <string name="unpaid">Non pay\u00E9</string>
+    <string name="off">R\u00E9cup\u00E9ration</string>
     <string name="work_time">Temps de travail</string>
     <string name="work_days">Jours de travail</string>
     <string name="monthly_hours">Heures mensuel</string>

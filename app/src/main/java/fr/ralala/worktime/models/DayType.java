@@ -19,7 +19,8 @@ public enum DayType {
   PUBLIC_HOLIDAY(2),
   SICKNESS(3),
   UNPAID(4),
-  ERROR(5);
+  OFF(5),
+  ERROR(6);
 
   /**
    * Creates an enum entry.
@@ -52,6 +53,7 @@ public enum DayType {
       case 2: return DayType.PUBLIC_HOLIDAY;
       case 3: return DayType.SICKNESS;
       case 4: return DayType.UNPAID;
+      case 5: return DayType.OFF;
       default: return DayType.ERROR;
     }
   }
@@ -72,6 +74,8 @@ public enum DayType {
       return DayType.SICKNESS;
     else if(value.equals(c.getString(R.string.unpaid)))
       return DayType.UNPAID;
+    else if(value.equals(c.getString(R.string.off)))
+      return DayType.OFF;
     else
       return DayType.ERROR;
   }
@@ -88,6 +92,7 @@ public enum DayType {
       case PUBLIC_HOLIDAY: return c.getString(R.string.public_holidays);
       case SICKNESS: return c.getString(R.string.sickness);
       case UNPAID: return c.getString(R.string.unpaid);
+      case OFF: return c.getString(R.string.off);
     }
     return c.getString(R.string.error);
   }
