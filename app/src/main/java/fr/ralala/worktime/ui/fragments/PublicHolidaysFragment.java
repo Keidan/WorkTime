@@ -115,7 +115,7 @@ public class PublicHolidaysFragment extends Fragment implements View.OnClickList
     super.onResume();
     DayEntry lastAdded = mApp.getLastAdded();
     if(lastAdded != null) {
-      mAdapter.addItem(lastAdded);
+      mAdapter.notifyDataSetChanged();
       mApp.setLastAdded(null);
     }
   }

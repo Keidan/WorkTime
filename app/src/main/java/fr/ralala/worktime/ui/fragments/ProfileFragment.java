@@ -118,7 +118,7 @@ public class ProfileFragment  extends Fragment implements View.OnClickListener, 
     super.onResume();
     DayEntry last = mApp.getLastAdded();
     if(last != null) {
-      mAdapter.addItem(last);
+      mAdapter.notifyDataSetChanged();
       mApp.setLastAdded(null);
     }
   }
