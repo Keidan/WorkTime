@@ -23,7 +23,7 @@
     <string name="sickness">Maladie</string>
     <string name="holidays">Cong\u00E9</string>
     <string name="unpaid">Non pay\u00E9</string>
-    <string name="off">R\u00E9cup\u00E9ration</string>
+    <string name="recovery">R\u00E9cup\u00E9ration</string>
     <string name="work_time">Temps de travail</string>
     <string name="work_days">Jours de travail</string>
     <string name="monthly_hours">Heures mensuel</string>
@@ -113,9 +113,12 @@
     <string name="pref_title_scroll_to_current_day">D\u00E9filement vers le jour en cours</string>
     <string name="pref_summary_hide_exit_button">Masquer le bouton de sortie dans le menu.</string>
     <string name="pref_title_hide_exit_button">Masquer le bouton de sortie</string>
-    <string name="chooser_long_press_message">Appuyez longuement sur pour s\u00E9lectionner le fichier ou le r\u00E9pertoire.</string>
     <string name="use_folder">Utilisez ce dossier</string>
     <string name="use_file">Utilisez ce fichier</string>
+    <string name="chooser_long_press_message">Appuyez longuement sur pour s\u00E9lectionner.</string>
+    <string name="chooser_parent_directory">R\u00E9pertoire parent</string>
+    <string name="chooser_folder">R\u00E9pertoire</string>
+    <string name="chooser_file_size">Taille fichier</string>
     <string name="export_success">Exportation r\u00E9ussie</string>
     <string name="import_success">Importation r\u00E9ussie</string>
     <string name="permissions_read_ext_storage">Les fonctions d\'import/export ont besoin des autorisations d\'acc\u00E8s en lecture/\u00E9criture au stockage externe et l\'acc\u00E8s internet pour dropbox</string>

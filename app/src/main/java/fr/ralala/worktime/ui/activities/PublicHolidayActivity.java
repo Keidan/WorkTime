@@ -1,15 +1,13 @@
 package fr.ralala.worktime.ui.activities;
 
-import android.content.Context;
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -32,24 +30,24 @@ import fr.ralala.worktime.ui.utils.UIHelper;
  *
  *******************************************************************************
  */
-public class PublicHolidayActivity extends AppCompatActivity implements View.OnClickListener {
+public class PublicHolidayActivity extends AppCompatActivity {
+  public static final int REQUEST_START_ACTIVITY = 100;
   public static final String PUBLIC_HOLIDAY_ACTIVITY_EXTRA_NAME = "PUBLIC_HOLIDAY_ACTIVITY_EXTRA_NAME_name";
   private MainApplication mApp = null;
   private DayEntry mDe = null;
-  private FloatingActionButton mFab = null;
   private EditText mTname = null;
   private DatePicker mTdate = null;
   private CheckBox mCkRecurrence = null;
 
   /**
    * Starts an activity.
-   * @param ctx The Android context.
+   * @param fragment The Android fragment.
    * @param name The extra name.
    */
-  public static void startActivity(final Context ctx, final String name) {
-    Intent intent = new Intent(ctx, PublicHolidayActivity.class);
+  public static void startActivity(final Fragment fragment, final String name) {
+    Intent intent = new Intent(fragment.getContext(), PublicHolidayActivity.class);
     intent.putExtra(PUBLIC_HOLIDAY_ACTIVITY_EXTRA_NAME, name);
-    ctx.startActivity(intent);
+    fragment.startActivityForResult(intent, REQUEST_START_ACTIVITY);
   }
 
   /**
@@ -57,6 +55,7 @@ public class PublicHolidayActivity extends AppCompatActivity implements View.OnC
    */
   @Override
   public void onBackPressed() {
+    setResult(RESULT_CANCELED);
     super.onBackPressed();
     UIHelper.closeAnimation(this);
   }
@@ -86,7 +85,6 @@ public class PublicHolidayActivity extends AppCompatActivity implements View.OnC
       int idx = extra.lastIndexOf('|');
       String name = extra.substring(0, idx);
       String date = extra.substring(idx + 1);
-      Log.e("TAG", "name: " + name + ", date:"+date);
       List<DayEntry> days = mApp.getPublicHolidaysFactory().list();
       for (DayEntry de : days) {
         if (de.getName().equals(name) && de.getDay().dateString().equals(date)) {
@@ -99,10 +97,6 @@ public class PublicHolidayActivity extends AppCompatActivity implements View.OnC
       mDe = new DayEntry(this, WorkTimeDay.now(), DayType.ERROR, DayType.ERROR);
       mDe.setName("");
     }
-    mFab = findViewById(R.id.fab);
-    if(mFab != null)
-      mFab.setOnClickListener(this);
-
     mCkRecurrence = findViewById(R.id.ckRecurrence);
     mTname = findViewById(R.id.etName);
     mTdate = findViewById(R.id.dpDate);
@@ -129,8 +123,6 @@ public class PublicHolidayActivity extends AppCompatActivity implements View.OnC
   public boolean onCreateOptionsMenu(final Menu menu) {
     MenuInflater inflater = getMenuInflater();
     inflater.inflate(R.menu.activity_day, menu);
-    MenuItem action_cancel = menu.findItem(R.id.action_cancel);
-    action_cancel.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
     return true;
   }
 
@@ -145,40 +137,35 @@ public class PublicHolidayActivity extends AppCompatActivity implements View.OnC
       case android.R.id.home:
         onBackPressed();
         return true;
+      case R.id.action_done: {
+        final String name = mTname.getText().toString().trim();
+        if(name.isEmpty()) {
+          UIHelper.shakeError(mTname, getString(R.string.error_no_name));
+          return true;
+        }
+        WorkTimeDay wtd = new WorkTimeDay();
+        wtd.setDay(mTdate.getDayOfMonth());
+        wtd.setMonth(mTdate.getMonth() + 1);
+        wtd.setYear(mTdate.getYear());
+        if(mDe != null) mApp.getPublicHolidaysFactory().remove(mDe); /* remove old entry */
+        DayEntry de = new DayEntry(this, wtd, DayType.PUBLIC_HOLIDAY, DayType.PUBLIC_HOLIDAY);
+        if(mApp.getPublicHolidaysFactory().testValidity(de)) {
+          de.setName(name);
+          de.setRecurrence(mCkRecurrence.isChecked());
+          mApp.getPublicHolidaysFactory().add(de);
+          setResult(RESULT_OK);
+          finish();
+          UIHelper.closeAnimation(this);
+        } else {
+          UIHelper.shakeError(mTname, getString(R.string.error_duplicate_public_holiday));
+        }
+        return true;
+      }
       case R.id.action_cancel:
         onBackPressed();
         return true;
     }
     return false;
-  }
-
-  /**
-   * Called when a button is clicked (fab).
-   * @param v The view clicked.
-   */
-  public void onClick(final View v) {
-    if(v.equals(mFab)) {
-      final String name = mTname.getText().toString().trim();
-      if(name.isEmpty()) {
-        UIHelper.shakeError(mTname, getString(R.string.error_no_name));
-        return;
-      }
-      WorkTimeDay wtd = new WorkTimeDay();
-      wtd.setDay(mTdate.getDayOfMonth());
-      wtd.setMonth(mTdate.getMonth() + 1);
-      wtd.setYear(mTdate.getYear());
-      if(mDe != null) mApp.getPublicHolidaysFactory().remove(mDe); /* remove old entry */
-      DayEntry de = new DayEntry(this, wtd, DayType.PUBLIC_HOLIDAY, DayType.PUBLIC_HOLIDAY);
-      if(mApp.getPublicHolidaysFactory().testValidity(de)) {
-        de.setName(name);
-        de.setRecurrence(mCkRecurrence.isChecked());
-        mApp.getPublicHolidaysFactory().add(de);
-        mApp.setLastAdded(de);
-        onBackPressed();
-      } else {
-        UIHelper.shakeError(mTname, getString(R.string.error_duplicate_public_holiday));
-      }
-    }
   }
 
 }

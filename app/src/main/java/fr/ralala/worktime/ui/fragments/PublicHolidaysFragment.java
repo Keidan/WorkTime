@@ -2,6 +2,7 @@ package fr.ralala.worktime.ui.fragments;
 
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -15,6 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import fr.ralala.worktime.ui.activities.DayActivity;
 import fr.ralala.worktime.ui.activities.PublicHolidayActivity;
 import fr.ralala.worktime.MainApplication;
 import fr.ralala.worktime.R;
@@ -108,16 +110,15 @@ public class PublicHolidaysFragment extends Fragment implements View.OnClickList
   }
 
   /**
-   * Called when the fragment is resumed.
+   * Receive the result from a previous call to startActivityForResult
+   * @param requestCode The integer request code originally supplied to startActivityForResult.
+   * @param resultCode The integer result code returned by the child activity through its setResult().
+   * @param data An Intent, which can return result data to the caller (various data can be attached to Intent "extras").
    */
   @Override
-  public void onResume() {
-    super.onResume();
-    DayEntry lastAdded = mApp.getLastAdded();
-    if(lastAdded != null) {
+  public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    if(requestCode == PublicHolidayActivity.REQUEST_START_ACTIVITY)
       mAdapter.notifyDataSetChanged();
-      mApp.setLastAdded(null);
-    }
   }
 
   /**
@@ -126,7 +127,7 @@ public class PublicHolidaysFragment extends Fragment implements View.OnClickList
    */
   @Override
   public void onClick(View view) {
-    PublicHolidayActivity.startActivity(getActivity(), "null");
+    PublicHolidayActivity.startActivity(this, "null");
   }
 
   /**
@@ -137,7 +138,7 @@ public class PublicHolidaysFragment extends Fragment implements View.OnClickList
   public void onClickEdit(int adapterPosition) {
     DayEntry de = mAdapter.getItem(adapterPosition);
     if(de == null) return;
-    PublicHolidayActivity.startActivity(getActivity(), de.getName() + "|" + de.getDay().dateString());
+    PublicHolidayActivity.startActivity(this, de.getName() + "|" + de.getDay().dateString());
   }
 
   /**

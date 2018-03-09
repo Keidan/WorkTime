@@ -2,6 +2,7 @@ package fr.ralala.worktime.ui.fragments;
 
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -111,16 +112,15 @@ public class ProfileFragment  extends Fragment implements View.OnClickListener, 
   }
 
   /**
-   * Called when the fragment is resumed.
+   * Receive the result from a previous call to startActivityForResult
+   * @param requestCode The integer request code originally supplied to startActivityForResult.
+   * @param resultCode The integer result code returned by the child activity through its setResult().
+   * @param data An Intent, which can return result data to the caller (various data can be attached to Intent "extras").
    */
   @Override
-  public void onResume() {
-    super.onResume();
-    DayEntry last = mApp.getLastAdded();
-    if(last != null) {
+  public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    if(requestCode == DayActivity.REQUEST_START_ACTIVITY)
       mAdapter.notifyDataSetChanged();
-      mApp.setLastAdded(null);
-    }
   }
 
   /**
@@ -129,7 +129,7 @@ public class ProfileFragment  extends Fragment implements View.OnClickListener, 
    */
   @Override
   public void onClick(View view) {
-    DayActivity.startActivity(getActivity(), "null", false);
+    DayActivity.startActivity(this, "null", false);
   }
   /**
    * Called when a ViewHolder is swiped from left to right by the user.
@@ -139,7 +139,7 @@ public class ProfileFragment  extends Fragment implements View.OnClickListener, 
   public void onClickEdit(int adapterPosition) {
     DayEntry de = mAdapter.getItem(adapterPosition);
     if(de == null) return;
-    DayActivity.startActivity(getActivity(), de.getName(), false);
+    DayActivity.startActivity(this, de.getName(), false);
   }
 
   /**

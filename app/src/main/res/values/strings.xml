@@ -29,7 +29,7 @@
     <string name="sickness">Sickness</string>
     <string name="holidays">Holidays</string>
     <string name="unpaid">Unpaid</string>
-    <string name="off">Off</string>
+    <string name="recovery">Recovery</string>
     <string name="statistics_hours">Hours</string>
     <string name="work_time">Work time</string>
     <string name="work_days">Work days</string>
@@ -122,9 +122,12 @@
     <string name="pref_title_scroll_to_current_day">Scroll to the current day</string>
     <string name="pref_summary_hide_exit_button">Hide the exit button from the menu.</string>
     <string name="pref_title_hide_exit_button">Hide the exit button</string>
-    <string name="chooser_long_press_message">Long press to select the file or the directory.</string>
     <string name="use_folder">Use this folder</string>
     <string name="use_file">Use this file</string>
+    <string name="chooser_long_press_message">Long press to select.</string>
+    <string name="chooser_parent_directory">Parent Directory</string>
+    <string name="chooser_folder">Folder</string>
+    <string name="chooser_file_size">File size</string>
     <string name="export_success">Export success</string>
     <string name="import_success">Import success</string>
     <string name="permissions_read_ext_storage">The import/export functions needs the external storage read/write and internet(dropbox) access permissions</string>

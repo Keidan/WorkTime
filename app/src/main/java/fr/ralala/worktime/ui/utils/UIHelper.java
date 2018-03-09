@@ -22,6 +22,7 @@ import android.view.ViewGroup;
 import android.view.animation.CycleInterpolator;
 import android.view.animation.TranslateAnimation;
 import android.widget.Button;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -87,6 +88,20 @@ public class UIHelper {
     if(owner != null) {
       if(errText != null)
         owner.setError(errText);
+      owner.clearAnimation();
+      owner.startAnimation(shake);
+    }
+  }
+
+  /**
+   * Shake a view on error.
+   * @param owner The owner view.
+   */
+  public static void shakeError(Spinner owner) {
+    TranslateAnimation shake = new TranslateAnimation(0, 10, 0, 0);
+    shake.setDuration(500);
+    shake.setInterpolator(new CycleInterpolator(5));
+    if(owner != null) {
       owner.clearAnimation();
       owner.startAnimation(shake);
     }

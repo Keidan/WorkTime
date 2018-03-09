@@ -24,7 +24,6 @@ import fr.ralala.worktime.R;
 import fr.ralala.worktime.dropbox.DropboxImportExport;
 import fr.ralala.worktime.services.DropboxAutoExportService;
 import fr.ralala.worktime.sql.SqlHelper;
-import fr.ralala.worktime.ui.activities.AbstractFileChooserActivity;
 import fr.ralala.worktime.ui.activities.FileChooserActivity;
 import fr.ralala.worktime.ui.utils.UIHelper;
 
@@ -110,21 +109,21 @@ public class SettingsImportExportActivity extends PreferenceActivity implements 
       mApp.getDropboxImportExport().importDatabase(this);
     } else if (preference.equals(mPrefFrag.findPreference(PREFS_KEY_EXPORT_TO_DEVICE))) {
       Map<String, String> extra = new HashMap<>();
-      extra.put(AbstractFileChooserActivity.FILECHOOSER_TYPE_KEY, "" + AbstractFileChooserActivity.FILECHOOSER_TYPE_DIRECTORY_ONLY);
-      extra.put(AbstractFileChooserActivity.FILECHOOSER_TITLE_KEY, getString(R.string.pref_title_export));
-      extra.put(AbstractFileChooserActivity.FILECHOOSER_MESSAGE_KEY, getString(R.string.use_folder) + ":? ");
-      extra.put(AbstractFileChooserActivity.FILECHOOSER_DEFAULT_DIR, Environment
+      extra.put(FileChooserActivity.FILECHOOSER_TYPE_KEY, "" + FileChooserActivity.FILECHOOSER_TYPE_DIRECTORY_ONLY);
+      extra.put(FileChooserActivity.FILECHOOSER_TITLE_KEY, getString(R.string.pref_title_export));
+      extra.put(FileChooserActivity.FILECHOOSER_MESSAGE_KEY, getString(R.string.use_folder) + ":? ");
+      extra.put(FileChooserActivity.FILECHOOSER_DEFAULT_DIR, Environment
         .getExternalStorageDirectory().getAbsolutePath());
-      extra.put(AbstractFileChooserActivity.FILECHOOSER_SHOW_KEY, "" + AbstractFileChooserActivity.FILECHOOSER_SHOW_DIRECTORY_ONLY);
+      extra.put(FileChooserActivity.FILECHOOSER_SHOW_KEY, "" + FileChooserActivity.FILECHOOSER_SHOW_DIRECTORY_ONLY);
       myStartActivity(extra, FileChooserActivity.class, FileChooserActivity.FILECHOOSER_SELECTION_TYPE_DIRECTORY);
     } else if (preference.equals(mPrefFrag.findPreference(PREFS_KEY_IMPORT_FROM_DEVICE))) {
       Map<String, String> extra = new HashMap<>();
-      extra.put(AbstractFileChooserActivity.FILECHOOSER_TYPE_KEY, "" + AbstractFileChooserActivity.FILECHOOSER_TYPE_FILE_AND_DIRECTORY);
-      extra.put(AbstractFileChooserActivity.FILECHOOSER_TITLE_KEY, getString(R.string.pref_title_import));
-      extra.put(AbstractFileChooserActivity.FILECHOOSER_MESSAGE_KEY, getString(R.string.use_file) + ":? ");
-      extra.put(AbstractFileChooserActivity.FILECHOOSER_DEFAULT_DIR, Environment
+      extra.put(FileChooserActivity.FILECHOOSER_TYPE_KEY, "" + FileChooserActivity.FILECHOOSER_TYPE_FILE_AND_DIRECTORY);
+      extra.put(FileChooserActivity.FILECHOOSER_TITLE_KEY, getString(R.string.pref_title_import));
+      extra.put(FileChooserActivity.FILECHOOSER_MESSAGE_KEY, getString(R.string.use_file) + ":? ");
+      extra.put(FileChooserActivity.FILECHOOSER_DEFAULT_DIR, Environment
         .getExternalStorageDirectory().getAbsolutePath());
-      extra.put(AbstractFileChooserActivity.FILECHOOSER_SHOW_KEY, "" + AbstractFileChooserActivity.FILECHOOSER_SHOW_FILE_AND_DIRECTORY);
+      extra.put(FileChooserActivity.FILECHOOSER_SHOW_KEY, "" + FileChooserActivity.FILECHOOSER_SHOW_FILE_AND_DIRECTORY);
       myStartActivity(extra, FileChooserActivity.class, FileChooserActivity.FILECHOOSER_SELECTION_TYPE_FILE);
     }
     return true;

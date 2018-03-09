@@ -1,5 +1,6 @@
 package fr.ralala.worktime.ui.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -124,16 +125,20 @@ public class WorkTimeFragment extends Fragment implements View.OnClickListener, 
         }
       }
     });
+    updateAll();
     return rootView;
   }
 
   /**
-   * Called when the fragment is resumed.
+   * Receive the result from a previous call to startActivityForResult
+   * @param requestCode The integer request code originally supplied to startActivityForResult.
+   * @param resultCode The integer result code returned by the child activity through its setResult().
+   * @param data An Intent, which can return result data to the caller (various data can be attached to Intent "extras").
    */
   @Override
-  public void onResume() {
-    super.onResume();
-    updateAll();
+  public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    if(requestCode == DayActivity.REQUEST_START_ACTIVITY)
+      updateAll();
   }
 
   /**
@@ -154,7 +159,7 @@ public class WorkTimeFragment extends Fragment implements View.OnClickListener, 
       UIHelper.toast(getActivity(), R.string.error_editing_public_holiday);
       return;
     }
-    DayActivity.startActivity(getActivity(), de.getDay().dateString(), true);
+    DayActivity.startActivity(this, de.getDay().dateString(), true);
   }
 
   /**

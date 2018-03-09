@@ -19,7 +19,7 @@ public enum DayType {
   PUBLIC_HOLIDAY(2),
   SICKNESS(3),
   UNPAID(4),
-  OFF(5),
+  RECOVERY(5),
   ERROR(6);
 
   /**
@@ -53,7 +53,7 @@ public enum DayType {
       case 2: return DayType.PUBLIC_HOLIDAY;
       case 3: return DayType.SICKNESS;
       case 4: return DayType.UNPAID;
-      case 5: return DayType.OFF;
+      case 5: return DayType.RECOVERY;
       default: return DayType.ERROR;
     }
   }
@@ -74,8 +74,8 @@ public enum DayType {
       return DayType.SICKNESS;
     else if(value.equals(c.getString(R.string.unpaid)))
       return DayType.UNPAID;
-    else if(value.equals(c.getString(R.string.off)))
-      return DayType.OFF;
+    else if(value.equals(c.getString(R.string.recovery)))
+      return DayType.RECOVERY;
     else
       return DayType.ERROR;
   }
@@ -92,7 +92,7 @@ public enum DayType {
       case PUBLIC_HOLIDAY: return c.getString(R.string.public_holidays);
       case SICKNESS: return c.getString(R.string.sickness);
       case UNPAID: return c.getString(R.string.unpaid);
-      case OFF: return c.getString(R.string.off);
+      case RECOVERY: return c.getString(R.string.recovery);
     }
     return c.getString(R.string.error);
   }

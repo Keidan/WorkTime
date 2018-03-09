@@ -3,6 +3,7 @@
     <color name="colorPrimary">#303030</color>
     <color name="colorPrimaryDark">#121212</color>
     <color name="colorAccent">#606060</color>
+    <color name="windowBackground">#FFFAFAFA</color>
     <color name="half_black">#808080</color>
     <color name="white">#fafafa</color>
     <color name="black_semi_transparent">#B2000000</color>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -11,305 +11,288 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin">
 
-
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_marginBottom="@dimen/fab_margin_bottom"
-        android:layout_marginEnd="@dimen/fab_margin_end"
-        android:layout_marginStart="@dimen/fab_margin_start"
-        android:layout_marginTop="@dimen/fab_margin_top"
-        app:srcCompat="@mipmap/ic_apply_white" />
-
-    <ScrollView
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/prl"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <android.support.constraint.ConstraintLayout
-            android:id="@+id/prl"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
 
+        <!-- Name -->
+        <TextView
+            android:id="@+id/tvName"
+            android:layout_marginTop="@dimen/activity_day_tvName_layout_marginTop"
+            android:layout_marginBottom="@dimen/activity_day_tvName_layout_marginBottom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:labelFor="@id/etName"
+            android:text="@string/name"
+            app:layout_constraintBottom_toBottomOf="@+id/etName"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/etName" />
+        <EditText
+            android:id="@+id/etName"
+            android:inputType="textCapSentences"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_width="@dimen/activity_day_etName_layout_width"
+            android:layout_marginTop="@dimen/activity_day_etName_layout_marginTop"
+            android:layout_marginBottom="@dimen/activity_day_etName_layout_marginBottom"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/tvName"/>
 
-            <!-- Name -->
-            <TextView
-                android:id="@+id/tvName"
-                android:layout_marginTop="@dimen/activity_day_tvName_layout_marginTop"
-                android:layout_marginBottom="@dimen/activity_day_tvName_layout_marginBottom"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:labelFor="@id/etName"
-                android:text="@string/name"
-                app:layout_constraintBottom_toBottomOf="@+id/etName"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/etName" />
-            <EditText
-                android:id="@+id/etName"
-                android:inputType="textCapSentences"
-                app:layout_constraintTop_toTopOf="parent"
-                android:layout_width="@dimen/activity_day_etName_layout_width"
-                android:layout_marginTop="@dimen/activity_day_etName_layout_marginTop"
-                android:layout_marginBottom="@dimen/activity_day_etName_layout_marginBottom"
-                android:layout_height="wrap_content"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/tvName"/>
+        <!-- profile -->
+        <TextView
+            android:id="@+id/tvProfile"
+            android:layout_marginTop="@dimen/activity_day_tvProfile_layout_marginTop"
+            android:layout_marginBottom="@dimen/activity_day_tvProfile_layout_marginBottom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/profile2"
+            app:layout_constraintBottom_toBottomOf="@+id/spProfile"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvName"
+            app:layout_constraintTop_toTopOf="@+id/spProfile" />
+        <Spinner
+            android:id="@+id/spProfile"
+            android:layout_width="@dimen/activity_day_spProfile_layout_width"
+            android:layout_marginTop="@dimen/activity_day_spProfile_layout_marginTop"
+            android:layout_marginBottom="@dimen/activity_day_spProfile_layout_marginBottom"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/tvProfile"
+            app:layout_constraintTop_toBottomOf="@id/etName" />
+        <!-- type morning -->
+        <TextView
+            android:id="@+id/tvTypeMorning"
+            android:layout_marginTop="@dimen/activity_day_tvTypeMorning_layout_marginTop"
+            android:layout_marginBottom="@dimen/activity_day_tvTypeMorning_layout_marginBottom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/type_morning"
+            app:layout_constraintBottom_toBottomOf="@+id/spTypeMorning"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvProfile"
+            app:layout_constraintTop_toTopOf="@+id/spTypeMorning" />
+        <Spinner
+            android:id="@+id/spTypeMorning"
+            android:layout_marginTop="@dimen/activity_day_spTypeMorning_layout_marginTop"
+            android:layout_marginBottom="@dimen/activity_day_spTypeMorning_layout_marginBottom"
+            android:layout_width="@dimen/activity_day_spTypeMorning_layout_width"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/tvTypeMorning"
+            app:layout_constraintTop_toBottomOf="@id/spProfile" />
+        <!-- type afternoon -->
+        <TextView
+            android:id="@+id/tvTypeAfternoon"
+            android:layout_marginTop="@dimen/activity_day_tvTypeAfternoon_layout_marginTop"
+            android:layout_marginBottom="@dimen/activity_day_tvTypeAfternoon_layout_marginBottom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/type_afternoon"
+            app:layout_constraintBottom_toBottomOf="@+id/spTypeAfternoon"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvTypeMorning"
+            app:layout_constraintTop_toTopOf="@+id/spTypeAfternoon" />
+        <Spinner
+            android:id="@+id/spTypeAfternoon"
+            android:layout_marginTop="@dimen/activity_day_spTypeAfternoon_layout_marginTop"
+            android:layout_marginBottom="@dimen/activity_day_spTypeAfternoon_layout_marginBottom"
+            android:layout_width="@dimen/activity_day_spTypeAfternoon_layout_width"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/tvTypeAfternoon"
+            app:layout_constraintTop_toBottomOf="@id/spTypeMorning" />
+        <!-- start/end morning labels -->
+        <TextView
+            android:id="@+id/tvLblStartMorning"
+            android:layout_marginTop="@dimen/activity_day_tvLblStartMorning_layout_marginTop"
+            android:text="@string/start_morning"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvTypeAfternoon" />
+        <android.support.constraint.Guideline
+            android:id="@+id/guidelineLbl55"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="@dimen/activity_day_guidelineLbl55_layout_constraintGuide_percent" />
+        <TextView
+            android:id="@+id/tvLblEndMorning"
+            android:layout_marginTop="@dimen/activity_day_tvLblEndMorning_layout_marginTop"
+            android:text="@string/end_morning"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toEndOf="@+id/guidelineLbl55"
+            app:layout_constraintTop_toBottomOf="@+id/tvTypeAfternoon" />
+        <!-- start/end morning tv -->
+        <TextView
+            android:id="@+id/tvStartMorning"
+            android:layout_marginTop="@dimen/activity_day_tvStartMorning_layout_marginTop"
+            android:layout_marginBottom="@dimen/activity_day_tvStartMorning_layout_marginBottom"
+            android:layout_width="@dimen/activity_day_tvStartMorning_layout_width"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/activity_day_tvStartMorning_layout_marginEnd"
+            android:background="@color/gray"
+            android:textColor="@color/black"
+            android:paddingBottom="@dimen/activity_day_tvStartMorning_paddingBottom"
+            android:paddingTop="@dimen/activity_day_tvStartMorning_paddingTop"
+            android:text="@string/default_hours"
+            android:textAlignment="center"
+            app:layout_constraintEnd_toStartOf="@+id/guidelineTv45"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvLblStartMorning" />
+        <android.support.constraint.Guideline
+            android:id="@+id/guidelineTv45"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="@dimen/activity_day_guidelineTv45_layout_constraintGuide_percent" />
+        <TextView
+            android:id="@+id/tvEndMorning"
+            android:layout_marginTop="@dimen/activity_day_tvEndMorning_layout_marginTop"
+            android:layout_marginBottom="@dimen/activity_day_tvEndMorning_layout_marginBottom"
+            android:layout_width="@dimen/activity_day_tvEndMorning_layout_width"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/activity_day_tvEndMorning_layout_marginEnd"
+            android:background="@color/gray"
+            android:textColor="@color/black"
+            android:paddingBottom="@dimen/activity_day_tvEndMorning_paddingBottom"
+            android:paddingTop="@dimen/activity_day_tvEndMorning_paddingTop"
+            android:text="@string/default_hours"
+            android:textAlignment="center"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/tvLblEndMorning"
+            app:layout_constraintTop_toBottomOf="@+id/tvLblEndMorning" />
+        <!-- start/end afternoon labels -->
+        <TextView
+            android:id="@+id/tvLblStartAfternoon"
+            android:layout_marginTop="@dimen/activity_day_tvLblStartAfternoon_layout_marginTop"
+            android:text="@string/start_afternoon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvStartMorning" />
+        <TextView
+            android:id="@+id/tvLblEndAfternoon"
+            android:layout_marginTop="@dimen/activity_day_tvLblEndAfternoon_layout_marginTop"
+            android:text="@string/end_afternoon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toEndOf="@+id/guidelineLbl55"
+            app:layout_constraintTop_toBottomOf="@+id/tvEndMorning" />
+        <!-- start/end afternoon tv -->
+        <TextView
+            android:id="@+id/tvStartAfternoon"
+            android:layout_marginTop="@dimen/activity_day_tvStartAfternoon_layout_marginTop"
+            android:layout_marginBottom="@dimen/activity_day_tvStartAfternoon_layout_marginBottom"
+            android:layout_width="@dimen/activity_day_tvStartAfternoon_layout_width"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/activity_day_tvStartAfternoon_layout_marginEnd"
+            android:background="@color/gray"
+            android:textColor="@color/black"
+            android:paddingBottom="@dimen/activity_day_tvStartAfternoon_paddingBottom"
+            android:paddingTop="@dimen/activity_day_tvStartAfternoon_paddingTop"
+            android:text="@string/default_hours"
+            android:textAlignment="center"
+            app:layout_constraintEnd_toStartOf="@+id/guidelineTv45"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvLblStartAfternoon" />
+        <TextView
+            android:id="@+id/tvEndAfternoon"
+            android:layout_marginTop="@dimen/activity_day_tvEndAfternoon_layout_marginTop"
+            android:layout_marginBottom="@dimen/activity_day_tvEndAfternoon_layout_marginBottom"
+            android:layout_width="@dimen/activity_day_tvEndAfternoon_layout_width"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/activity_day_tvEndAfternoon_layout_marginEnd"
+            android:background="@color/gray"
+            android:textColor="@color/black"
+            android:paddingBottom="@dimen/activity_day_tvEndAfternoon_paddingBottom"
+            android:paddingTop="@dimen/activity_day_tvEndAfternoon_paddingTop"
+            android:text="@string/default_hours"
+            android:textAlignment="center"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/tvLblEndAfternoon"
+            app:layout_constraintTop_toBottomOf="@+id/tvLblEndAfternoon" />
+        <!-- AdditionalBreak/LegalWorktime labels -->
+        <TextView
+            android:id="@+id/tvLblAdditionalBreak"
+            android:layout_marginTop="@dimen/activity_day_tvLblAdditionalBreak_layout_marginTop"
+            android:text="@string/additional_break"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvStartAfternoon" />
+        <TextView
+            android:id="@+id/tvLblLegalWorktime"
+            android:layout_marginTop="@dimen/activity_day_tvLblLegalWorktime_layout_marginTop"
+            android:text="@string/legal_worktime_by_day"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toEndOf="@+id/guidelineLbl55"
+            app:layout_constraintTop_toBottomOf="@+id/tvEndAfternoon" />
+        <!-- AdditionalBreak/LegalWorktime tv -->
+        <TextView
+            android:id="@+id/tvAdditionalBreak"
+            android:layout_marginTop="@dimen/activity_day_tvAdditionalBreak_layout_marginTop"
+            android:layout_marginBottom="@dimen/activity_day_tvAdditionalBreak_layout_marginBottom"
+            android:layout_width="@dimen/activity_day_tvAdditionalBreak_layout_width"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/activity_day_tvAdditionalBreak_layout_marginEnd"
+            android:background="@color/gray"
+            android:textColor="@color/black"
+            android:paddingBottom="@dimen/activity_day_tvAdditionalBreak_paddingBottom"
+            android:paddingTop="@dimen/activity_day_tvAdditionalBreak_paddingTop"
+            android:text="@string/default_hours"
+            android:textAlignment="center"
+            app:layout_constraintEnd_toStartOf="@+id/guidelineTv45"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvLblAdditionalBreak" />
+        <TextView
+            android:id="@+id/tvLegalWorktime"
+            android:layout_marginTop="@dimen/activity_day_tvLegalWorktime_layout_marginTop"
+            android:layout_marginBottom="@dimen/activity_day_tvLegalWorktime_layout_marginBottom"
+            android:layout_width="@dimen/activity_day_tvLegalWorktime_layout_width"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/activity_day_tvLegalWorktime_layout_marginEnd"
+            android:background="@color/gray"
+            android:textColor="@color/black"
+            android:paddingBottom="@dimen/activity_day_tvLegalWorktime_paddingBottom"
+            android:paddingTop="@dimen/activity_day_tvLegalWorktime_paddingTop"
+            android:text="@string/default_hours"
+            android:textAlignment="center"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/tvLblLegalWorktime"
+            app:layout_constraintTop_toBottomOf="@+id/tvLblLegalWorktime" />
+        <!-- Amount labels -->
+        <TextView
+            android:id="@+id/tvLblAmount"
+            android:layout_marginTop="@dimen/activity_day_tvLblAmount_layout_marginTop"
+            android:text="@string/wage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:labelFor="@+id/etAmount"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvAdditionalBreak" />
+        <!-- Amount tv -->
+        <EditText
+            android:id="@+id/etAmount"
+            android:layout_marginTop="@dimen/activity_day_etAmount_layout_marginTop"
+            android:layout_marginBottom="@dimen/activity_day_etAmount_layout_marginBottom"
+            android:layout_width="@dimen/activity_day_etAmount_layout_width"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/activity_day_etAmount_layout_marginEnd"
+            android:background="@color/gray"
+            android:textColor="@color/black"
+            android:inputType="numberDecimal"
+            android:paddingBottom="@dimen/activity_day_etAmount_paddingBottom"
+            android:paddingTop="@dimen/activity_day_etAmount_paddingTop"
+            android:text="@string/default_wage"
+            android:textAlignment="center"
+            app:layout_constraintEnd_toStartOf="@+id/guidelineTv45"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvLblAmount" />
 
-            <!-- profile -->
-            <TextView
-                android:id="@+id/tvProfile"
-                android:layout_marginTop="@dimen/activity_day_tvProfile_layout_marginTop"
-                android:layout_marginBottom="@dimen/activity_day_tvProfile_layout_marginBottom"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/profile2"
-                app:layout_constraintBottom_toBottomOf="@+id/spProfile"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tvName"
-                app:layout_constraintTop_toTopOf="@+id/spProfile" />
-            <Spinner
-                android:id="@+id/spProfile"
-                android:layout_width="@dimen/activity_day_spProfile_layout_width"
-                android:layout_marginTop="@dimen/activity_day_spProfile_layout_marginTop"
-                android:layout_marginBottom="@dimen/activity_day_spProfile_layout_marginBottom"
-                android:layout_height="wrap_content"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/tvProfile"
-                app:layout_constraintTop_toBottomOf="@id/etName" />
-            <!-- type morning -->
-            <TextView
-                android:id="@+id/tvTypeMorning"
-                android:layout_marginTop="@dimen/activity_day_tvTypeMorning_layout_marginTop"
-                android:layout_marginBottom="@dimen/activity_day_tvTypeMorning_layout_marginBottom"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/type_morning"
-                app:layout_constraintBottom_toBottomOf="@+id/spTypeMorning"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tvProfile"
-                app:layout_constraintTop_toTopOf="@+id/spTypeMorning" />
-            <Spinner
-                android:id="@+id/spTypeMorning"
-                android:layout_marginTop="@dimen/activity_day_spTypeMorning_layout_marginTop"
-                android:layout_marginBottom="@dimen/activity_day_spTypeMorning_layout_marginBottom"
-                android:layout_width="@dimen/activity_day_spTypeMorning_layout_width"
-                android:layout_height="wrap_content"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/tvTypeMorning"
-                app:layout_constraintTop_toBottomOf="@id/spProfile" />
-            <!-- type afternoon -->
-            <TextView
-                android:id="@+id/tvTypeAfternoon"
-                android:layout_marginTop="@dimen/activity_day_tvTypeAfternoon_layout_marginTop"
-                android:layout_marginBottom="@dimen/activity_day_tvTypeAfternoon_layout_marginBottom"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/type_afternoon"
-                app:layout_constraintBottom_toBottomOf="@+id/spTypeAfternoon"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tvTypeMorning"
-                app:layout_constraintTop_toTopOf="@+id/spTypeAfternoon" />
-            <Spinner
-                android:id="@+id/spTypeAfternoon"
-                android:layout_marginTop="@dimen/activity_day_spTypeAfternoon_layout_marginTop"
-                android:layout_marginBottom="@dimen/activity_day_spTypeAfternoon_layout_marginBottom"
-                android:layout_width="@dimen/activity_day_spTypeAfternoon_layout_width"
-                android:layout_height="wrap_content"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/tvTypeAfternoon"
-                app:layout_constraintTop_toBottomOf="@id/spTypeMorning" />
-            <!-- start/end morning labels -->
-            <TextView
-                android:id="@+id/tvLblStartMorning"
-                android:layout_marginTop="@dimen/activity_day_tvLblStartMorning_layout_marginTop"
-                android:text="@string/start_morning"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvTypeAfternoon" />
-            <android.support.constraint.Guideline
-                android:id="@+id/guidelineLbl55"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                app:layout_constraintGuide_percent="@dimen/activity_day_guidelineLbl55_layout_constraintGuide_percent" />
-            <TextView
-                android:id="@+id/tvLblEndMorning"
-                android:layout_marginTop="@dimen/activity_day_tvLblEndMorning_layout_marginTop"
-                android:text="@string/end_morning"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:layout_constraintStart_toEndOf="@+id/guidelineLbl55"
-                app:layout_constraintTop_toBottomOf="@+id/tvTypeAfternoon" />
-            <!-- start/end morning tv -->
-            <TextView
-                android:id="@+id/tvStartMorning"
-                android:layout_marginTop="@dimen/activity_day_tvStartMorning_layout_marginTop"
-                android:layout_marginBottom="@dimen/activity_day_tvStartMorning_layout_marginBottom"
-                android:layout_width="@dimen/activity_day_tvStartMorning_layout_width"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/activity_day_tvStartMorning_layout_marginEnd"
-                android:background="@color/gray"
-                android:textColor="@color/black"
-                android:paddingBottom="@dimen/activity_day_tvStartMorning_paddingBottom"
-                android:paddingTop="@dimen/activity_day_tvStartMorning_paddingTop"
-                android:text="@string/default_hours"
-                android:textAlignment="center"
-                app:layout_constraintEnd_toStartOf="@+id/guidelineTv45"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvLblStartMorning" />
-            <android.support.constraint.Guideline
-                android:id="@+id/guidelineTv45"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                app:layout_constraintGuide_percent="@dimen/activity_day_guidelineTv45_layout_constraintGuide_percent" />
-            <TextView
-                android:id="@+id/tvEndMorning"
-                android:layout_marginTop="@dimen/activity_day_tvEndMorning_layout_marginTop"
-                android:layout_marginBottom="@dimen/activity_day_tvEndMorning_layout_marginBottom"
-                android:layout_width="@dimen/activity_day_tvEndMorning_layout_width"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/activity_day_tvEndMorning_layout_marginEnd"
-                android:background="@color/gray"
-                android:textColor="@color/black"
-                android:paddingBottom="@dimen/activity_day_tvEndMorning_paddingBottom"
-                android:paddingTop="@dimen/activity_day_tvEndMorning_paddingTop"
-                android:text="@string/default_hours"
-                android:textAlignment="center"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="@+id/tvLblEndMorning"
-                app:layout_constraintTop_toBottomOf="@+id/tvLblEndMorning" />
-            <!-- start/end afternoon labels -->
-            <TextView
-                android:id="@+id/tvLblStartAfternoon"
-                android:layout_marginTop="@dimen/activity_day_tvLblStartAfternoon_layout_marginTop"
-                android:text="@string/start_afternoon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvStartMorning" />
-            <TextView
-                android:id="@+id/tvLblEndAfternoon"
-                android:layout_marginTop="@dimen/activity_day_tvLblEndAfternoon_layout_marginTop"
-                android:text="@string/end_afternoon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:layout_constraintStart_toEndOf="@+id/guidelineLbl55"
-                app:layout_constraintTop_toBottomOf="@+id/tvEndMorning" />
-            <!-- start/end afternoon tv -->
-            <TextView
-                android:id="@+id/tvStartAfternoon"
-                android:layout_marginTop="@dimen/activity_day_tvStartAfternoon_layout_marginTop"
-                android:layout_marginBottom="@dimen/activity_day_tvStartAfternoon_layout_marginBottom"
-                android:layout_width="@dimen/activity_day_tvStartAfternoon_layout_width"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/activity_day_tvStartAfternoon_layout_marginEnd"
-                android:background="@color/gray"
-                android:textColor="@color/black"
-                android:paddingBottom="@dimen/activity_day_tvStartAfternoon_paddingBottom"
-                android:paddingTop="@dimen/activity_day_tvStartAfternoon_paddingTop"
-                android:text="@string/default_hours"
-                android:textAlignment="center"
-                app:layout_constraintEnd_toStartOf="@+id/guidelineTv45"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvLblStartAfternoon" />
-            <TextView
-                android:id="@+id/tvEndAfternoon"
-                android:layout_marginTop="@dimen/activity_day_tvEndAfternoon_layout_marginTop"
-                android:layout_marginBottom="@dimen/activity_day_tvEndAfternoon_layout_marginBottom"
-                android:layout_width="@dimen/activity_day_tvEndAfternoon_layout_width"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/activity_day_tvEndAfternoon_layout_marginEnd"
-                android:background="@color/gray"
-                android:textColor="@color/black"
-                android:paddingBottom="@dimen/activity_day_tvEndAfternoon_paddingBottom"
-                android:paddingTop="@dimen/activity_day_tvEndAfternoon_paddingTop"
-                android:text="@string/default_hours"
-                android:textAlignment="center"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="@+id/tvLblEndAfternoon"
-                app:layout_constraintTop_toBottomOf="@+id/tvLblEndAfternoon" />
-            <!-- AdditionalBreak/LegalWorktime labels -->
-            <TextView
-                android:id="@+id/tvLblAdditionalBreak"
-                android:layout_marginTop="@dimen/activity_day_tvLblAdditionalBreak_layout_marginTop"
-                android:text="@string/additional_break"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvStartAfternoon" />
-            <TextView
-                android:id="@+id/tvLblLegalWorktime"
-                android:layout_marginTop="@dimen/activity_day_tvLblLegalWorktime_layout_marginTop"
-                android:text="@string/legal_worktime_by_day"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:layout_constraintStart_toEndOf="@+id/guidelineLbl55"
-                app:layout_constraintTop_toBottomOf="@+id/tvEndAfternoon" />
-            <!-- AdditionalBreak/LegalWorktime tv -->
-            <TextView
-                android:id="@+id/tvAdditionalBreak"
-                android:layout_marginTop="@dimen/activity_day_tvAdditionalBreak_layout_marginTop"
-                android:layout_marginBottom="@dimen/activity_day_tvAdditionalBreak_layout_marginBottom"
-                android:layout_width="@dimen/activity_day_tvAdditionalBreak_layout_width"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/activity_day_tvAdditionalBreak_layout_marginEnd"
-                android:background="@color/gray"
-                android:textColor="@color/black"
-                android:paddingBottom="@dimen/activity_day_tvAdditionalBreak_paddingBottom"
-                android:paddingTop="@dimen/activity_day_tvAdditionalBreak_paddingTop"
-                android:text="@string/default_hours"
-                android:textAlignment="center"
-                app:layout_constraintEnd_toStartOf="@+id/guidelineTv45"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvLblAdditionalBreak" />
-            <TextView
-                android:id="@+id/tvLegalWorktime"
-                android:layout_marginTop="@dimen/activity_day_tvLegalWorktime_layout_marginTop"
-                android:layout_marginBottom="@dimen/activity_day_tvLegalWorktime_layout_marginBottom"
-                android:layout_width="@dimen/activity_day_tvLegalWorktime_layout_width"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/activity_day_tvLegalWorktime_layout_marginEnd"
-                android:background="@color/gray"
-                android:textColor="@color/black"
-                android:paddingBottom="@dimen/activity_day_tvLegalWorktime_paddingBottom"
-                android:paddingTop="@dimen/activity_day_tvLegalWorktime_paddingTop"
-                android:text="@string/default_hours"
-                android:textAlignment="center"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="@+id/tvLblLegalWorktime"
-                app:layout_constraintTop_toBottomOf="@+id/tvLblLegalWorktime" />
-            <!-- Amount labels -->
-            <TextView
-                android:id="@+id/tvLblAmount"
-                android:layout_marginTop="@dimen/activity_day_tvLblAmount_layout_marginTop"
-                android:text="@string/wage"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:labelFor="@+id/etAmount"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvAdditionalBreak" />
-            <!-- Amount tv -->
-            <EditText
-                android:id="@+id/etAmount"
-                android:layout_marginTop="@dimen/activity_day_etAmount_layout_marginTop"
-                android:layout_marginBottom="@dimen/activity_day_etAmount_layout_marginBottom"
-                android:layout_width="@dimen/activity_day_etAmount_layout_width"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/activity_day_etAmount_layout_marginEnd"
-                android:background="@color/gray"
-                android:textColor="@color/black"
-                android:inputType="numberDecimal"
-                android:paddingBottom="@dimen/activity_day_etAmount_paddingBottom"
-                android:paddingTop="@dimen/activity_day_etAmount_paddingTop"
-                android:text="@string/default_wage"
-                android:textAlignment="center"
-                app:layout_constraintEnd_toStartOf="@+id/guidelineTv45"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvLblAmount" />
-
-        </android.support.constraint.ConstraintLayout>
-    </ScrollView>
-</FrameLayout>
+    </android.support.constraint.ConstraintLayout>
+</ScrollView>

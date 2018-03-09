@@ -1,8 +1,8 @@
 package fr.ralala.worktime.ui.activities;
 
-import android.content.Context;
+import android.app.Activity;
 import android.content.Intent;
-import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -43,6 +43,7 @@ import fr.ralala.worktime.ui.widgets.DayWidgetProvider4x1;
  *******************************************************************************
  */
 public class DayActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemSelectedListener{
+  public static final int REQUEST_START_ACTIVITY = 100;
   public static final String DAY_ACTIVITY_EXTRA_DATE = "DAY_ACTIVITY_EXTRA_DATE_date";
   public static final String DAY_ACTIVITY_EXTRA_PROFILE = "DAY_ACTIVITY_EXTRA_DATE_profile";
   private Spinner mSpProfile = null;
@@ -59,8 +60,6 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
   private DayEntry mDe = null;
   private boolean mDisplayProfile = false;
   private ArrayAdapter<String> mSpProfilesAdapter = null;
-  private FloatingActionButton mFab = null;
-
   private WorkTimeDay mWtdStartMorning = null;
   private WorkTimeDay mWtdEndMorning = null;
   private WorkTimeDay mWtdStartAfternoon = null;
@@ -76,15 +75,15 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
 
   /**
    * Starts an activity.
-   * @param ctx The Android context.
+   * @param fragment The Android fragment.
    * @param date The date used for the extra part.
    * @param profile True from a profile.
    */
-  public static void startActivity(final Context ctx, final String date, final boolean profile) {
-    Intent intent = new Intent(ctx, DayActivity.class);
+  public static void startActivity(final Fragment fragment, final String date, final boolean profile) {
+    Intent intent = new Intent(fragment.getContext(), DayActivity.class);
     intent.putExtra(DAY_ACTIVITY_EXTRA_DATE, date);
     intent.putExtra(DAY_ACTIVITY_EXTRA_PROFILE, profile);
-    ctx.startActivity(intent);
+    fragment.startActivityForResult(intent, REQUEST_START_ACTIVITY);
   }
 
   /**
@@ -92,6 +91,7 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
    */
   @Override
   public void onBackPressed() {
+    setResult(RESULT_CANCELED);
     super.onBackPressed();
     UIHelper.closeAnimation(this);
     clearFromWidget();
@@ -175,9 +175,6 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
       if(date != null && !date.isEmpty() && date.contains("/"))
         mDe.setDay(date);
     }
-    mFab = findViewById(R.id.fab);
-    if(mFab != null)
-      mFab.setOnClickListener(this);
     refreshStartEndPause(mDe);
 
     if(mDisplayProfile)
@@ -240,7 +237,7 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
     mSpTypeMorning.setAdapter(spTypeAdapterMorning);
     spTypeAdapterMorning.add("");
     spTypeAdapterMorning.add(DayType.getText(this, DayType.AT_WORK));
-    spTypeAdapterMorning.add(DayType.getText(this, DayType.OFF));
+    spTypeAdapterMorning.add(DayType.getText(this, DayType.RECOVERY));
     spTypeAdapterMorning.add(DayType.getText(this, DayType.HOLIDAY));
     spTypeAdapterMorning.add(DayType.getText(this, DayType.PUBLIC_HOLIDAY));
     spTypeAdapterMorning.add(DayType.getText(this, DayType.SICKNESS));
@@ -250,7 +247,7 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
     mSpTypeAfternoon.setAdapter(spTypeAdapterAfternoon);
     spTypeAdapterAfternoon.add("");
     spTypeAdapterAfternoon.add(DayType.getText(this, DayType.AT_WORK));
-    spTypeAdapterAfternoon.add(DayType.getText(this, DayType.OFF));
+    spTypeAdapterAfternoon.add(DayType.getText(this, DayType.RECOVERY));
     spTypeAdapterAfternoon.add(DayType.getText(this, DayType.HOLIDAY));
     spTypeAdapterAfternoon.add(DayType.getText(this, DayType.PUBLIC_HOLIDAY));
     spTypeAdapterAfternoon.add(DayType.getText(this, DayType.SICKNESS));
@@ -339,10 +336,6 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
   public boolean onCreateOptionsMenu(final Menu menu) {
     MenuInflater inflater = getMenuInflater();
     inflater.inflate(R.menu.activity_day, menu);
-
-    MenuItem action_cancel = menu.findItem(R.id.action_cancel);
-    action_cancel.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
-    action_cancel.setTitle(!mDisplayProfile ? R.string.cancel : R.string.clear);
     return true;
   }
 
@@ -359,6 +352,7 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
         return true;
       case R.id.action_cancel:
         if(mDisplayProfile) {
+          setResult(RESULT_OK);
           mFromClear = true;
 
           mTvStartMorning.setText((mWtdStartMorning = new WorkTimeDay()).timeString());
@@ -376,6 +370,116 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
         } else
           onBackPressed();
         return true;
+      case R.id.action_done: {
+        DayEntry newEntry = new DayEntry(this, mDe.getDay().toCalendar(),
+            DayType.compute(this, mSpTypeMorning.getSelectedItem().toString()),
+            DayType.compute(this, mSpTypeAfternoon.getSelectedItem().toString()));
+        String s = mEtAmount.getText().toString().trim();
+        if (s.equals(getString(R.string.zero))) s = "";
+        newEntry.setAmountByHour(s.isEmpty() ? mApp.getAmountByHour() : Double.parseDouble(s));
+        newEntry.setName(mEtName.getText().toString());
+        newEntry.setEndMorning(mTvEndMorning.getText().toString());
+        newEntry.setStartMorning(mTvStartMorning.getText().toString());
+        newEntry.setEndAfternoon(mTvEndAfternoon.getText().toString());
+        newEntry.setAdditionalBreak(mTvAdditionalBreak.getText().toString());
+        newEntry.setStartAfternoon(mTvStartAfternoon.getText().toString());
+        newEntry.setLegalWorktime(mTvLegalWorktime.getText().toString());
+        if(newEntry.getTypeMorning() != DayType.ERROR) {
+          if(checkMorning(newEntry))
+            return true;
+        } else if(newEntry.getTypeAfternoon() != DayType.ERROR) {
+          if(checkAfternoon(newEntry))
+            return true;
+        }
+
+        if (mTvLegalWorktime.getText().toString().equals(getString(R.string.default_time))) {
+          UIHelper.shakeError(mTvLegalWorktime, getString(R.string.error_invalid_legal_worktime));
+          return true;
+        }
+        if(mDisplayProfile) {
+          boolean match = mDe.match(newEntry);
+          if (!match) {
+            mApp.getDaysFactory().remove(mDe);
+            mApp.getProfilesFactory().updateProfilesLearningWeight(mSelectedProfile, mApp.getProfilesWeightDepth(), mFromClear);
+            mFromClear = false;
+            if (newEntry.getTypeAfternoon() == DayType.RECOVERY || newEntry.getStartMorning().isValidTime() || newEntry.getEndAfternoon().isValidTime()) {
+              mApp.getDaysFactory().add(newEntry);
+            }
+            if(AndroidHelper.isServiceRunning(this, QuickAccessService.class))
+              stopService(new Intent(this, QuickAccessService.class));
+            AndroidHelper.updateWidget(this, DayWidgetProvider1x1.class);
+            AndroidHelper.updateWidget(this, DayWidgetProvider4x1.class);
+          }
+        } else {
+          if (mEtName.getText().toString().isEmpty()) {
+            UIHelper.shakeError(mEtName, getString(R.string.error_no_name));
+            return true;
+          }
+          if(newEntry.getTypeMorning() == DayType.ERROR) {
+            UIHelper.shakeError(mSpTypeMorning);
+            return true;
+          }
+          if(newEntry.getTypeAfternoon() == DayType.ERROR) {
+            UIHelper.shakeError(mSpTypeAfternoon);
+            return true;
+          }
+          if(checkMorning(newEntry) || checkAfternoon(newEntry))
+            return true;
+
+          if(mDe.getName().isEmpty() || !mDe.match(newEntry)) {
+            mApp.getProfilesFactory().remove(mDe);
+            if (newEntry.getTypeAfternoon() == DayType.RECOVERY || newEntry.getStartMorning().isValidTime() || newEntry.getEndAfternoon().isValidTime()) {
+              newEntry.setLearningWeight(mDe.getLearningWeight());
+              mApp.getProfilesFactory().add(newEntry);
+            }
+          }
+        }
+        setResult(RESULT_OK);
+        finish();
+        UIHelper.closeAnimation(this);
+        clearFromWidget();
+        return true;
+      }
+    }
+    return false;
+  }
+
+  /**
+   * Checks whether the morning entries is valid
+   * @param newEntry The entry to check.
+   * @return true on error.
+   */
+  private boolean checkAfternoon(DayEntry newEntry) {
+    if (newEntry.getStartAfternoon().getHours() == 0 && newEntry.getTypeAfternoon() != DayType.RECOVERY) {
+      UIHelper.shakeError(mTvStartAfternoon, getString(R.string.error_invalid_start));
+      return true;
+    } else if (newEntry.getEndAfternoon().getHours() == 0 && newEntry.getTypeAfternoon() != DayType.RECOVERY) {
+      UIHelper.shakeError(mTvEndAfternoon, getString(R.string.error_invalid_end));
+      return true;
+    } else if (mTvStartAfternoon.getText().toString().equals(mTvEndAfternoon.getText().toString()) && newEntry.getTypeAfternoon() != DayType.RECOVERY) {
+      UIHelper.shakeError(mTvStartAfternoon, getString(R.string.error_invalid_start_end_morning));
+      UIHelper.shakeError(mTvEndAfternoon, getString(R.string.error_invalid_start_end_morning));
+      return true;
+    }
+    return false;
+  }
+
+  /**
+   * Checks whether the morning entries is valid
+   * @param newEntry The entry to check.
+   * @return true on error.
+   */
+  private boolean checkMorning(DayEntry newEntry) {
+    if (newEntry.getStartMorning().getHours() == 0 && newEntry.getTypeMorning() != DayType.RECOVERY) {
+      UIHelper.shakeError(mTvStartMorning, getString(R.string.error_invalid_start));
+      return true;
+    } else if (newEntry.getEndMorning().getHours() == 0 && newEntry.getTypeMorning() != DayType.RECOVERY) {
+      UIHelper.shakeError(mTvEndMorning, getString(R.string.error_invalid_end));
+      return true;
+    } else if (mTvStartMorning.getText().toString().equals(mTvEndMorning.getText().toString()) && newEntry.getTypeMorning() != DayType.RECOVERY) {
+      UIHelper.shakeError(mTvStartMorning, getString(R.string.error_invalid_start_end_morning));
+      UIHelper.shakeError(mTvEndMorning, getString(R.string.error_invalid_start_end_morning));
+      return true;
     }
     return false;
   }
@@ -385,82 +489,7 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
    * @param v The view clicked.
    */
   public void onClick(final View v) {
-    if(v.equals(mFab)) {
-      DayEntry newEntry = new DayEntry(this, mDe.getDay().toCalendar(),
-        DayType.compute(this, mSpTypeMorning.getSelectedItem().toString()),
-        DayType.compute(this, mSpTypeAfternoon.getSelectedItem().toString()));
-      String s = mEtAmount.getText().toString().trim();
-      if (s.equals(getString(R.string.zero))) s = "";
-      newEntry.setAmountByHour(s.isEmpty() ? mApp.getAmountByHour() : Double.parseDouble(s));
-      newEntry.setName(mEtName.getText().toString());
-      newEntry.setEndMorning(mTvEndMorning.getText().toString());
-      newEntry.setStartMorning(mTvStartMorning.getText().toString());
-      newEntry.setEndAfternoon(mTvEndAfternoon.getText().toString());
-      newEntry.setAdditionalBreak(mTvAdditionalBreak.getText().toString());
-      newEntry.setStartAfternoon(mTvStartAfternoon.getText().toString());
-      newEntry.setLegalWorktime(mTvLegalWorktime.getText().toString());
-      if(newEntry.getTypeMorning() != DayType.ERROR) {
-        if (newEntry.getStartMorning().getHours() == 0 && newEntry.getTypeMorning() != DayType.OFF) {
-          UIHelper.shakeError(mTvStartMorning, getString(R.string.error_invalid_start));
-          return;
-        } else if (newEntry.getEndMorning().getHours() == 0 && newEntry.getTypeMorning() != DayType.OFF) {
-          UIHelper.shakeError(mTvEndMorning, getString(R.string.error_invalid_end));
-          return;
-        } else if (mTvStartMorning.getText().toString().equals(mTvEndMorning.getText().toString()) && newEntry.getTypeMorning() != DayType.OFF) {
-          UIHelper.shakeError(mTvStartMorning, getString(R.string.error_invalid_start_end_morning));
-          UIHelper.shakeError(mTvEndMorning, getString(R.string.error_invalid_start_end_morning));
-          return;
-        }
-      } else if(newEntry.getTypeAfternoon() != DayType.ERROR) {
-        if (newEntry.getStartAfternoon().getHours() == 0 && newEntry.getTypeAfternoon() != DayType.OFF) {
-          UIHelper.shakeError(mTvStartAfternoon, getString(R.string.error_invalid_start));
-          return;
-        } else if (newEntry.getEndAfternoon().getHours() == 0 && newEntry.getTypeAfternoon() != DayType.OFF) {
-          UIHelper.shakeError(mTvEndAfternoon, getString(R.string.error_invalid_end));
-          return;
-        } else if (mTvStartAfternoon.getText().toString().equals(mTvEndAfternoon.getText().toString()) && newEntry.getTypeAfternoon() != DayType.OFF) {
-          UIHelper.shakeError(mTvStartAfternoon, getString(R.string.error_invalid_start_end_morning));
-          UIHelper.shakeError(mTvEndAfternoon, getString(R.string.error_invalid_start_end_morning));
-          return;
-        }
-      }
-
-      if (mTvLegalWorktime.getText().toString().equals(getString(R.string.default_time))) {
-        UIHelper.shakeError(mTvLegalWorktime, getString(R.string.error_invalid_legal_worktime));
-        return;
-      }
-      if(mDisplayProfile) {
-        boolean match = mDe.match(newEntry);
-        if (!match) {
-          mApp.getDaysFactory().remove(mDe);
-          mApp.getProfilesFactory().updateProfilesLearningWeight(mSelectedProfile, mApp.getProfilesWeightDepth(), mFromClear);
-          mFromClear = false;
-          if (newEntry.getTypeAfternoon() == DayType.OFF || newEntry.getStartMorning().isValidTime() || newEntry.getEndAfternoon().isValidTime()) {
-            mApp.getDaysFactory().add(newEntry);
-            mApp.setLastAdded(newEntry);
-          }
-          if(AndroidHelper.isServiceRunning(this, QuickAccessService.class))
-            stopService(new Intent(this, QuickAccessService.class));
-          AndroidHelper.updateWidget(this, DayWidgetProvider1x1.class);
-          AndroidHelper.updateWidget(this, DayWidgetProvider4x1.class);
-        }
-      } else {
-        if (mEtName.getText().toString().isEmpty()) {
-          UIHelper.shakeError(mEtName, getString(R.string.error_no_name));
-          return;
-        }
-
-        if(mDe.getName().isEmpty() || !mDe.match(newEntry)) {
-          mApp.getProfilesFactory().remove(mDe);
-          if (newEntry.getTypeAfternoon() == DayType.OFF || newEntry.getStartMorning().isValidTime() || newEntry.getEndAfternoon().isValidTime()) {
-            newEntry.setLearningWeight(mDe.getLearningWeight());
-            mApp.getProfilesFactory().add(newEntry);
-            mApp.setLastAdded(newEntry);
-          }
-        }
-      }
-      finish();
-    } else if(v.equals(mTvStartMorning))
+    if(v.equals(mTvStartMorning))
       UIHelper.openTimePicker(this, mWtdStartMorning, mTvStartMorning);
     else if(v.equals(mTvEndMorning))
       UIHelper.openTimePicker(this, mWtdEndMorning, mTvEndMorning);

@@ -133,7 +133,7 @@ public class DaysEntriesArrayAdapter extends ArrayAdapter<DayEntry> {
                   mContext.getResources().getColor(R.color.red, null) :
                 (t.getTypeMorning() == DayType.SICKNESS) ?
                     mContext.getResources().getColor(R.color.orange, null) :
-                    (t.getTypeMorning() == DayType.OFF) ?
+                    (t.getTypeMorning() == DayType.RECOVERY) ?
                         mContext.getResources().getColor(R.color.gray, null) :
                         mContext.getResources().getColor(android.R.color.transparent, null);
 
@@ -150,7 +150,7 @@ public class DaysEntriesArrayAdapter extends ArrayAdapter<DayEntry> {
                 mContext.getResources().getColor(R.color.red, null) :
                 (t.getTypeAfternoon() == DayType.SICKNESS) ?
                   mContext.getResources().getColor(R.color.orange, null) :
-                    (t.getTypeAfternoon() == DayType.OFF) ?
+                    (t.getTypeAfternoon() == DayType.RECOVERY) ?
                     mContext.getResources().getColor(R.color.gray, null) :
                   mContext.getResources().getColor(android.R.color.transparent, null);
       }
@@ -169,7 +169,7 @@ public class DaysEntriesArrayAdapter extends ArrayAdapter<DayEntry> {
       if (holder.tvStart != null) {
         if(isPaidButNotWorkedMorning(t))
           holder.tvStart.setText("*");
-        else if(t.getTypeMorning() == DayType.OFF && !isNotValidAfternoon(t))
+        else if(t.getTypeMorning() == DayType.RECOVERY && !isNotValidAfternoon(t))
           holder.tvStart.setText(t.getStartAfternoon().timeString());
         else if (isNotValidMorning(t))
           holder.tvStart.setText("-");
@@ -180,7 +180,7 @@ public class DaysEntriesArrayAdapter extends ArrayAdapter<DayEntry> {
       if (holder.tvEnd != null) {
         if(isPaidButNotWorkedAfternoon(t))
           holder.tvEnd.setText("*");
-        else if(t.getTypeAfternoon() == DayType.OFF && !isNotValidMorning(t))
+        else if(t.getTypeAfternoon() == DayType.RECOVERY && !isNotValidMorning(t))
           holder.tvEnd.setText(t.getEndMorning().timeString());
         else if (isNotValidAfternoon(t)) {
           WorkTimeDay w = t.getEndMorning();

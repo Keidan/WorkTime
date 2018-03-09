@@ -60,8 +60,6 @@ public class MainApplication extends Application  {
   private WorkTimeDay mLastQuickAccessBreak = null;
   private long mLastWidgetOpen = 0L;
   private MyActivityLifecycleCallbacks mLifeCycle;
-  private DayEntry mLastAdded;
-
 
   public MainApplication() {
   }
@@ -83,23 +81,6 @@ public class MainApplication extends Application  {
     Class<?>[] classes = new Class<?>[] { MainActivity.class, DayActivity.class };
     registerActivityLifecycleCallbacks(mLifeCycle = new MyActivityLifecycleCallbacks(Arrays.asList(classes)));
   }
-
-  /**
-   * Sets the reference to the last added entry.
-   * @param de The DayEntry added.
-   */
-  public void setLastAdded(DayEntry de) {
-    mLastAdded = de;
-  }
-
-  /**
-   * Returns the reference to the last added entry.
-   * @return DayEntry
-   */
-  public DayEntry getLastAdded() {
-    return mLastAdded;
-  }
-
 
   /**
    * Returns the application ActivityLifecycleCallbacks
