@@ -189,9 +189,12 @@ public class DayEntry {
   /**
    * Tests if the current instance matches with the current entry.
    * @param de The entry to test.
+   * @param testName Test name.
    * @return boolean
    */
-  public boolean match(DayEntry de) {
+  public boolean match(DayEntry de, boolean testName) {
+    if(testName && !mName.equals(de.mName))
+      return false;
     return mDay.match(de.mDay)  && mStartMorning.match(de.mStartMorning) && mEndMorning.match(de.mEndMorning) && mAdditionalBreak.match(de.mAdditionalBreak)
       && mStartAfternoon.match(de.mStartAfternoon) && mEndAfternoon.match(de.mEndAfternoon) &&
         mTypeMorning == de.mTypeMorning && mTypeAfternoon == de.mTypeAfternoon && mAmountByHour == de.mAmountByHour && mLegalWorktime.match(de.mLegalWorktime);

@@ -150,7 +150,7 @@ public class DaysFactory {
    */
   public void remove(final DayEntry de) {
     for(int i = 0; i < mDays.size(); i++)
-      if(de.match(mDays.get(i))) {
+      if(de.match(mDays.get(i), false)) {
         mDays.remove(i);
         break;
       }

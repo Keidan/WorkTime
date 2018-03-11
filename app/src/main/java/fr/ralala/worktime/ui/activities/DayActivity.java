@@ -397,12 +397,12 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
           return true;
         }
         if(mDisplayProfile) {
-          boolean match = mDe.match(newEntry);
+          boolean match = mDe.match(newEntry, false);
           if (!match) {
             mApp.getDaysFactory().remove(mDe);
             mApp.getProfilesFactory().updateProfilesLearningWeight(mSelectedProfile, mApp.getProfilesWeightDepth(), mFromClear);
             mFromClear = false;
-            if (newEntry.getTypeAfternoon() == DayType.RECOVERY || newEntry.getStartMorning().isValidTime() || newEntry.getEndAfternoon().isValidTime()) {
+            if (newEntry.getTypeMorning() == DayType.RECOVERY || newEntry.getTypeAfternoon() == DayType.RECOVERY || newEntry.getStartMorning().isValidTime() || newEntry.getEndAfternoon().isValidTime()) {
               mApp.getDaysFactory().add(newEntry);
             }
             if(AndroidHelper.isServiceRunning(this, QuickAccessService.class))
@@ -426,9 +426,9 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
           if(checkMorning(newEntry) || checkAfternoon(newEntry))
             return true;
 
-          if(mDe.getName().isEmpty() || !mDe.match(newEntry)) {
+          if(mDe.getName().isEmpty() || !mDe.match(newEntry, true)) {
             mApp.getProfilesFactory().remove(mDe);
-            if (newEntry.getTypeAfternoon() == DayType.RECOVERY || newEntry.getStartMorning().isValidTime() || newEntry.getEndAfternoon().isValidTime()) {
+            if (newEntry.getTypeMorning() == DayType.RECOVERY || newEntry.getTypeAfternoon() == DayType.RECOVERY || newEntry.getStartMorning().isValidTime() || newEntry.getEndAfternoon().isValidTime()) {
               newEntry.setLearningWeight(mDe.getLearningWeight());
               mApp.getProfilesFactory().add(newEntry);
             }
