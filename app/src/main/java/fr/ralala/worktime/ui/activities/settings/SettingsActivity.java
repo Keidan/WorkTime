@@ -90,24 +90,6 @@ public class SettingsActivity extends PreferenceActivity implements Preference.O
   }
 
   /**
-   * Called when the activity is resumed.
-   */
-  @Override
-  public void onResume() {
-    super.onResume();
-    MainApplication.getApp(this).getSql().settingsLoad(null);
-  }
-
-  /**
-   * Called when the activity is paused.
-   */
-  @Override
-  public void onPause() {
-    super.onPause();
-    MainApplication.getApp(this).getSql().settingsSave();
-  }
-
-  /**
    * Called to handle the click on the back button.
    */
   @Override
