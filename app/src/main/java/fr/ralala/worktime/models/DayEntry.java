@@ -193,11 +193,11 @@ public class DayEntry {
    * @return boolean
    */
   public boolean match(DayEntry de, boolean testName) {
-    if(testName && !mName.equals(de.mName))
-      return false;
-    return mDay.match(de.mDay)  && mStartMorning.match(de.mStartMorning) && mEndMorning.match(de.mEndMorning) && mAdditionalBreak.match(de.mAdditionalBreak)
-      && mStartAfternoon.match(de.mStartAfternoon) && mEndAfternoon.match(de.mEndAfternoon) &&
-        mTypeMorning == de.mTypeMorning && mTypeAfternoon == de.mTypeAfternoon && mAmountByHour == de.mAmountByHour && mLegalWorktime.match(de.mLegalWorktime);
+    return !(testName && !mName.equals(de.mName)) && mDay.match(de.mDay) &&
+        mStartMorning.match(de.mStartMorning) && mEndMorning.match(de.mEndMorning) &&
+        mAdditionalBreak.match(de.mAdditionalBreak) && mStartAfternoon.match(de.mStartAfternoon) &&
+        mEndAfternoon.match(de.mEndAfternoon) && mTypeMorning == de.mTypeMorning && mTypeAfternoon ==
+        de.mTypeAfternoon && mAmountByHour == de.mAmountByHour && mLegalWorktime.match(de.mLegalWorktime);
   }
 
   /**

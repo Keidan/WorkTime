@@ -10,7 +10,6 @@ import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatDelegate;
 import android.view.MenuItem;
 
-import fr.ralala.worktime.MainApplication;
 import fr.ralala.worktime.R;
 import fr.ralala.worktime.ui.utils.UIHelper;
 

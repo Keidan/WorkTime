@@ -32,6 +32,7 @@ import fr.ralala.worktime.models.FileChooserOption;
  *
  *******************************************************************************
  */
+@SuppressWarnings("ALL")
 public class FileChooserArrayAdapter extends ArrayAdapter<FileChooserOption> {
   private final Context mContext;
   private final int mId;

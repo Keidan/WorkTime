@@ -12,7 +12,6 @@ import android.os.Vibrator;
 
 import java.text.DateFormatSymbols;
 
-import fr.ralala.worktime.R;
 import fr.ralala.worktime.ui.utils.UIHelper;
 
 /**

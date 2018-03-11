@@ -16,7 +16,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
-import fr.ralala.worktime.ui.activities.DayActivity;
 import fr.ralala.worktime.ui.activities.PublicHolidayActivity;
 import fr.ralala.worktime.MainApplication;
 import fr.ralala.worktime.R;

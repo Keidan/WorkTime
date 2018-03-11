@@ -122,7 +122,7 @@ public class DaysFactory {
 
   /**
    * Converts days to a map.
-   * @return Map<String, DayEntry>
+   * @return <code>Map<String, DayEntry></code>
    */
   public Map<String, DayEntry> toDaysMap() {
     Map<String, DayEntry> map = new HashMap<>();

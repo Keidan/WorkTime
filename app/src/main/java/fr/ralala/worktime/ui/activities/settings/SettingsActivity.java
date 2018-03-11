@@ -11,7 +11,6 @@ import android.util.Log;
 import android.view.MenuItem;
 
 
-import fr.ralala.worktime.MainApplication;
 import fr.ralala.worktime.R;
 import fr.ralala.worktime.ui.changelog.ChangeLog;
 import fr.ralala.worktime.ui.changelog.ChangeLogIds;

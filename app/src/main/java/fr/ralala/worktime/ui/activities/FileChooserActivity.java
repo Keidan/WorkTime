@@ -41,6 +41,7 @@ import java.util.StringTokenizer;
  *
  *******************************************************************************
  */
+@SuppressWarnings("ALL")
 public class FileChooserActivity extends AppCompatActivity implements AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener, AbsListView.MultiChoiceModeListener{
   private static final int SIZE_1KB = 0x400;
   private static final int SIZE_1MB = 0x100000;
