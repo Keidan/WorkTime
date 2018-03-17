@@ -44,6 +44,7 @@ public class MonthDetailsDialog implements DialogInterface.OnClickListener {
   private class Item {
     List<DayEntry> wDays = new ArrayList<>();
     WorkTimeDay w = new WorkTimeDay();
+    WorkTimeDay rec = new WorkTimeDay();
     double wage = 0.0;
   }
 
@@ -83,6 +84,7 @@ public class MonthDetailsDialog implements DialogInterface.OnClickListener {
     dialogBuilder.setView(gl);
     WorkTimeDay wtdTotalWorkTime = new WorkTimeDay();
     WorkTimeDay wtdTotalOverHours = new WorkTimeDay();
+    WorkTimeDay wtdTotalRecoveryHours = new WorkTimeDay();
     /* Get the components */
     int row = 0;
     double totalWage = 0.0f;
@@ -105,6 +107,7 @@ public class MonthDetailsDialog implements DialogInterface.OnClickListener {
         i = weeks.get(ctime.get(Calendar.WEEK_OF_YEAR));
 
         i.w.addTime(de.getWorkTime());
+        i.rec.addTime(de.getRecoveryTime());
         i.wDays.add(de);
         i.wage += de.getWorkTimePay();
       }
@@ -116,14 +119,16 @@ public class MonthDetailsDialog implements DialogInterface.OnClickListener {
       Item i = weeks.get(w);
       WorkTimeDay wtdEstimatedHours = mApp.getEstimatedHours(i.wDays);
       WorkTimeDay wtdOver = i.w.clone().delTime(wtdEstimatedHours);
+      WorkTimeDay wtdRec = i.rec.clone();
       totalWage += i.wage;
       addRow(r, gl, row, w,
         i.w.timeString(),
-        wtdOver.timeString(), i.wage, currency);
+        wtdOver.timeString(), wtdRec.timeString(), i.wage, currency);
       wtdTotalWorkTime.addTime(i.w);
+      wtdTotalRecoveryHours.addTime(i.rec);
       wtdTotalOverHours.addTime(wtdOver);
     }
-    addRow(r, gl, row, -1, wtdTotalWorkTime.timeString(), wtdTotalOverHours.timeString(), totalWage, currency);
+    addRow(r, gl, row, -1, wtdTotalWorkTime.timeString(), wtdTotalOverHours.timeString(), wtdTotalRecoveryHours.timeString(), totalWage, currency);
 
     /* attach the listeners and init the default values */
     dialogBuilder.setPositiveButton(R.string.ok, this);
@@ -139,12 +144,13 @@ public class MonthDetailsDialog implements DialogInterface.OnClickListener {
    * @param week The current week.
    * @param wt The work time value.
    * @param ot The over time value.
+   * @param rec The recovery time value.
    * @param wage The wage value.
    * @param currency The currency.
    */
-  private void addRow(Resources r, GridLayout gl, int row, int week, String wt, String ot, double wage, String currency) {
+  private void addRow(Resources r, GridLayout gl, int row, int week, String wt, String ot, String rec, double wage, String currency) {
     GridLayout.LayoutParams param;
-    for(int j = 0; j < 6; ++j) {
+    for(int j = 0; j < 9; ++j) {
       TextView tvWeek = new TextView(mActivity);
       param =new GridLayout.LayoutParams();
       param.height = GridLayout.LayoutParams.WRAP_CONTENT;
@@ -166,15 +172,21 @@ public class MonthDetailsDialog implements DialogInterface.OnClickListener {
         } else
           tvWeek.setText((r.getString(R.string.week_letter) + " " + String.format(Locale.US, "%02d", week) + ":"));
       } else if (j == 1)
-          tvWeek.setText(wt);
+        tvWeek.setText(wt);
       else if (j == 2)
-          tvWeek.setText("(");
+        tvWeek.setText(("(" + mActivity.getString(R.string.overtime_min) + ": "));
       else if (j == 3)
-          tvWeek.setText(ot);
-      else if (j == 4) {
-          tvWeek.setText(") ");
-          tvWeek.setGravity(Gravity.START);
-      } else if (!mApp.isHideWage() && j == 5) {
+        tvWeek.setText(ot);
+      else if (j == 4)
+        tvWeek.setText(",");
+      else if (j == 5)
+        tvWeek.setText((mActivity.getString(R.string.recovery_min) + ": "));
+      else if (j == 6)
+        tvWeek.setText(rec);
+      else if (j == 7) {
+        tvWeek.setText(")");
+        tvWeek.setGravity(Gravity.START);
+      } else if (!mApp.isHideWage() && j == 8) {
         tvWeek.setText(String.format(Locale.US, "%.02f%s", wage, currency));
       }
       gl.addView(tvWeek);

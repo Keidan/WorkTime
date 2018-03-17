@@ -6,13 +6,11 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.preference.PreferenceManager;
-import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-import fr.ralala.worktime.R;
 import fr.ralala.worktime.ui.activities.settings.SettingsActivity;
 import fr.ralala.worktime.models.DayEntry;
 import fr.ralala.worktime.models.DayType;
@@ -23,7 +21,6 @@ import fr.ralala.worktime.ui.activities.settings.SettingsDatabaseActivity;
 import fr.ralala.worktime.ui.activities.settings.SettingsDisplayActivity;
 import fr.ralala.worktime.ui.activities.settings.SettingsExcelExportActivity;
 import fr.ralala.worktime.ui.activities.settings.SettingsLearningActivity;
-import fr.ralala.worktime.utils.AndroidHelper;
 
 /**
  *******************************************************************************
@@ -71,56 +68,15 @@ public class SqlFactory implements SqlConstants {
    * Opens the SQLite connection.
    */
   public void open() {
-    int version = 0;
-    /* Merge V5 */
-    if(isTableExists(TABLE_DAYS + "_v5")) {
-      version = 5;
-      Log.e(getClass().getSimpleName(), "TABLE_DAYS found");
-      final List<DayEntry> listOld = getDays(TABLE_DAYS + "_v" + version);
-      removeTable(TABLE_DAYS + "_v" + version);
-      Log.e(getClass().getSimpleName(), "table days deleted");
-      for(DayEntry de : listOld) {
-        insertDay(de);
-      }
-    }
-    if(isTableExists(TABLE_PROFILES + "_v5")) {
-      version = 5;
-      Log.e(getClass().getSimpleName(), "TABLE_PROFILES found");
-      final List<DayEntry> listOld = getProfiles(TABLE_PROFILES + "_v" + version);
-      removeTable(TABLE_PROFILES + "_v" + version);
-      Log.e(getClass().getSimpleName(), "table profiles deleted");
-      for(DayEntry de : listOld) {
-        insertProfile(de);
-      }
-    }
-
-
-    if(version != 0)
-      AndroidHelper.restartApplication(mContext, mContext.getString(R.string.restart_from_db_update_vn) + " " + (version + 1));
+    getBdd();
   }
+
 
   /**
    * Closes the SQLite connection.
    */
   public void close() {
     getBdd().close();
-  }
-
-  /**
-   * Tests if the table exists.
-   * @param tableName The table name to test.
-   * @return boolean
-   */
-  private boolean isTableExists(String tableName) {
-    Cursor cursor = getBdd().rawQuery("select DISTINCT tbl_name from sqlite_master where tbl_name = '"+tableName+"'", null);
-    if(cursor!=null) {
-      if(cursor.getCount()>0) {
-        cursor.close();
-        return true;
-      }
-      cursor.close();
-    }
-    return false;
   }
 
   /**
@@ -229,6 +185,7 @@ public class SqlFactory implements SqlConstants {
     values.put(COL_PROFILES_LEARNING_WEIGHT, String.valueOf(de.getLearningWeight()));
     values.put(COL_PROFILES_LEGAL_WORKTIME, de.getLegalWorktime().timeString());
     values.put(COL_PROFILES_ADDITIONAL_BREAK, de.getAdditionalBreak().timeString());
+    values.put(COL_PROFILES_RECOVERY_TIME, de.getRecoveryTime().timeString());
     getBdd().insert(TABLE_PROFILES, null, values);
   }
 
@@ -247,6 +204,7 @@ public class SqlFactory implements SqlConstants {
     values.put(COL_DAYS_AMOUNT, String.valueOf(de.getAmountByHour()));
     values.put(COL_DAYS_LEGAL_WORKTIME, de.getLegalWorktime().timeString());
     values.put(COL_DAYS_ADDITIONAL_BREAK, de.getAdditionalBreak().timeString());
+    values.put(COL_DAYS_RECOVERY_TIME, de.getRecoveryTime().timeString());
     getBdd().insert(TABLE_DAYS, null, values);
   }
 
@@ -349,6 +307,8 @@ public class SqlFactory implements SqlConstants {
         de.setEndAfternoon(c.getString(NUM_DAYS_END_AFTERNOON));
         de.setLegalWorktime(c.getString(NUM_DAYS_LEGAL_WORKTIME));
         de.setAdditionalBreak(c.getString(NUM_DAYS_ADDITIONAL_BREAK));
+        if(getBdd().getVersion() >= 7)
+          de.setRecoveryTime(c.getString(NUM_DAYS_RECOVERY_TIME));
         String s = c.getString(NUM_DAYS_AMOUNT);
         if(s != null && !s.isEmpty())
           de.setAmountByHour(Double.parseDouble(s));
@@ -409,7 +369,8 @@ public class SqlFactory implements SqlConstants {
         de.setName(c.getString(NUM_PROFILES_NAME).replaceAll("\\'", "'"));
 
         de.setLegalWorktime(c.getString(NUM_PROFILES_LEGAL_WORKTIME));
-        de.setAdditionalBreak(c.getString(NUM_PROFILES_ADDITIONAL_BREAK));
+        if(getBdd().getVersion() >= 7)
+          de.setRecoveryTime(c.getString(NUM_PROFILES_RECOVERY_TIME));
         list.add(de);
       } while (c.moveToNext());
     }
@@ -442,11 +403,4 @@ public class SqlFactory implements SqlConstants {
     getBdd().delete(TABLE_PROFILES, COL_PROFILES_NAME + " = \"" + de.getName() + "\"", null);
   }
 
-  /**
-   * Removes a table.
-   * @param tablename The table name.
-   */
-  private void removeTable(final String tablename) {
-    getBdd().execSQL("DROP TABLE IF EXISTS " + tablename + ";");
-  }
 }

@@ -54,6 +54,7 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
   private TextView mTvLegalWorktime = null;
   private TextView mTvEndAfternoon = null;
   private TextView mTvAdditionalBreak = null;
+  private TextView mTvRecoveryTime = null;
   private EditText mEtAmount = null;
   private EditText mEtName = null;
   private DayEntry mDe = null;
@@ -64,6 +65,7 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
   private WorkTimeDay mWtdStartAfternoon = null;
   private WorkTimeDay mWtdEndAfternoon = null;
   private WorkTimeDay mWtdAdditionalBreak = null;
+  private WorkTimeDay mWtdRecoveryTime = null;
   private WorkTimeDay mWtdLegalWorktime = null;
   private MainApplication mApp = null;
   private DayEntry mSelectedProfile = null;
@@ -187,6 +189,7 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
     mTvStartAfternoon = findViewById(R.id.tvStartAfternoon);
     mTvEndAfternoon = findViewById(R.id.tvEndAfternoon);
     mTvAdditionalBreak = findViewById(R.id.tvAdditionalBreak);
+    mTvRecoveryTime = findViewById(R.id.tvRecoveryTime);
     mTvLegalWorktime = findViewById(R.id.tvLegalWorktime);
     mEtAmount = findViewById(R.id.etAmount);
     TextView tvName = findViewById(R.id.tvName);
@@ -203,6 +206,7 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
     mTvStartAfternoon.setOnClickListener(this);
     mTvEndAfternoon.setOnClickListener(this);
     mTvAdditionalBreak.setOnClickListener(this);
+    mTvRecoveryTime.setOnClickListener(this);
     mTvLegalWorktime.setOnClickListener(this);
     /* manage view for the call from the profile view */
     if(mDisplayProfile) {
@@ -271,6 +275,7 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
     mTvStartAfternoon.setText(mDe.getStartAfternoon().timeString());
     mTvEndAfternoon.setText(mDe.getEndAfternoon().timeString());
     mTvAdditionalBreak.setText(mDe.getAdditionalBreak().timeString());
+    mTvRecoveryTime.setText(mDe.getRecoveryTime().timeString());
     mTvLegalWorktime.setText(mDe.getLegalWorktime().timeString());
 
     if(!mApp.isHideWage()) {
@@ -359,6 +364,7 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
           mTvStartAfternoon.setText((mWtdStartAfternoon = new WorkTimeDay()).timeString());
           mTvEndAfternoon.setText((mWtdEndAfternoon = new WorkTimeDay()).timeString());
           mTvAdditionalBreak.setText((mWtdAdditionalBreak = new WorkTimeDay()).timeString());
+          mTvRecoveryTime.setText((mWtdRecoveryTime = new WorkTimeDay()).timeString());
           mTvLegalWorktime.setText((mWtdLegalWorktime = mApp.getLegalWorkTimeByDay()).timeString());
           mEtAmount.setText(getString(R.string.zero));
           mSpTypeMorning.setSelection(DayType.AT_WORK.value());
@@ -381,6 +387,7 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
         newEntry.setStartMorning(mTvStartMorning.getText().toString());
         newEntry.setEndAfternoon(mTvEndAfternoon.getText().toString());
         newEntry.setAdditionalBreak(mTvAdditionalBreak.getText().toString());
+        newEntry.setRecoveryTime(mTvRecoveryTime.getText().toString());
         newEntry.setStartAfternoon(mTvStartAfternoon.getText().toString());
         newEntry.setLegalWorktime(mTvLegalWorktime.getText().toString());
         if(newEntry.getTypeMorning() != DayType.ERROR) {
@@ -484,7 +491,7 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
   }
 
   /**
-   * Called when a button is clicked (mFab, mTvStartMorning, mTvEndMorning, mTvStartAfternoon, mTvEndAfternoon, mTvAdditionalBreak and mTvLegalWorktime).
+   * Called when a button is clicked (mFab, mTvStartMorning, mTvEndMorning, mTvStartAfternoon, mTvEndAfternoon, mTvAdditionalBreak, mTvRecoveryTime and mTvLegalWorktime).
    * @param v The view clicked.
    */
   public void onClick(final View v) {
@@ -498,6 +505,8 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
       UIHelper.openTimePicker(this, mWtdEndAfternoon, mTvEndAfternoon);
     else if(v.equals(mTvAdditionalBreak))
       UIHelper.openTimePicker(this, mWtdAdditionalBreak, mTvAdditionalBreak);
+    else if(v.equals(mTvRecoveryTime))
+      UIHelper.openTimePicker(this, mWtdRecoveryTime, mTvRecoveryTime);
     else if(v.equals(mTvLegalWorktime))
       UIHelper.openTimePicker(this, mWtdLegalWorktime, mTvLegalWorktime);
   }
@@ -529,6 +538,7 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
           mTvStartAfternoon.setText(de.getStartAfternoon().timeString());
           mTvEndAfternoon.setText(de.getEndAfternoon().timeString());
           mTvAdditionalBreak.setText(de.getAdditionalBreak().timeString());
+          mTvRecoveryTime.setText(de.getRecoveryTime().timeString());
           mTvLegalWorktime.setText(de.getLegalWorktime().timeString());
           mEtAmount.setText(String.format(Locale.US, "%.02f", de.getAmountByHour()).replaceAll(",", "."));
           selectSpinner(mSpTypeMorning, de.getTypeMorning());
@@ -552,6 +562,7 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
     mWtdStartAfternoon = de.getStartAfternoon().clone();
     mWtdEndAfternoon = de.getEndAfternoon().clone();
     mWtdAdditionalBreak = de.getAdditionalBreak().clone();
+    mWtdRecoveryTime = de.getRecoveryTime().clone();
     if(de.getLegalWorktime().timeString().equals(getString(R.string.default_time)))
       de.setLegalWorktime(mApp.getLegalWorkTimeByDay().timeString());
     mWtdLegalWorktime = de.getLegalWorktime().clone();

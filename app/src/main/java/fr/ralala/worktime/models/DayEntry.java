@@ -25,6 +25,7 @@ public class DayEntry {
   private WorkTimeDay mStartAfternoon = null;
   private WorkTimeDay mEndAfternoon = null;
   private WorkTimeDay mAdditionalBreak = null;
+  private WorkTimeDay mRecoveryTime = null;
   private DayType mTypeMorning = DayType.ERROR;
   private DayType mTypeAfternoon = DayType.ERROR;
   private double mAmountByHour = 0.0;
@@ -51,7 +52,7 @@ public class DayEntry {
         return false;
     }
     return (mDay.match(de.mDay) && mStartMorning.match(de.mStartMorning)
-      && mEndMorning.match(de.mEndMorning)&& mAdditionalBreak.match(de.mAdditionalBreak) && mStartAfternoon.match(de.mStartAfternoon)
+      && mEndMorning.match(de.mEndMorning)&& mAdditionalBreak.match(de.mAdditionalBreak)&& mRecoveryTime.match(de.mRecoveryTime) && mStartAfternoon.match(de.mStartAfternoon)
       && mEndAfternoon.match(de.mEndAfternoon)&& mLegalWorktime.match(de.mLegalWorktime) && mTypeMorning == de.mTypeMorning
       && mTypeAfternoon == de.mTypeAfternoon && mAmountByHour == de.mAmountByHour
       && mLearningWeight == de.mLearningWeight&& mRecurrence == de.mRecurrence);
@@ -69,6 +70,7 @@ public class DayEntry {
     mStartMorning = new WorkTimeDay();
     mEndMorning = new WorkTimeDay();
     mAdditionalBreak = new WorkTimeDay();
+    mRecoveryTime = new WorkTimeDay();
     mStartAfternoon = new WorkTimeDay();
     mEndAfternoon = new WorkTimeDay();
     mTypeMorning = typeMorning;
@@ -129,7 +131,7 @@ public class DayEntry {
    * @return long
    */
   public long getOverTimeMs() {
-    return getWorkTime().getTimeMs() - getLegalWorktime().getTimeMs();
+    return getWorkTime().getTimeMs() - getRealLegalWorktimeMS().getTimeMs();
   }
 
   /**
@@ -179,6 +181,7 @@ public class DayEntry {
     mStartMorning.copy(de.mStartMorning);
     mEndMorning.copy(de.mEndMorning);
     mAdditionalBreak.copy(de.mAdditionalBreak);
+    mRecoveryTime.copy(de.mRecoveryTime);
     mStartAfternoon.copy(de.mStartAfternoon);
     mEndAfternoon.copy(de.mEndAfternoon);
     mAmountByHour = de.mAmountByHour;
@@ -195,7 +198,7 @@ public class DayEntry {
   public boolean match(DayEntry de, boolean testName) {
     return !(testName && !mName.equals(de.mName)) && mDay.match(de.mDay) &&
         mStartMorning.match(de.mStartMorning) && mEndMorning.match(de.mEndMorning) &&
-        mAdditionalBreak.match(de.mAdditionalBreak) && mStartAfternoon.match(de.mStartAfternoon) &&
+        mAdditionalBreak.match(de.mAdditionalBreak) && mRecoveryTime.match(de.mRecoveryTime) && mStartAfternoon.match(de.mStartAfternoon) &&
         mEndAfternoon.match(de.mEndAfternoon) && mTypeMorning == de.mTypeMorning && mTypeAfternoon ==
         de.mTypeAfternoon && mAmountByHour == de.mAmountByHour && mLegalWorktime.match(de.mLegalWorktime);
   }
@@ -324,6 +327,22 @@ public class DayEntry {
    */
   public WorkTimeDay getAdditionalBreak() {
     return mAdditionalBreak;
+  }
+
+  /**
+   * Sets the recovery time.
+   * @param sbreak The new time in String.
+   */
+  public void setRecoveryTime(String sbreak) {
+    mRecoveryTime.copy(parseTime(sbreak));
+  }
+
+  /**
+   * Returns the recovery time.
+   * @return WorkTimeDay
+   */
+  public WorkTimeDay getRecoveryTime() {
+    return mRecoveryTime;
   }
 
   /**
@@ -494,6 +513,21 @@ public class DayEntry {
     if(mLegalWorktime.timeString().equals("00:00"))
       mLegalWorktime = mApp.getLegalWorkTimeByDay();
     return mLegalWorktime;
+  }
+
+
+  /**
+   * Returns the legal work time value adjusted with the recovery time.
+   * @return WorkTimeDay
+   */
+  public WorkTimeDay getRealLegalWorktimeMS() {
+    WorkTimeDay wmLegal = getLegalWorktime();
+    WorkTimeDay wm = new WorkTimeDay();
+    if(!wmLegal.timeString().equals("00:00"))
+      wm.addTime(wmLegal);
+    if(!wm.timeString().equals("00:00") && !mRecoveryTime.timeString().equals("00:00"))
+      wm.delTime(mRecoveryTime.clone());
+    return wm;
   }
 
   /**

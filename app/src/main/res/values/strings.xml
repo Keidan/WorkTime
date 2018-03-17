@@ -30,6 +30,7 @@
     <string name="holidays">Holidays</string>
     <string name="unpaid">Unpaid</string>
     <string name="recovery">Recovery</string>
+    <string name="recovery_min">R</string>
     <string name="statistics_hours">Hours</string>
     <string name="work_time">Work time</string>
     <string name="work_days">Work days</string>
@@ -141,6 +142,7 @@
     <string name="export_email_body">The attachment contain a report for the selected work time</string>
     <string name="export_email_senderMsg">Send email using :</string>
     <string name="overtime">Overtime</string>
+    <string name="overtime_min">O</string>
     <string name="hour_in">Arriving time</string>
     <string name="hour_out">Departure time</string>
     <string name="break_time">Break time</string>
@@ -168,7 +170,6 @@
     <string name="bt_finalize">Finalize day</string>
     <string name="default_time" translatable="false">00:00</string>
     <string name="service_running">Finalize or pause quick access before update the day.</string>
-    <string name="restart_from_db_update_vn">Database updated to version</string>
     <string name="recurrence">Recurrence</string>
     <string name="legal_worktime_by_day">Legal work time</string>
     <string name="error_editing_public_holiday">Public holiday edition is not supported.</string>

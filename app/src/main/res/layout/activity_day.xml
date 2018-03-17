@@ -265,19 +265,45 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/tvLblLegalWorktime"
             app:layout_constraintTop_toBottomOf="@+id/tvLblLegalWorktime" />
-        <!-- Amount labels -->
+        <!-- Recovery Time / Amount labels -->
+        <TextView
+            android:id="@+id/tvLblRecoveryTime"
+            android:layout_marginTop="@dimen/activity_day_tvLblRecoveryTime_layout_marginTop"
+            android:text="@string/recovery"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvAdditionalBreak" />
         <TextView
             android:id="@+id/tvLblAmount"
             android:layout_marginTop="@dimen/activity_day_tvLblAmount_layout_marginTop"
             android:text="@string/wage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:labelFor="@+id/etAmount"
+            app:layout_constraintStart_toEndOf="@+id/guidelineLbl55"
+            app:layout_constraintTop_toBottomOf="@+id/tvLegalWorktime" />
+
+
+        <!-- Recovery Time / Amount tv -->
+        <TextView
+            android:id="@+id/tvRecoveryTime"
+            android:layout_marginTop="@dimen/activity_day_tvRecoveryTime_layout_marginTop"
+            android:layout_marginBottom="@dimen/activity_day_tvRecoveryTime_layout_marginBottom"
+            android:layout_width="@dimen/activity_day_tvRecoveryTime_layout_width"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/activity_day_tvRecoveryTime_layout_marginEnd"
+            android:background="@color/gray"
+            android:textColor="@color/black"
+            android:paddingBottom="@dimen/activity_day_tvRecoveryTime_paddingBottom"
+            android:paddingTop="@dimen/activity_day_tvRecoveryTime_paddingTop"
+            android:text="@string/default_hours"
+            android:textAlignment="center"
+            app:layout_constraintEnd_toStartOf="@+id/guidelineTv45"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvAdditionalBreak" />
-        <!-- Amount tv -->
+            app:layout_constraintTop_toBottomOf="@+id/tvLblRecoveryTime" />
         <EditText
             android:id="@+id/etAmount"
+            android:labelFor="@+id/etAmount"
             android:layout_marginTop="@dimen/activity_day_etAmount_layout_marginTop"
             android:layout_marginBottom="@dimen/activity_day_etAmount_layout_marginBottom"
             android:layout_width="@dimen/activity_day_etAmount_layout_width"
@@ -290,8 +316,8 @@
             android:paddingTop="@dimen/activity_day_etAmount_paddingTop"
             android:text="@string/default_wage"
             android:textAlignment="center"
-            app:layout_constraintEnd_toStartOf="@+id/guidelineTv45"
-            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/tvLblAmount"
             app:layout_constraintTop_toBottomOf="@+id/tvLblAmount" />
 
     </android.support.constraint.ConstraintLayout>

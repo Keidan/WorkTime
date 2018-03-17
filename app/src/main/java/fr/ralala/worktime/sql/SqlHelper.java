@@ -52,6 +52,8 @@ import fr.ralala.worktime.MainApplication;
     + COL_PROFILES_LEGAL_WORKTIME
     + " TEXT NOT NULL, "
     + COL_PROFILES_ADDITIONAL_BREAK
+    + " TEXT NOT NULL, "
+    + COL_PROFILES_RECOVERY_TIME
     + " TEXT NOT NULL);";
 
   private static final String CREATE_BDD_DAYS = "CREATE TABLE IF NOT EXISTS "
@@ -74,6 +76,8 @@ import fr.ralala.worktime.MainApplication;
     + COL_DAYS_LEGAL_WORKTIME
     + " TEXT NOT NULL, "
     + COL_DAYS_ADDITIONAL_BREAK
+    + " TEXT NOT NULL, "
+    + COL_DAYS_RECOVERY_TIME
     + " TEXT NOT NULL);";
 
   private static final String CREATE_BDD_PUBLIC_HOLIDAYS = "CREATE TABLE IF NOT EXISTS "
@@ -142,10 +146,16 @@ import fr.ralala.worktime.MainApplication;
       Process.killProcess(0);
     }
     else if(oldVersion == 5 && newVersion == 6) {
-      db.execSQL("ALTER TABLE " + TABLE_PROFILES + " RENAME TO " + TABLE_PROFILES + "_v" + oldVersion);
-      db.execSQL("ALTER TABLE " + TABLE_DAYS + " RENAME TO " + TABLE_DAYS + "_v" + oldVersion);
-      db.execSQL(CREATE_BDD_PROFILES);
-      db.execSQL(CREATE_BDD_DAYS);
+      /* profiles */
+      db.execSQL("ALTER TABLE " + TABLE_PROFILES+ " ADD COLUMN " + COL_PROFILES_ADDITIONAL_BREAK + " TEXT DEFAULT '00:00' NOT NULL");
+      /* days */
+      db.execSQL("ALTER TABLE " + TABLE_DAYS+ " ADD COLUMN " + COL_DAYS_ADDITIONAL_BREAK + " TEXT DEFAULT '00:00' NOT NULL");
+    }
+    else if(oldVersion == 6 && newVersion == 7) {
+      /* profiles */
+      db.execSQL("ALTER TABLE " + TABLE_PROFILES+ " ADD COLUMN " + COL_PROFILES_RECOVERY_TIME + " TEXT DEFAULT '00:00' NOT NULL");
+      /* days */
+      db.execSQL("ALTER TABLE " + TABLE_DAYS+ " ADD COLUMN " + COL_DAYS_RECOVERY_TIME + " TEXT DEFAULT '00:00' NOT NULL");
     }
   }
 
