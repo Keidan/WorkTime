@@ -246,8 +246,8 @@ public class WorkTimeFragment extends Fragment implements View.OnClickListener, 
       /* count working day */
       if(now != Calendar.SUNDAY && now != Calendar.SATURDAY && !mApp.getPublicHolidaysFactory().isPublicHolidays(de.getDay())) {
         wDays.add(de);
-        if(de.getTypeMorning() == DayType.AT_WORK) realwDays += 0.5;
-        if(de.getTypeAfternoon() == DayType.AT_WORK) realwDays += 0.5;
+        if(de.getTypeMorning() == DayType.AT_WORK || de.getTypeAfternoon() == DayType.RECOVERY) realwDays += 0.5;
+        if(de.getTypeAfternoon() == DayType.AT_WORK || de.getTypeAfternoon() == DayType.RECOVERY) realwDays += 0.5;
       }
       mLvAdapter.add(de);
       if(mApp.isScrollToCurrentDay() && mApp.getLastFirstVisibleItem() == 0 && de.getDay().dateString().equals(wtdnow.dateString())) {
