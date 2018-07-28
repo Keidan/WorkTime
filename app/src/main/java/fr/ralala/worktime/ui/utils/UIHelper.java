@@ -3,6 +3,7 @@ package fr.ralala.worktime.ui.utils;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.LinearGradient;
 import android.graphics.Shader;
@@ -43,6 +44,26 @@ import fr.ralala.worktime.models.WorkTimeDay;
  *******************************************************************************
  */
 public class UIHelper {
+
+  /**
+   * Displays a circular progress dialog.
+   * @param context The Android context.
+   * @param cancel The cancel event callback (if null the dialog is not cancelable).
+   * @return AlertDialog
+   */
+  public static AlertDialog showCircularProgressDialog(Context context,DialogInterface.OnCancelListener cancel) {
+    LayoutInflater layoutInflater = LayoutInflater.from(context);
+    final ViewGroup nullParent = null;
+    View view = layoutInflater.inflate(R.layout.circular_progress, nullParent);
+    AlertDialog progress = new AlertDialog.Builder(context).create();
+    if(cancel != null) {
+      progress.setOnCancelListener(cancel);
+      progress.setCancelable(true);
+    } else
+      progress.setCancelable(false);
+    progress.setView(view);
+    return progress;
+  }
 
   /**
    * Returns the res ID from the attrivutes.

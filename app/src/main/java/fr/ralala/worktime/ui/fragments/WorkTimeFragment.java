@@ -58,6 +58,7 @@ public class WorkTimeFragment extends Fragment implements View.OnClickListener, 
   private ListView mDays = null;
   private MainApplication mApp = null;
   private MonthDetailsDialog mMonthDetailsDialog = null;
+  private MainActivity mActivity;
 
   /**
    * Called when the fragment is created.
@@ -70,9 +71,9 @@ public class WorkTimeFragment extends Fragment implements View.OnClickListener, 
   public View onCreateView(@NonNull final LayoutInflater inflater,
                            final ViewGroup container, final Bundle savedInstanceState) {
     final ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_main, container, false);
-    MainActivity a = (MainActivity)getActivity();
-    if(a != null)
-      a.getSwipeDetector().setSwipeDetectorListener(this);
+    mActivity = (MainActivity)getActivity();
+    assert mActivity != null;
+    mActivity.getSwipeDetector().setSwipeDetectorListener(this);
     mApp = MainApplication.getApp(getActivity());
     //mApp.getCurrentDate().setTime(new Date());
 
@@ -187,8 +188,12 @@ public class WorkTimeFragment extends Fragment implements View.OnClickListener, 
    * Updates the top and the dates part.
    */
   public void updateAll() {
-    updateTop();
-    updateDates();
+    mActivity.progressShow(true);
+   new Thread(() -> {
+     updateTop();
+     updateDates();
+     mActivity.runOnUiThread(() -> mActivity.progressDismiss());
+   }).start();
   }
 
   /**
@@ -201,9 +206,12 @@ public class WorkTimeFragment extends Fragment implements View.OnClickListener, 
     final String ss_month = String.format(Locale.US, "%02d", month + 1);
     final String ss_maxDay = String.format(Locale.US, "%02d", mApp.getCurrentDate().getActualMaximum(Calendar.DAY_OF_MONTH));
     smonth += "\n01/" + ss_month + " - " + ss_maxDay + "/" + ss_month;
-    mTvMonth.setText(smonth);
-    mTvYear.setText(String.valueOf(mApp.getCurrentDate().get(Calendar.YEAR)));
-    mTvYear.setText(String.valueOf(mApp.getCurrentDate().get(Calendar.YEAR)));
+    final String s = smonth;
+    mActivity.runOnUiThread(() -> {
+      mTvMonth.setText(s);
+      mTvYear.setText(String.valueOf(mApp.getCurrentDate().get(Calendar.YEAR)));
+      mTvYear.setText(String.valueOf(mApp.getCurrentDate().get(Calendar.YEAR)));
+    });
   }
 
   /**
@@ -249,7 +257,7 @@ public class WorkTimeFragment extends Fragment implements View.OnClickListener, 
         if(de.getTypeMorning() == DayType.AT_WORK || de.getTypeAfternoon() == DayType.RECOVERY) realwDays += 0.5;
         if(de.getTypeAfternoon() == DayType.AT_WORK || de.getTypeAfternoon() == DayType.RECOVERY) realwDays += 0.5;
       }
-      mLvAdapter.add(de);
+      mActivity.runOnUiThread(() -> mLvAdapter.add(de));
       if(mApp.isScrollToCurrentDay() && mApp.getLastFirstVisibleItem() == 0 && de.getDay().dateString().equals(wtdnow.dateString())) {
         mApp.setLastFirstVisibleItem(index);
       }
@@ -271,28 +279,31 @@ public class WorkTimeFragment extends Fragment implements View.OnClickListener, 
     else
       workDays += String.format(Locale.US, "%02d/%02d", (int)realwDays, wDays.size());
     workDays += " " + getString(R.string.days_lower_case);
-    mTvWorkDays.setText(workDays);
-
+    final String s_workDays = workDays;
+    mActivity.runOnUiThread(() -> mTvWorkDays.setText(s_workDays));
     /* substract legal working time */
     WorkTimeDay wtdEstimatedMonthlyHours = mApp.getEstimatedHours(wDays);
-    String monthlyHours = getString(R.string.monthly_hours) + ": " +
+    final String monthlyHours = getString(R.string.monthly_hours) + ": " +
       String.format(Locale.US, "%d:%02d/%d:%02d",
         wtdTotalWorkTime.getHours(), wtdTotalWorkTime.getMinutes(),
         wtdEstimatedMonthlyHours.getHours(), wtdEstimatedMonthlyHours.getMinutes());
 
-    mTvMonthlyHours.setText(monthlyHours);
-    mLvAdapter.notifyDataSetChanged();
+
+    mActivity.runOnUiThread(() -> {
+      mTvMonthlyHours.setText(monthlyHours);
+      mLvAdapter.notifyDataSetChanged();
     /* restores the scroll position and reloads the adapter else the listview seems not agree with the call of setSelection */
-    mDays.setAdapter(mDays.getAdapter());
-    mDays.setSelection(mApp.getLastFirstVisibleItem());
-    if(mApp.isScrollToCurrentDay()) {
+      mDays.setAdapter(mDays.getAdapter());
+      mDays.setSelection(mApp.getLastFirstVisibleItem());
+      if (mApp.isScrollToCurrentDay()) {
         /* change the visibility if 5% of the list is displayed or hidden */
-      int k = at5Percent();
-      if((mApp.getLastFirstVisibleItem() == 0 || mApp.getLastFirstVisibleItem() < k) && mRlDetails.getVisibility() != View.VISIBLE)
-        mRlDetails.setVisibility(View.VISIBLE);
-      else if (mApp.getLastFirstVisibleItem() > k && mRlDetails.getVisibility() == View.VISIBLE)
-        mRlDetails.setVisibility(View.GONE);
-    }
+        int k = at5Percent();
+        if ((mApp.getLastFirstVisibleItem() == 0 || mApp.getLastFirstVisibleItem() < k) && mRlDetails.getVisibility() != View.VISIBLE)
+          mRlDetails.setVisibility(View.VISIBLE);
+        else if (mApp.getLastFirstVisibleItem() > k && mRlDetails.getVisibility() == View.VISIBLE)
+          mRlDetails.setVisibility(View.GONE);
+      }
+    });
   }
 
 

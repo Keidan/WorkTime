@@ -11,10 +11,13 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.MotionEvent;
+import android.view.View;
+import android.view.Window;
 
 
 import fr.ralala.worktime.MainApplication;
@@ -49,6 +52,8 @@ public class MainActivity extends RuntimePermissionsActivity implements Navigati
   private SwipeDetector mSwipeDetector = null;
   private DrawerLayout mDrawer = null;
   private AppFragmentsFactory mFragments = null;
+  private AlertDialog mProgress;
+  private boolean mLockedByProgress = false;
 
   /**
    * Called when the activity is created.
@@ -58,6 +63,7 @@ public class MainActivity extends RuntimePermissionsActivity implements Navigati
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
+    mProgress = UIHelper.showCircularProgressDialog(this, null);
     Toolbar toolbar = findViewById(R.id.toolbar);
     setSupportActionBar(toolbar);
     mSwipeDetector = new SwipeDetector(this);
@@ -74,9 +80,6 @@ public class MainActivity extends RuntimePermissionsActivity implements Navigati
     }
     mApp = MainApplication.getApp(this);
     mFragments = new AppFragmentsFactory(mApp, mNavigationView);
-    displayView(mFragments.getDefaultHomeId());
-    /* load SQL */
-    if(!mApp.openSql(this)) finish();
 
     String[] perms = new String[]{
       Manifest.permission.READ_EXTERNAL_STORAGE,
@@ -95,6 +98,32 @@ public class MainActivity extends RuntimePermissionsActivity implements Navigati
         R.string.changelog_show_full), this);
     if(changeLog.firstRun())
       changeLog.getLogDialog().show();
+  }
+
+  /**
+   * Show the progress dialog.
+   */
+  public void progressShow(boolean locked) {
+    mLockedByProgress = locked;
+    if(!mProgress.isShowing()) {
+      mProgress.show();
+      Window window = mProgress.getWindow();
+      if (window != null) {
+        window.setLayout(350, 350);
+        View v = window.getDecorView();
+        v.setBackgroundResource(R.drawable.rounded_border);
+      }
+    }
+  }
+
+  /**
+   * Dismiss the progress dialog.
+   */
+  public void progressDismiss() {
+    mLockedByProgress = false;
+    if(mProgress.isShowing()) {
+      mProgress.dismiss();
+    }
   }
 
   /**
@@ -121,18 +150,31 @@ public class MainActivity extends RuntimePermissionsActivity implements Navigati
   @Override
   public void onResume() {
     super.onResume();
-    if(mApp.getLastWidgetOpen() != 0L) {
-      long elapsed = System.currentTimeMillis() - mApp.getLastWidgetOpen();
-      if(elapsed <= 500) {
-        mApp.setLastWidgetOpen(0L);
-        finish();
-        return;
-      }
-    }
-    AndroidHelper.killServiceIfRunning(this, DropboxAutoExportService.class);
-    mFragments.onResume(this);
-    if(mApp.isExportAutoSave())
-      mApp.initOnLoadTables();
+    progressShow(true);
+    new Thread(() -> {
+     /* load SQL */
+      if(!mApp.openSql(this)) finish();
+      if(mApp.isExportAutoSave())
+        mApp.initOnLoadTables();
+      runOnUiThread(() -> {
+        displayView(mFragments.getDefaultHomeId());
+        if(mApp.getLastWidgetOpen() != 0L) {
+          long elapsed = System.currentTimeMillis() - mApp.getLastWidgetOpen();
+          if(elapsed <= 500) {
+            mApp.setLastWidgetOpen(0L);
+            progressDismiss();
+            finish();
+            return;
+          }
+        }
+        AndroidHelper.killServiceIfRunning(this, DropboxAutoExportService.class);
+        mFragments.onResume(this);
+        if(!mLockedByProgress && mProgress.isShowing())
+          mProgress.dismiss();
+      });
+
+    }).start();
+
   }
 
   /**

@@ -51,6 +51,7 @@ public class ExportFragment extends Fragment implements AdapterView.OnItemSelect
   private ExportListViewArrayAdapter mLvAdapter = null;
   private Spinner mSpinner = null;
   private MainApplication mApp = null;
+  private Map<String, DayEntry> mMap;
 
   /**
    * Called when the fragment is created.
@@ -65,6 +66,7 @@ public class ExportFragment extends Fragment implements AdapterView.OnItemSelect
     final ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_export, container, false);
   if(getActivity() == null) return rootView;
     mApp = (MainApplication)getActivity().getApplicationContext();
+    mMap = mApp.getDaysFactory().toDaysMap();
     Button export = rootView.findViewById(R.id.btExport);
     export.setOnClickListener(this);
 
@@ -93,7 +95,7 @@ public class ExportFragment extends Fragment implements AdapterView.OnItemSelect
       }
     }
     mSpinner.setOnItemSelectedListener(this);
-    reload(Integer.parseInt(mSpinner.getSelectedItem().toString()));
+    //reload(Integer.parseInt(mSpinner.getSelectedItem().toString()));
     return rootView;
   }
 
@@ -230,7 +232,6 @@ public class ExportFragment extends Fragment implements AdapterView.OnItemSelect
   private void reload(int year) {
     mLvAdapter.clear();
     Locale locale = getResources().getConfiguration().getLocales().get(0);
-    Map<String, DayEntry> map = mApp.getDaysFactory().toDaysMap();
     Calendar ctime = Calendar.getInstance();
     ctime.setTimeZone(TimeZone.getTimeZone("GMT"));
     ctime.setFirstDayOfWeek(Calendar.MONDAY);
@@ -244,7 +245,7 @@ public class ExportFragment extends Fragment implements AdapterView.OnItemSelect
       int maxDay = ctime.getMaximum(Calendar.DATE);
       for(int day = 1; day <= maxDay; ++day) {
         ctime.set(Calendar.DAY_OF_MONTH, day);
-        DayEntry de = map.get(String.format(Locale.US, "%02d/%02d/%04d", ctime.get(Calendar.DAY_OF_MONTH), ctime.get(Calendar.MONTH) + 1, ctime.get(Calendar.YEAR)));
+        DayEntry de = mMap.get(String.format(Locale.US, "%02d/%02d/%04d", ctime.get(Calendar.DAY_OF_MONTH), ctime.get(Calendar.MONTH) + 1, ctime.get(Calendar.YEAR)));
         if(de != null && (de.getTypeMorning() == DayType.AT_WORK || de.getTypeAfternoon() == DayType.AT_WORK)) {
           pay += de.getWorkTimePay(mApp.getAmountByHour());
           total.addTime(de.getWorkTime());
