@@ -191,6 +191,8 @@ public class MainActivity extends RuntimePermissionsActivity implements Navigati
    */
   private void cleanup() {
     if(mApp != null) {
+      if(mProgress.isShowing())
+        mProgress.dismiss();
       if(mApp.isExportAutoSave()) {
         startService(new Intent(this, DropboxAutoExportService.class));
       }
