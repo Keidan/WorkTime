@@ -226,7 +226,7 @@ public class WorkTimeFragment extends Fragment implements View.OnClickListener, 
    * Updates the dates.
    */
   private void updateDates() {
-    mLvAdapter.clear();
+    mActivity.runOnUiThread(() -> mLvAdapter.clear());
     int minDay = 1;
     int maxDay = mApp.getCurrentDate().getActualMaximum(Calendar.DAY_OF_MONTH);
     List<DayEntry> wDays = new ArrayList<>();

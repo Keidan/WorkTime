@@ -27,6 +27,7 @@ import fr.ralala.worktime.sql.SqlFactory;
  *******************************************************************************
  */
 public class DaysFactory {
+  private final Object LOCK = new Object();
   private final List<DayEntry> mDays;
   private SqlFactory mSql = null;
 
@@ -43,8 +44,10 @@ public class DaysFactory {
    */
   public void reload(final SqlFactory sql) {
     mSql = sql;
-    mDays.clear();
-    mDays.addAll(sql.getDays());
+    synchronized (LOCK) {
+      mDays.clear();
+      mDays.addAll(sql.getDays());
+    }
   }
 
   /**
@@ -52,7 +55,9 @@ public class DaysFactory {
    * @return List<DayEntry>
    */
   public List<DayEntry> list() {
-    return mDays;
+    synchronized (LOCK) {
+      return mDays;
+    }
   }
 
 
@@ -64,17 +69,19 @@ public class DaysFactory {
   @SuppressLint("UseSparseArrays")
   public Map<Integer, Map<Integer, Map<Integer, List<DayEntry>>>> getDays() {
     Map<Integer, Map<Integer, Map<Integer, List<DayEntry>>>> list = new HashMap<>();
-    for(DayEntry de : mDays) {
-      Integer y = de.getDay().getYear();
-      Integer m = de.getDay().getMonth();
-      int w = de.getDay().toCalendar().get(Calendar.WEEK_OF_YEAR);
-      if(!list.containsKey(y))
-        list.put(y, new HashMap<>());
-      if(!list.get(y).containsKey(m))
-        list.get(y).put(m, new HashMap<>());
-      if(!list.get(y).get(m).containsKey(w))
-        list.get(y).get(m).put(w, new ArrayList<>());
-      list.get(y).get(m).get(w).add(de);
+    synchronized (LOCK) {
+      for (DayEntry de : mDays) {
+        Integer y = de.getDay().getYear();
+        Integer m = de.getDay().getMonth();
+        int w = de.getDay().toCalendar().get(Calendar.WEEK_OF_YEAR);
+        if (!list.containsKey(y))
+          list.put(y, new HashMap<>());
+        if (!list.get(y).containsKey(m))
+          list.get(y).put(m, new HashMap<>());
+        if (!list.get(y).get(m).containsKey(w))
+          list.get(y).get(m).put(w, new ArrayList<>());
+        list.get(y).get(m).get(w).add(de);
+      }
     }
     return list;
   }
@@ -111,13 +118,15 @@ public class DaysFactory {
    * @return DayEntry
    */
   public DayEntry getCurrentDay() {
-    for(DayEntry d : mDays)
-      if(d.getDay().dateString().equals(WorkTimeDay.now().dateString())) {
-        return d;
-      }
-    DayEntry d = new DayEntry(mSql.getContext(), WorkTimeDay.now(), DayType.ERROR, DayType.ERROR);
-    mDays.add(d);
-    return d;
+    synchronized (LOCK) {
+      for (DayEntry d : mDays)
+        if (d.getDay().dateString().equals(WorkTimeDay.now().dateString())) {
+          return d;
+        }
+      DayEntry d = new DayEntry(mSql.getContext(), WorkTimeDay.now(), DayType.ERROR, DayType.ERROR);
+      mDays.add(d);
+      return d;
+    }
   }
 
   /**
@@ -126,7 +135,9 @@ public class DaysFactory {
    */
   public Map<String, DayEntry> toDaysMap() {
     Map<String, DayEntry> map = new HashMap<>();
-    for(DayEntry de : mDays) map.put(de.getDay().dateString(), de);
+    synchronized (LOCK) {
+      for (DayEntry de : mDays) map.put(de.getDay().dateString(), de);
+    }
     return map;
   }
 
@@ -135,11 +146,13 @@ public class DaysFactory {
    * @param current The current entry.
    */
   public void checkForDayDateAndCopy(DayEntry current) {
-    for(DayEntry de : mDays) {
-      if(de.getDay().dateString().equals(current.getDay().dateString())) {
-        current.copy(de);
-        // Calculate Pay
-        de.getWorkTimePay();
+    synchronized (LOCK) {
+      for (DayEntry de : mDays) {
+        if (de.getDay().dateString().equals(current.getDay().dateString())) {
+          current.copy(de);
+          // Calculate Pay
+          de.getWorkTimePay();
+        }
       }
     }
   }
@@ -149,11 +162,13 @@ public class DaysFactory {
    * @param de The entry to delete.
    */
   public void remove(final DayEntry de) {
-    for(int i = 0; i < mDays.size(); i++)
-      if(de.match(mDays.get(i), false)) {
-        mDays.remove(i);
-        break;
-      }
+    synchronized (LOCK) {
+      for (int i = 0; i < mDays.size(); i++)
+        if (de.match(mDays.get(i), false)) {
+          mDays.remove(i);
+          break;
+        }
+    }
     mSql.removeDay(de);
   }
 
@@ -162,9 +177,11 @@ public class DaysFactory {
    * @param de The entry to add.
    */
   public void add(final DayEntry de) {
-    mDays.add(de);
-    mSql.insertDay(de);
-    Comparator<DayEntry> comp = (a, b) -> a.getDay().compareTo(b.getDay());
-    mDays.sort(comp);
+    synchronized (LOCK) {
+      mDays.add(de);
+      mSql.insertDay(de);
+      Comparator<DayEntry> comp = (a, b) -> a.getDay().compareTo(b.getDay());
+      mDays.sort(comp);
+    }
   }
 }
