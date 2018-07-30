@@ -54,6 +54,7 @@ public class MainActivity extends RuntimePermissionsActivity implements Navigati
   private AppFragmentsFactory mFragments = null;
   private AlertDialog mProgress;
   private boolean mLockedByProgress = false;
+  private boolean mResumFromSettings = false;
 
   /**
    * Called when the activity is created.
@@ -150,14 +151,15 @@ public class MainActivity extends RuntimePermissionsActivity implements Navigati
   @Override
   public void onResume() {
     super.onResume();
-    progressShow(true);
+    if(mFragments.isWorkTimeFragment() && !mResumFromSettings)
+      progressShow(true);
     new Thread(() -> {
      /* load SQL */
       if(!mApp.openSql(this)) finish();
       if(mApp.isExportAutoSave())
         mApp.initOnLoadTables();
       runOnUiThread(() -> {
-        displayView(mFragments.getDefaultHomeId());
+        displayView(mFragments.getCurrentFragmentId());
         if(mApp.getLastWidgetOpen() != 0L) {
           long elapsed = System.currentTimeMillis() - mApp.getLastWidgetOpen();
           if(elapsed <= 500) {
@@ -174,7 +176,7 @@ public class MainActivity extends RuntimePermissionsActivity implements Navigati
       });
 
     }).start();
-
+    mResumFromSettings = false;
   }
 
   /**
@@ -284,6 +286,7 @@ public class MainActivity extends RuntimePermissionsActivity implements Navigati
         title = getString(R.string.work_time);
         break;
       case R.id.nav_settings:
+        mResumFromSettings = true;
         mFragments.setCurrentToFragment(-1);
         startActivity(new Intent(this, SettingsActivity.class));
         if(mDrawer != null) mDrawer.closeDrawer(GravityCompat.START);

@@ -9,6 +9,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -40,6 +41,7 @@ public class ProfileFragment  extends Fragment implements View.OnClickListener, 
   private ProfilesEntriesArrayAdapter mAdapter = null;
   private MainApplication mApp = null;
   private Activity mActivity;
+  private RecyclerView mRecyclerView;
 
   /**
    * Called when the fragment is created.
@@ -62,23 +64,24 @@ public class ProfileFragment  extends Fragment implements View.OnClickListener, 
   public View onCreateView(@NonNull final LayoutInflater inflater,
                            final ViewGroup container, final Bundle savedInstanceState) {
     final ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_profile, container, false);
-    FloatingActionButton fab = rootView.findViewById(R.id.fab);
-    fab.setOnClickListener(this);
-    mApp = MainApplication.getApp(getContext());
     mActivity = getActivity();
     if(mActivity == null)
       return rootView;
+    FloatingActionButton fab = rootView.findViewById(R.id.fab);
+    fab.setOnClickListener(this);
 
-    RecyclerView recyclerView = rootView.findViewById(R.id.profiles);
-    recyclerView.setHasFixedSize(true);
+    mApp = MainApplication.getApp(getContext());
+
+    mRecyclerView = rootView.findViewById(R.id.profiles);
+    mRecyclerView.setHasFixedSize(true);
     RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext());
-    recyclerView.setLayoutManager(layoutManager);
-    mAdapter = new ProfilesEntriesArrayAdapter(
+    mRecyclerView.setLayoutManager(layoutManager);
+    mRecyclerView.getRecycledViewPool().clear();
+    mAdapter = new ProfilesEntriesArrayAdapter(mRecyclerView,
         getContext(), R.layout.listview_item, mApp.getProfilesFactory().list());
-    recyclerView.setAdapter(mAdapter);
-    mAdapter.notifyDataSetChanged();
-    new SwipeEditDeleteRecyclerViewItem(mActivity, recyclerView, this);
-
+    mRecyclerView.setAdapter(mAdapter);
+    mAdapter.safeNotifyDataSetChanged();
+    new SwipeEditDeleteRecyclerViewItem(mActivity, mRecyclerView, this);
     return rootView;
   }
 
@@ -120,7 +123,12 @@ public class ProfileFragment  extends Fragment implements View.OnClickListener, 
   @Override
   public void onActivityResult(int requestCode, int resultCode, Intent data) {
     if(requestCode == DayActivity.REQUEST_START_ACTIVITY)
-      mAdapter.notifyDataSetChanged();
+      new Thread(() -> {
+        try { Thread.sleep(100); } catch(InterruptedException ie) {
+          Log.e(getClass().getSimpleName(), "Exception: " + ie.getMessage(), ie);
+        }
+        mActivity.runOnUiThread(() -> mAdapter.safeNotifyDataSetChanged());
+      }).start();
   }
 
   /**

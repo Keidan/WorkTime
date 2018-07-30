@@ -9,6 +9,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -37,6 +38,7 @@ public class PublicHolidaysFragment extends Fragment implements View.OnClickList
   private PublicHolidaysEntriesArrayAdapter mAdapter = null;
   private MainApplication mApp = null;
   private Activity mActivity;
+  private RecyclerView mRecyclerView;
 
   /**
    * Called when the fragment is created.
@@ -67,15 +69,16 @@ public class PublicHolidaysFragment extends Fragment implements View.OnClickList
 
     mApp = MainApplication.getApp(getContext());
 
-    RecyclerView recyclerView = rootView.findViewById(R.id.public_holidays);
-    recyclerView.setHasFixedSize(true);
+    mRecyclerView = rootView.findViewById(R.id.public_holidays);
+    mRecyclerView.setHasFixedSize(true);
     RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext());
-    recyclerView.setLayoutManager(layoutManager);
-    mAdapter = new PublicHolidaysEntriesArrayAdapter(
+    mRecyclerView.setLayoutManager(layoutManager);
+    mRecyclerView.getRecycledViewPool().clear();
+    mAdapter = new PublicHolidaysEntriesArrayAdapter(mRecyclerView,
         R.layout.listview_item, mApp.getPublicHolidaysFactory().list());
-    recyclerView.setAdapter(mAdapter);
-    mAdapter.notifyDataSetChanged();
-    new SwipeEditDeleteRecyclerViewItem(mActivity, recyclerView, this);
+    mRecyclerView.setAdapter(mAdapter);
+    mAdapter.safeNotifyDataSetChanged();
+    new SwipeEditDeleteRecyclerViewItem(mActivity, mRecyclerView, this);
     return rootView;
   }
 
@@ -117,7 +120,12 @@ public class PublicHolidaysFragment extends Fragment implements View.OnClickList
   @Override
   public void onActivityResult(int requestCode, int resultCode, Intent data) {
     if(requestCode == PublicHolidayActivity.REQUEST_START_ACTIVITY)
-      mAdapter.notifyDataSetChanged();
+      new Thread(() -> {
+        try { Thread.sleep(100); } catch(InterruptedException ie) {
+          Log.e(getClass().getSimpleName(), "Exception: " + ie.getMessage(), ie);
+        }
+        mActivity.runOnUiThread(() -> mAdapter.safeNotifyDataSetChanged());
+      }).start();
   }
 
   /**

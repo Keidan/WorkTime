@@ -59,11 +59,41 @@ public class AppFragmentsFactory {
   }
 
   /**
+   * Tests if the current fragment is equal to WorkTimeFragment
+   * @return boolean
+   */
+  public boolean isWorkTimeFragment() {
+    return mCurrentFragment != null && mCurrentFragment.equals(mWorkTimeFragment);
+  }
+
+  /**
    * Returns the default home index.
    * @return int
    */
   public int getDefaultHomeIndex() {
     return mApp.getDefaultHome();
+  }
+
+
+  /**
+   * Returns the current fragment ID (android).
+   * @return int
+   */
+  public int getCurrentFragmentId() {
+    if(mCurrentFragment == null)
+      return getDefaultHomeId();
+    else if(mCurrentFragment.equals(mProfileFragment))
+      return (R.id.nav_profile);
+    else if(mCurrentFragment.equals(mPublicHolidaysFragment))
+      return (R.id.nav_public_holidays);
+    else if(mCurrentFragment.equals(mExportFragment))
+      return (R.id.nav_export);
+    else if(mCurrentFragment.equals(mStatisticsFragment))
+      return (R.id.nav_statistics);
+    else if(mCurrentFragment.equals(mWorkTimeFragment))
+      return (R.id.nav_worktime);
+    else
+      return (R.id.nav_quickaccess);
   }
 
   /**
