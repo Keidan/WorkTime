@@ -189,11 +189,11 @@ public class WorkTimeFragment extends Fragment implements View.OnClickListener, 
    */
   public void updateAll() {
     mActivity.progressShow(true);
-   new Thread(() -> {
-     updateTop();
-     updateDates();
-     mActivity.runOnUiThread(() -> mActivity.progressDismiss());
-   }).start();
+    new Thread(() -> {
+      updateTop();
+      updateDates();
+       mActivity.runOnUiThread(() -> mActivity.progressDismiss());
+    }).start();
   }
 
   /**
