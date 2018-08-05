@@ -21,16 +21,16 @@ import fr.ralala.worktime.ui.utils.UIHelper;
  *******************************************************************************
  */
 public class SettingsDisplayActivity extends PreferenceActivity {
-  public static final String       PREFS_DEFVAL_DEFAULT_HOME                        = "0";
-  public static final String       PREFS_DEFVAL_DAY_ROWS_HEIGHT                     = "44";
-  public static final String       PREFS_DEFVAL_SCROLL_TO_CURRENT_DAY               = "false";
-  public static final String       PREFS_DEFVAL_HIDE_WAGE                           = "false";
-  public static final String       PREFS_DEFVAL_HIDE_EXIT_BUTTON                    = "false";
-  public static final String       PREFS_KEY_HIDE_WAGE                              = "prefHideWage";
-  public static final String       PREFS_KEY_DAY_ROWS_HEIGHT                        = "prefDayRowsHeight";
-  public static final String       PREFS_KEY_DEFAULT_HOME                           = "prefDefaultHome";
-  public static final String       PREFS_KEY_SCROLL_TO_CURRENT_DAY                  = "prefScrollToCurrentDay";
-  public static final String       PREFS_KEY_HIDE_EXIT_BUTTON                       = "prefHideExitButton";
+  public static final String PREFS_DEFVAL_DEFAULT_HOME = "0";
+  public static final String PREFS_DEFVAL_DAY_ROWS_HEIGHT = "44";
+  public static final String PREFS_DEFVAL_SCROLL_TO_CURRENT_DAY = "false";
+  public static final String PREFS_DEFVAL_HIDE_WAGE = "false";
+  public static final String PREFS_DEFVAL_HIDE_EXIT_BUTTON = "false";
+  public static final String PREFS_KEY_HIDE_WAGE = "prefHideWage";
+  public static final String PREFS_KEY_DAY_ROWS_HEIGHT = "prefDayRowsHeight";
+  public static final String PREFS_KEY_DEFAULT_HOME = "prefDefaultHome";
+  public static final String PREFS_KEY_SCROLL_TO_CURRENT_DAY = "prefScrollToCurrentDay";
+  public static final String PREFS_KEY_HIDE_EXIT_BUTTON = "prefHideExitButton";
 
 
   /**

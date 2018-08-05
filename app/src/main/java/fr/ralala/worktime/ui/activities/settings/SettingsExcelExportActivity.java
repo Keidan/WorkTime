@@ -22,12 +22,12 @@ import fr.ralala.worktime.ui.utils.UIHelper;
  *******************************************************************************
  */
 public class SettingsExcelExportActivity extends PreferenceActivity implements Preference.OnPreferenceClickListener{
-  public static final String       PREFS_DEFVAL_EMAIL                               = "";
-  public static final String       PREFS_DEFVAL_EMAIL_ENABLE                        = "true";
-  public static final String       PREFS_DEFVAL_EXPORT_HIDE_WAGE                    = "false";
-  public static final String       PREFS_KEY_EXPORT_HIDE_WAGE                       = "prefExportHideWage";
-  public static final String       PREFS_KEY_EMAIL                                  = "prefExportMail";
-  public static final String       PREFS_KEY_EMAIL_ENABLE                           = "prefExportMailEnable";
+  public static final String PREFS_DEFVAL_EMAIL = "";
+  public static final String PREFS_DEFVAL_EMAIL_ENABLE = "true";
+  public static final String PREFS_DEFVAL_EXPORT_HIDE_WAGE = "false";
+  public static final String PREFS_KEY_EXPORT_HIDE_WAGE = "prefExportHideWage";
+  public static final String PREFS_KEY_EMAIL = "prefExportMail";
+  public static final String PREFS_KEY_EMAIL_ENABLE = "prefExportMailEnable";
 
   private MyPreferenceFragment mPrefFrag = null;
 

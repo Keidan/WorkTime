@@ -29,10 +29,10 @@ import fr.ralala.worktime.ui.utils.UIHelper;
  *******************************************************************************
  */
 public class SettingsLearningActivity extends PreferenceActivity implements Preference.OnPreferenceClickListener{
-  public static final String       PREFS_DEFVAL_PROFILES_WEIGHT_DEPTH               = "5";
-  public static final String       PREFS_KEY_PROFILES_WEIGHT_CLEAR                  = "prefWeightClear";
-  public static final String       PREFS_KEY_PROFILES_WEIGHT_DEPTH                  = "prefWeightDepth";
-  public static final String       PREFS_KEY_PROFILES_LIST                          = "prefWeightList";
+  public static final String PREFS_DEFVAL_PROFILES_WEIGHT_DEPTH = "5";
+  public static final String PREFS_KEY_PROFILES_WEIGHT_CLEAR = "prefWeightClear";
+  public static final String PREFS_KEY_PROFILES_WEIGHT_DEPTH = "prefWeightDepth";
+  public static final String PREFS_KEY_PROFILES_LIST = "prefWeightList";
 
   private MyPreferenceFragment mPrefFrag = null;
   private MainApplication mApp = null;

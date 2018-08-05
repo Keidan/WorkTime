@@ -26,18 +26,18 @@ import fr.ralala.worktime.ui.utils.UIHelper;
  *******************************************************************************
  */
 public class SettingsActivity extends PreferenceActivity implements Preference.OnPreferenceClickListener{
-  public static final String       PREFS_DEFVAL_WORKTIME_BY_DAY                     = "00:00";
-  public static final String       PREFS_DEFVAL_AMOUNT_BY_HOUR                      = "0.0";
-  public static final String       PREFS_DEFVAL_CURRENCY                            = "€";
-  public static final String       PREFS_KEY_WORKTIME_BY_DAY                        = "prefWorkTimeByDay";
-  public static final String       PREFS_KEY_AMOUNT_BY_HOUR                         = "prefAmountByHour";
-  public static final String       PREFS_KEY_CURRENCY                               = "prefCurrency";
-  public static final String       PREFS_KEY_CHANGELOG                              = "prefChangelog";
-  public static final String       PREFS_KEY_VERSION                                = "prefVersion";
-  public static final String       PREFS_KEY_SELECT_DISPLAY                         = "prefSelectDisplay";
-  public static final String       PREFS_KEY_SELECT_EXCEL_EXPORT                    = "prefSelectExcelExport";
-  public static final String       PREFS_KEY_SELECT_LEARNING                        = "prefSelectLearning";
-  public static final String       PREFS_KEY_SELECT_DATABASE                        = "prefSelectDatabaseExport";
+  public static final String PREFS_DEFVAL_WORKTIME_BY_DAY = "00:00";
+  public static final String PREFS_DEFVAL_AMOUNT_BY_HOUR = "0.0";
+  public static final String PREFS_DEFVAL_CURRENCY = "€";
+  public static final String PREFS_KEY_WORKTIME_BY_DAY = "prefWorkTimeByDay";
+  public static final String PREFS_KEY_AMOUNT_BY_HOUR = "prefAmountByHour";
+  public static final String PREFS_KEY_CURRENCY = "prefCurrency";
+  public static final String PREFS_KEY_CHANGELOG = "prefChangelog";
+  public static final String PREFS_KEY_VERSION = "prefVersion";
+  public static final String PREFS_KEY_SELECT_DISPLAY = "prefSelectDisplay";
+  public static final String PREFS_KEY_SELECT_EXCEL_EXPORT = "prefSelectExcelExport";
+  public static final String PREFS_KEY_SELECT_LEARNING = "prefSelectLearning";
+  public static final String PREFS_KEY_SELECT_DATABASE = "prefSelectDatabaseExport";
 
 
   private MyPreferenceFragment mPrefFrag = null;

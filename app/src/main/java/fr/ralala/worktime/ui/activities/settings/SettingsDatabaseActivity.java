@@ -23,11 +23,11 @@ import fr.ralala.worktime.ui.utils.UIHelper;
  *******************************************************************************
  */
 public class SettingsDatabaseActivity extends PreferenceActivity implements Preference.OnPreferenceClickListener{
-  public static final String       PREFS_DEFVAL_IMPORT_EXPORT_AUTO_SAVE             = "false";
-  public static final String       PREFS_DEFVAL_IMPORT_EXPORT_AUTO_SAVE_PERIODICITY = "0";
-  public static final String       PREFS_KEY_IMPORT_EXPORT                          = "prefImportExport";
-  public static final String       PREFS_KEY_IMPORT_EXPORT_AUTO_SAVE                = "prefImportExportAutoSave";
-  public static final String       PREFS_KEY_IMPORT_EXPORT_AUTO_SAVE_PERIODICITY    = "prefImportExportAutoSavePeriodicity";
+  public static final String PREFS_DEFVAL_IMPORT_EXPORT_AUTO_SAVE = "false";
+  public static final String PREFS_DEFVAL_IMPORT_EXPORT_AUTO_SAVE_PERIODICITY = "0";
+  public static final String PREFS_KEY_IMPORT_EXPORT = "prefImportExport";
+  public static final String PREFS_KEY_IMPORT_EXPORT_AUTO_SAVE = "prefImportExportAutoSave";
+  public static final String PREFS_KEY_IMPORT_EXPORT_AUTO_SAVE_PERIODICITY = "prefImportExportAutoSavePeriodicity";
   private MyPreferenceFragment mPrefFrag = null;
 
   /**
