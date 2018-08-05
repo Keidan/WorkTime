@@ -38,17 +38,11 @@ public class DropboxAutoExportService extends Service implements DropboxImportEx
     if(!mApp.openSql(this)) {
       stopSelf();
     }
-
     if(mApp.isTablesChanges()) {
       boolean export = isExportable();
       Log.e(getClass().getSimpleName(), "Exportation required and the day" + (export ? " " : " not") + " match.");
       if(export) {
-        setNeedUpdate(mApp, false);
-        if (!mApp.getDropboxImportExport().exportDatabase(this, false, this)) {
-          Log.e(getClass().getSimpleName(), "Export failed.");
-          setNeedUpdate(mApp, true);
-          stopSelf();
-        }
+        exportDatabase();
       } else {
         setNeedUpdate(mApp, true);
         stopSelf();
@@ -59,18 +53,25 @@ public class DropboxAutoExportService extends Service implements DropboxImportEx
       boolean needUpdate = prefs.getBoolean(KEY_NEED_UPDATE, DEFVAL_NEED_UPDATE.equals("true"));
       if(export && needUpdate) {
         Log.e(getClass().getSimpleName(), "No changes have been detected but the day is valid for pending export.");
-        setNeedUpdate(mApp, false);
-        if (!mApp.getDropboxImportExport().exportDatabase(this, false, this)) {
-          Log.e(getClass().getSimpleName(), "Export failed.");
-          setNeedUpdate(mApp, true);
-          stopSelf();
-        }
+        exportDatabase();
         return;
       }
       if(!needUpdate)
         Log.e(getClass().getSimpleName(), "No change detected.");
       if((!export && needUpdate))
         Log.e(getClass().getSimpleName(), "Changes detected but the current day does not allow export.");
+      stopSelf();
+    }
+  }
+
+  /**
+   * Export database.
+   */
+  private void exportDatabase() {
+    setNeedUpdate(mApp, false);
+    if (!mApp.getDropboxImportExport().exportDatabase(this, false, this)) {
+      Log.e(getClass().getSimpleName(), "Export failed.");
+      setNeedUpdate(mApp, true);
       stopSelf();
     }
   }
@@ -86,8 +87,6 @@ public class DropboxAutoExportService extends Service implements DropboxImportEx
     ed.putBoolean(KEY_NEED_UPDATE, b);
     ed.apply();
     app.getSql().settingsSave();
-    if(!b)
-      app.disableDbUpdateFromOnloadSettings();
   }
 
   /**
@@ -120,7 +119,7 @@ public class DropboxAutoExportService extends Service implements DropboxImportEx
     super.onDestroy();
     if(cond)
       return;
-    Log.e("fr.ralala.", "killProcess");
+    Log.e(getClass().getSimpleName(), "killProcess");
     Process.killProcess(android.os.Process.myPid());
   }
 

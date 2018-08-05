@@ -70,7 +70,6 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
   private MainApplication mApp = null;
   private DayEntry mSelectedProfile = null;
   private boolean mOpenForAdd = false;
-
   private boolean mFromClear = false;
   private boolean mFromWidget = false;
 
@@ -148,8 +147,6 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
         finish();
         return ;
       }
-      if(mApp.isExportAutoSave())
-        mApp.initOnLoadTables();
       date = mApp.getDaysFactory().getCurrentDay().getDay().dateString();
       mDisplayProfile = true;
       mFromWidget = true;
@@ -160,14 +157,24 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
       actionBar.setDisplayShowHomeEnabled(show);
       actionBar.setDisplayHomeAsUpEnabled(show);
     }
-    List<DayEntry> days = mDisplayProfile ? mApp.getDaysFactory().list() : mApp.getProfilesFactory().list();
-    for(DayEntry de : days) {
-      if((mDisplayProfile && de.getDay().dateString().equals(date)) || (!mDisplayProfile && de.getName().equals(date))) {
-        if(mFromWidget && !de.getWorkTime().isValidTime())
+    List<DayEntry> profiles = mApp.getProfilesFactory().list();
+    if(mDisplayProfile) {
+      DayEntry de = mApp.getDaysFactory().getDay(date);
+      if (de != null) {
+        if (mFromWidget && !de.getWorkTime().isValidTime())
           this.mDe = null;
         else
           this.mDe = de;
-        break;
+      }
+    } else {
+      for (DayEntry de : profiles) {
+        if (de.getName().equals(date)) {
+          if (mFromWidget && !de.getWorkTime().isValidTime())
+            this.mDe = null;
+          else
+            this.mDe = de;
+          break;
+        }
       }
     }
     if(mDe == null) {
@@ -218,7 +225,7 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
       if(tvName != null)
         tvName.setVisibility(v);
       mEtName.setVisibility(v);
-      if(mApp.getProfilesFactory().list().isEmpty()) {
+      if(profiles.isEmpty()) {
         mSpProfile.setVisibility(View.GONE);
         if(tvProfile != null)
           tvProfile.setVisibility(View.GONE);
@@ -246,7 +253,7 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
     spTypeAdapterMorning.add(DayType.getText(this, DayType.SICKNESS));
     spTypeAdapterMorning.add(DayType.getText(this, DayType.UNPAID));
     final ArrayAdapter<String> spTypeAdapterAfternoon = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item);
-    spTypeAdapterAfternoon.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+    spTypeAdapterAfternoon.setDropDownViewResource(R.layout.simple_spinner_dropdown_item);
     mSpTypeAfternoon.setAdapter(spTypeAdapterAfternoon);
     spTypeAdapterAfternoon.add("");
     spTypeAdapterAfternoon.add(DayType.getText(this, DayType.AT_WORK));
@@ -262,10 +269,10 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
     if(mDisplayProfile) {
     /* build profiles spinner */
       mSpProfilesAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item);
-      mSpProfilesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+      mSpProfilesAdapter.setDropDownViewResource(R.layout.simple_spinner_dropdown_item);
       mSpProfile.setAdapter(mSpProfilesAdapter);
       mSpProfilesAdapter.add("");
-      for (DayEntry profile : mApp.getProfilesFactory().list())
+      for (DayEntry profile : profiles)
         mSpProfilesAdapter.add(profile.getName());
       mSpProfile.setOnItemSelectedListener(this);
     }

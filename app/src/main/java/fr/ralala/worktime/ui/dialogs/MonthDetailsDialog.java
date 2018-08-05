@@ -1,22 +1,20 @@
 package fr.ralala.worktime.ui.dialogs;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.res.Resources;
 import android.graphics.Typeface;
 import android.support.v7.app.AlertDialog;
+import android.util.SparseArray;
 import android.view.Gravity;
 import android.widget.GridLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
-import java.util.HashMap;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.TimeZone;
 
 import fr.ralala.worktime.MainApplication;
@@ -37,8 +35,8 @@ import fr.ralala.worktime.utils.AndroidHelper;
  */
 public class MonthDetailsDialog implements DialogInterface.OnClickListener {
 
-  private Activity mActivity = null;
-  private MainApplication mApp = null;
+  private Activity mActivity;
+  private MainApplication mApp;
   private AlertDialog mAlertDialog = null;
 
   private class Item {
@@ -93,16 +91,13 @@ public class MonthDetailsDialog implements DialogInterface.OnClickListener {
     ctime.setFirstDayOfWeek(Calendar.MONDAY);
     ctime.set(Calendar.YEAR, year);
     ctime.set(Calendar.MONTH, month);
-    ctime.set(Calendar.DAY_OF_MONTH, 1);
-    Map<String, DayEntry> map = mApp.getDaysFactory().toDaysMap();
-    int maxDay = ctime.getMaximum(Calendar.DATE);
-    @SuppressLint("UseSparseArrays") Map<Integer, Item> weeks = new HashMap<>();
-    for(int day = 1; day <= maxDay; ++day) {
-      ctime.set(Calendar.DAY_OF_MONTH, day);
-      DayEntry de = map.get(String.format(Locale.US, "%02d/%02d/%04d", ctime.get(Calendar.DAY_OF_MONTH), ctime.get(Calendar.MONTH) + 1, ctime.get(Calendar.YEAR)));
-      if(de != null && (de.getTypeMorning() == DayType.AT_WORK || de.getTypeAfternoon() == DayType.AT_WORK)) {
+    List<DayEntry> days = mApp.getDaysFactory().list(year, month, -1);
+    SparseArray<Item> weeks = new SparseArray<>();
+    for(DayEntry de : days) {
+      ctime.set(Calendar.DAY_OF_MONTH, de.getDay().getDay());
+      if(de.getTypeMorning() == DayType.AT_WORK || de.getTypeAfternoon() == DayType.AT_WORK) {
         Item i;
-        if (!weeks.containsKey(ctime.get(Calendar.WEEK_OF_YEAR)))
+        if (!AndroidHelper.containsKey(weeks, ctime.get(Calendar.WEEK_OF_YEAR)))
           weeks.put(ctime.get(Calendar.WEEK_OF_YEAR), new Item());
         i = weeks.get(ctime.get(Calendar.WEEK_OF_YEAR));
 
@@ -112,8 +107,10 @@ public class MonthDetailsDialog implements DialogInterface.OnClickListener {
         i.wage += de.getWorkTimePay();
       }
     }
-    List<Integer> keys = new ArrayList<>(weeks.keySet());
-    Collections.sort(keys);
+    List<Integer> keys = new ArrayList<>();
+    for(int i = 0; i < weeks.size(); i++)
+      keys.add(weeks.keyAt(i));
+    keys.sort(Comparator.naturalOrder());
     for(int idx = 0; idx < keys.size();++idx, ++row) {
       Integer w = keys.get(idx);
       Item i = weeks.get(w);
@@ -165,29 +162,41 @@ public class MonthDetailsDialog implements DialogInterface.OnClickListener {
       if(j == 0 || week == -1) tvWeek.setTypeface(tvWeek.getTypeface(), Typeface.BOLD);
       if(j != 0)
         tvWeek.setGravity(Gravity.END);
-      if(j == 0) {
-        if(week == -1) {
-          String s = r.getString(R.string.total) + ":";
-          tvWeek.setText(s);
-        } else
-          tvWeek.setText((r.getString(R.string.week_letter) + " " + String.format(Locale.US, "%02d", week) + ":"));
-      } else if (j == 1)
-        tvWeek.setText(wt);
-      else if (j == 2)
-        tvWeek.setText(("(" + mActivity.getString(R.string.overtime_min) + ": "));
-      else if (j == 3)
-        tvWeek.setText(ot);
-      else if (j == 4)
-        tvWeek.setText(",");
-      else if (j == 5)
-        tvWeek.setText((mActivity.getString(R.string.recovery_min) + ": "));
-      else if (j == 6)
-        tvWeek.setText(rec);
-      else if (j == 7) {
-        tvWeek.setText(")");
-        tvWeek.setGravity(Gravity.START);
-      } else if (!mApp.isHideWage() && j == 8) {
-        tvWeek.setText(String.format(Locale.US, "%.02f%s", wage, currency));
+
+      switch (j) {
+        case 0:
+          if(week == -1) {
+            String s = r.getString(R.string.total) + ":";
+            tvWeek.setText(s);
+          } else
+            tvWeek.setText((r.getString(R.string.week_letter) + " " + String.format(Locale.US, "%02d", week) + ":"));
+          break;
+        case 1:
+          tvWeek.setText(wt);
+          break;
+        case 2:
+          tvWeek.setText(("(" + mActivity.getString(R.string.overtime_min) + ": "));
+          break;
+        case 3:
+          tvWeek.setText(ot);
+          break;
+        case 4:
+          tvWeek.setText(",");
+          break;
+        case 5:
+          tvWeek.setText((mActivity.getString(R.string.recovery_min) + ": "));
+          break;
+        case 6:
+          tvWeek.setText(rec);
+          break;
+        case 7:
+          tvWeek.setText(")");
+          tvWeek.setGravity(Gravity.START);
+          break;
+        case 8:
+          if (!mApp.isHideWage())
+            tvWeek.setText(String.format(Locale.US, "%.02f%s", wage, currency));
+          break;
       }
       gl.addView(tvWeek);
     }

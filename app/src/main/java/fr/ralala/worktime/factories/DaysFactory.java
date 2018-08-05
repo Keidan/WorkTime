@@ -5,12 +5,9 @@ import android.annotation.SuppressLint;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
-import java.util.TimeZone;
 
 import fr.ralala.worktime.models.DayEntry;
 import fr.ralala.worktime.models.DayType;
@@ -27,87 +24,97 @@ import fr.ralala.worktime.sql.SqlFactory;
  *******************************************************************************
  */
 public class DaysFactory {
-  private final Object LOCK = new Object();
-  private final List<DayEntry> mDays;
   private SqlFactory mSql = null;
 
   /**
-   * Creates the factory.
-   */
-  public DaysFactory() {
-    mDays = new ArrayList<>();
-  }
-
-  /**
-   * Reloads the entries from the SQLite databases.
+   * Sets the reference to the SqlFactory.
    * @param sql The SQLite factory.
    */
-  public void reload(final SqlFactory sql) {
+  public void setSqlFactory(final SqlFactory sql) {
     mSql = sql;
-    synchronized (LOCK) {
-      mDays.clear();
-      mDays.addAll(sql.getDays());
-    }
   }
 
   /**
    * Returns the list of days.
+   * @param year The current year (-1 to ignore years).
+   * @param month The current month (-1 to ignore months).
+   * @param day The current day (-1 to ignore days).
    * @return List<DayEntry>
    */
-  public List<DayEntry> list() {
-    synchronized (LOCK) {
-      return mDays;
-    }
+  public List<DayEntry> list(int year, int month, int day) {
+    return mSql.getDays(year, month, day);
   }
 
+  /**
+   * Returns the day.
+   * @param date The current date.
+   * @return DayEntry
+   */
+  public DayEntry getDay(String date) {
+    return mSql.getDay(date);
+  }
 
   /**
-   * Returns a list formatted as follow:
-   * Map<YEAR, Map<MONTH, Map<WEEK, List<DayEntry>>>>
-   * @return <code>Map<YEAR, Map<MONTH, Map<WEEK, List<DayEntry>>>></code>
+   * Returns the years (unique values only) from the days table.
+   * @return List<Integer>
+   */
+  public List<Integer> getYears() {
+    return mSql.getDaysYears();
+  }
+
+  /**
+   * Returns the months (unique values only) from the days table.
+   * @param year The reference year.
+   * @return List<Integer>
+   */
+  public List<Integer> getMonths(int year) {
+    return mSql.getDaysMonths(year);
+  }
+
+  /**
+   * Returns the weeks and days in a week.
+   * Map<WEEK, List<DayEntry>>
+   * @param year The current year.
+   * @param month The current month.
+   * @return <code>Map<WEEK, List<DayEntry>></code>
    */
   @SuppressLint("UseSparseArrays")
-  public Map<Integer, Map<Integer, Map<Integer, List<DayEntry>>>> getDays() {
-    Map<Integer, Map<Integer, Map<Integer, List<DayEntry>>>> list = new HashMap<>();
-    synchronized (LOCK) {
-      for (DayEntry de : mDays) {
-        Integer y = de.getDay().getYear();
-        Integer m = de.getDay().getMonth();
-        int w = de.getDay().toCalendar().get(Calendar.WEEK_OF_YEAR);
-        if (!list.containsKey(y))
-          list.put(y, new HashMap<>());
-        if (!list.get(y).containsKey(m))
-          list.get(y).put(m, new HashMap<>());
-        if (!list.get(y).get(m).containsKey(w))
-          list.get(y).get(m).put(w, new ArrayList<>());
-        list.get(y).get(m).get(w).add(de);
-      }
+  public Map<Integer, List<DayEntry>> getWeeksAndDays(int year, int month) {
+    return getWeeksAndDays(mSql.getDays(year, month, -1));
+  }
+  /**
+   * Returns the weeks and days in a week.
+   * Map<WEEK, List<DayEntry>>
+   * @param refList The reference List.
+   * @return <code>Map<WEEK, List<DayEntry>></code>
+   */
+  @SuppressLint("UseSparseArrays")
+  private Map<Integer, List<DayEntry>> getWeeksAndDays(List<DayEntry> refList) {
+    Map<Integer, List<DayEntry>> list = new HashMap<>();
+    for (DayEntry de : refList) {
+      int w = de.getDay().toCalendar().get(Calendar.WEEK_OF_YEAR);
+      if (!list.containsKey(w))
+        list.put(w, new ArrayList<>());
+      list.get(w).add(de);
     }
     return list;
   }
 
   /**
    * Returns the list of work time day of a week.
-   * @param map The main list.
+   * @param refList The reference List.
    * @param week The associated week.
-   * @param month The week month.
-   * @param year The week year.
    * @return WorkTimeDay
    */
-  public WorkTimeDay getWorkTimeDayFromWeek(Map<String, DayEntry> map, int week, int month, int year) {
+  public WorkTimeDay getWorkTimeDayFromWeek(List<DayEntry> refList, int week) {
     WorkTimeDay ret = new WorkTimeDay();
-    Calendar ctime = Calendar.getInstance();
-    ctime.setTimeZone(TimeZone.getTimeZone("GMT"));
-    ctime.setFirstDayOfWeek(Calendar.MONDAY);
-    ctime.set(Calendar.YEAR, year);
-    ctime.set(Calendar.MONTH, month);
-    ctime.set(Calendar.DAY_OF_MONTH, 1);
-    int maxDay = ctime.getMaximum(Calendar.DATE);
-    for(int day = 1; day <= maxDay; ++day) {
-      ctime.set(Calendar.DAY_OF_MONTH, day);
-      DayEntry de = map.get(String.format(Locale.US, "%02d/%02d/%04d", ctime.get(Calendar.DAY_OF_MONTH), ctime.get(Calendar.MONTH) + 1, ctime.get(Calendar.YEAR)));
-      if(de != null && (de.isValidMorningType() && de.isValidAfternoonType()) && week == ctime.get(Calendar.WEEK_OF_YEAR)) {
-        ret.addTime(de.getWorkTime());
+    Map<Integer, List<DayEntry>> wdays = getWeeksAndDays(refList);
+    if(wdays.containsKey(week)) {
+      List<DayEntry> days = wdays.get(week);
+      for (DayEntry de : days) {
+        if (de.isValidMorningType() && de.isValidAfternoonType()) {
+          ret.addTime(de.getWorkTime());
+        }
       }
     }
     return ret;
@@ -118,41 +125,27 @@ public class DaysFactory {
    * @return DayEntry
    */
   public DayEntry getCurrentDay() {
-    synchronized (LOCK) {
-      for (DayEntry d : mDays)
-        if (d.getDay().dateString().equals(WorkTimeDay.now().dateString())) {
-          return d;
-        }
-      DayEntry d = new DayEntry(mSql.getContext(), WorkTimeDay.now(), DayType.ERROR, DayType.ERROR);
-      mDays.add(d);
-      return d;
-    }
-  }
-
-  /**
-   * Converts days to a map.
-   * @return <code>Map<String, DayEntry></code>
-   */
-  public Map<String, DayEntry> toDaysMap() {
-    Map<String, DayEntry> map = new HashMap<>();
-    synchronized (LOCK) {
-      for (DayEntry de : mDays) map.put(de.getDay().dateString(), de);
-    }
-    return map;
+    WorkTimeDay now = WorkTimeDay.now();
+    DayEntry d = mSql.getDay(now.dateString());
+    if(d == null)
+      d = new DayEntry(mSql.getContext(), WorkTimeDay.now(), DayType.ERROR, DayType.ERROR);
+    return d;
   }
 
   /**
    * Copies the current entry and calculate the pay.
+   * @param refList The reference list.
    * @param current The current entry.
    */
-  public void checkForDayDateAndCopy(DayEntry current) {
-    synchronized (LOCK) {
-      for (DayEntry de : mDays) {
-        if (de.getDay().dateString().equals(current.getDay().dateString())) {
-          current.copy(de);
-          // Calculate Pay
-          de.getWorkTimePay();
-        }
+  public void checkForDayDateAndCopy(List<DayEntry> refList, DayEntry current) {
+    for(DayEntry de : refList) {
+      WorkTimeDay wtdLoop = de.getDay();
+      WorkTimeDay wtdParam = current.getDay();
+
+      if(wtdLoop.getDay() == wtdParam.getDay() && wtdLoop.getMonth() == wtdParam.getMonth() && wtdLoop.getYear() == wtdParam.getYear()) {
+        current.copy(de);
+        // Calculate Pay
+        de.getWorkTimePay();
       }
     }
   }
@@ -162,13 +155,6 @@ public class DaysFactory {
    * @param de The entry to delete.
    */
   public void remove(final DayEntry de) {
-    synchronized (LOCK) {
-      for (int i = 0; i < mDays.size(); i++)
-        if (de.match(mDays.get(i), false)) {
-          mDays.remove(i);
-          break;
-        }
-    }
     mSql.removeDay(de);
   }
 
@@ -177,11 +163,6 @@ public class DaysFactory {
    * @param de The entry to add.
    */
   public void add(final DayEntry de) {
-    synchronized (LOCK) {
-      mDays.add(de);
-      mSql.insertDay(de);
-      Comparator<DayEntry> comp = (a, b) -> a.getDay().compareTo(b.getDay());
-      mDays.sort(comp);
-    }
+    mSql.insertDay(de);
   }
 }

@@ -6,13 +6,13 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 
+import fr.ralala.worktime.sql.SqlHelper;
 import fr.ralala.worktime.ui.activities.DayActivity;
 import fr.ralala.worktime.ui.activities.MainActivity;
 import fr.ralala.worktime.dropbox.DropboxImportExport;
@@ -20,7 +20,6 @@ import fr.ralala.worktime.factories.DaysFactory;
 import fr.ralala.worktime.factories.ProfilesFactory;
 import fr.ralala.worktime.factories.PublicHolidaysFactory;
 import fr.ralala.worktime.models.DayEntry;
-import fr.ralala.worktime.models.Setting;
 import fr.ralala.worktime.models.WorkTimeDay;
 import fr.ralala.worktime.ui.activities.settings.SettingsActivity;
 import fr.ralala.worktime.ui.activities.settings.SettingsDatabaseActivity;
@@ -28,7 +27,6 @@ import fr.ralala.worktime.ui.activities.settings.SettingsDisplayActivity;
 import fr.ralala.worktime.ui.activities.settings.SettingsExcelExportActivity;
 import fr.ralala.worktime.ui.activities.settings.SettingsLearningActivity;
 import fr.ralala.worktime.ui.quickaccess.QuickAccessNotification;
-import fr.ralala.worktime.services.DropboxAutoExportService;
 import fr.ralala.worktime.sql.SqlFactory;
 import fr.ralala.worktime.utils.MyActivityLifecycleCallbacks;
 import fr.ralala.worktime.ui.utils.UIHelper;
@@ -53,13 +51,11 @@ public class MainApplication extends Application  {
   private QuickAccessNotification mQuickAccessNotification = null;
   private int mLastFirstVisibleItem = 0;
   private DropboxImportExport mDropboxImportExport = null;
-  private List<DayEntry> mOnloadProfiles = null;
-  private List<DayEntry> mOnloadDays = null;
-  private List<DayEntry> mOnloadPublicHolidays = null;
-  private List<Setting> mOnloadSettings = null;
   private WorkTimeDay mLastQuickAccessBreak = null;
   private long mLastWidgetOpen = 0L;
   private MyActivityLifecycleCallbacks mLifeCycle;
+  private static int mResumedCounter = 0;
+  private String mDbMD5 = null;
 
   public MainApplication() {
   }
@@ -75,11 +71,26 @@ public class MainApplication extends Application  {
     mDaysFactory = new DaysFactory();
     mQuickAccessNotification = new QuickAccessNotification(this, NFY_QUICK_ACCESS);
     mDropboxImportExport = new DropboxImportExport();
-    mOnloadSettings = new ArrayList<>();
-
     // Register for activity state changes notifications
     Class<?>[] classes = new Class<?>[] { MainActivity.class, DayActivity.class };
     registerActivityLifecycleCallbacks(mLifeCycle = new MyActivityLifecycleCallbacks(Arrays.asList(classes)));
+    if(isExportAutoSave())
+      mDbMD5 = SqlHelper.getDatabaseMD5(this);
+  }
+
+  /**
+   * Returns the onResumed method call counter.
+   * @return int
+   */
+  public int getResumedCounter() {
+    return mResumedCounter;
+  }
+
+  /**
+   * Increments the onResumed method call counter.
+   */
+  public void incResumedCounter() {
+    mResumedCounter++;
   }
 
   /**
@@ -105,22 +116,20 @@ public class MainApplication extends Application  {
    * @param c The Android context.
    * @return false on error.
    */
+  @SuppressWarnings("BooleanMethodIsAlwaysInverted")
   public boolean openSql(final Context c) {
-    boolean ret = false;
     try {
       mSql = new SqlFactory(c);
       mSql.open();
-      if(mOnloadSettings.isEmpty())
-        mSql.settingsLoad(mOnloadSettings);
-      mPublicHolidaysFactory.reload(mSql);
-      mDaysFactory.reload(mSql);
-      mProfilesFactory.reload(mSql);
-      ret = true;
+      mPublicHolidaysFactory.setSqlFactory(mSql);
+      mDaysFactory.setSqlFactory(mSql);
+      mProfilesFactory.setSqlFactory(mSql);
+      return true;
     } catch (final Exception e) {
       Log.e(getClass().getSimpleName(), "Error: " + e.getMessage(), e);
       UIHelper.showAlertDialog(this, R.string.error, getString(R.string.error) + ": " + e.getMessage());
     }
-    return ret;
+    return false;
   }
 
   /**
@@ -353,6 +362,7 @@ public class MainApplication extends Application  {
    * Tests whether the wage section should be displayed when exporting work time.
    * @return boolean
    */
+  @SuppressWarnings("BooleanMethodIsAlwaysInverted")
   public boolean isExportHideWage() {
     SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
     return prefs.getBoolean(SettingsExcelExportActivity.PREFS_KEY_EXPORT_HIDE_WAGE, SettingsExcelExportActivity.PREFS_DEFVAL_EXPORT_HIDE_WAGE.equals("true"));
@@ -382,71 +392,12 @@ public class MainApplication extends Application  {
    */
 
   /**
-   * Initializes the databases when the application is loaded.
-   * The loaded databases are used when the automatic export is enabled.
-   */
-  public void initOnLoadTables() {
-    if(mOnloadSettings == null)
-      mOnloadSettings = new ArrayList<>();
-    if(mOnloadProfiles == null)
-      mOnloadProfiles = mSql.getProfiles();
-    if(mOnloadDays == null)
-      mOnloadDays = mSql.getDays();
-    if(mOnloadPublicHolidays == null)
-      mOnloadPublicHolidays = mSql.getPublicHolidays();
-    if(mOnloadSettings.isEmpty()) {
-      mSql.settingsLoad(mOnloadSettings);
-    }
-  }
-
-  /**
-   * Disables the database update when the settings are loaded.
-   */
-  public void disableDbUpdateFromOnloadSettings() {
-    for(Setting s : mOnloadSettings) {
-      if(s.getName().equals(DropboxAutoExportService.KEY_NEED_UPDATE)) {
-        s.disable();
-      }
-    }
-  }
-
-  /**
-   * Tests if the lists are equal.
-   * @param l1 List 1.
-   * @param l2 List 2.
-   * @param <T> The item type.
-   * @return boolean
-   */
-  private <T> boolean listEquals(List<T> l1, List<T> l2) {
-    List<T> list = new ArrayList<>();
-    if(l1 == null && l2 == null)
-      return true;
-    if(l1 == null || l2 == null)
-      return false;
-    if(l1.size() != l2.size())
-      return false;
-    for(T i1 : l1) {
-      for(T i2 : l2) {
-        if(i1.equals(i2)) {
-          list.add(i1);
-        }
-      }
-    }
-    return list.size() == l1.size();
-  }
-
-  /**
    * Detects a change in the SQLite tables.
    * @return boolean
    */
   public boolean isTablesChanges() {
-    List<DayEntry> profiles = mSql.getProfiles();
-    List<DayEntry> days = mSql.getDays();
-    List<DayEntry> publicHolidays = mSql.getPublicHolidays();
-    mSql.settingsSave();
-    List<Setting> settings = new ArrayList<>();
-    mSql.settingsLoad(settings);
-    return !listEquals(profiles, mOnloadProfiles) || !listEquals(mOnloadDays, days) || !listEquals(mOnloadPublicHolidays, publicHolidays) || (!listEquals(mOnloadSettings, settings));
+    String md5 = SqlHelper.getDatabaseMD5(this);
+    return md5 != null && mDbMD5 != null && mDbMD5.equals(md5);
   }
 
   /* ----------------------------------

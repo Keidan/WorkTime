@@ -34,7 +34,7 @@ import fr.ralala.worktime.ui.utils.UIHelper;
  */
 public class DropboxImportExport implements DropboxListener{
   private static final String PATH = "";
-  private DropboxHelper mHelper = null;
+  private DropboxHelper mHelper;
   private AlertDialog mDialog = null;
   private File mFile = null;
   private Context mContext = null;
@@ -237,11 +237,10 @@ public class DropboxImportExport implements DropboxListener{
   public static void loadDb(final Context c, File file) throws Exception{
     SqlHelper.loadDatabase(c, SqlHelper.DB_NAME, file);
     MainApplication app = MainApplication.getApp(c);
-    app.getDaysFactory().reload(app.getSql());
-    app.getProfilesFactory().reload(app.getSql());
-    app.getPublicHolidaysFactory().reload(app.getSql());
-    UIHelper.toast(c, c.getString(R.string.import_success));
-    AndroidHelper.restartApplication(c, -1);
+    app.getDaysFactory().setSqlFactory(app.getSql());
+    app.getProfilesFactory().setSqlFactory(app.getSql());
+    app.getPublicHolidaysFactory().setSqlFactory(app.getSql());
+    AndroidHelper.restartApplication(c, R.string.import_success);
   }
 
 

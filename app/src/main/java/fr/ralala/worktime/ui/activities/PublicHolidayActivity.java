@@ -11,8 +11,6 @@ import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
 
-import java.util.List;
-
 import fr.ralala.worktime.MainApplication;
 import fr.ralala.worktime.R;
 import fr.ralala.worktime.models.DayEntry;
@@ -84,12 +82,9 @@ public class PublicHolidayActivity extends AppCompatActivity {
       int idx = extra.lastIndexOf('|');
       String name = extra.substring(0, idx);
       String date = extra.substring(idx + 1);
-      List<DayEntry> days = mApp.getPublicHolidaysFactory().list();
-      for (DayEntry de : days) {
-        if (de.getName().equals(name) && de.getDay().dateString().equals(date)) {
-          this.mDe = de;
-          break;
-        }
+      DayEntry de = mApp.getPublicHolidaysFactory().getByNameAndDate(name, date);
+      if(de != null) {
+        this.mDe = de;
       }
     }
     if(mDe == null) {

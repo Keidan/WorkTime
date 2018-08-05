@@ -140,9 +140,10 @@
             android:paddingTop="@dimen/activity_day_tvStartMorning_paddingTop"
             android:text="@string/default_hours"
             android:textAlignment="center"
-            app:layout_constraintEnd_toStartOf="@+id/guidelineTv45"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvLblStartMorning" />
+            app:layout_constraintStart_toStartOf="@+id/tvLblStartMorning"
+            app:layout_constraintEnd_toStartOf="@+id/guidelineTv45"
+            app:layout_constraintTop_toBottomOf="@+id/tvLblEndMorning"  />
         <android.support.constraint.Guideline
             android:id="@+id/guidelineTv45"
             android:layout_width="wrap_content"
@@ -196,9 +197,10 @@
             android:paddingTop="@dimen/activity_day_tvStartAfternoon_paddingTop"
             android:text="@string/default_hours"
             android:textAlignment="center"
-            app:layout_constraintEnd_toStartOf="@+id/guidelineTv45"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvLblStartAfternoon" />
+            app:layout_constraintStart_toStartOf="@+id/tvLblStartAfternoon"
+            app:layout_constraintEnd_toStartOf="@+id/guidelineTv45"
+            app:layout_constraintTop_toBottomOf="@+id/tvLblStartAfternoon"  />
         <TextView
             android:id="@+id/tvEndAfternoon"
             android:layout_marginTop="@dimen/activity_day_tvEndAfternoon_layout_marginTop"
@@ -246,8 +248,9 @@
             android:paddingTop="@dimen/activity_day_tvAdditionalBreak_paddingTop"
             android:text="@string/default_hours"
             android:textAlignment="center"
-            app:layout_constraintEnd_toStartOf="@+id/guidelineTv45"
             app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/tvLblAdditionalBreak"
+            app:layout_constraintEnd_toStartOf="@+id/guidelineTv45"
             app:layout_constraintTop_toBottomOf="@+id/tvLblAdditionalBreak" />
         <TextView
             android:id="@+id/tvLegalWorktime"
@@ -276,6 +279,7 @@
             app:layout_constraintTop_toBottomOf="@+id/tvAdditionalBreak" />
         <TextView
             android:id="@+id/tvLblAmount"
+            android:labelFor="@+id/etAmount"
             android:layout_marginTop="@dimen/activity_day_tvLblAmount_layout_marginTop"
             android:text="@string/wage"
             android:layout_width="wrap_content"
@@ -298,12 +302,12 @@
             android:paddingTop="@dimen/activity_day_tvRecoveryTime_paddingTop"
             android:text="@string/default_hours"
             android:textAlignment="center"
-            app:layout_constraintEnd_toStartOf="@+id/guidelineTv45"
             app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/tvLblRecoveryTime"
+            app:layout_constraintEnd_toStartOf="@+id/guidelineTv45"
             app:layout_constraintTop_toBottomOf="@+id/tvLblRecoveryTime" />
         <EditText
             android:id="@+id/etAmount"
-            android:labelFor="@+id/etAmount"
             android:layout_marginTop="@dimen/activity_day_etAmount_layout_marginTop"
             android:layout_marginBottom="@dimen/activity_day_etAmount_layout_marginBottom"
             android:layout_width="@dimen/activity_day_etAmount_layout_width"

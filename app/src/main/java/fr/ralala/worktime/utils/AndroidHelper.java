@@ -2,12 +2,15 @@ package fr.ralala.worktime.utils;
 
 import android.app.Activity;
 import android.app.ActivityManager;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Vibrator;
+import android.util.SparseArray;
 
 
 import java.text.DateFormatSymbols;
@@ -24,6 +27,24 @@ import fr.ralala.worktime.ui.utils.UIHelper;
  *******************************************************************************
  */
 public class AndroidHelper {
+
+  public static final String EXTRA_RESTART = "EXTRA_RESTART";
+
+  /**
+   * Tests if the SparseArray contains the key.
+   * @param array The sparse array.
+   * @param key The key to search.
+   * @param <T> The sparse array type.
+   * @return True if contains.
+   */
+  public static <T> boolean containsKey(SparseArray<T> array, Integer key) {
+    for(int i = 0; i < array.size(); i++) {
+      Integer k = array.keyAt(i);
+      if (k.equals(key))
+        return true;
+    }
+    return false;
+  }
 
   /**
    * Updates a widget.
@@ -73,28 +94,20 @@ public class AndroidHelper {
   /**
    * Restarts the current application.
    * @param c The Android context.
-   * @param string The string to display before the restart (null = none).
+   * @param string The string to display before the restart.
    */
-  public static void restartApplication(final Context c, final String string) {
-    if(string != null)
-      UIHelper.toast(c, string);
-    Intent i = c.getApplicationContext().getPackageManager()
-      .getLaunchIntentForPackage(c.getApplicationContext().getPackageName() );
-    if(i != null) {
-      i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-      i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+  public static void restartApplication(final Context c, final int string) {
+    Intent startActivity = c.getApplicationContext().getPackageManager()
+        .getLaunchIntentForPackage(c.getApplicationContext().getPackageName());
+    assert startActivity != null;
+    startActivity.putExtra(EXTRA_RESTART, c.getString(string));
+    int mPendingIntentId = 123456;
+    PendingIntent mPendingIntent = PendingIntent.getActivity(c, mPendingIntentId, startActivity, PendingIntent.FLAG_CANCEL_CURRENT);
+    AlarmManager mgr = (AlarmManager)c.getSystemService(Context.ALARM_SERVICE);
+    if(mgr != null) {
+      mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 500, mPendingIntent);
+      Runtime.getRuntime().exit(0);
     }
-    c.startActivity(i);
-    Runtime.getRuntime().exit(0);
-  }
-
-  /**
-   * Restarts the current application.
-   * @param c The Android context.
-   * @param string_id The string to display before the restart (-1 = none).
-   */
-  public static void restartApplication(final Context c, final int string_id) {
-    restartApplication(c, string_id == -1 ? null : c.getString(string_id));
   }
 
   /**

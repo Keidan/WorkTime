@@ -13,7 +13,6 @@ import org.apache.poi.ss.usermodel.Workbook;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.text.ParseException;
 import java.util.Iterator;
 
 
@@ -31,13 +30,13 @@ public class ExcelHelper {
   private CellStyle mTimesDate;
   private CellStyle mTimesBold;
   private CellStyle mTimes;
-  private Workbook mWorkbook = null;
-  private File mFile = null;
-  private CreationHelper mCreateHelper = null;
+  private Workbook mWorkbook;
+  private File mFile;
+  private CreationHelper mCreateHelper;
 
   /**
    * Creates the Excel helper object and initialize the required objects.
-   * @param file
+   * @param file The excel file.
    */
   public ExcelHelper(final File file) {
     mFile = file;
@@ -142,9 +141,8 @@ public class ExcelHelper {
    * @param column The first column index.
    * @param s The label text.
    * @param bold Font style (bold or normal)
-   * @throws ParseException Called when a parse exception is thrown.
    */
-  public void addTime(Sheet sheet, int row, int column, String s, boolean bold) throws ParseException {
+  public void addTime(Sheet sheet, int row, int column, String s, boolean bold) {
     Cell cell = getCell(sheet, row, column);
     cell.setCellFormula("TIME(" + s.replaceAll(":", ",") + ",00)"); // 00:00:00
     cell.setCellStyle(bold ? mTimesDateBold : mTimesDate);
@@ -155,7 +153,7 @@ public class ExcelHelper {
    * @param sheet The current sheet
    * @param row The current row index.
    * @param column The first column index.
-   * @param val
+   * @param val The value.
    */
   public void addNumber(Sheet sheet, int row, int column,
                          double val) {

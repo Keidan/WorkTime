@@ -17,10 +17,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.List;
+
 import fr.ralala.worktime.ui.activities.DayActivity;
 
 import fr.ralala.worktime.MainApplication;
 import fr.ralala.worktime.R;
+import fr.ralala.worktime.ui.activities.MainActivity;
 import fr.ralala.worktime.ui.adapters.ProfilesEntriesArrayAdapter;
 import fr.ralala.worktime.models.DayEntry;
 import fr.ralala.worktime.ui.utils.SwipeEditDeleteRecyclerViewItem;
@@ -40,7 +43,7 @@ public class ProfileFragment  extends Fragment implements View.OnClickListener, 
 
   private ProfilesEntriesArrayAdapter mAdapter = null;
   private MainApplication mApp = null;
-  private Activity mActivity;
+  private MainActivity mActivity;
   private RecyclerView mRecyclerView;
 
   /**
@@ -64,26 +67,33 @@ public class ProfileFragment  extends Fragment implements View.OnClickListener, 
   public View onCreateView(@NonNull final LayoutInflater inflater,
                            final ViewGroup container, final Bundle savedInstanceState) {
     final ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_profile, container, false);
-    mActivity = getActivity();
-    if(mActivity == null)
-      return rootView;
+    mActivity = (MainActivity)getActivity();
+    assert mActivity != null;
     FloatingActionButton fab = rootView.findViewById(R.id.fab);
     fab.setOnClickListener(this);
 
-    mApp = MainApplication.getApp(getContext());
+    mApp = MainApplication.getApp(mActivity);
 
     mRecyclerView = rootView.findViewById(R.id.profiles);
     mRecyclerView.setHasFixedSize(true);
     RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext());
     mRecyclerView.setLayoutManager(layoutManager);
     mRecyclerView.getRecycledViewPool().clear();
-    mAdapter = new ProfilesEntriesArrayAdapter(mRecyclerView,
-        getContext(), R.layout.listview_item, mApp.getProfilesFactory().list());
-    mRecyclerView.setAdapter(mAdapter);
-    mAdapter.safeNotifyDataSetChanged();
     new SwipeEditDeleteRecyclerViewItem(mActivity, mRecyclerView, this);
+    mActivity.progressShow(true);
+    new Thread(() -> {
+      final List<DayEntry> list = mApp.getProfilesFactory().list();
+      mActivity.runOnUiThread(() -> {
+        mAdapter = new ProfilesEntriesArrayAdapter(mRecyclerView,
+            getContext(), R.layout.listview_item, list);
+        mRecyclerView.setAdapter(mAdapter);
+        mAdapter.safeNotifyDataSetChanged();
+        mActivity.progressDismiss();
+      });
+    }).start();
     return rootView;
   }
+
 
   /**
    * Called when the options menu is created.

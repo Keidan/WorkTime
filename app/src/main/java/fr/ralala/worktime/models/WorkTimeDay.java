@@ -157,7 +157,9 @@ public class WorkTimeDay {
    * @return int
    */
   public int compareTo(WorkTimeDay wtd) {
-    return toCalendar().compareTo(wtd.toCalendar());
+    String s1 = String.format(Locale.US, "%04d/%02d/%02d", mYear, mMonth, mDay);
+    String s2 = String.format(Locale.US, "%04d/%02d/%02d", wtd.mYear, wtd.mMonth, wtd.mDay);
+    return s1.compareTo(s2);
   }
 
   /**
@@ -228,24 +230,6 @@ public class WorkTimeDay {
   }
 
   /**
-   * Tests if the current instance is in the specified month.
-   * @param month The month to test.
-   * @return boolean
-   */
-  public boolean isInMonth(int month) {
-    return getMonth() == month;
-  }
-
-  /**
-   * Tests if the current instance is in the specified year.
-   * @param year The year to test.
-   * @return boolean
-   */
-  public boolean isInYear(int year) {
-    return getYear() == year;
-  }
-
-  /**
    * Tests if the current time matches with another.
    * @param wtd The time to test.
    * @return boolean
@@ -271,6 +255,14 @@ public class WorkTimeDay {
   }
 
   /**
+   * Returns the day.
+   * @return String
+   */
+  public String getDayString() {
+    return String.format(Locale.US, "%02d", mDay);
+  }
+
+  /**
    * Sets the day.
    * @param day The new value.
    */
@@ -287,6 +279,14 @@ public class WorkTimeDay {
   }
 
   /**
+   * Returns the month.
+   * @return String
+   */
+  public String getMonthString() {
+    return String.format(Locale.US, "%02d", mMonth);
+  }
+
+  /**
    * Sets the month.
    * @param month The new value.
    */
@@ -300,6 +300,14 @@ public class WorkTimeDay {
    */
   public int getYear() {
     return mYear;
+  }
+
+  /**
+   * Returns the year.
+   * @return String
+   */
+  public String getYearString() {
+    return String.format(Locale.US, "%04d", mYear);
   }
 
   /**

@@ -24,10 +24,10 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.TimeZone;
 
 import fr.ralala.worktime.models.DayType;
+import fr.ralala.worktime.ui.activities.MainActivity;
 import fr.ralala.worktime.utils.AndroidHelper;
 import fr.ralala.worktime.MainApplication;
 import fr.ralala.worktime.R;
@@ -51,7 +51,7 @@ public class ExportFragment extends Fragment implements AdapterView.OnItemSelect
   private ExportListViewArrayAdapter mLvAdapter = null;
   private Spinner mSpinner = null;
   private MainApplication mApp = null;
-  private Map<String, DayEntry> mMap;
+  private MainActivity mActivity;
 
   /**
    * Called when the fragment is created.
@@ -64,15 +64,15 @@ public class ExportFragment extends Fragment implements AdapterView.OnItemSelect
   public View onCreateView(@NonNull final LayoutInflater inflater,
                            final ViewGroup container, final Bundle savedInstanceState) {
     final ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_export, container, false);
-  if(getActivity() == null) return rootView;
-    mApp = (MainApplication)getActivity().getApplicationContext();
-    mMap = mApp.getDaysFactory().toDaysMap();
+    mActivity = (MainActivity)getActivity();
+    assert mActivity != null;
+    mApp = (MainApplication)mActivity.getApplicationContext();
     Button export = rootView.findViewById(R.id.btExport);
     export.setOnClickListener(this);
 
     mSpinner = rootView.findViewById(R.id.spYear);
-    final ArrayAdapter<String> spAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item);
-    spAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+    final ArrayAdapter<String> spAdapter = new ArrayAdapter<>(mActivity, android.R.layout.simple_spinner_item);
+    spAdapter.setDropDownViewResource(R.layout.simple_spinner_dropdown_item);
     mSpinner.setAdapter(spAdapter);
 
     ListView list = rootView.findViewById(R.id.list);
@@ -80,22 +80,18 @@ public class ExportFragment extends Fragment implements AdapterView.OnItemSelect
       getContext(), R.layout.export_listview_item, new ArrayList<>());
     list.setAdapter(mLvAdapter);
 
+
     Calendar c = Calendar.getInstance();
     c.setTimeZone(TimeZone.getTimeZone("GMT"));
     c.setTime(new Date());
-    int old = 0, idx = -1;
-    List<DayEntry> works = mApp.getDaysFactory().list();
-    for(DayEntry de : works) {
-      int y = de.getDay().getYear();
-      if(old != y) {
-        old = y;
-        spAdapter.add(String.valueOf(y));
-        idx++;
-        if(y == c.get(Calendar.YEAR)) mSpinner.setSelection(idx);
-      }
+    List<Integer> years = mApp.getDaysFactory().getYears();
+    for(int i = 0; i < years.size(); i++) {
+      Integer y = years.get(i);
+      spAdapter.add(String.valueOf(y));
+      if(y == c.get(Calendar.YEAR)) mSpinner.setSelection(i);
     }
     mSpinner.setOnItemSelectedListener(this);
-    //reload(Integer.parseInt(mSpinner.getSelectedItem().toString()));
+    //progressReload(Integer.parseInt(mSpinner.getSelectedItem().toString()));
     return rootView;
   }
 
@@ -107,19 +103,19 @@ public class ExportFragment extends Fragment implements AdapterView.OnItemSelect
   public void onClick(View v) {
     final List<ExportListViewArrayAdapter.ExportEntry> entries = mLvAdapter.getCheckedItems();
     if(entries.isEmpty()) {
-      UIHelper.snack(getActivity(), getString(R.string.export_no_items));
+      UIHelper.snack(mActivity, getString(R.string.export_no_items));
       return;
     }
     final String email = mApp.getEMail();
     if(mApp.isExportMailEnabled() && email.isEmpty()) {
-      UIHelper.snack(getActivity(), getString(R.string.export_email_not_set));
+      UIHelper.snack(mActivity, getString(R.string.export_email_not_set));
       return;
     }
 
     final File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS),
       getString(R.string.app_name) + "_" + entries.get(0).year + ".xls");
     if(file.exists()) {
-      UIHelper.showConfirmDialog(getActivity(), getString(R.string.confirm),
+      UIHelper.showConfirmDialog(mActivity, getString(R.string.confirm),
         getString(R.string.the_file_exists_part_1) + " " + file.getName() + " " + getString(R.string.the_file_exists_part_2),
         (view) -> exportXLS(entries, email, file), null);
     } else
@@ -151,14 +147,13 @@ public class ExportFragment extends Fragment implements AdapterView.OnItemSelect
         if(!mApp.isExportHideWage())
           headers.add(getString(R.string.wage).replaceAll(" :", "")); // H -> 72
         excel.createHorizontalHeader(sheet, row, column, headers.toArray(new String[]{}));
-        List<DayEntry> works = mApp.getDaysFactory().list();
+        List<DayEntry> works = mApp.getDaysFactory().list(ee.year, ee.month + 1, -1);
         column = 0;
         row++;
         for (DayEntry de : works) {
-          if (!de.getDay().isInMonth(ee.month + 1) || !de.getDay().isInYear(ee.year)) continue;
           excel.addLabel(sheet, row, column, de.getDay().dateString(), false);
-          excel.addLabel(sheet, row, column+1, de.getTypeMorning() != DayType.AT_WORK ? de.getTypeMorning().string(getActivity()) : "", false);
-          excel.addLabel(sheet, row, column+2, de.getTypeAfternoon() != DayType.AT_WORK ? de.getTypeAfternoon().string(getActivity()) : "", false);
+          excel.addLabel(sheet, row, column+1, de.getTypeMorning() != DayType.AT_WORK ? de.getTypeMorning().string(mActivity) : "", false);
+          excel.addLabel(sheet, row, column+2, de.getTypeAfternoon() != DayType.AT_WORK ? de.getTypeAfternoon().string(mActivity) : "", false);
           double wage = .0f;
           int column_offset= 3;
           if(de.getTypeMorning() != DayType.AT_WORK && de.getTypeAfternoon() != DayType.AT_WORK) {
@@ -191,17 +186,17 @@ public class ExportFragment extends Fragment implements AdapterView.OnItemSelect
       excel.write();
       Uri uri = Uri.fromFile(file);
       if(mApp.isExportMailEnabled()) {
-        AndroidHelper.sentMailTo(getActivity(), email, uri,
+        AndroidHelper.sentMailTo(mActivity, email, uri,
           getString(R.string.export_email_subject),
           getString(R.string.export_email_body),
           getString(R.string.export_email_senderMsg));
-        UIHelper.snack(getActivity(), getString(R.string.email_sent_to_with_mail) + " " + email);
+        UIHelper.snack(mActivity, getString(R.string.email_sent_to_with_mail) + " " + email);
       } else
-        UIHelper.snack(getActivity(), getString(R.string.email_sent_to_without_mail));
+        UIHelper.snack(mActivity, getString(R.string.email_sent_to_without_mail));
       //if(file.exists()) file.delete();
     } catch(Exception e) {
       Log.e(getClass().getSimpleName(), "Exception: " + e.getMessage(), e);
-      UIHelper.snack(getActivity(), getString(R.string.error) + ": " + e.getMessage());
+      UIHelper.snack(mActivity, getString(R.string.error) + ": " + e.getMessage());
     }
   }
 
@@ -214,7 +209,7 @@ public class ExportFragment extends Fragment implements AdapterView.OnItemSelect
    */
   @Override
   public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-    reload(Integer.parseInt(mSpinner.getSelectedItem().toString()));
+    progressReload(Integer.parseInt(mSpinner.getSelectedItem().toString()));
   }
 
   /**
@@ -229,23 +224,26 @@ public class ExportFragment extends Fragment implements AdapterView.OnItemSelect
    * Reloads the available month associated to the desired year.
    * @param year The desired year.
    */
+  private void progressReload(int year) {
+    mActivity.progressShow(true);
+    new Thread(() -> {
+      reload(year);
+      mActivity.runOnUiThread(() -> mActivity.progressDismiss());
+    }).start();
+  }
+  /**
+   * Reloads the available month associated to the desired year.
+   * @param year The desired year.
+   */
   private void reload(int year) {
-    mLvAdapter.clear();
+    mActivity.runOnUiThread(() -> mLvAdapter.clear());
     Locale locale = getResources().getConfiguration().getLocales().get(0);
-    Calendar ctime = Calendar.getInstance();
-    ctime.setTimeZone(TimeZone.getTimeZone("GMT"));
-    ctime.setFirstDayOfWeek(Calendar.MONDAY);
-    ctime.set(Calendar.YEAR, year);
     for(int i = 0; i < 12; ++i) {
 
       WorkTimeDay total = new WorkTimeDay();
       double pay = 0;
-      ctime.set(Calendar.MONTH, i);
-      ctime.set(Calendar.DAY_OF_MONTH, 1);
-      int maxDay = ctime.getMaximum(Calendar.DATE);
-      for(int day = 1; day <= maxDay; ++day) {
-        ctime.set(Calendar.DAY_OF_MONTH, day);
-        DayEntry de = mMap.get(String.format(Locale.US, "%02d/%02d/%04d", ctime.get(Calendar.DAY_OF_MONTH), ctime.get(Calendar.MONTH) + 1, ctime.get(Calendar.YEAR)));
+      List<DayEntry> days = mApp.getDaysFactory().list(year, i + 1, -1);
+      for(DayEntry de : days) {
         if(de != null && (de.getTypeMorning() == DayType.AT_WORK || de.getTypeAfternoon() == DayType.AT_WORK)) {
           pay += de.getWorkTimePay(mApp.getAmountByHour());
           total.addTime(de.getWorkTime());
@@ -266,7 +264,7 @@ public class ExportFragment extends Fragment implements AdapterView.OnItemSelect
       ee.info = info;
       ee.month = i;
       ee.year = year;
-      mLvAdapter.add(ee);
+      mActivity.runOnUiThread(() -> mLvAdapter.add(ee));
     }
   }
 

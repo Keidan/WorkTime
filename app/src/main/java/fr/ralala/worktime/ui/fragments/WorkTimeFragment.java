@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 import fr.ralala.worktime.ui.activities.DayActivity;
 import fr.ralala.worktime.ui.activities.MainActivity;
@@ -227,6 +226,7 @@ public class WorkTimeFragment extends Fragment implements View.OnClickListener, 
    */
   private void updateDates() {
     mActivity.runOnUiThread(() -> mLvAdapter.clear());
+    List<DayEntry> publicHolidays = mApp.getPublicHolidaysFactory().list();
     int minDay = 1;
     int maxDay = mApp.getCurrentDate().getActualMaximum(Calendar.DAY_OF_MONTH);
     List<DayEntry> wDays = new ArrayList<>();
@@ -238,21 +238,23 @@ public class WorkTimeFragment extends Fragment implements View.OnClickListener, 
     int firstWeek = mApp.getCurrentDate().get(Calendar.WEEK_OF_YEAR);
     WorkTimeDay wtdTotalWorkTime = new WorkTimeDay();
     WorkTimeDay wtdnow = WorkTimeDay.now();
+    List<DayEntry> dbDays = mApp.getDaysFactory().list(+mApp.getCurrentDate().get(Calendar.YEAR), +mApp.getCurrentDate().get(Calendar.MONTH) + 1, -1);
     /* loop for each days in the month */
     for(int day = minDay; day <= maxDay; ++day) {
       mApp.getCurrentDate().set(Calendar.DAY_OF_MONTH, day);
       DayEntry de = new DayEntry(getActivity(), mApp.getCurrentDate(), DayType.ERROR, DayType.ERROR);
       de.setAmountByHour(mApp.getAmountByHour()); /* set default amount */
       /* Force public holiday */
-      if(mApp.getPublicHolidaysFactory().isPublicHolidays(de.getDay())) {
+      boolean isPublicHoliday = mApp.getPublicHolidaysFactory().isPublicHolidays(publicHolidays, de.getDay());
+      if(isPublicHoliday) {
         de.setTypeMorning(DayType.PUBLIC_HOLIDAY);
         de.setTypeAfternoon(DayType.PUBLIC_HOLIDAY);
       }
       int now = mApp.getCurrentDate().get(Calendar.DAY_OF_WEEK);
       /* reload data if the current day is already inserted */
-      mApp.getDaysFactory().checkForDayDateAndCopy(de);
+      mApp.getDaysFactory().checkForDayDateAndCopy(dbDays, de);
       /* count working day */
-      if(now != Calendar.SUNDAY && now != Calendar.SATURDAY && !mApp.getPublicHolidaysFactory().isPublicHolidays(de.getDay())) {
+      if(now != Calendar.SUNDAY && now != Calendar.SATURDAY && !isPublicHoliday) {
         wDays.add(de);
         if(de.getTypeMorning() == DayType.AT_WORK || de.getTypeAfternoon() == DayType.RECOVERY) realwDays += 0.5;
         if(de.getTypeAfternoon() == DayType.AT_WORK || de.getTypeAfternoon() == DayType.RECOVERY) realwDays += 0.5;
@@ -263,10 +265,11 @@ public class WorkTimeFragment extends Fragment implements View.OnClickListener, 
       }
       else if(mApp.getLastFirstVisibleItem() == 0) index++;
     }
-    Map<String, DayEntry> map = mApp.getDaysFactory().toDaysMap();
+
+
     int min = (firstWeek == 52 ? 1 : firstWeek);
     for(int w = min; w <= min + 6; ++w) {
-      WorkTimeDay wtdWorkTimeFromWeek =  mApp.getDaysFactory().getWorkTimeDayFromWeek(map, w, mApp.getCurrentDate().get(Calendar.MONTH), mApp.getCurrentDate().get(Calendar.YEAR));
+      WorkTimeDay wtdWorkTimeFromWeek =  mApp.getDaysFactory().getWorkTimeDayFromWeek(dbDays, w);
       if(wtdWorkTimeFromWeek.isValidTime())
         wtdTotalWorkTime.addTime(wtdWorkTimeFromWeek);
     }

@@ -174,4 +174,6 @@
     <string name="loading">Chargement&#8230;</string>
     <string name="reset_profile">Remise \u00E0 z\u00E9ro</string>
     <string name="confirm_reset_profile">Voulez-vous vraiment remettre \u00E0 z\u00E9ro les apprentissages?</string>
+    <string name="db_unsupported">La version de la base de donn\u00E9es n\'est pas support\u00E9e.</string>
+    <string name="db_updated">La base de donn\u00E9es a \u00E9t\u00E9 mise \u00E0 jour, l\'application va maintenant red\u00E9marrer.</string>
 </resources>

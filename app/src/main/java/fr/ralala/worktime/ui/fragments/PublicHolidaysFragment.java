@@ -17,6 +17,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.List;
+
+import fr.ralala.worktime.ui.activities.MainActivity;
 import fr.ralala.worktime.ui.activities.PublicHolidayActivity;
 import fr.ralala.worktime.MainApplication;
 import fr.ralala.worktime.R;
@@ -37,7 +40,7 @@ import fr.ralala.worktime.ui.utils.UIHelper;
 public class PublicHolidaysFragment extends Fragment implements View.OnClickListener, SwipeEditDeleteRecyclerViewItem.SwipeEditDeleteRecyclerViewItemListener{
   private PublicHolidaysEntriesArrayAdapter mAdapter = null;
   private MainApplication mApp = null;
-  private Activity mActivity;
+  private MainActivity mActivity;
   private RecyclerView mRecyclerView;
 
   /**
@@ -61,24 +64,30 @@ public class PublicHolidaysFragment extends Fragment implements View.OnClickList
   public View onCreateView(@NonNull final LayoutInflater inflater,
                            final ViewGroup container, final Bundle savedInstanceState) {
     final ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_public_holidays, container, false);
-    mActivity = getActivity();
-    if(mActivity == null)
-      return rootView;
+    mActivity = (MainActivity) getActivity();
+    assert mActivity != null;
     FloatingActionButton fab = rootView.findViewById(R.id.fab);
     fab.setOnClickListener(this);
 
-    mApp = MainApplication.getApp(getContext());
+    mApp = MainApplication.getApp(mActivity);
 
     mRecyclerView = rootView.findViewById(R.id.public_holidays);
     mRecyclerView.setHasFixedSize(true);
     RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext());
     mRecyclerView.setLayoutManager(layoutManager);
     mRecyclerView.getRecycledViewPool().clear();
-    mAdapter = new PublicHolidaysEntriesArrayAdapter(mRecyclerView,
-        R.layout.listview_item, mApp.getPublicHolidaysFactory().list());
-    mRecyclerView.setAdapter(mAdapter);
-    mAdapter.safeNotifyDataSetChanged();
     new SwipeEditDeleteRecyclerViewItem(mActivity, mRecyclerView, this);
+    mActivity.progressShow(true);
+    new Thread(() -> {
+      final List<DayEntry> list = mApp.getPublicHolidaysFactory().list();
+      mAdapter = new PublicHolidaysEntriesArrayAdapter(mRecyclerView,
+          R.layout.listview_item, list);
+      mActivity.runOnUiThread(() -> {
+        mRecyclerView.setAdapter(mAdapter);
+        mAdapter.safeNotifyDataSetChanged();
+        mActivity.progressDismiss();
+      });
+    }).start();
     return rootView;
   }
 

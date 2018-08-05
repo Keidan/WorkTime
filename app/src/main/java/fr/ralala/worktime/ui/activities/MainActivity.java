@@ -2,6 +2,7 @@ package fr.ralala.worktime.ui.activities;
 
 
 import android.Manifest;
+import android.content.ComponentCallbacks2;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Process;
@@ -18,6 +19,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
+import android.widget.Toast;
 
 
 import fr.ralala.worktime.MainApplication;
@@ -42,7 +44,7 @@ import fr.ralala.worktime.ui.utils.UIHelper;
  *
  *******************************************************************************
  */
-public class MainActivity extends RuntimePermissionsActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends RuntimePermissionsActivity implements NavigationView.OnNavigationItemSelectedListener, ComponentCallbacks2 {
   private static final int PERMISSIONS_REQUEST = 30;
   private static final int BACK_TIME_DELAY = 2000;
   private static long mLastBackPressed = -1;
@@ -64,6 +66,12 @@ public class MainActivity extends RuntimePermissionsActivity implements Navigati
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
+
+    Intent intent = getIntent();
+    if (intent.getExtras() != null && intent.hasExtra(AndroidHelper.EXTRA_RESTART)) {
+      String msg = intent.getExtras().getString(AndroidHelper.EXTRA_RESTART);
+      UIHelper.toast(this, msg);
+    }
     mProgress = UIHelper.showCircularProgressDialog(this, null);
     Toolbar toolbar = findViewById(R.id.toolbar);
     setSupportActionBar(toolbar);
@@ -151,13 +159,14 @@ public class MainActivity extends RuntimePermissionsActivity implements Navigati
   @Override
   public void onResume() {
     super.onResume();
-    if(mFragments.isWorkTimeFragment() && !mResumeFromActivity)
+    mApp.incResumedCounter();
+    if(mFragments.isRequiresProgress() && !mResumeFromActivity && mApp.getResumedCounter() == 1)
       progressShow(true);
     new Thread(() -> {
      /* load SQL */
       if(!mApp.openSql(this)) finish();
-      if(mApp.isExportAutoSave())
-        mApp.initOnLoadTables();
+      /*if(mApp.isExportAutoSave())
+        mApp.initOnLoadTables();*/
       runOnUiThread(() -> {
         displayView(mFragments.getCurrentFragmentId());
         if(mApp.getLastWidgetOpen() != 0L) {

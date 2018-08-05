@@ -1,6 +1,5 @@
 package fr.ralala.worktime.ui.fragments;
 
-import android.annotation.SuppressLint;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -9,6 +8,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,7 +30,6 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -70,6 +69,7 @@ public class StatisticsFragment extends Fragment implements View.OnClickListener
   private XYMultipleSeriesDataset mDatasetBar = null;
   private GraphicalView mChartView = null;
   private View mRootView = null;
+  private MainActivity mActivity;
 
   private enum CurrentView{
     YEARS,
@@ -113,8 +113,8 @@ public class StatisticsFragment extends Fragment implements View.OnClickListener
       if (mLastBackPressed + BACK_TIME_DELAY > System.currentTimeMillis()) {
         return false;
       } else {
-        UIHelper.toast(getContext(), R.string.on_double_back_back_text);
-        AndroidHelper.vibrate(getContext());
+        UIHelper.toast(mActivity, R.string.on_double_back_back_text);
+        AndroidHelper.vibrate(mActivity);
       }
       mLastBackPressed = System.currentTimeMillis();
     }
@@ -132,13 +132,13 @@ public class StatisticsFragment extends Fragment implements View.OnClickListener
 
   /**
    * Adds a day entry.
-   * @param entries The netries list.
+   * @param entries The entries list.
    * @param key The list key.
    * @param de The current day entry.
    * @param x_label The x label.
    */
-  private void addDayEntry(Map<Integer, ChartEntry> entries, Integer key, DayEntry de, String x_label) {
-    if(!entries.containsKey(key)) {
+  private void addDayEntry(SparseArray<ChartEntry> entries, Integer key, DayEntry de, String x_label) {
+    if (!AndroidHelper.containsKey(entries, key)) {
       entries.put(key, new ChartEntry());
     }
     entries.get(key).work.addTime(de.getWorkTime());
@@ -167,14 +167,14 @@ public class StatisticsFragment extends Fragment implements View.OnClickListener
                            final ViewGroup container, final Bundle savedInstanceState) {
     final ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_statistics, container, false);
     this.mRootView = rootView;
-    final MainActivity activity = (MainActivity)getActivity();
-    if(activity == null) return rootView;
-    mApp = (MainApplication)activity.getApplicationContext();
+    mActivity = (MainActivity)getActivity();
+    assert mActivity != null;
+    mApp = (MainApplication)mActivity.getApplicationContext();
     Button cancel = rootView.findViewById(R.id.cancel);
     cancel.setOnClickListener(this);
     mChartContainer = rootView.findViewById(R.id.graph);
     mMetrics = new DisplayMetrics();
-    getActivity().getWindowManager().getDefaultDisplay().getMetrics(mMetrics);
+    mActivity.getWindowManager().getDefaultDisplay().getMetrics(mMetrics);
     /* uses 80% of the screen */
     mChartContainer.getLayoutParams().height = (int)getPercentOf(mMetrics.heightPixels, 85);
     redrawChart();
@@ -207,80 +207,90 @@ public class StatisticsFragment extends Fragment implements View.OnClickListener
    */
   public void redrawChart() {
     String title = null;
-    int nYear = 0;
-    int nMonth;
-    int nWeek;
-    int nDay;
-    @SuppressLint("UseSparseArrays") Map<Integer, ChartEntry> entries = new HashMap<>();
 
-    Map<Integer, Map<Integer, Map<Integer, List<DayEntry>>>> years = mApp.getDaysFactory().getDays();
-    SortedSet<Integer> keysYears = new TreeSet<>(years.keySet());
     if(mCurrentView == CurrentView.YEARS)
       mRootView.findViewById(R.id.cancel).setVisibility(View.GONE);
     else
       mRootView.findViewById(R.id.cancel).setVisibility(View.VISIBLE);
+    SparseArray<ChartEntry> entries = new SparseArray<>();
 
-    for (Integer year : keysYears) {
+    List<Integer> years = mApp.getDaysFactory().getYears();
+    for(int nYear = 0; nYear < years.size(); nYear++) {
+      Integer year = years.get(nYear);
       if(mCurrentView == CurrentView.YEARS || mCurrentYearIndex == nYear) {
-        if(mCurrentView != CurrentView.YEARS) title = ""+year;
-        Map<Integer, Map<Integer, List<DayEntry>>> months = years.get(year);
-        SortedSet<Integer> keysMonths = new TreeSet<>(months.keySet());
-        nMonth = 0;
-        for (Integer month : keysMonths) {
+        if (mCurrentView != CurrentView.YEARS) title = "" + year;
+        List<Integer> months = mApp.getDaysFactory().getMonths(year);
+        for(int nMonth = 0; nMonth < months.size(); nMonth++) {
+          Integer month = months.get(nMonth);
           if(mCurrentView == CurrentView.YEARS || mCurrentView == CurrentView.MONTHS || mCurrentMonthIndex == nMonth) {
-            Map<Integer, List<DayEntry>> weeks = months.get(month);
+            Map<Integer, List<DayEntry>> weeks = mApp.getDaysFactory().getWeeksAndDays(year, month);
             SortedSet<Integer> keysWeeks = new TreeSet<>(weeks.keySet());
-            nWeek = 0;
+            int nWeek = 0;
             for (Integer week : keysWeeks) {
               if(mCurrentView == CurrentView.YEARS || mCurrentView == CurrentView.MONTHS || mCurrentView == CurrentView.WEEKS || mCurrentWeekIndex == nWeek) {
                 List<DayEntry> days = weeks.get(week);
-                nDay = 0;
-                for (DayEntry de : days) {
-                  int day = de.getDay().getDay();
-                  if (mCurrentView == CurrentView.YEARS || mCurrentView == CurrentView.MONTHS || mCurrentView == CurrentView.WEEKS || mCurrentView == CurrentView.DAYS || mCurrentDayIndex == nDay) {
-                    if ((de.getTypeMorning() == DayType.PUBLIC_HOLIDAY && de.getTypeAfternoon() == DayType.PUBLIC_HOLIDAY) || (de.getTypeMorning() == DayType.HOLIDAY && de.getTypeAfternoon() == DayType.HOLIDAY))
-                      continue;
-                    if(!de.isValidMorningType() && !de.isValidAfternoonType())
-                      continue;
-                    Integer e = 0;
-                    String x_label = "";
-                    if (mCurrentView == CurrentView.YEARS) {
-                      e = year;
-                      x_label = "" + e;
-                    } else if (mCurrentView == CurrentView.MONTHS) {
-                      e = month;
-                      x_label = getResources().getStringArray(R.array.month_letter)[e - 1];
-                      title = String.format(Locale.US, "%d", year);
-                    } else if (mCurrentView == CurrentView.WEEKS) {
-                      e = week;
-                      x_label = getString(R.string.week_letter) + " " + e;
-                      title = String.format(Locale.US, "%d %s", year, getResources().getStringArray(R.array.month_short)[month - 1]);
-                    } else if (mCurrentView == CurrentView.DAYS) {
-                      e = de.getDay().toCalendar().get(Calendar.DAY_OF_WEEK) - 1;
-                      x_label = getResources().getStringArray(R.array.days_letter)[e - 1] + " " + de.getDay().getDay();
-                      title = String.format(Locale.US, "%d %s %s %d", year, getResources().getStringArray(R.array.month_short)[month - 1], getString(R.string.week), week);
-                    } else if (mCurrentView == CurrentView.DETAIL) {
-                      e = day;
-                      title = String.format(Locale.US, "%d %s %d (%s %d)", day, getResources().getStringArray(R.array.month_short)[month - 1], year, getString(R.string.week), week);
-                    }
-                    addDayEntry(entries, e, de, x_label);
-                  }
-                  nDay++;
+                for (int nDay = 0; nDay < days.size(); nDay++) {
+                  DayEntry de = days.get(nDay);
+                  String s = parseDay(de, nDay, year, month, week, entries);
+                  if(s != null)
+                    title = s;
                 }
               }
               nWeek++;
             }
           }
-          nMonth++;
         }
       }
-      nYear++;
     }
     if((mCurrentView != CurrentView.DETAIL))
       drawBarChart(mMetrics.widthPixels, title, getString(R.string.statistics_hours), entries);
     else
       drawPieChart(title, entries);
 
+  }
+
+  /**
+   * Parse a day an adds the entry to the list.
+   * @param de The current DayEntry.
+   * @param nDay The current day index.
+   * @param year The current year.
+   * @param month The current month.
+   * @param week The current week.
+   * @param entries The entries list.
+   * @return The title (or null).
+   */
+  private String parseDay(DayEntry de, int nDay, int year, int month, int week, SparseArray<ChartEntry> entries) {
+    String title = null;
+    int day = de.getDay().getDay();
+    if (mCurrentView == CurrentView.YEARS || mCurrentView == CurrentView.MONTHS || mCurrentView == CurrentView.WEEKS || mCurrentView == CurrentView.DAYS || mCurrentDayIndex == nDay) {
+      if ((de.getTypeMorning() == DayType.PUBLIC_HOLIDAY && de.getTypeAfternoon() == DayType.PUBLIC_HOLIDAY) || (de.getTypeMorning() == DayType.HOLIDAY && de.getTypeAfternoon() == DayType.HOLIDAY))
+        return null;
+      if (!de.isValidMorningType() && !de.isValidAfternoonType())
+        return null;
+      Integer e = 0;
+      String x_label = "";
+      if (mCurrentView == CurrentView.YEARS) {
+        e = year;
+        x_label = "" + e;
+      } else if (mCurrentView == CurrentView.MONTHS) {
+        e = month;
+        x_label = getResources().getStringArray(R.array.month_letter)[e - 1];
+        title = String.format(Locale.US, "%d", year);
+      } else if (mCurrentView == CurrentView.WEEKS) {
+        e = week;
+        x_label = getString(R.string.week_letter) + " " + e;
+        title = String.format(Locale.US, "%d %s", year, getResources().getStringArray(R.array.month_short)[month - 1]);
+      } else if (mCurrentView == CurrentView.DAYS) {
+        e = de.getDay().toCalendar().get(Calendar.DAY_OF_WEEK) - 1;
+        x_label = getResources().getStringArray(R.array.days_letter)[e - 1] + " " + de.getDay().getDay();
+        title = String.format(Locale.US, "%d %s %s %d", year, getResources().getStringArray(R.array.month_short)[month - 1], getString(R.string.week), week);
+      } else if (mCurrentView == CurrentView.DETAIL) {
+        e = day;
+        title = String.format(Locale.US, "%d %s %d (%s %d)", day, getResources().getStringArray(R.array.month_short)[month - 1], year, getString(R.string.week), week);
+      }
+      addDayEntry(entries, e, de, x_label);
+    }
+    return title;
   }
 
   /**
@@ -317,9 +327,7 @@ public class StatisticsFragment extends Fragment implements View.OnClickListener
    * @param legendHours Legend used for the hours.
    */
   private void initMultiRender(final String title, final String legendHours) {
-    final MainActivity activity = (MainActivity)getActivity();
-    if(activity == null) return;
-    int defaultColor = getResources().getColor(R.color.half_black, activity.getTheme());
+    int defaultColor = getResources().getColor(R.color.half_black, mActivity.getTheme());
     if(mMultiRenderer != null) {
       mMultiRenderer.clearXTextLabels();
       mMultiRenderer.clearYTextLabels();
@@ -388,26 +396,24 @@ public class StatisticsFragment extends Fragment implements View.OnClickListener
    * @param legendHours Legend for the hours.
    * @param values Bars value.
    */
-  private void drawBarChart(final int width, final String title, final String legendHours, final @NonNull Map<Integer, ChartEntry> values) {
+  private void drawBarChart(final int width, final String title, final String legendHours, final @NonNull SparseArray<ChartEntry> values) {
     if(mDatasetBar != null)
       mDatasetBar.clear();
     initMultiRender(title, legendHours);
 
     mDatasetBar = new XYMultipleSeriesDataset();
 
-    SortedSet<Integer> keys = new TreeSet<>(values.keySet());
+    SortedSet<Integer> keys = toSortedSet(values);
     //setting max values to be display in x axis
     mMultiRenderer.setXAxisMax(keys.size() + 1);
     mMultiRenderer.setBarWidth((int) getPercentOf(width / mMultiRenderer.getXAxisMax(), 35));
     int i = 1;
     double max = 0.0, min = Double.MAX_VALUE;
 
-    final MainActivity activity = (MainActivity)getActivity();
-    if(activity == null) return;
-    int defaultColor = getResources().getColor(R.color.half_black, activity.getTheme());
-    int cunder = getResources().getColor(R.color.color_under, activity.getTheme());
-    int cover = getResources().getColor(R.color.color_over, activity.getTheme());
-    int cwork = getResources().getColor(R.color.color_work, activity.getTheme());
+    int defaultColor = getResources().getColor(R.color.half_black, mActivity.getTheme());
+    int cunder = getResources().getColor(R.color.color_under, mActivity.getTheme());
+    int cover = getResources().getColor(R.color.color_over, mActivity.getTheme());
+    int cwork = getResources().getColor(R.color.color_work, mActivity.getTheme());
     int seriesIdx = 0;
     List<AnnotationEntry> annotations = new ArrayList<>();
     for (Integer key : keys) {
@@ -454,7 +460,7 @@ public class StatisticsFragment extends Fragment implements View.OnClickListener
       i++;
     }
 
-    int orientation = getActivity().getResources().getConfiguration().orientation;
+    int orientation = mActivity.getResources().getConfiguration().orientation;
     int offsetPercent = orientation == Configuration.ORIENTATION_PORTRAIT ? 3 : 6;
     for (AnnotationEntry ae : annotations) {
       mDatasetBar.getSeriesAt(ae.idx).addAnnotation(ae.annotation, ae.x, ae.y + getPercentOf(max, offsetPercent));
@@ -468,7 +474,7 @@ public class StatisticsFragment extends Fragment implements View.OnClickListener
       mMultiRenderer.setYAxisMin(min - getPercentOf(min, 10));
 
     BarChart bchart = new BarChart(mDatasetBar, mMultiRenderer, BarChart.Type.STACKED);
-    mChartView = new GraphicalView(getContext(), bchart);
+    mChartView = new GraphicalView(mActivity, bchart);
 
     mMultiRenderer.setSelectableBuffer(100);
     mChartView.setOnClickListener((v) -> {
@@ -503,15 +509,13 @@ public class StatisticsFragment extends Fragment implements View.OnClickListener
    * @param title Chart title.
    * @param values Pie values.
    */
-  private void drawPieChart(final String title, final @NonNull Map<Integer, ChartEntry> values) {
+  private void drawPieChart(final String title, final @NonNull SparseArray<ChartEntry> values) {
     initMultiRender(title, null);
     final CategorySeries dataset = new CategorySeries("title");
-    SortedSet<Integer> keys = new TreeSet<>(values.keySet());
-    final MainActivity activity = (MainActivity)getActivity();
-    if(activity == null) return;
-    int cm = getResources().getColor(R.color.color_morning, activity.getTheme());
-    int ca = getResources().getColor(R.color.color_afternoon, activity.getTheme());
-    int cp = getResources().getColor(R.color.color_pause, activity.getTheme());
+    SortedSet<Integer> keys = toSortedSet(values);
+    int cm = getResources().getColor(R.color.color_morning, mActivity.getTheme());
+    int ca = getResources().getColor(R.color.color_afternoon, mActivity.getTheme());
+    int cp = getResources().getColor(R.color.color_pause, mActivity.getTheme());
     final String [] titles = new String[3];
     for (Integer key : keys) {
       int i = 0;
@@ -524,7 +528,7 @@ public class StatisticsFragment extends Fragment implements View.OnClickListener
       addPieChartEntry(dataset, ca, getString(R.string.statistics_afternoon), toDouble(ce.afternoon));
     }
     PieChart pchart = new PieChart(dataset, mMultiRenderer);
-    mChartView = new GraphicalView(getContext(), pchart);
+    mChartView = new GraphicalView(mActivity, pchart);
     mMultiRenderer.setSelectableBuffer(3);
     mChartView.setOnClickListener((v) -> {
       // handle the click event on the chart
@@ -593,6 +597,18 @@ public class StatisticsFragment extends Fragment implements View.OnClickListener
     renderer.setChartValuesFormat(NumberFormat.getPercentInstance());// Setting percentage
     mMultiRenderer.setChartTitleTextSize(30);
     mMultiRenderer.addSeriesRenderer(renderer);
+  }
+
+  /**
+   * Converts entries keys to SortedSet
+   * @param entries The entries.
+   * @return SortedSet<Integer>
+   */
+  private SortedSet<Integer> toSortedSet(SparseArray<ChartEntry> entries) {
+    SortedSet<Integer> keys = new TreeSet<>();
+    for(int i = 0; i < entries.size(); i++)
+      keys.add(entries.keyAt(i));
+    return keys;
   }
 
 }

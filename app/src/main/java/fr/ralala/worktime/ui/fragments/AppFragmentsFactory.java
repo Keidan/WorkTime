@@ -31,9 +31,9 @@ public class AppFragmentsFactory {
   private Fragment mExportFragment = null;
   private Fragment mWorkTimeFragment = null;
   private Fragment mStatisticsFragment = null;
-  private Fragment mCurrentFragment = null;
-  private MainApplication mApp = null;
-  private NavigationView mNavigationView = null;
+  private Fragment mCurrentFragment;
+  private MainApplication mApp;
+  private NavigationView mNavigationView;
 
   /**
    * Creates the fragments factory.
@@ -59,11 +59,15 @@ public class AppFragmentsFactory {
   }
 
   /**
-   * Tests if the current fragment is equal to WorkTimeFragment
+   * Tests whether the current fragment requires the progress dialog.
    * @return boolean
    */
-  public boolean isWorkTimeFragment() {
-    return mCurrentFragment != null && mCurrentFragment.equals(mWorkTimeFragment);
+  public boolean isRequiresProgress() {
+    return mCurrentFragment != null &&
+        (mCurrentFragment.equals(mWorkTimeFragment) ||
+          mCurrentFragment.equals(mProfileFragment) ||
+            mCurrentFragment.equals(mPublicHolidaysFragment) ||
+            mCurrentFragment.equals(mExportFragment));
   }
 
   /**

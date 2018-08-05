@@ -185,4 +185,6 @@
     <string name="loading">Loading&#8230;</string>
     <string name="reset_profile">Reset</string>
     <string name="confirm_reset_profile">Do you really want to reset learnings?</string>
+    <string name="db_unsupported">The database version is not supported.</string>
+    <string name="db_updated">The database has been updated, the application will now restart.</string>
 </resources>
