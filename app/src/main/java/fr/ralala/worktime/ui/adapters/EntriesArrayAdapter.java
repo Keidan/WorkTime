@@ -1,5 +1,6 @@
 package fr.ralala.worktime.ui.adapters;
 
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -23,8 +24,8 @@ import fr.ralala.worktime.models.DayEntry;
  */
 public abstract class EntriesArrayAdapter extends RecyclerView.Adapter<EntriesArrayAdapter.ViewHolder>{
 
-  private int mId = 0;
-  private List<DayEntry> mItems = null;
+  private int mId;
+  private List<DayEntry> mItems;
   private RecyclerView mRecyclerView;
 
   /**
@@ -33,7 +34,7 @@ public abstract class EntriesArrayAdapter extends RecyclerView.Adapter<EntriesAr
    * @param rowResourceId The resource id of the container.
    * @param objects The objects list.
    */
-  public EntriesArrayAdapter(RecyclerView recyclerView, final int rowResourceId,
+  EntriesArrayAdapter(RecyclerView recyclerView, final int rowResourceId,
                                      final List<DayEntry> objects) {
     mRecyclerView = recyclerView;
     mId = rowResourceId;
@@ -56,7 +57,7 @@ public abstract class EntriesArrayAdapter extends RecyclerView.Adapter<EntriesAr
    * @return ViewHolder
    */
   @Override
-  public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
+  public @NonNull ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
     View view = LayoutInflater.from(viewGroup.getContext()).inflate(mId, viewGroup, false);
     return new ViewHolder(view);
   }
@@ -74,7 +75,7 @@ public abstract class EntriesArrayAdapter extends RecyclerView.Adapter<EntriesAr
    * @param i The position.
    */
   @Override
-  public void onBindViewHolder(ViewHolder viewHolder, int i) {
+  public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
     if(mItems.isEmpty()) return;
     if(i > mItems.size())
       i = 0;

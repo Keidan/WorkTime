@@ -29,9 +29,10 @@ import android.webkit.WebView;
  * see: http://code.google.com/p/android-change-log/
  */
 public class ChangeLog {
-  private ChangeLogIds        mIds         = null;
-  private final Context       mContext;
-  private String              mLastVersion, mThisVersion;
+  private ChangeLogIds mIds = null;
+  private final Context mContext;
+  private String mLastVersion;
+  private String mThisVersion;
 
   // this is the key for storing the version name in SharedPreferences
   private static final String VERSION_KEY = "PREFS_VERSION_KEY";

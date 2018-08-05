@@ -22,7 +22,7 @@ import fr.ralala.worktime.models.DayEntry;
  */
 public class ProfilesEntriesArrayAdapter  extends EntriesArrayAdapter {
 
-  private Context mContext = null;
+  private Context mContext;
 
   /**
    * Creates the array adapter.

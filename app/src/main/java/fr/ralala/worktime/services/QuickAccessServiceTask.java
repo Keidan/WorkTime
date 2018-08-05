@@ -19,9 +19,9 @@ import fr.ralala.worktime.models.WorkTimeDay;
  *******************************************************************************
  */
 public class QuickAccessServiceTask extends TimerTask{
-  private MainApplication mApp = null;
+  private MainApplication mApp;
   private int mSeconds = 0;
-  private String mTextLabel = "";
+  private String mTextLabel;
   private boolean mNeg = false;
 
   /**

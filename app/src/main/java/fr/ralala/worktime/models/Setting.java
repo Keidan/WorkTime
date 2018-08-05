@@ -11,8 +11,8 @@ package fr.ralala.worktime.models;
  *******************************************************************************
  */
 public class Setting {
-  private String mName = null;
-  private String mValue = null;
+  private String mName;
+  private String mValue;
 
   /**
    * Creates a setting instance.

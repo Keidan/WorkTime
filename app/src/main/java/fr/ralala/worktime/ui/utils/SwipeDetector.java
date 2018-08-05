@@ -18,7 +18,7 @@ public class SwipeDetector implements GestureDetector.OnGestureListener{
   private static final int SWIPE_MIN_DISTANCE = 120;
   private static final int SWIPE_MAX_OFF_PATH = 250;
   private static final int SWIPE_THRESHOLD_VELOCITY = 200;
-  private GestureDetector mDetector = null;
+  private GestureDetector mDetector;
   private SwipeDetectorListener mLi = null;
 
   /**

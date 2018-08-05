@@ -316,15 +316,6 @@ public class UIHelper {
    * @param c The Android context.
    * @param message The toast message.
    */
-  public static void toastLong(final Context c, final int message) {
-    toast(c, c.getResources().getString(message), Toast.LENGTH_LONG);
-  }
-
-  /**
-   * Displays a long toast.
-   * @param c The Android context.
-   * @param message The toast message.
-   */
   public static void toastLong(final Context c, final String message) {
     toast(c, message, Toast.LENGTH_LONG);
   }

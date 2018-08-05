@@ -21,9 +21,9 @@ import fr.ralala.worktime.ui.activities.MainActivity;
  */
 public class QuickAccessNotification {
   private NotificationCompat.Builder mNfyBuilder = null;
-  private int mNfyId = 1;
+  private int mNfyId;
   private Notification mNfy = null;
-  private Context mContext = null;
+  private Context mContext;
   private boolean mVisible = false;
 
   /**

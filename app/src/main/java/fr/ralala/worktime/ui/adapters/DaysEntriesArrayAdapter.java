@@ -35,9 +35,9 @@ import fr.ralala.worktime.ui.utils.UIHelper;
  */
 public class DaysEntriesArrayAdapter extends ArrayAdapter<DayEntry> {
 
-  private Context mContext = null;
-  private int mId = 0;
-  private List<DayEntry> mItems = null;
+  private Context mContext;
+  private int mId;
+  private List<DayEntry> mItems;
 
   private class ViewHolder {
     LinearLayout llDay = null;
@@ -237,10 +237,8 @@ public class DaysEntriesArrayAdapter extends ArrayAdapter<DayEntry> {
             holder.tvOver.setGravity(Gravity.END);
             if (overtime < 0) {
               holder.tvOver.setTextColor(mContext.getResources().getColor(R.color.over_neg, null));
-            } else if (overtime > 0) {
-              holder.tvOver.setTextColor(mContext.getResources().getColor(R.color.over_pos, null));
             } else {
-              holder.tvOver.setTextColor(holder.tvOverColors);
+              holder.tvOver.setTextColor(mContext.getResources().getColor(R.color.over_pos, null));
             }
             holder.tvOver.setText(wtd.timeString());
           }

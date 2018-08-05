@@ -520,7 +520,7 @@ public class DayEntry {
    * Returns the legal work time value adjusted with the recovery time.
    * @return WorkTimeDay
    */
-  public WorkTimeDay getRealLegalWorktimeMS() {
+  private WorkTimeDay getRealLegalWorktimeMS() {
     WorkTimeDay wmLegal = getLegalWorktime();
     WorkTimeDay wm = new WorkTimeDay();
     if(!wmLegal.timeString().equals("00:00"))

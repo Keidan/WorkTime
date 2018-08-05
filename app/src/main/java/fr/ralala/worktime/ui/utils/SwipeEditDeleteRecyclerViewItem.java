@@ -35,7 +35,7 @@ public class SwipeEditDeleteRecyclerViewItem extends ItemTouchHelper.SimpleCallb
   private RectF mBackgroundEdit = null;
   private RectF mBackgroundDelete = null;
   private int mAdapterPosition = -1;
-  private RecyclerView mRecyclerView = null;
+  private RecyclerView mRecyclerView;
 
   public SwipeEditDeleteRecyclerViewItem(Activity activity, RecyclerView recyclerView, SwipeEditDeleteRecyclerViewItemListener listener) {
     super(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT);

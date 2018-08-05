@@ -10,12 +10,12 @@ package fr.ralala.worktime.ui.changelog;
  *******************************************************************************
  */
 public class ChangeLogIds {
-  private int mStringBackgroundColor    = 0;
-  private int mStringChangelogTitle     = 0;
-  private int mStringChangelogFullTitle = 0;
-  private int mStringChangelogShowFull  = 0;
-  private int mStringChangelogOkButton  = 0;
-  private int mRawChangelog             = 0;
+  private int mStringBackgroundColor;
+  private int mStringChangelogTitle;
+  private int mStringChangelogFullTitle;
+  private int mStringChangelogShowFull;
+  private int mStringChangelogOkButton;
+  private int mRawChangelog;
 
   public ChangeLogIds(final int rawChangelog, final int stringChangelogOkButton, final int stringBackgroundColor,
       final int stringChangelogTitle, final int stringChangelogFullTitle,

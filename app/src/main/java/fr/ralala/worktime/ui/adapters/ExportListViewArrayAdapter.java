@@ -28,9 +28,9 @@ import fr.ralala.worktime.R;
  */
 public class ExportListViewArrayAdapter extends ArrayAdapter<ExportListViewArrayAdapter.ExportEntry>  {
 
-  private Context mContext = null;
-  private int mId = 0;
-  private List<ExportEntry> mItems = null;
+  private Context mContext;
+  private int mId;
+  private List<ExportEntry> mItems;
   private SparseBooleanArray mSparseBooleanArray;
 
   private class ViewHolder {
