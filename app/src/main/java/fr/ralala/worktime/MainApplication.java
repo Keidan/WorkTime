@@ -74,6 +74,13 @@ public class MainApplication extends Application  {
     // Register for activity state changes notifications
     Class<?>[] classes = new Class<?>[] { MainActivity.class, DayActivity.class };
     registerActivityLifecycleCallbacks(mLifeCycle = new MyActivityLifecycleCallbacks(Arrays.asList(classes)));
+    reloadDatabaseMD5();
+  }
+
+  /**
+   * Reloads the database MD5.
+   */
+  public void reloadDatabaseMD5() {
     if(isExportAutoSave())
       mDbMD5 = SqlHelper.getDatabaseMD5(this);
   }

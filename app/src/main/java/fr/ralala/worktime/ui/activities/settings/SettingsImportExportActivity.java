@@ -104,6 +104,7 @@ public class SettingsImportExportActivity extends PreferenceActivity implements 
   public boolean onPreferenceClick(final Preference preference) {
     if (preference.equals(mPrefFrag.findPreference(PREFS_KEY_EXPORT_TO_DROPBOX))) {
       DropboxAutoExportService.setNeedUpdate(mApp, false);
+      mApp.reloadDatabaseMD5();
       mApp.getDropboxImportExport().exportDatabase(this, true, null);
     } else if (preference.equals(mPrefFrag.findPreference(PREFS_KEY_IMPORT_FROM_DROPBOX))) {
       mApp.getDropboxImportExport().importDatabase(this);
