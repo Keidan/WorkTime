@@ -7,6 +7,7 @@ import java.util.Calendar;
 
 import fr.ralala.worktime.MainApplication;
 import fr.ralala.worktime.R;
+import fr.ralala.worktime.sql.SqlConstants;
 
 /**
  *******************************************************************************
@@ -18,7 +19,6 @@ import fr.ralala.worktime.R;
  *******************************************************************************
  */
 public class DayEntry {
-  private String mName = "";
   private WorkTimeDay mDay = null;
   private WorkTimeDay mStartMorning = null;
   private WorkTimeDay mEndMorning = null;
@@ -29,10 +29,9 @@ public class DayEntry {
   private DayType mTypeMorning = DayType.ERROR;
   private DayType mTypeAfternoon = DayType.ERROR;
   private double mAmountByHour = 0.0;
-  private int mLearningWeight = 0;
-  private boolean mRecurrence = false;
   private WorkTimeDay mLegalWorktime = null;
   private MainApplication mApp = null;
+  private long mId = SqlConstants.INVALID_ID;
 
   /**
    * Tests if an object is equal to this instance.
@@ -45,27 +44,19 @@ public class DayEntry {
     if (this == o)
       return true;
     DayEntry de = (DayEntry)o;
-    if(mName != null || de.mName != null) {
-      if(mName != null && de.mName != null && mName.compareTo(de.mName) != 0)
-        return false;
-      else if((mName == null && de.mName != null) || (mName != null && de.mName == null))
-        return false;
-    }
     return (mDay.match(de.mDay) && mStartMorning.match(de.mStartMorning)
       && mEndMorning.match(de.mEndMorning)&& mAdditionalBreak.match(de.mAdditionalBreak)&& mRecoveryTime.match(de.mRecoveryTime) && mStartAfternoon.match(de.mStartAfternoon)
       && mEndAfternoon.match(de.mEndAfternoon)&& mLegalWorktime.match(de.mLegalWorktime) && mTypeMorning == de.mTypeMorning
-      && mTypeAfternoon == de.mTypeAfternoon && mAmountByHour == de.mAmountByHour
-      && mLearningWeight == de.mLearningWeight&& mRecurrence == de.mRecurrence);
+      && mTypeAfternoon == de.mTypeAfternoon && mAmountByHour == de.mAmountByHour);
   }
 
   /**
    * Constructs a new day entry.
-   * @param c The Android context.
    * @param day Associated day.
    * @param typeMorning Type of morning.
    * @param typeAfternoon Type of afternoon.
    */
-  public DayEntry(final Context c, final WorkTimeDay day, final DayType typeMorning, final DayType typeAfternoon) {
+  public DayEntry(final WorkTimeDay day, final DayType typeMorning, final DayType typeAfternoon) {
     mDay = new WorkTimeDay();
     mStartMorning = new WorkTimeDay();
     mEndMorning = new WorkTimeDay();
@@ -75,20 +66,35 @@ public class DayEntry {
     mEndAfternoon = new WorkTimeDay();
     mTypeMorning = typeMorning;
     mTypeAfternoon = typeAfternoon;
-    mApp = MainApplication.getApp(c);
+    mApp = MainApplication.getInstance();
     mLegalWorktime = mApp.getLegalWorkTimeByDay();
     mDay.copy(day);
   }
 
   /**
    * Constructs a new day entry.
-   * @param c The Android context.
    * @param day Associated day.
    * @param typeMorning Type of morning.
    * @param typeAfternoon Type of afternoon.
    */
-  public DayEntry(final Context c, final Calendar day, final DayType typeMorning, final DayType typeAfternoon) {
-    this(c, new WorkTimeDay().fromCalendar(day), typeMorning, typeAfternoon);
+  public DayEntry(final Calendar day, final DayType typeMorning, final DayType typeAfternoon) {
+    this(new WorkTimeDay().fromCalendar(day), typeMorning, typeAfternoon);
+  }
+
+  /**
+   * Sets the DB id.
+   * @param id The new ID.
+   */
+  public void setID(long id) {
+    mId = id;
+  }
+
+  /**
+   * Returns the DB id.
+   * @return long
+   */
+  public long getID() {
+    return mId;
   }
 
   /**
@@ -173,10 +179,8 @@ public class DayEntry {
    * @param de The object to copy.
    */
   public void copy(DayEntry de) {
-    mLearningWeight = de.mLearningWeight;
     mTypeMorning = de.mTypeMorning;
     mTypeAfternoon = de.mTypeAfternoon;
-    mName = de.mName;
     mDay.copy(de.mDay);
     mStartMorning.copy(de.mStartMorning);
     mEndMorning.copy(de.mEndMorning);
@@ -185,7 +189,6 @@ public class DayEntry {
     mStartAfternoon.copy(de.mStartAfternoon);
     mEndAfternoon.copy(de.mEndAfternoon);
     mAmountByHour = de.mAmountByHour;
-    mRecurrence = de.mRecurrence;
     mLegalWorktime = de.mLegalWorktime;
   }
 
@@ -196,7 +199,7 @@ public class DayEntry {
    * @return boolean
    */
   public boolean match(DayEntry de, boolean testName) {
-    return !(testName && !mName.equals(de.mName)) && mDay.match(de.mDay) &&
+    return !(testName) && mDay.match(de.mDay) &&
         mStartMorning.match(de.mStartMorning) && mEndMorning.match(de.mEndMorning) &&
         mAdditionalBreak.match(de.mAdditionalBreak) && mRecoveryTime.match(de.mRecoveryTime) && mStartAfternoon.match(de.mStartAfternoon) &&
         mEndAfternoon.match(de.mEndAfternoon) && mTypeMorning == de.mTypeMorning && mTypeAfternoon ==
@@ -209,11 +212,7 @@ public class DayEntry {
    * @return boolean
    */
   public boolean matchSimpleDate(WorkTimeDay current) {
-    boolean ret = (current.getMonth() == mDay.getMonth() && current.getDay() == mDay.getDay());
-    /* simple holidays can change between each years */
-    if(!isRecurrence() && ret)
-      return current.getYear() == mDay.getYear();
-    return ret;
+    return (current.getMonth() == mDay.getMonth() && current.getDay() == mDay.getDay() && current.getYear() == mDay.getYear());
   }
 
   /**
@@ -442,22 +441,6 @@ public class DayEntry {
   }
 
   /**
-   * Returns the name (if used with profile or public holidays.
-   * @return String
-   */
-  public String getName() {
-    return mName;
-  }
-
-  /**
-   * Sets the name (if used with profile or public holidays)
-   * @param name The new value.
-   */
-  public void setName(String name) {
-    mName = name;
-  }
-
-  /**
    * Returns the amount by hour.
    * @return double
    */
@@ -473,37 +456,6 @@ public class DayEntry {
     mAmountByHour = amountByHour;
   }
 
-  /**
-   * Returns the learning weight.
-   * @return int
-   */
-  public int getLearningWeight() {
-    return mLearningWeight;
-  }
-
-  /**
-   * Sets the learning weight.
-   * @param learningWeight The new value.
-   */
-  public void setLearningWeight(int learningWeight) {
-    mLearningWeight = learningWeight;
-  }
-
-  /**
-   * Tests if the recurrence state is enabled.
-   * @return boolean
-   */
-  public boolean isRecurrence() {
-    return mRecurrence;
-  }
-
-  /**
-   * Sets the recurrence state.
-   * @param recurrence The new state.
-   */
-  public void setRecurrence(boolean recurrence) {
-    mRecurrence = recurrence;
-  }
 
   /**
    * Returns the legal work time value.

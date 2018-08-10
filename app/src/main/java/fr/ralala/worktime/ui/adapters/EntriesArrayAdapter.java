@@ -6,11 +6,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.List;
 import fr.ralala.worktime.R;
-import fr.ralala.worktime.models.DayEntry;
+import fr.ralala.worktime.models.ProfileEntry;
 
 /**
  * ******************************************************************************
@@ -22,11 +23,18 @@ import fr.ralala.worktime.models.DayEntry;
  *         <p>
  *******************************************************************************
  */
-public abstract class EntriesArrayAdapter extends RecyclerView.Adapter<EntriesArrayAdapter.ViewHolder>{
-
+public abstract class EntriesArrayAdapter<T> extends RecyclerView.Adapter<EntriesArrayAdapter.ViewHolder>{
+  public interface OnLongPressListener<T> {
+    /**
+     * Called when a long click is captured.
+     * @param t The associated item.
+     */
+    void onLongPressListener(@NonNull T t);
+  }
   private int mId;
-  private List<DayEntry> mItems;
+  private List<T> mItems;
   private RecyclerView mRecyclerView;
+  private OnLongPressListener<T> mOnLongPressListener;
 
   /**
    * Creates the array adapter.
@@ -35,7 +43,7 @@ public abstract class EntriesArrayAdapter extends RecyclerView.Adapter<EntriesAr
    * @param objects The objects list.
    */
   EntriesArrayAdapter(RecyclerView recyclerView, final int rowResourceId,
-                                     final List<DayEntry> objects) {
+                                     final List<T> objects) {
     mRecyclerView = recyclerView;
     mId = rowResourceId;
     mItems = objects;
@@ -44,10 +52,18 @@ public abstract class EntriesArrayAdapter extends RecyclerView.Adapter<EntriesAr
   /**
    * Returns an item.
    * @param position Item position.
-   * @return DayEntry
+   * @return T
    */
-  public DayEntry getItem(int position) {
+  public T getItem(int position) {
     return mItems.get(position);
+  }
+
+  /**
+   * Sets OnLongPressListener.
+   * @param listener New Listener.
+   */
+  public void setOnLongPressListener(OnLongPressListener<T> listener) {
+    mOnLongPressListener = listener;
   }
 
   /**
@@ -57,7 +73,7 @@ public abstract class EntriesArrayAdapter extends RecyclerView.Adapter<EntriesAr
    * @return ViewHolder
    */
   @Override
-  public @NonNull ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
+  public @NonNull EntriesArrayAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
     View view = LayoutInflater.from(viewGroup.getContext()).inflate(mId, viewGroup, false);
     return new ViewHolder(view);
   }
@@ -65,9 +81,9 @@ public abstract class EntriesArrayAdapter extends RecyclerView.Adapter<EntriesAr
   /**
    * Called on Binding the view holder.
    * @param viewHolder The view holder.
-   * @param de The associated item.
+   * @param t The associated item.
    */
-  public abstract void onBindViewHolder(ViewHolder viewHolder, DayEntry de);
+  public abstract void onBindViewHolderEntry(EntriesArrayAdapter.ViewHolder viewHolder, T t);
 
   /**
    * Called on Binding the view holder.
@@ -75,13 +91,18 @@ public abstract class EntriesArrayAdapter extends RecyclerView.Adapter<EntriesAr
    * @param i The position.
    */
   @Override
-  public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
+  public void onBindViewHolder(@NonNull EntriesArrayAdapter.ViewHolder viewHolder, int i) {
     if(mItems.isEmpty()) return;
     if(i > mItems.size())
       i = 0;
-    final DayEntry t = mItems.get(i);
+    final T t = mItems.get(i);
     if (t != null) {
-      onBindViewHolder(viewHolder, t);
+      if(viewHolder.rl != null && mOnLongPressListener != null)
+        viewHolder.rl.setOnLongClickListener((v) -> {
+          mOnLongPressListener.onLongPressListener(t);
+          return true;
+        });
+      onBindViewHolderEntry(viewHolder, t);
     }
   }
 
@@ -98,7 +119,7 @@ public abstract class EntriesArrayAdapter extends RecyclerView.Adapter<EntriesAr
    * Adds an item.
    * @param item The item to add.
    */
-  public void addItem(DayEntry item) {
+  public void addItem(T item) {
     mItems.add(item);
     safeNotifyDataSetChanged();
   }
@@ -107,7 +128,7 @@ public abstract class EntriesArrayAdapter extends RecyclerView.Adapter<EntriesAr
    * Removes an item.
    * @param item The item to remove.
    */
-  public void removeItem(DayEntry item) {
+  public void removeItem(T item) {
     mItems.remove(item);
     safeNotifyDataSetChanged();
   }
@@ -127,9 +148,11 @@ public abstract class EntriesArrayAdapter extends RecyclerView.Adapter<EntriesAr
   class ViewHolder extends RecyclerView.ViewHolder{
     TextView name;
     TextView info;
+    RelativeLayout rl;
 
     ViewHolder(View view) {
       super(view);
+      rl = view.findViewById(R.id.rl);
       name = view.findViewById(R.id.name);
       info = view.findViewById(R.id.info);
     }

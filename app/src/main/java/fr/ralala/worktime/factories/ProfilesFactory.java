@@ -2,7 +2,8 @@ package fr.ralala.worktime.factories;
 
 import java.util.List;
 
-import fr.ralala.worktime.models.DayEntry;
+import fr.ralala.worktime.models.ProfileEntry;
+import fr.ralala.worktime.sql.SqlConstants;
 import fr.ralala.worktime.sql.SqlFactory;
 
 /**
@@ -29,11 +30,11 @@ public class ProfilesFactory {
    * Resets the profiles weight.
    */
   public void resetProfilesLearningWeight() {
-    List<DayEntry> list = mSql.getProfiles(-1, -1, -1);
-    for(DayEntry p : list) {
+    List<ProfileEntry> list = mSql.getProfiles(-1, -1, -1);
+    for(ProfileEntry p : list) {
       if(p.getLearningWeight() > 0) {
         p.setLearningWeight(0);
-        mSql.updateProfile(p);
+        mSql.insertOrUpdateProfile(p, true);
       }
     }
   }
@@ -44,33 +45,33 @@ public class ProfilesFactory {
    * @param weightLimit The weight limit.
    * @param fromClear Called from clear.
    */
-  public void updateProfilesLearningWeight(DayEntry profile, int weightLimit, boolean fromClear) {
-    List<DayEntry> list = mSql.getProfiles(-1, -1, -1);
+  public void updateProfilesLearningWeight(ProfileEntry profile, int weightLimit, boolean fromClear) {
+    List<ProfileEntry> list = mSql.getProfiles(-1, -1, -1);
     boolean selected = false;
-    for(DayEntry p : list) {
+    for(ProfileEntry p : list) {
       int weight = p.getLearningWeight();
       int max = weightLimit*2;
       if(profile != null && p.getName().equals(profile.getName())) {
         p.setLearningWeight(weight < max ? ++weight : max);
-        mSql.updateProfile(p);
+        mSql.insertOrUpdateProfile(p, true);
         selected = true;
       } else if(weight > 0) {
         if(fromClear || selected)
           p.setLearningWeight(p.getLearningWeight() - 1);
-        mSql.updateProfile(p);
+        mSql.insertOrUpdateProfile(p, true);
       }
     }
   }
 
   /**
    * Returns an entry with the highest learning weight.
-   * @return DayEntry
+   * @return ProfileEntry
    */
-  public DayEntry getHighestLearningWeight() {
-    List<DayEntry> list = mSql.getProfiles(-1, -1, -1);
-    DayEntry profile = null;
+  public ProfileEntry getHighestLearningWeight() {
+    List<ProfileEntry> list = mSql.getProfiles(-1, -1, -1);
+    ProfileEntry profile = null;
     int weight = 0;
-    for(DayEntry p : list) {
+    for(ProfileEntry p : list) {
       if(weight == 0 || weight <= p.getLearningWeight()) {
         weight = p.getLearningWeight();
         profile = p;
@@ -81,34 +82,34 @@ public class ProfilesFactory {
 
   /**
    * Returns the list of profiles.
-   * @return List<DayEntry>
+   * @return List<ProfileEntry>
    */
-  public List<DayEntry> list() {
+  public List<ProfileEntry> list() {
     return mSql.getProfiles(-1, -1, -1);
   }
 
   /**
    * Removes an existing entry.
-   * @param de The entry to remove.
+   * @param pe The entry to remove.
    */
-  public void remove(final DayEntry de) {
-    mSql.removeProfile(de);
+  public void remove(final ProfileEntry pe) {
+    mSql.removeProfile(pe);
   }
 
   /**
    * Adds a new entry.
-   * @param de The entry to add.
+   * @param pe The entry to add.
    */
-  public void add(final DayEntry de) {
-    mSql.insertProfile(de);
+  public void add(final ProfileEntry pe) {
+    mSql.insertOrUpdateProfile(pe, pe.getID() != SqlConstants.INVALID_ID);
   }
 
   /**
    * Returns a profile by name.
    * @param name The profile name
-   * @return DayEntry
+   * @return ProfileEntry
    */
-  public DayEntry getByName(final String name) {
+  public ProfileEntry getByName(final String name) {
     return mSql.getProfile(name);
   }
 }

@@ -54,7 +54,7 @@ public class SettingsImportExportActivity extends PreferenceActivity implements 
   public void onCreate(final Bundle savedInstanceState) {
     UIHelper.openAnimation(this);
     super.onCreate(savedInstanceState);
-    mApp = MainApplication.getApp(this);
+    mApp = MainApplication.getInstance();
     mPrefFrag = new MyPreferenceFragment();
     getFragmentManager().beginTransaction()
       .replace(android.R.id.content, mPrefFrag).commit();

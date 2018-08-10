@@ -59,7 +59,7 @@ public class SettingsDisplayActivity extends PreferenceActivity {
   @Override
   public void onResume() {
     super.onResume();
-    MainApplication.getApp(this).getSql().settingsLoad(null);
+    MainApplication.getInstance().getSql().settingsLoad(null);
   }
 
   /**
@@ -68,7 +68,7 @@ public class SettingsDisplayActivity extends PreferenceActivity {
   @Override
   public void onPause() {
     super.onPause();
-    MainApplication.getApp(this).getSql().settingsSave();
+    MainApplication.getInstance().getSql().settingsSave();
   }
 
   /**

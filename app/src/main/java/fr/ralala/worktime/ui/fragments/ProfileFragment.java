@@ -9,7 +9,6 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -19,15 +18,17 @@ import android.view.ViewGroup;
 
 import java.util.List;
 
+import fr.ralala.worktime.models.ProfileEntry;
 import fr.ralala.worktime.ui.activities.DayActivity;
 
 import fr.ralala.worktime.MainApplication;
 import fr.ralala.worktime.R;
 import fr.ralala.worktime.ui.activities.MainActivity;
+import fr.ralala.worktime.ui.adapters.EntriesArrayAdapter;
 import fr.ralala.worktime.ui.adapters.ProfilesEntriesArrayAdapter;
-import fr.ralala.worktime.models.DayEntry;
 import fr.ralala.worktime.ui.utils.SwipeEditDeleteRecyclerViewItem;
 import fr.ralala.worktime.ui.utils.UIHelper;
+import fr.ralala.worktime.utils.AndroidHelper;
 
 
 /**
@@ -39,7 +40,9 @@ import fr.ralala.worktime.ui.utils.UIHelper;
  *
  *******************************************************************************
  */
-public class ProfileFragment  extends Fragment implements View.OnClickListener, SwipeEditDeleteRecyclerViewItem.SwipeEditDeleteRecyclerViewItemListener {
+public class ProfileFragment  extends Fragment implements View.OnClickListener,
+    SwipeEditDeleteRecyclerViewItem.SwipeEditDeleteRecyclerViewItemListener,
+    EntriesArrayAdapter.OnLongPressListener<ProfileEntry> {
 
   private ProfilesEntriesArrayAdapter mAdapter = null;
   private MainApplication mApp = null;
@@ -71,8 +74,7 @@ public class ProfileFragment  extends Fragment implements View.OnClickListener, 
     assert mActivity != null;
     FloatingActionButton fab = rootView.findViewById(R.id.fab);
     fab.setOnClickListener(this);
-
-    mApp = MainApplication.getApp(mActivity);
+    mApp = MainApplication.getInstance();
 
     mRecyclerView = rootView.findViewById(R.id.profiles);
     mRecyclerView.setHasFixedSize(true);
@@ -80,20 +82,40 @@ public class ProfileFragment  extends Fragment implements View.OnClickListener, 
     mRecyclerView.setLayoutManager(layoutManager);
     mRecyclerView.getRecycledViewPool().clear();
     new SwipeEditDeleteRecyclerViewItem(mActivity, mRecyclerView, this);
+    refreshView();
+    return rootView;
+  }
+
+  /**
+   * Refresh the adapter view.
+   */
+  private void refreshView() {
     mActivity.progressShow(true);
     new Thread(() -> {
-      final List<DayEntry> list = mApp.getProfilesFactory().list();
+      final List<ProfileEntry> list = mApp.getProfilesFactory().list();
       mActivity.runOnUiThread(() -> {
         mAdapter = new ProfilesEntriesArrayAdapter(mRecyclerView,
             getContext(), R.layout.listview_item, list);
+        mAdapter.setOnLongPressListener(this);
         mRecyclerView.setAdapter(mAdapter);
         mAdapter.safeNotifyDataSetChanged();
         mActivity.progressDismiss();
       });
     }).start();
-    return rootView;
   }
 
+  /**
+   * Called when a long click is captured.
+   * @param t The associated item.
+   */
+  @Override
+  public void onLongPressListener(@NonNull ProfileEntry t) {
+    if(!Double.isNaN(t.getLongitude()) && !Double.isNaN(t.getLatitude())) {
+      mActivity.getVibrator().vibrate(50);
+      AndroidHelper.openDefaultNavigationApp(mActivity, t.getName(), t.getLocation());
+    } else
+      UIHelper.toast(mActivity, (getString(R.string.no_location_p1) + t.getName() + getString(R.string.no_location_p2)));
+  }
 
   /**
    * Called when the options menu is created.
@@ -133,12 +155,7 @@ public class ProfileFragment  extends Fragment implements View.OnClickListener, 
   @Override
   public void onActivityResult(int requestCode, int resultCode, Intent data) {
     if(requestCode == DayActivity.REQUEST_START_ACTIVITY)
-      new Thread(() -> {
-        try { Thread.sleep(100); } catch(InterruptedException ie) {
-          Log.e(getClass().getSimpleName(), "Exception: " + ie.getMessage(), ie);
-        }
-        mActivity.runOnUiThread(() -> mAdapter.safeNotifyDataSetChanged());
-      }).start();
+      refreshView();
   }
 
   /**
@@ -155,9 +172,9 @@ public class ProfileFragment  extends Fragment implements View.OnClickListener, 
    */
   @Override
   public void onClickEdit(int adapterPosition) {
-    DayEntry de = mAdapter.getItem(adapterPosition);
-    if(de == null) return;
-    DayActivity.startActivity(this, de.getName(), false);
+    ProfileEntry pe = mAdapter.getItem(adapterPosition);
+    if(pe == null) return;
+    DayActivity.startActivity(this, pe.getName(), false);
   }
 
   /**
@@ -166,17 +183,17 @@ public class ProfileFragment  extends Fragment implements View.OnClickListener, 
    */
   @Override
   public void onClickDelete(int adapterPosition) {
-    DayEntry de = mAdapter.getItem(adapterPosition);
-    if(de == null) return;
+    ProfileEntry pe = mAdapter.getItem(adapterPosition);
+    if(pe == null) return;
     UIHelper.showConfirmDialog(getActivity(),
-        (getString(R.string.delete_public_holiday) + " '" + de.getName() + "'" + getString(R.string.help)),
+        (getString(R.string.delete_public_holiday) + " '" + pe.getName() + "'" + getString(R.string.help)),
         (v) -> {
-          mAdapter.removeItem(de);
-          mApp.getProfilesFactory().remove(de);
+          mAdapter.removeItem(pe);
+          mApp.getProfilesFactory().remove(pe);
           UIHelper.snack(mActivity, getString(R.string.profile_removed),
               getString(R.string.undo), (nullview) -> {
-                mAdapter.addItem(de);
-                mApp.getProfilesFactory().add(de);
+                mAdapter.addItem(pe);
+                mApp.getProfilesFactory().add(pe);
               });
         });
 

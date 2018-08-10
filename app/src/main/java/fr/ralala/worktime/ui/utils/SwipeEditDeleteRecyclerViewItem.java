@@ -94,6 +94,7 @@ public class SwipeEditDeleteRecyclerViewItem extends ItemTouchHelper.SimpleCallb
    */
   @Override
   public void onTouchEvent(RecyclerView rv, MotionEvent e) {
+
   }
 
   /**

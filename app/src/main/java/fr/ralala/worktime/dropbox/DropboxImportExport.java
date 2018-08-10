@@ -236,7 +236,7 @@ public class DropboxImportExport implements DropboxListener{
    */
   public static void loadDb(final Context c, File file) throws Exception{
     SqlHelper.loadDatabase(c, SqlHelper.DB_NAME, file);
-    MainApplication app = MainApplication.getApp(c);
+    MainApplication app = MainApplication.getInstance();
     app.getDaysFactory().setSqlFactory(app.getSql());
     app.getProfilesFactory().setSqlFactory(app.getSql());
     app.getPublicHolidaysFactory().setSqlFactory(app.getSql());

@@ -6,6 +6,7 @@ import android.content.ComponentCallbacks2;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Process;
+import android.os.Vibrator;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentTransaction;
@@ -19,7 +20,6 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
-import android.widget.Toast;
 
 
 import fr.ralala.worktime.MainApplication;
@@ -34,6 +34,7 @@ import fr.ralala.worktime.services.QuickAccessService;
 import fr.ralala.worktime.utils.AndroidHelper;
 import fr.ralala.worktime.ui.utils.SwipeDetector;
 import fr.ralala.worktime.ui.utils.UIHelper;
+import fr.ralala.worktime.utils.DefaultExceptionHandler;
 
 /**
  *******************************************************************************
@@ -57,6 +58,7 @@ public class MainActivity extends RuntimePermissionsActivity implements Navigati
   private AlertDialog mProgress;
   private boolean mLockedByProgress = false;
   private boolean mResumeFromActivity = false;
+  private Vibrator mVibrator;
 
   /**
    * Called when the activity is created.
@@ -65,8 +67,10 @@ public class MainActivity extends RuntimePermissionsActivity implements Navigati
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+    DefaultExceptionHandler.install(this);
     setContentView(R.layout.activity_main);
 
+    mVibrator = ((Vibrator) getSystemService(VIBRATOR_SERVICE));
     Intent intent = getIntent();
     if (intent.getExtras() != null && intent.hasExtra(AndroidHelper.EXTRA_RESTART)) {
       String msg = intent.getExtras().getString(AndroidHelper.EXTRA_RESTART);
@@ -87,7 +91,7 @@ public class MainActivity extends RuntimePermissionsActivity implements Navigati
       mNavigationView.setNavigationItemSelectedListener(this);
       mNavigationView.getMenu().getItem(0).setChecked(true);
     }
-    mApp = MainApplication.getApp(this);
+    mApp = MainApplication.getInstance();
     mFragments = new AppFragmentsFactory(mApp, mNavigationView);
 
     String[] perms = new String[]{
@@ -95,6 +99,9 @@ public class MainActivity extends RuntimePermissionsActivity implements Navigati
       Manifest.permission.WRITE_EXTERNAL_STORAGE,
       Manifest.permission.INTERNET,
       Manifest.permission.VIBRATE,
+      Manifest.permission.ACCESS_FINE_LOCATION,
+      Manifest.permission.ACCESS_COARSE_LOCATION,
+      Manifest.permission.VIBRATE
     };
     super.requestAppPermissions(perms, R.string.permissions_read_ext_storage , PERMISSIONS_REQUEST);
     ChangeLog changeLog = new ChangeLog(
@@ -107,6 +114,14 @@ public class MainActivity extends RuntimePermissionsActivity implements Navigati
         R.string.changelog_show_full), this);
     if(changeLog.firstRun())
       changeLog.getLogDialog().show();
+  }
+
+  /**
+   * Returns the instance of the vibrator service.
+   * @return Vibrator
+   */
+  public Vibrator getVibrator() {
+    return mVibrator;
   }
 
   /**

@@ -29,7 +29,7 @@ public class QuickAccessService extends Service {
    */
   @Override
   public void onCreate() {
-    mApp = MainApplication.getApp(this);
+    mApp = MainApplication.getInstance();
     // cancel if already existed
     if (mTimer != null) {
       mTimer.cancel();

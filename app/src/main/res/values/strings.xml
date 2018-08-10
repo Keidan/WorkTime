@@ -131,7 +131,7 @@
     <string name="chooser_file_size">File size</string>
     <string name="export_success">Export success</string>
     <string name="import_success">Import success</string>
-    <string name="permissions_read_ext_storage">The import/export functions needs the external storage read/write and internet(dropbox) access permissions</string>
+    <string name="permissions_read_ext_storage">The import/export functions needs the external storage read/write, internet(dropbox) access permissions and geolocation for profile location</string>
     <string name="year">Year :</string>
     <string name="export_no_items">No selected months to export</string>
     <string name="snack_hide">Hide</string>
@@ -187,4 +187,13 @@
     <string name="confirm_reset_profile">Do you really want to reset learnings?</string>
     <string name="db_unsupported">The database version is not supported.</string>
     <string name="db_updated">The database has been updated, the application will now restart.</string>
+    <string name="hint_longitude">Longitude</string>
+    <string name="hint_latitude">Latitude</string>
+    <string name="geolocate_me">Geolocate me</string>
+    <string name="geolocation">Geolocation</string>
+    <string name="error_invalid_latitude">Invalid latitude value.</string>
+    <string name="error_invalid_longitude">Invalid longitude value.</string>
+    <string name="error_gps_permissions">Invalid GPS authorizations.</string>
+    <string name="no_location_p1">The location for \'</string>
+    <string name="no_location_p2">\' is not indicated.</string>
 </resources>

@@ -6,8 +6,8 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
+import fr.ralala.worktime.models.PublicHolidayEntry;
 import fr.ralala.worktime.utils.AndroidHelper;
-import fr.ralala.worktime.models.DayEntry;
 
 /**
  * ******************************************************************************
@@ -19,7 +19,7 @@ import fr.ralala.worktime.models.DayEntry;
  *         <p>
  *******************************************************************************
  */
-public class PublicHolidaysEntriesArrayAdapter extends EntriesArrayAdapter {
+public class PublicHolidaysEntriesArrayAdapter extends EntriesArrayAdapter<PublicHolidayEntry> {
 
   /**
    * Creates the array adapter.
@@ -28,25 +28,25 @@ public class PublicHolidaysEntriesArrayAdapter extends EntriesArrayAdapter {
    * @param objects The objects list.
    */
   public PublicHolidaysEntriesArrayAdapter(RecyclerView recyclerView, final int rowResourceId,
-                                           final List<DayEntry> objects) {
+                                           final List<PublicHolidayEntry> objects) {
     super(recyclerView, rowResourceId, objects);
   }
 
   /**
    * Called on Binding the view holder.
    * @param viewHolder The view holder.
-   * @param de The associated item.
+   * @param phe The associated item.
    */
   @Override
-  public void onBindViewHolder(EntriesArrayAdapter.ViewHolder viewHolder, DayEntry de) {
-    if(de != null) {
+  public void onBindViewHolderEntry(EntriesArrayAdapter.ViewHolder viewHolder, PublicHolidayEntry phe) {
+    if(phe != null) {
       if (viewHolder.name != null)
-        viewHolder.name.setText(de.getName());
+        viewHolder.name.setText(phe.getName());
       if (viewHolder.info != null) {
-        Calendar cal = de.getDay().toCalendar();
+        Calendar cal = phe.getDay().toCalendar();
         String text = String.format(Locale.US, "%02d %s",
             cal.get(Calendar.DAY_OF_MONTH), AndroidHelper.getMonthString(cal.get(Calendar.MONTH)));
-        if (!de.isRecurrence())
+        if (!phe.isRecurrence())
           text += String.format(Locale.US, " %04d", cal.get(Calendar.YEAR));
         viewHolder.info.setText(text);
       }

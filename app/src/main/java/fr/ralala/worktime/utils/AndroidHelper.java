@@ -1,5 +1,6 @@
 package fr.ralala.worktime.utils;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.AlarmManager;
@@ -8,14 +9,21 @@ import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
 import android.net.Uri;
+import android.os.Process;
 import android.os.Vibrator;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.util.Log;
 import android.util.SparseArray;
 
 
-import java.text.DateFormatSymbols;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
 
-import fr.ralala.worktime.ui.utils.UIHelper;
+import java.text.DateFormatSymbols;
 
 /**
  *******************************************************************************
@@ -31,19 +39,54 @@ public class AndroidHelper {
   public static final String EXTRA_RESTART = "EXTRA_RESTART";
 
   /**
+   * Opens the default navigation apps using latitude and longitude.
+   * @param c The Android context.
+   * @param name The name to use.
+   * @param location The location (latitude+longitude).
+   */
+  public static void openDefaultNavigationApp(Context c, String name, Location location) {
+    Intent intent = new Intent(android.content.Intent.ACTION_VIEW,
+        Uri.parse("geo:0,0?q=" + location.getLatitude() + "," + location.getLongitude() + " (" + name + ")"));
+    c.startActivity(intent);
+  }
+
+  public interface LocationListener {
+    void onLocationSuccess(Location location);
+    void onLocationError(@NonNull Exception e);
+  }
+
+  /**
+   * Gets the last position using FusedLocationProviderClient (gms API).
+   * @param c The Android context.
+   * @param li The output listener.
+   * @return False on permissions error.
+   */
+  public static boolean getLastLocationNewMethod(Context c, final LocationListener li){
+    if (ActivityCompat.checkSelfPermission(c, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
+        ActivityCompat.checkSelfPermission(c, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+      FusedLocationProviderClient mFusedLocationClient = LocationServices.getFusedLocationProviderClient(c);
+      mFusedLocationClient.getLastLocation()
+          .addOnSuccessListener(li::onLocationSuccess)
+          .addOnFailureListener(li::onLocationError);
+      return true;
+    }
+    return false;
+  }
+
+  /**
    * Tests if the SparseArray contains the key.
    * @param array The sparse array.
    * @param key The key to search.
    * @param <T> The sparse array type.
    * @return True if contains.
    */
-  public static <T> boolean containsKey(SparseArray<T> array, Integer key) {
+  public static <T> boolean notContainsKey(SparseArray<T> array, Integer key) {
     for(int i = 0; i < array.size(); i++) {
       Integer k = array.keyAt(i);
       if (k.equals(key))
-        return true;
+        return false;
     }
-    return false;
+    return true;
   }
 
   /**
@@ -97,16 +140,21 @@ public class AndroidHelper {
    * @param string The string to display before the restart.
    */
   public static void restartApplication(final Context c, final int string) {
+    Log.e("TAG", "*****RESTART");
     Intent startActivity = c.getApplicationContext().getPackageManager()
         .getLaunchIntentForPackage(c.getApplicationContext().getPackageName());
     assert startActivity != null;
+    startActivity.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
     startActivity.putExtra(EXTRA_RESTART, c.getString(string));
     int mPendingIntentId = 123456;
-    PendingIntent mPendingIntent = PendingIntent.getActivity(c, mPendingIntentId, startActivity, PendingIntent.FLAG_CANCEL_CURRENT);
+    PendingIntent mPendingIntent = PendingIntent.getActivity(c, mPendingIntentId, startActivity,
+        startActivity.getFlags());
     AlarmManager mgr = (AlarmManager)c.getSystemService(Context.ALARM_SERVICE);
     if(mgr != null) {
-      mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 500, mPendingIntent);
-      Runtime.getRuntime().exit(0);
+      mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 100, mPendingIntent);
+      if(Activity.class.isInstance(c))
+        ActivityCompat.finishAffinity(((Activity)c));
+      Process.killProcess(Process.myPid());
     }
   }
 

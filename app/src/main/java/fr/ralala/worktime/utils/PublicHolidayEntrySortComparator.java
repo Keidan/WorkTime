@@ -7,26 +7,26 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.Locale;
 
-import fr.ralala.worktime.models.DayEntry;
+import fr.ralala.worktime.models.PublicHolidayEntry;
 import fr.ralala.worktime.models.WorkTimeDay;
 
 /**
  *******************************************************************************
  * <p><b>Project WorkTime</b><br/>
- * Simple sort comparator.
+ * Simple sort comparator for the public holidays.
  * </p>
  * @author Keidan
  *
  *******************************************************************************
  */
-public enum  SortComparator implements Comparator<DayEntry> {
+public enum PublicHolidayEntrySortComparator implements Comparator<PublicHolidayEntry> {
   SORT_BY_RECURRENCE {
-    public int compare(DayEntry a, DayEntry b) {
+    public int compare(PublicHolidayEntry a, PublicHolidayEntry b) {
       return Boolean.compare(a.isRecurrence(), b.isRecurrence());
     }
   },
   SORT_BY_DATE {
-    public int compare(DayEntry a, DayEntry b) {
+    public int compare(PublicHolidayEntry a, PublicHolidayEntry b) {
       WorkTimeDay a_wtd = a.getDay();
       WorkTimeDay b_wtd = b.getDay();
       String a_date = String.format(Locale.US, "%02d/%02d/%04d", a_wtd.getDay(), a_wtd.getMonth(), (!a.isRecurrence() ? a_wtd.getYear() : 1900));
@@ -46,9 +46,9 @@ public enum  SortComparator implements Comparator<DayEntry> {
   /**
    * Compares entry.
    * @param other The comparator entry.
-   * @return Comparator<DayEntry>
+   * @return Comparator<PublicHolidayEntry>
    */
-  public static Comparator<DayEntry> comparator(final Comparator<DayEntry> other) {
+  public static Comparator<PublicHolidayEntry> comparator(final Comparator<PublicHolidayEntry> other) {
     return (o1, o2) -> -1 * other.compare(o1, o2);
   }
 
@@ -57,9 +57,9 @@ public enum  SortComparator implements Comparator<DayEntry> {
    * @param multipleOptions Multiple comparator.
    * @return Comparator<DayEntry>
    */
-  public static Comparator<DayEntry> getComparator(final SortComparator... multipleOptions) {
+  public static Comparator<PublicHolidayEntry> getComparator(final PublicHolidayEntrySortComparator... multipleOptions) {
     return (o1, o2) -> {
-      for (SortComparator option : multipleOptions) {
+      for (PublicHolidayEntrySortComparator option : multipleOptions) {
         int result = option.compare(o1, o2);
         if (result != 0) {
           return result;

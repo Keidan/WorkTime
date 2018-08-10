@@ -34,7 +34,7 @@ public class DropboxAutoExportService extends Service implements DropboxImportEx
    */
   @Override
   public void onCreate() {
-    mApp = MainApplication.getApp(this);
+    mApp = MainApplication.getInstance();
     if(!mApp.openSql(this)) {
       stopSelf();
     }

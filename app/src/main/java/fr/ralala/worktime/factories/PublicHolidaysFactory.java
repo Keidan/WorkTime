@@ -4,9 +4,10 @@ package fr.ralala.worktime.factories;
 import java.util.Collections;
 import java.util.List;
 
-import fr.ralala.worktime.models.DayEntry;
+import fr.ralala.worktime.models.PublicHolidayEntry;
 import fr.ralala.worktime.models.DayType;
 import fr.ralala.worktime.models.WorkTimeDay;
+import fr.ralala.worktime.sql.SqlConstants;
 import fr.ralala.worktime.sql.SqlFactory;
 
 /**
@@ -32,9 +33,9 @@ public class PublicHolidaysFactory {
 
   /**
    * Returns the list of public holidays.
-   * @return List<DayEntry>
+   * @return List<PublicHolidayEntry>
    */
-  public List<DayEntry> list() {
+  public List<PublicHolidayEntry> list() {
     if(mSql == null)
       return Collections.emptyList();
     return mSql.getPublicHolidays(-1, -1, -1);
@@ -44,9 +45,9 @@ public class PublicHolidaysFactory {
    * Returns the public holiday by name and date.
    * @param name The public holiday name.
    * @param date The public holiday date.
-   * @return DayEntry
+   * @return PublicHolidayEntry
    */
-  public DayEntry getByNameAndDate(String name, String date) {
+  public PublicHolidayEntry getByNameAndDate(String name, String date) {
     return mSql.getPublicHoliday(name, date);
   }
 
@@ -56,8 +57,8 @@ public class PublicHolidaysFactory {
    * @param currentDate The current date.
    * @return boolean
    */
-  public boolean isPublicHolidays(List<DayEntry> refList, WorkTimeDay currentDate) {
-    for(DayEntry de : refList) {
+  public boolean isPublicHolidays(List<PublicHolidayEntry> refList, WorkTimeDay currentDate) {
+    for(PublicHolidayEntry de : refList) {
       if((de.getTypeMorning() == DayType.PUBLIC_HOLIDAY && de.getTypeAfternoon() == DayType.PUBLIC_HOLIDAY) && de.matchSimpleDate(currentDate))
         return true;
     }
@@ -66,15 +67,15 @@ public class PublicHolidaysFactory {
 
   /**
    * Tests the validity of the input entry.
-   * @param de The netry to test.
+   * @param phe The netry to test.
    * @return boolean
    */
-  public boolean testValidity(final DayEntry de) {
-    WorkTimeDay de_day = de.getDay();
-    List<DayEntry> publicHolidays = mSql.getPublicHolidays(-1, de_day.getMonth(), de_day.getDay());
-    for(DayEntry d : publicHolidays) {
+  public boolean testValidity(final PublicHolidayEntry phe) {
+    WorkTimeDay de_day = phe.getDay();
+    List<PublicHolidayEntry> publicHolidays = mSql.getPublicHolidays(-1, de_day.getMonth(), de_day.getDay());
+    for(PublicHolidayEntry d : publicHolidays) {
       WorkTimeDay d_day = d.getDay();
-      if(d.isRecurrence() || de.isRecurrence()) {
+      if(d.isRecurrence() || phe.isRecurrence()) {
         return false;
       } else if(d_day.getYear() == de_day.getYear())
         return false;
@@ -84,17 +85,17 @@ public class PublicHolidaysFactory {
 
   /**
    * Removes an entry.
-   * @param de The entry to delete.
+   * @param phe The entry to delete.
    */
-  public void remove(final DayEntry de) {
-    mSql.removePublicHoliday(de);
+  public void remove(final PublicHolidayEntry phe) {
+    mSql.removePublicHoliday(phe);
   }
 
   /**
    * Adds a new entry.
-   * @param de The entry to add.
+   * @param phe The entry to add.
    */
-  public void add(final DayEntry de) {
-    mSql.insertPublicHoliday(de);
+  public void add(final PublicHolidayEntry phe) {
+    mSql.insertOrUpdatePublicHoliday(phe, phe.getID() != SqlConstants.INVALID_ID);
   }
 }

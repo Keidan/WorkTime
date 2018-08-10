@@ -20,6 +20,7 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
+import fr.ralala.worktime.models.PublicHolidayEntry;
 import fr.ralala.worktime.ui.activities.DayActivity;
 import fr.ralala.worktime.ui.activities.MainActivity;
 
@@ -73,7 +74,7 @@ public class WorkTimeFragment extends Fragment implements View.OnClickListener, 
     mActivity = (MainActivity)getActivity();
     assert mActivity != null;
     mActivity.getSwipeDetector().setSwipeDetectorListener(this);
-    mApp = MainApplication.getApp(getActivity());
+    mApp = MainApplication.getInstance();
     //mApp.getCurrentDate().setTime(new Date());
 
     mMonthDetailsDialog = new MonthDetailsDialog(getActivity(), mApp);
@@ -226,7 +227,7 @@ public class WorkTimeFragment extends Fragment implements View.OnClickListener, 
    */
   private void updateDates() {
     mActivity.runOnUiThread(() -> mLvAdapter.clear());
-    List<DayEntry> publicHolidays = mApp.getPublicHolidaysFactory().list();
+    List<PublicHolidayEntry> publicHolidays = mApp.getPublicHolidaysFactory().list();
     int minDay = 1;
     int maxDay = mApp.getCurrentDate().getActualMaximum(Calendar.DAY_OF_MONTH);
     List<DayEntry> wDays = new ArrayList<>();
@@ -242,7 +243,7 @@ public class WorkTimeFragment extends Fragment implements View.OnClickListener, 
     /* loop for each days in the month */
     for(int day = minDay; day <= maxDay; ++day) {
       mApp.getCurrentDate().set(Calendar.DAY_OF_MONTH, day);
-      DayEntry de = new DayEntry(getActivity(), mApp.getCurrentDate(), DayType.ERROR, DayType.ERROR);
+      DayEntry de = new DayEntry(mApp.getCurrentDate(), DayType.ERROR, DayType.ERROR);
       de.setAmountByHour(mApp.getAmountByHour()); /* set default amount */
       /* Force public holiday */
       boolean isPublicHoliday = mApp.getPublicHolidaysFactory().isPublicHolidays(publicHolidays, de.getDay());

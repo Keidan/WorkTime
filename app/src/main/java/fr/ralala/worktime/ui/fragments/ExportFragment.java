@@ -66,7 +66,7 @@ public class ExportFragment extends Fragment implements AdapterView.OnItemSelect
     final ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_export, container, false);
     mActivity = (MainActivity)getActivity();
     assert mActivity != null;
-    mApp = (MainApplication)mActivity.getApplicationContext();
+    mApp = MainApplication.getInstance();
     Button export = rootView.findViewById(R.id.btExport);
     export.setOnClickListener(this);
 

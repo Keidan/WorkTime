@@ -60,7 +60,7 @@ public class QuickAccessFragment extends Fragment implements OnClickListener {
     mBtFinalize.setVisibility(View.GONE);
 
     mTvTime.setText(getString(R.string.default_time));
-    mApp = MainApplication.getApp(rootView.getContext());
+    mApp = MainApplication.getInstance();
     return rootView;
   }
 

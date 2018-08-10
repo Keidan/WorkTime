@@ -16,7 +16,7 @@ import java.util.Locale;
 
 import fr.ralala.worktime.MainApplication;
 import fr.ralala.worktime.R;
-import fr.ralala.worktime.models.DayEntry;
+import fr.ralala.worktime.models.ProfileEntry;
 import fr.ralala.worktime.ui.utils.UIHelper;
 
 /**
@@ -57,7 +57,7 @@ public class SettingsLearningActivity extends PreferenceActivity implements Pref
       actionBar.setDisplayHomeAsUpEnabled(true);
     }
 
-    mApp = (MainApplication)getApplicationContext();
+    mApp = MainApplication.getInstance();
 
     mPrefFrag.findPreference(PREFS_KEY_PROFILES_WEIGHT_CLEAR).setOnPreferenceClickListener(this);
     mPrefFrag.findPreference(PREFS_KEY_PROFILES_LIST).setOnPreferenceClickListener(this);
@@ -69,7 +69,7 @@ public class SettingsLearningActivity extends PreferenceActivity implements Pref
   @Override
   public void onResume() {
     super.onResume();
-    MainApplication.getApp(this).getSql().settingsLoad(null);
+    MainApplication.getInstance().getSql().settingsLoad(null);
   }
 
   /**
@@ -78,7 +78,7 @@ public class SettingsLearningActivity extends PreferenceActivity implements Pref
   @Override
   public void onPause() {
     super.onPause();
-    MainApplication.getApp(this).getSql().settingsSave();
+    MainApplication.getInstance().getSql().settingsSave();
   }
 
   /**
@@ -132,7 +132,7 @@ public class SettingsLearningActivity extends PreferenceActivity implements Pref
       builder.setIcon(android.R.drawable.ic_dialog_info);
       builder.setCancelable(true);
       List<String> items = new ArrayList<>();
-      for(DayEntry profile : mApp.getProfilesFactory().list()) {
+      for(ProfileEntry profile : mApp.getProfilesFactory().list()) {
         String text = String.format(Locale.US,"%02d", profile.getLearningWeight()) + " - " + profile.getName();
         items.add(text);
       }

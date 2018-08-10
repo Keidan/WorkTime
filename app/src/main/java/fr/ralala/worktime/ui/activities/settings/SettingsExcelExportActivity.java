@@ -51,7 +51,7 @@ public class SettingsExcelExportActivity extends PreferenceActivity implements P
       actionBar.setDisplayHomeAsUpEnabled(true);
     }
 
-    MainApplication app = (MainApplication)getApplicationContext();
+    MainApplication app = MainApplication.getInstance();
 
     mPrefFrag.findPreference(PREFS_KEY_EMAIL).setEnabled(app.isExportMailEnabled());
     mPrefFrag.findPreference(PREFS_KEY_EMAIL_ENABLE).setOnPreferenceClickListener(this);
@@ -63,7 +63,7 @@ public class SettingsExcelExportActivity extends PreferenceActivity implements P
   @Override
   public void onResume() {
     super.onResume();
-    MainApplication.getApp(this).getSql().settingsLoad(null);
+    MainApplication.getInstance().getSql().settingsLoad(null);
   }
 
   /**
@@ -72,7 +72,7 @@ public class SettingsExcelExportActivity extends PreferenceActivity implements P
   @Override
   public void onPause() {
     super.onPause();
-    MainApplication.getApp(this).getSql().settingsSave();
+    MainApplication.getInstance().getSql().settingsSave();
   }
 
   /**

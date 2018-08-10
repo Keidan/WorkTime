@@ -28,7 +28,7 @@ public class QuickAccessNotificationReceiver extends BroadcastReceiver {
    */
   @Override
   public void onReceive(Context context, Intent intent) {
-    MainApplication app = MainApplication.getApp(context);
+    MainApplication app = MainApplication.getInstance();
     if(intent.getAction() != null && intent.getAction().equals(KEY_PAUSE)) {
       if(!app.isQuickAccessPause())
         context.stopService(new Intent(context, QuickAccessService.class));

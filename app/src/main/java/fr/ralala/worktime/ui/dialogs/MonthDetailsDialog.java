@@ -97,7 +97,7 @@ public class MonthDetailsDialog implements DialogInterface.OnClickListener {
       ctime.set(Calendar.DAY_OF_MONTH, de.getDay().getDay());
       if(de.getTypeMorning() == DayType.AT_WORK || de.getTypeAfternoon() == DayType.AT_WORK) {
         Item i;
-        if (!AndroidHelper.containsKey(weeks, ctime.get(Calendar.WEEK_OF_YEAR)))
+        if (AndroidHelper.notContainsKey(weeks, ctime.get(Calendar.WEEK_OF_YEAR)))
           weeks.put(ctime.get(Calendar.WEEK_OF_YEAR), new Item());
         i = weeks.get(ctime.get(Calendar.WEEK_OF_YEAR));
 

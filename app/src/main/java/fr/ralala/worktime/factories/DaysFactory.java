@@ -5,6 +5,7 @@ import android.annotation.SuppressLint;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,6 +13,7 @@ import java.util.Map;
 import fr.ralala.worktime.models.DayEntry;
 import fr.ralala.worktime.models.DayType;
 import fr.ralala.worktime.models.WorkTimeDay;
+import fr.ralala.worktime.sql.SqlConstants;
 import fr.ralala.worktime.sql.SqlFactory;
 
 /**
@@ -42,6 +44,8 @@ public class DaysFactory {
    * @return List<DayEntry>
    */
   public List<DayEntry> list(int year, int month, int day) {
+    if(mSql == null)
+      return Collections.emptyList();
     return mSql.getDays(year, month, day);
   }
 
@@ -128,7 +132,7 @@ public class DaysFactory {
     WorkTimeDay now = WorkTimeDay.now();
     DayEntry d = mSql.getDay(now.dateString());
     if(d == null)
-      d = new DayEntry(mSql.getContext(), WorkTimeDay.now(), DayType.ERROR, DayType.ERROR);
+      d = new DayEntry(WorkTimeDay.now(), DayType.ERROR, DayType.ERROR);
     return d;
   }
 
@@ -163,6 +167,6 @@ public class DaysFactory {
    * @param de The entry to add.
    */
   public void add(final DayEntry de) {
-    mSql.insertDay(de);
+    mSql.insertOrUpdateDay(de, de.getID() != SqlConstants.INVALID_ID);
   }
 }

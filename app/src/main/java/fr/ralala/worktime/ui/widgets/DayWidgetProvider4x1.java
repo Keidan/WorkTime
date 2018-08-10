@@ -34,7 +34,7 @@ public class DayWidgetProvider4x1 extends AppWidgetProvider {
    */
   @Override
   public void onUpdate(final Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
-    MainApplication app = MainApplication.getApp(context);
+    MainApplication app = MainApplication.getInstance();
     if(!app.openSql(context)) {
       UIHelper.toast(context, R.string.error_widget_sql);
       Log.e(getClass().getSimpleName(), "Widger error SQL");

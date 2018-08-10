@@ -255,7 +255,7 @@ public class DaysEntriesArrayAdapter extends ArrayAdapter<DayEntry> {
   private void setRowHeight(TextView v) {
     v.setMinHeight(0); // Min Height
     v.setMinimumHeight(0); // Min Height
-    v.setHeight(((MainApplication)mContext.getApplicationContext()).getDayRowsHeight()); // Height
+    v.setHeight(MainApplication.getInstance().getDayRowsHeight()); // Height
   }
 
   /**

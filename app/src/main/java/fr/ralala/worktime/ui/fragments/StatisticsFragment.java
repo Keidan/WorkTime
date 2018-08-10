@@ -138,7 +138,7 @@ public class StatisticsFragment extends Fragment implements View.OnClickListener
    * @param x_label The x label.
    */
   private void addDayEntry(SparseArray<ChartEntry> entries, Integer key, DayEntry de, String x_label) {
-    if (!AndroidHelper.containsKey(entries, key)) {
+    if (AndroidHelper.notContainsKey(entries, key)) {
       entries.put(key, new ChartEntry());
     }
     entries.get(key).work.addTime(de.getWorkTime());
@@ -169,7 +169,7 @@ public class StatisticsFragment extends Fragment implements View.OnClickListener
     this.mRootView = rootView;
     mActivity = (MainActivity)getActivity();
     assert mActivity != null;
-    mApp = (MainApplication)mActivity.getApplicationContext();
+    mApp = MainApplication.getInstance();
     Button cancel = rootView.findViewById(R.id.cancel);
     cancel.setOnClickListener(this);
     mChartContainer = rootView.findViewById(R.id.graph);

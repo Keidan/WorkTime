@@ -9,7 +9,9 @@
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin">
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:clearTaskOnLaunch="true"
+    android:launchMode="singleTask">
 
     <android.support.constraint.ConstraintLayout
         android:id="@+id/prl"
@@ -37,8 +39,18 @@
             android:layout_marginTop="@dimen/activity_day_etName_layout_marginTop"
             android:layout_marginBottom="@dimen/activity_day_etName_layout_marginBottom"
             android:layout_height="wrap_content"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/ivGeoloc"
             app:layout_constraintStart_toEndOf="@+id/tvName"/>
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/ivGeoloc"
+            android:scaleType="center"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/etName"
+            app:layout_constraintBottom_toBottomOf="@+id/tvName"
+            app:srcCompat="@mipmap/ic_location"
+            />
 
         <!-- profile -->
         <TextView

@@ -56,6 +56,7 @@ public class MainApplication extends Application  {
   private MyActivityLifecycleCallbacks mLifeCycle;
   private static int mResumedCounter = 0;
   private String mDbMD5 = null;
+  public static MainApplication mInstace;
 
   public MainApplication() {
   }
@@ -66,6 +67,7 @@ public class MainApplication extends Application  {
   @Override
   public void onCreate() {
     super.onCreate();
+    mInstace = this;
     mPublicHolidaysFactory = new PublicHolidaysFactory();
     mProfilesFactory = new ProfilesFactory();
     mDaysFactory = new DaysFactory();
@@ -75,14 +77,6 @@ public class MainApplication extends Application  {
     Class<?>[] classes = new Class<?>[] { MainActivity.class, DayActivity.class };
     registerActivityLifecycleCallbacks(mLifeCycle = new MyActivityLifecycleCallbacks(Arrays.asList(classes)));
     reloadDatabaseMD5();
-  }
-
-  /**
-   * Reloads the database MD5.
-   */
-  public void reloadDatabaseMD5() {
-    if(isExportAutoSave())
-      mDbMD5 = SqlHelper.getDatabaseMD5(this);
   }
 
   /**
@@ -111,32 +105,10 @@ public class MainApplication extends Application  {
 
   /**
    * Returns the current application instance.
-   * @param c The Android context.
    * @return MainApplication
    */
-  public static MainApplication getApp(final Context c) {
-    return (MainApplication) c.getApplicationContext();
-  }
-
-  /**
-   * Opens the SQLite connection and loads the application databases.
-   * @param c The Android context.
-   * @return false on error.
-   */
-  @SuppressWarnings("BooleanMethodIsAlwaysInverted")
-  public boolean openSql(final Context c) {
-    try {
-      mSql = new SqlFactory(c);
-      mSql.open();
-      mPublicHolidaysFactory.setSqlFactory(mSql);
-      mDaysFactory.setSqlFactory(mSql);
-      mProfilesFactory.setSqlFactory(mSql);
-      return true;
-    } catch (final Exception e) {
-      Log.e(getClass().getSimpleName(), "Error: " + e.getMessage(), e);
-      UIHelper.showAlertDialog(this, R.string.error, getString(R.string.error) + ": " + e.getMessage());
-    }
-    return false;
+  public static MainApplication getInstance() {
+    return mInstace;
   }
 
   /**
@@ -404,9 +376,40 @@ public class MainApplication extends Application  {
    */
   public boolean isTablesChanges() {
     String md5 = SqlHelper.getDatabaseMD5(this);
-    return md5 != null && mDbMD5 != null && mDbMD5.equals(md5);
+    Log.i(getClass().getSimpleName(), "isTablesChanges -> Database MD5: " + md5);
+    return md5 != null && mDbMD5 != null && !mDbMD5.equals(md5);
   }
 
+  /**
+   * Reloads the database MD5.
+   */
+  public void reloadDatabaseMD5() {
+    if(isExportAutoSave()) {
+      mDbMD5 = SqlHelper.getDatabaseMD5(this);
+      Log.i(getClass().getSimpleName(), "reloadDatabaseMD5 -> Database MD5: " + mDbMD5);
+    }
+  }
+
+  /**
+   * Opens the SQLite connection and loads the application databases.
+   * @param c The Android context.
+   * @return false on error.
+   */
+  @SuppressWarnings("BooleanMethodIsAlwaysInverted")
+  public boolean openSql(final Context c) {
+    try {
+      mSql = new SqlFactory(c);
+      mSql.open();
+      mPublicHolidaysFactory.setSqlFactory(mSql);
+      mDaysFactory.setSqlFactory(mSql);
+      mProfilesFactory.setSqlFactory(mSql);
+      return true;
+    } catch (final Exception e) {
+      Log.e(getClass().getSimpleName(), "Error: " + e.getMessage(), e);
+      UIHelper.showAlertDialog(this, R.string.error, getString(R.string.error) + ": " + e.getMessage());
+    }
+    return false;
+  }
   /* ----------------------------------
    * Widget management 
    * ----------------------------------

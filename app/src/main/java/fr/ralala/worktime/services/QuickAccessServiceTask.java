@@ -7,6 +7,7 @@ import fr.ralala.worktime.MainApplication;
 import fr.ralala.worktime.R;
 import fr.ralala.worktime.models.DayEntry;
 import fr.ralala.worktime.models.DayType;
+import fr.ralala.worktime.models.ProfileEntry;
 import fr.ralala.worktime.models.WorkTimeDay;
 
 /**
@@ -40,7 +41,7 @@ public class QuickAccessServiceTask extends TimerTask{
   public void run() {
     DayEntry de = mApp.getDaysFactory().getCurrentDay();
     WorkTimeDay d = de.getDay();
-    DayEntry wtd = mApp.getProfilesFactory().getHighestLearningWeight();
+    ProfileEntry wtd = mApp.getProfilesFactory().getHighestLearningWeight();
     long time;
     if(wtd != null) {
       WorkTimeDay wem = wtd.getEndMorning();

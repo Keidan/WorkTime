@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.os.Process;
 import android.preference.PreferenceManager;
 
 import java.util.ArrayList;
@@ -14,6 +13,8 @@ import java.util.List;
 import java.util.Locale;
 
 import fr.ralala.worktime.R;
+import fr.ralala.worktime.models.ProfileEntry;
+import fr.ralala.worktime.models.PublicHolidayEntry;
 import fr.ralala.worktime.ui.activities.settings.SettingsActivity;
 import fr.ralala.worktime.models.DayEntry;
 import fr.ralala.worktime.models.DayType;
@@ -24,9 +25,8 @@ import fr.ralala.worktime.ui.activities.settings.SettingsDatabaseActivity;
 import fr.ralala.worktime.ui.activities.settings.SettingsDisplayActivity;
 import fr.ralala.worktime.ui.activities.settings.SettingsExcelExportActivity;
 import fr.ralala.worktime.ui.activities.settings.SettingsLearningActivity;
-import fr.ralala.worktime.ui.utils.UIHelper;
 import fr.ralala.worktime.utils.AndroidHelper;
-import fr.ralala.worktime.utils.SortComparator;
+import fr.ralala.worktime.utils.PublicHolidayEntrySortComparator;
 
 /**
  *******************************************************************************
@@ -86,16 +86,6 @@ public class SqlFactory implements SqlConstants {
    */
   public void close() {
     getBdd().close();
-  }
-
-  /**
-   * Updates a profile.
-   * @param de The profile to update.
-   */
-  public void updateProfile(final DayEntry de) {
-    final ContentValues values = new ContentValues();
-    values.put(COL_PROFILES_LEARNING_WEIGHT, "" + de.getLearningWeight());
-    getBdd().update(TABLE_PROFILES, values, COL_PROFILES_NAME + "='"+de.getName().replaceAll("'", "\\'") + "'", null);
   }
 
   /**
@@ -178,33 +168,40 @@ public class SqlFactory implements SqlConstants {
   }
 
   /**
-   * Insets a profile.
-   * @param de The profile to add.
+   * Insets or updates a profile.
+   * @param pe The profile to add.
+   * @param update update or insert.
    */
-  public void insertProfile(final DayEntry de) {
+  public void insertOrUpdateProfile(final ProfileEntry pe, boolean update) {
     final ContentValues values = new ContentValues();
-    values.put(COL_PROFILES_NAME, de.getName().replaceAll("'", "\\'"));
-    values.put(COL_PROFILES_CURRENT_YEAR, de.getDay().getYearString());
-    values.put(COL_PROFILES_CURRENT_MONTH, de.getDay().getMonthString());
-    values.put(COL_PROFILES_CURRENT_DAY, de.getDay().getDayString());
-    values.put(COL_PROFILES_START_MORNING, de.getStartMorning().timeString());
-    values.put(COL_PROFILES_END_MORNING, de.getEndMorning().timeString());
-    values.put(COL_PROFILES_START_AFTERNOON, de.getStartAfternoon().timeString());
-    values.put(COL_PROFILES_END_AFTERNOON, de.getEndAfternoon().timeString());
-    values.put(COL_PROFILES_TYPE, de.getTypeMorning().value() + "|" + de.getTypeAfternoon().value());
-    values.put(COL_PROFILES_AMOUNT, String.valueOf(de.getAmountByHour()));
-    values.put(COL_PROFILES_LEARNING_WEIGHT, String.valueOf(de.getLearningWeight()));
-    values.put(COL_PROFILES_LEGAL_WORKTIME, de.getLegalWorktime().timeString());
-    values.put(COL_PROFILES_ADDITIONAL_BREAK, de.getAdditionalBreak().timeString());
-    values.put(COL_PROFILES_RECOVERY_TIME, de.getRecoveryTime().timeString());
-    getBdd().insert(TABLE_PROFILES, null, values);
+    values.put(COL_PROFILES_NAME, pe.getName().replaceAll("'", "\\'"));
+    values.put(COL_PROFILES_CURRENT_YEAR, pe.getDay().getYearString());
+    values.put(COL_PROFILES_CURRENT_MONTH, pe.getDay().getMonthString());
+    values.put(COL_PROFILES_CURRENT_DAY, pe.getDay().getDayString());
+    values.put(COL_PROFILES_START_MORNING, pe.getStartMorning().timeString());
+    values.put(COL_PROFILES_END_MORNING, pe.getEndMorning().timeString());
+    values.put(COL_PROFILES_START_AFTERNOON, pe.getStartAfternoon().timeString());
+    values.put(COL_PROFILES_END_AFTERNOON, pe.getEndAfternoon().timeString());
+    values.put(COL_PROFILES_TYPE, pe.getTypeMorning().value() + "|" + pe.getTypeAfternoon().value());
+    values.put(COL_PROFILES_AMOUNT, String.valueOf(pe.getAmountByHour()));
+    values.put(COL_PROFILES_LEARNING_WEIGHT, String.valueOf(pe.getLearningWeight()));
+    values.put(COL_PROFILES_LEGAL_WORKTIME, pe.getLegalWorktime().timeString());
+    values.put(COL_PROFILES_ADDITIONAL_BREAK, pe.getAdditionalBreak().timeString());
+    values.put(COL_PROFILES_RECOVERY_TIME, pe.getRecoveryTime().timeString());
+    values.put(COL_PROFILES_LATITUDE, getDouble(pe.getLatitude()));
+    values.put(COL_PROFILES_LONGITUDE, getDouble(pe.getLongitude()));
+    if(!update)
+      pe.setID(getBdd().insert(TABLE_PROFILES, null, values));
+    else
+      getBdd().update(TABLE_PROFILES, values, COL_PROFILES_ID + "=?", new String[]{String.valueOf(pe.getID())});
   }
 
   /**
-   * Inserts a day.
-   * @param de The day to insert.
+   * Insets or updates a day.
+   * @param de The day to add.
+   * @param update update or insert.
    */
-  public void insertDay(final DayEntry de) {
+  public void insertOrUpdateDay(final DayEntry de, boolean update) {
     final ContentValues values = new ContentValues();
     values.put(COL_DAYS_CURRENT_YEAR, de.getDay().getYearString());
     values.put(COL_DAYS_CURRENT_MONTH, de.getDay().getMonthString());
@@ -218,21 +215,28 @@ public class SqlFactory implements SqlConstants {
     values.put(COL_DAYS_LEGAL_WORKTIME, de.getLegalWorktime().timeString());
     values.put(COL_DAYS_ADDITIONAL_BREAK, de.getAdditionalBreak().timeString());
     values.put(COL_DAYS_RECOVERY_TIME, de.getRecoveryTime().timeString());
-    getBdd().insert(TABLE_DAYS, null, values);
+    if(!update)
+      de.setID(getBdd().insert(TABLE_DAYS, null, values));
+    else
+      getBdd().update(TABLE_DAYS, values, COL_DAYS_ID + "=?", new String[]{String.valueOf(de.getID())});
   }
 
   /**
-   * Inserts a public holiday.
-   * @param de The public holiday to insert.
+   * Inserts or updates a public holiday.
+   * @param phe The public holiday to insert.
+   * @param update update or insert.
    */
-  public void insertPublicHoliday(final DayEntry de) {
+  public void insertOrUpdatePublicHoliday(final PublicHolidayEntry phe, boolean update) {
     final ContentValues values = new ContentValues();
-    values.put(COL_PUBLIC_HOLIDAYS_NAME, de.getName().replaceAll("'", "\\'"));
-    values.put(COL_PUBLIC_HOLIDAYS_DATE_YEAR, de.getDay().getYearString());
-    values.put(COL_PUBLIC_HOLIDAYS_DATE_MONTH, de.getDay().getMonthString());
-    values.put(COL_PUBLIC_HOLIDAYS_DATE_DAY, de.getDay().getDayString());
-    values.put(COL_PUBLIC_HOLIDAYS_RECURRENCE, de.isRecurrence() ? "1" : "0");
-    getBdd().insert(TABLE_PUBLIC_HOLIDAYS, null, values);
+    values.put(COL_PUBLIC_HOLIDAYS_NAME, phe.getName().replaceAll("'", "\\'"));
+    values.put(COL_PUBLIC_HOLIDAYS_DATE_YEAR, phe.getDay().getYearString());
+    values.put(COL_PUBLIC_HOLIDAYS_DATE_MONTH, phe.getDay().getMonthString());
+    values.put(COL_PUBLIC_HOLIDAYS_DATE_DAY, phe.getDay().getDayString());
+    values.put(COL_PUBLIC_HOLIDAYS_RECURRENCE, phe.isRecurrence() ? "1" : "0");
+    if(!update)
+      phe.setID(getBdd().insert(TABLE_PUBLIC_HOLIDAYS, null, values));
+    else
+      getBdd().update(TABLE_PUBLIC_HOLIDAYS, values, COL_PUBLIC_HOLIDAYS_ID + "=?", new String[]{String.valueOf(phe.getID())});
   }
 
   /**
@@ -269,87 +273,26 @@ public class SqlFactory implements SqlConstants {
       query += " " + colDay + "=?";
       args.add(String.format(Locale.US, "%02d", day));
     }
-
     return getBdd().rawQuery(query, args.toArray(new String[]{}));
   }
 
   /**
    * Fills a public holiday using the result set cursor.
    * @param c The result set cursor.
-   * @return DayEntry
+   * @return PublicHolidayEntry
    */
-  private DayEntry fillPublicHoliday(Cursor c) {
+  private PublicHolidayEntry fillPublicHoliday(Cursor c) {
     WorkTimeDay wtd = new WorkTimeDay();
     wtd.setDay(Integer.parseInt(c.getString(NUM_PUBLIC_HOLIDAYS_DATE_DAY)));
     wtd.setMonth(Integer.parseInt(c.getString(NUM_PUBLIC_HOLIDAYS_DATE_MONTH)));
     wtd.setYear(Integer.parseInt(c.getString(NUM_PUBLIC_HOLIDAYS_DATE_YEAR)));
-    DayEntry de = new DayEntry(mContext, wtd, DayType.PUBLIC_HOLIDAY, DayType.PUBLIC_HOLIDAY);
+    PublicHolidayEntry phe = new PublicHolidayEntry(wtd, DayType.PUBLIC_HOLIDAY, DayType.PUBLIC_HOLIDAY);
+    phe.setID(c.getLong(NUM_PUBLIC_HOLIDAYS_ID));
     //noinspection RegExpRedundantEscape
-    de.setName(c.getString(NUM_PUBLIC_HOLIDAYS_NAME).replaceAll("\\'", "'"));
-    de.setRecurrence(c.getString(NUM_PUBLIC_HOLIDAYS_RECURRENCE).equals("1"));
-    return de;
+    phe.setName(c.getString(NUM_PUBLIC_HOLIDAYS_NAME).replaceAll("\\'", "'"));
+    phe.setRecurrence(c.getString(NUM_PUBLIC_HOLIDAYS_RECURRENCE).equals("1"));
+    return phe;
   }
-
-  /**
-   * Returns the public holiday by name.
-   * @param name The name.
-   * @param date The date.
-   * @return DayEntry or null
-   */
-  public DayEntry getPublicHoliday(String name, String date) {
-    /* day, month, year */
-    String d [] = date.split("/");
-    final Cursor c = getBdd().rawQuery("SELECT * FROM " + TABLE_PUBLIC_HOLIDAYS +
-        " WHERE " + COL_PUBLIC_HOLIDAYS_NAME + "=? AND " +
-        COL_PUBLIC_HOLIDAYS_DATE_YEAR + "=? AND " +
-        COL_PUBLIC_HOLIDAYS_DATE_MONTH + "=? AND " +
-        COL_PUBLIC_HOLIDAYS_DATE_DAY + "=?", new String[]{ name, d[2], d[1], d[0] });
-    DayEntry de = null;
-    if (c.moveToFirst()) {
-      de = fillPublicHoliday(c);
-    }
-    c.close();
-    return de;
-  }
-
-  /**
-   * Returns the list of public holidays.
-   * @param year The current year (-1 to ignore years).
-   * @param month The current month (-1 to ignore months).
-   * @param day The current day (-1 to ignore days).
-   * @return List<DayEntry>
-   */
-  public List<DayEntry> getPublicHolidays(int year, int month, int day) {
-    final List<DayEntry> list = new ArrayList<>();
-    final Cursor c = buildsAndExecutesQuery(TABLE_PUBLIC_HOLIDAYS, COL_PUBLIC_HOLIDAYS_DATE_YEAR, year,
-        COL_PUBLIC_HOLIDAYS_DATE_MONTH, month, COL_PUBLIC_HOLIDAYS_DATE_DAY, day);
-    if (c.moveToFirst()) {
-      do {
-        list.add(fillPublicHoliday(c));
-      } while (c.moveToNext());
-    }
-    c.close();
-
-    list.sort(SortComparator.comparator(
-        SortComparator.getComparator(SortComparator.SORT_BY_RECURRENCE,
-            SortComparator.SORT_BY_DATE)));
-    return list;
-  }
-
-  /**
-   * Returns an integer value from a string.
-   * @param s The int in String
-   * @param def The default value.
-   * @return int
-   */
-  private int getInt(String s, int def) {
-    try {
-      return Integer.parseInt(s);
-    } catch (Exception e) {
-      return def;
-    }
-  }
-
 
   /**
    * Fills a day using the result set cursor.
@@ -371,7 +314,8 @@ public class SqlFactory implements SqlConstants {
       dta = DayType.compute(c.getInt(NUM_DAYS_TYPE));
       dtb = DayType.compute(c.getInt(NUM_DAYS_TYPE));
     }
-    final DayEntry de = new DayEntry(mContext, wtd, dta, dtb);
+    final DayEntry de = new DayEntry(wtd, dta, dtb);
+    de.setID(c.getLong(NUM_DAYS_ID));
     de.setStartMorning(c.getString(NUM_DAYS_START_MORNING));
     de.setEndMorning(c.getString(NUM_DAYS_END_MORNING));
     de.setStartAfternoon(c.getString(NUM_DAYS_START_AFTERNOON));
@@ -383,6 +327,128 @@ public class SqlFactory implements SqlConstants {
     if(s != null && !s.isEmpty())
       de.setAmountByHour(Double.parseDouble(s));
     return de;
+  }
+
+  /**
+   * Fills a profile using the result set cursor.
+   * @param c The result set cursor.
+   * @return ProfileEntry
+   */
+  private ProfileEntry fillProfile(Cursor c) {
+    WorkTimeDay wtd = new WorkTimeDay();
+    wtd.setDay(Integer.parseInt(c.getString(NUM_PROFILES_CURRENT_DAY)));
+    wtd.setMonth(Integer.parseInt(c.getString(NUM_PROFILES_CURRENT_MONTH)));
+    wtd.setYear(Integer.parseInt(c.getString(NUM_PROFILES_CURRENT_YEAR)));
+
+    String types = c.getString(NUM_PROFILES_TYPE);
+    DayType dta, dtb;
+    if(types != null && !types.isEmpty() && types.contains("|")) {
+      String [] sp = types.split("\\|");
+      dta = DayType.compute(getInt(sp[0], DayType.ERROR.value()));
+      dtb = DayType.compute(getInt(sp[1], DayType.ERROR.value()));
+    } else {
+      dta = DayType.compute(c.getInt(NUM_PROFILES_TYPE));
+      dtb = dta;
+    }
+    final ProfileEntry pe = new ProfileEntry(wtd, dta, dtb);
+    pe.setID(c.getLong(NUM_PROFILES_ID));
+    pe.setLatitude(getDouble(c.getString(NUM_PROFILES_LATITUDE)));
+    pe.setLongitude(getDouble(c.getString(NUM_PROFILES_LONGITUDE)));
+    pe.setStartMorning(c.getString(NUM_PROFILES_START_MORNING));
+    pe.setEndMorning(c.getString(NUM_PROFILES_END_MORNING));
+    pe.setStartAfternoon(c.getString(NUM_PROFILES_START_AFTERNOON));
+    pe.setEndAfternoon(c.getString(NUM_PROFILES_END_AFTERNOON));
+    String s = c.getString(NUM_PROFILES_AMOUNT);
+    if(s != null && !s.isEmpty())
+      pe.setAmountByHour(Double.parseDouble(s));
+    s = c.getString(NUM_PROFILES_LEARNING_WEIGHT);
+    if(s != null && !s.isEmpty())
+      pe.setLearningWeight(Integer.parseInt(s));
+    //noinspection RegExpRedundantEscape
+    pe.setName(c.getString(NUM_PROFILES_NAME).replaceAll("\\'", "'"));
+
+    pe.setLegalWorktime(c.getString(NUM_PROFILES_LEGAL_WORKTIME));
+    pe.setAdditionalBreak(c.getString(NUM_PROFILES_ADDITIONAL_BREAK));
+    pe.setRecoveryTime(c.getString(NUM_PROFILES_RECOVERY_TIME));
+    return pe;
+  }
+
+  /**
+   * Returns the public holiday by name.
+   * @param name The name.
+   * @param date The date.
+   * @return PublicHolidayEntry or null
+   */
+  public PublicHolidayEntry getPublicHoliday(String name, String date) {
+    /* day, month, year */
+    String d [] = date.split("/");
+    final Cursor c = getBdd().rawQuery("SELECT * FROM " + TABLE_PUBLIC_HOLIDAYS +
+        " WHERE " + COL_PUBLIC_HOLIDAYS_NAME + "=? AND " +
+        COL_PUBLIC_HOLIDAYS_DATE_YEAR + "=? AND " +
+        COL_PUBLIC_HOLIDAYS_DATE_MONTH + "=? AND " +
+        COL_PUBLIC_HOLIDAYS_DATE_DAY + "=?", new String[]{ name, d[2], d[1], d[0] });
+    PublicHolidayEntry phee = null;
+    if (c.moveToFirst()) {
+      phee = fillPublicHoliday(c);
+    }
+    c.close();
+    return phee;
+  }
+
+  /**
+   * Returns the list of public holidays.
+   * @param year The current year (-1 to ignore years).
+   * @param month The current month (-1 to ignore months).
+   * @param day The current day (-1 to ignore days).
+   * @return List<PublicHolidayEntry>
+   */
+  public List<PublicHolidayEntry> getPublicHolidays(int year, int month, int day) {
+    final List<PublicHolidayEntry> list = new ArrayList<>();
+    final Cursor c = buildsAndExecutesQuery(TABLE_PUBLIC_HOLIDAYS, COL_PUBLIC_HOLIDAYS_DATE_YEAR, year,
+        COL_PUBLIC_HOLIDAYS_DATE_MONTH, month, COL_PUBLIC_HOLIDAYS_DATE_DAY, day);
+    if (c.moveToFirst()) {
+      do {
+        list.add(fillPublicHoliday(c));
+      } while (c.moveToNext());
+    }
+    c.close();
+
+    list.sort(PublicHolidayEntrySortComparator.comparator(
+        PublicHolidayEntrySortComparator.getComparator(PublicHolidayEntrySortComparator.SORT_BY_RECURRENCE,
+            PublicHolidayEntrySortComparator.SORT_BY_DATE)));
+    return list;
+  }
+
+  /**
+   * Returns an integer value from a string.
+   * @param s The int in String
+   * @param def The default value.
+   * @return int
+   */
+  private int getInt(String s, int def) {
+    try {
+      return Integer.parseInt(s);
+    } catch (Exception e) {
+      return def;
+    }
+  }
+
+  /**
+   * Returns the 'double' value of a string and if the string is equal to SqlConstants.NAN then Double.NaN is returned.
+   * @param str The string to convert.
+   * @return double
+   */
+  private double getDouble(String str) {
+    return (str.equals(NAN)) ? Double.NaN : Double.parseDouble(str);
+  }
+
+  /**
+   * Returns the 'String' value of a double and if the string is equal to Double.NaN then SqlConstants.NAN is returned.
+   * @param d The double to convert.
+   * @return String
+   */
+  private String getDouble(double d) {
+    return (Double.isNaN(d)) ? NAN : String.valueOf(d);
   }
 
   /**
@@ -463,57 +529,15 @@ public class SqlFactory implements SqlConstants {
     return list;
   }
 
-
-  /**
-   * Fills a profile using the result set cursor.
-   * @param c The result set cursor.
-   * @return DayEntry
-   */
-  private DayEntry fillProfile(Cursor c) {
-    WorkTimeDay wtd = new WorkTimeDay();
-    wtd.setDay(Integer.parseInt(c.getString(NUM_PROFILES_CURRENT_DAY)));
-    wtd.setMonth(Integer.parseInt(c.getString(NUM_PROFILES_CURRENT_MONTH)));
-    wtd.setYear(Integer.parseInt(c.getString(NUM_PROFILES_CURRENT_YEAR)));
-
-    String types = c.getString(NUM_PROFILES_TYPE);
-    DayType dta, dtb;
-    if(types != null && !types.isEmpty() && types.contains("|")) {
-      String [] sp = types.split("\\|");
-      dta = DayType.compute(getInt(sp[0], DayType.ERROR.value()));
-      dtb = DayType.compute(getInt(sp[1], DayType.ERROR.value()));
-    } else {
-      dta = DayType.compute(c.getInt(NUM_PROFILES_TYPE));
-      dtb = dta;
-    }
-    final DayEntry de = new DayEntry(mContext, wtd, dta, dtb);
-    de.setStartMorning(c.getString(NUM_PROFILES_START_MORNING));
-    de.setEndMorning(c.getString(NUM_PROFILES_END_MORNING));
-    de.setStartAfternoon(c.getString(NUM_PROFILES_START_AFTERNOON));
-    de.setEndAfternoon(c.getString(NUM_PROFILES_END_AFTERNOON));
-    String s = c.getString(NUM_PROFILES_AMOUNT);
-    if(s != null && !s.isEmpty())
-      de.setAmountByHour(Double.parseDouble(s));
-    s = c.getString(NUM_PROFILES_LEARNING_WEIGHT);
-    if(s != null && !s.isEmpty())
-      de.setLearningWeight(Integer.parseInt(s));
-    //noinspection RegExpRedundantEscape
-    de.setName(c.getString(NUM_PROFILES_NAME).replaceAll("\\'", "'"));
-
-    de.setLegalWorktime(c.getString(NUM_PROFILES_LEGAL_WORKTIME));
-    de.setAdditionalBreak(c.getString(NUM_PROFILES_ADDITIONAL_BREAK));
-    de.setRecoveryTime(c.getString(NUM_PROFILES_RECOVERY_TIME));
-    return de;
-  }
-
   /**
    * Returns the list of profiles.
    * @param year The current year (-1 to ignore years).
    * @param month The current month (-1 to ignore months).
    * @param day The current day (-1 to ignore days).
-   * @return List<DayEntry>
+   * @return List<ProfileEntry>
    */
-  public List<DayEntry> getProfiles(int year, int month, int day) {
-    final List<DayEntry> list = new ArrayList<>();
+  public List<ProfileEntry> getProfiles(int year, int month, int day) {
+    final List<ProfileEntry> list = new ArrayList<>();
     final Cursor c = buildsAndExecutesQuery(TABLE_PROFILES, COL_PROFILES_CURRENT_YEAR, year,
         COL_PROFILES_CURRENT_MONTH, month, COL_PROFILES_CURRENT_DAY, day);
     if (c.moveToFirst()) {
@@ -522,16 +546,17 @@ public class SqlFactory implements SqlConstants {
       } while (c.moveToNext());
     }
     c.close();
-    list.sort(Comparator.comparing(DayEntry::getName));
+    list.sort(Comparator.comparing(ProfileEntry::getName));
     return list;
   }
+
   /**
    * Returns profile by name.
    * @param name The profile name.
-   * @return DayEntry or null if not found.
+   * @return ProfileEntry or null if not found.
    */
-  public DayEntry getProfile(String name) {
-    DayEntry profile = null;
+  public ProfileEntry getProfile(String name) {
+    ProfileEntry profile = null;
     final Cursor c = getBdd().rawQuery("SELECT * FROM " + TABLE_PROFILES +
         " WHERE " + COL_PROFILES_NAME + "=?", new String[]{ name.replaceAll("'", "\\'") });
     if (c.moveToFirst()) {
@@ -542,10 +567,10 @@ public class SqlFactory implements SqlConstants {
   }
   /**
    * Removes a public holiday.
-   * @param de The entry to remove.
+   * @param phe The entry to remove.
    */
-  public void removePublicHoliday(final DayEntry de) {
-    getBdd().delete(TABLE_PUBLIC_HOLIDAYS, COL_PUBLIC_HOLIDAYS_NAME + "=?", new String[]{de.getName().replaceAll("'", "\\'")});
+  public void removePublicHoliday(final PublicHolidayEntry phe) {
+    getBdd().delete(TABLE_PUBLIC_HOLIDAYS, COL_PUBLIC_HOLIDAYS_ID + "=?", new String[]{String.valueOf(phe.getID())});
   }
 
   /**
@@ -553,17 +578,15 @@ public class SqlFactory implements SqlConstants {
    * @param de The entry to remove.
    */
   public void removeDay(final DayEntry de) {
-    WorkTimeDay d = de.getDay();
-    getBdd().delete(TABLE_DAYS, COL_DAYS_CURRENT_YEAR + "=? and " + COL_DAYS_CURRENT_MONTH + "=? and " + COL_DAYS_CURRENT_DAY + "=?",
-        new String[]{d.getYearString(), d.getMonthString(), d.getDayString()});
+    getBdd().delete(TABLE_DAYS, COL_DAYS_ID + "=?", new String[]{String.valueOf(de.getID())});
   }
 
   /**
    * Removes a profile.
-   * @param de The entry to remove.
+   * @param pe The entry to remove.
    */
-  public void removeProfile(final DayEntry de) {
-    getBdd().delete(TABLE_PROFILES, COL_PROFILES_NAME + "=?", new String[]{de.getName().replaceAll("'", "\\'")});
+  public void removeProfile(final ProfileEntry pe) {
+    getBdd().delete(TABLE_PROFILES, COL_PROFILES_ID + "=?", new String[]{String.valueOf(pe.getID())});
   }
 
 }

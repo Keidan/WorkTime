@@ -13,8 +13,8 @@ import android.widget.EditText;
 
 import fr.ralala.worktime.MainApplication;
 import fr.ralala.worktime.R;
-import fr.ralala.worktime.models.DayEntry;
 import fr.ralala.worktime.models.DayType;
+import fr.ralala.worktime.models.PublicHolidayEntry;
 import fr.ralala.worktime.models.WorkTimeDay;
 import fr.ralala.worktime.ui.utils.UIHelper;
 
@@ -31,7 +31,7 @@ public class PublicHolidayActivity extends AppCompatActivity {
   public static final int REQUEST_START_ACTIVITY = 100;
   public static final String PUBLIC_HOLIDAY_ACTIVITY_EXTRA_NAME = "PUBLIC_HOLIDAY_ACTIVITY_EXTRA_NAME_name";
   private MainApplication mApp = null;
-  private DayEntry mDe = null;
+  private PublicHolidayEntry mPhe = null;
   private EditText mTname = null;
   private DatePicker mTdate = null;
   private CheckBox mCkRecurrence = null;
@@ -65,7 +65,7 @@ public class PublicHolidayActivity extends AppCompatActivity {
   protected void onCreate(Bundle savedInstanceState) {
     UIHelper.openAnimation(this);
     super.onCreate(savedInstanceState);
-    mApp = MainApplication.getApp(this);
+    mApp = MainApplication.getInstance();
     setContentView(R.layout.activity_public_holiday);
     android.support.v7.app.ActionBar actionBar = getDelegate().getSupportActionBar();
     if(actionBar != null) {
@@ -82,23 +82,23 @@ public class PublicHolidayActivity extends AppCompatActivity {
       int idx = extra.lastIndexOf('|');
       String name = extra.substring(0, idx);
       String date = extra.substring(idx + 1);
-      DayEntry de = mApp.getPublicHolidaysFactory().getByNameAndDate(name, date);
+      PublicHolidayEntry de = mApp.getPublicHolidaysFactory().getByNameAndDate(name, date);
       if(de != null) {
-        this.mDe = de;
+        this.mPhe = de;
       }
     }
-    if(mDe == null) {
-      mDe = new DayEntry(this, WorkTimeDay.now(), DayType.ERROR, DayType.ERROR);
-      mDe.setName("");
+    if(mPhe == null) {
+      mPhe = new PublicHolidayEntry(WorkTimeDay.now(), DayType.ERROR, DayType.ERROR);
+      mPhe.setName("");
     }
     mCkRecurrence = findViewById(R.id.ckRecurrence);
     mTname = findViewById(R.id.etName);
     mTdate = findViewById(R.id.dpDate);
-    if(mDe != null) {
-      mTname.setText(mDe.getName());
+    if(mPhe != null) {
+      mTname.setText(mPhe.getName());
       // set current date into datepicker
-      mTdate.init(mDe.getDay().getYear(), mDe.getDay().getMonth() - 1, mDe.getDay().getDay(), null);
-      mCkRecurrence.setChecked(mDe.isRecurrence());
+      mTdate.init(mPhe.getDay().getYear(), mPhe.getDay().getMonth() - 1, mPhe.getDay().getDay(), null);
+      mCkRecurrence.setChecked(mPhe.isRecurrence());
     } else {
       mTname.setText("");
       WorkTimeDay now = WorkTimeDay.now();
@@ -141,12 +141,12 @@ public class PublicHolidayActivity extends AppCompatActivity {
         wtd.setDay(mTdate.getDayOfMonth());
         wtd.setMonth(mTdate.getMonth() + 1);
         wtd.setYear(mTdate.getYear());
-        if(mDe != null) mApp.getPublicHolidaysFactory().remove(mDe); /* remove old entry */
-        DayEntry de = new DayEntry(this, wtd, DayType.PUBLIC_HOLIDAY, DayType.PUBLIC_HOLIDAY);
-        if(mApp.getPublicHolidaysFactory().testValidity(de)) {
-          de.setName(name);
-          de.setRecurrence(mCkRecurrence.isChecked());
-          mApp.getPublicHolidaysFactory().add(de);
+        PublicHolidayEntry phe = new PublicHolidayEntry(wtd, DayType.PUBLIC_HOLIDAY, DayType.PUBLIC_HOLIDAY);
+        phe.setID(mPhe.getID());
+        if(mApp.getPublicHolidaysFactory().testValidity(phe)) {
+          phe.setName(name);
+          phe.setRecurrence(mCkRecurrence.isChecked());
+          mApp.getPublicHolidaysFactory().add(phe);
           setResult(RESULT_OK);
           finish();
           UIHelper.closeAnimation(this);

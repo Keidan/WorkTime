@@ -35,6 +35,8 @@ import fr.ralala.worktime.MainApplication;
   private static final String CREATE_BDD_PROFILES = "CREATE TABLE IF NOT EXISTS "
     + TABLE_PROFILES
     + " ("
+    + COL_PROFILES_ID
+    + " INTEGER PRIMARY KEY AUTOINCREMENT, "
     + COL_PROFILES_NAME
     + " TEXT NOT NULL, "
     + COL_PROFILES_CURRENT_YEAR
@@ -62,11 +64,17 @@ import fr.ralala.worktime.MainApplication;
     + COL_PROFILES_ADDITIONAL_BREAK
     + " TEXT NOT NULL, "
     + COL_PROFILES_RECOVERY_TIME
+    + " TEXT NOT NULL, "
+    + COL_PROFILES_LATITUDE
+    + " TEXT NOT NULL, "
+    + COL_PROFILES_LONGITUDE
     + " TEXT NOT NULL);";
 
   private static final String CREATE_BDD_DAYS = "CREATE TABLE IF NOT EXISTS "
     + TABLE_DAYS
     + " ("
+    + COL_DAYS_ID
+    + " INTEGER PRIMARY KEY AUTOINCREMENT, "
     + COL_DAYS_CURRENT_YEAR
     + " TEXT NOT NULL, "
     + COL_DAYS_CURRENT_MONTH
@@ -95,6 +103,8 @@ import fr.ralala.worktime.MainApplication;
   private static final String CREATE_BDD_PUBLIC_HOLIDAYS = "CREATE TABLE IF NOT EXISTS "
     + TABLE_PUBLIC_HOLIDAYS
     + " ("
+    + COL_PUBLIC_HOLIDAYS_ID
+    + " INTEGER PRIMARY KEY AUTOINCREMENT, "
     + COL_PUBLIC_HOLIDAYS_NAME
     + " TEXT NOT NULL, "
     + COL_PUBLIC_HOLIDAYS_DATE_YEAR
@@ -110,7 +120,7 @@ import fr.ralala.worktime.MainApplication;
     + TABLE_SETTINGS
     + " ("
     + COL_SETTINGS_NAME
-    + " TEXT NOT NULL, "
+    + " TEXT PRIMARY KEY NOT NULL, "
     + COL_SETTINGS_VALUE
     + " TEXT NOT NULL);";
 
@@ -177,36 +187,53 @@ import fr.ralala.worktime.MainApplication;
       db.execSQL("ALTER TABLE " + TABLE_DAYS+ " ADD COLUMN " + COL_DAYS_RECOVERY_TIME + " TEXT DEFAULT '00:00' NOT NULL");
     } else if(oldVersion == 7 && newVersion == 8) {
       Log.i(getClass().getSimpleName(), "Ready to migrate from v7 to v8");
-      /* The date columns of the previous databases (d_current, p_current and ph_date) are divided into 3 dedicated columns ([prev_column_name]_year, [prev_column_name]_month, [prev_column_name]_day) */
+      /*
+       * The date columns of the previous databases (d_current, p_current and ph_date) are
+       * divided into 3 dedicated columns ([prev_column_name]_year, [prev_column_name]_month, [prev_column_name]_day)
+       */
       String oldTable = TABLE_DAYS + "_v" + oldVersion;
       db.execSQL("ALTER TABLE days RENAME TO " + oldTable);
       db.execSQL(CREATE_BDD_DAYS);
-      db.execSQL("INSERT INTO " + TABLE_DAYS + "(" + COL_DAYS_CURRENT_YEAR + ", " +  COL_DAYS_CURRENT_MONTH + ", " +  COL_DAYS_CURRENT_DAY + ", " +  COL_DAYS_START_MORNING + ", " +  COL_DAYS_END_MORNING
-              + ", " + COL_DAYS_START_AFTERNOON + ", " + COL_DAYS_END_AFTERNOON + ", " + COL_DAYS_TYPE + ", " + COL_DAYS_AMOUNT + ", " + COL_DAYS_LEGAL_WORKTIME + ", " + COL_DAYS_ADDITIONAL_BREAK + ", " +  COL_DAYS_RECOVERY_TIME
+      db.execSQL("INSERT INTO " + TABLE_DAYS + "(" + COL_DAYS_CURRENT_YEAR + ", " +  COL_DAYS_CURRENT_MONTH + ", " +  COL_DAYS_CURRENT_DAY + ", "
+              +  COL_DAYS_START_MORNING + ", " +  COL_DAYS_END_MORNING + ", " + COL_DAYS_START_AFTERNOON + ", " + COL_DAYS_END_AFTERNOON + ", "
+              + COL_DAYS_TYPE + ", " + COL_DAYS_AMOUNT + ", " + COL_DAYS_LEGAL_WORKTIME + ", " + COL_DAYS_ADDITIONAL_BREAK + ", "
+              +  COL_DAYS_RECOVERY_TIME
               + ") SELECT SUBSTR(d_current,7,4),SUBSTR(d_current,4,2), SUBSTR(d_current,1,2), d_start_morning, d_end_morning, d_start_afternoon, d_end_afternoon, "
               + "d_type, d_amount,  d_legal_worktime, d_add_break,  d_rec_time FROM " + oldTable);
       db.execSQL("DROP TABLE " + oldTable);
       Log.i(getClass().getSimpleName(), "Days database, migrated");
-
+      /* Profiles */
       oldTable = TABLE_PROFILES + "_v" + oldVersion;
       db.execSQL("ALTER TABLE profiles RENAME TO " + oldTable);
       db.execSQL(CREATE_BDD_PROFILES);
-      db.execSQL("INSERT INTO " + TABLE_PROFILES + "(" + COL_PROFILES_NAME + ", " + COL_PROFILES_CURRENT_YEAR + ", " + COL_PROFILES_CURRENT_MONTH + ", " + COL_PROFILES_CURRENT_DAY + ", " + COL_PROFILES_START_MORNING
-              + ", " + COL_PROFILES_END_MORNING + ", " + COL_PROFILES_START_AFTERNOON + ", " + COL_PROFILES_END_AFTERNOON + ", " + COL_PROFILES_TYPE + ", " + COL_PROFILES_AMOUNT + ", " + COL_PROFILES_LEARNING_WEIGHT
+      db.execSQL("INSERT INTO " + TABLE_PROFILES + "(" + COL_PROFILES_NAME + ", " + COL_PROFILES_CURRENT_YEAR + ", "
+              + COL_PROFILES_CURRENT_MONTH + ", " + COL_PROFILES_CURRENT_DAY + ", " + COL_PROFILES_START_MORNING
+              + ", " + COL_PROFILES_END_MORNING + ", " + COL_PROFILES_START_AFTERNOON + ", " + COL_PROFILES_END_AFTERNOON + ", "
+              + COL_PROFILES_TYPE + ", " + COL_PROFILES_AMOUNT + ", " + COL_PROFILES_LEARNING_WEIGHT
               + ", " + COL_PROFILES_LEGAL_WORKTIME + ", " + COL_PROFILES_ADDITIONAL_BREAK + ", " + COL_PROFILES_RECOVERY_TIME
+              + ", " + COL_PROFILES_LATITUDE + ", " + COL_PROFILES_LONGITUDE
               + ") SELECT p_name, SUBSTR(p_current,7,4),SUBSTR(p_current,4,2), SUBSTR(p_current,1,2), p_start_morning, p_end_morning, p_start_afternoon, p_end_afternoon, "
-              + "p_type, p_amount, p_learning_weight,  p_legal_worktime, p_add_break,  p_rec_time FROM " + oldTable);
+              + "p_type, p_amount, p_learning_weight,  p_legal_worktime, p_add_break,  p_rec_time, '" + NAN + "', '" + NAN + "' FROM " + oldTable);
       db.execSQL("DROP TABLE " + oldTable);
       Log.i(getClass().getSimpleName(), "Profiles database, migrated");
-
+      /* Public holidays */
       oldTable = TABLE_PUBLIC_HOLIDAYS + "_v" + oldVersion;
       db.execSQL("ALTER TABLE public_holidays RENAME TO " + oldTable);
       db.execSQL(CREATE_BDD_PUBLIC_HOLIDAYS);
-      db.execSQL("INSERT INTO " + TABLE_PUBLIC_HOLIDAYS + "(" + COL_PUBLIC_HOLIDAYS_NAME + ", " + COL_PUBLIC_HOLIDAYS_DATE_YEAR + ", " + COL_PUBLIC_HOLIDAYS_DATE_MONTH
+      db.execSQL("INSERT INTO " + TABLE_PUBLIC_HOLIDAYS + "(" + COL_PUBLIC_HOLIDAYS_NAME + ", "
+              + COL_PUBLIC_HOLIDAYS_DATE_YEAR + ", " + COL_PUBLIC_HOLIDAYS_DATE_MONTH
               + ", " + COL_PUBLIC_HOLIDAYS_DATE_DAY + ", " + COL_PUBLIC_HOLIDAYS_RECURRENCE
               + ") SELECT ph_name, SUBSTR(ph_date,7,4),SUBSTR(ph_date,4,2), SUBSTR(ph_date,1,2), ph_recurrence FROM " + oldTable);
       db.execSQL("DROP TABLE " + oldTable);
       Log.i(getClass().getSimpleName(), "Public holidays database, migrated");
+      /* Settings */
+      oldTable = TABLE_SETTINGS + "_v" + oldVersion;
+      db.execSQL("ALTER TABLE settings RENAME TO " + oldTable);
+      db.execSQL(CREATE_BDD_SETTINGS);
+      db.execSQL("INSERT INTO " + TABLE_SETTINGS + "(" + COL_SETTINGS_NAME + ", " + COL_SETTINGS_VALUE
+          + ") SELECT s_name, s_value FROM " + oldTable);
+      db.execSQL("DROP TABLE " + oldTable);
+      Log.i(getClass().getSimpleName(), "Settings database, migrated");
     }
   }
 
@@ -263,7 +290,7 @@ import fr.ralala.worktime.MainApplication;
    */
   public static String copyDatabase(final Context c, final String name,
                                     final String folder) throws Exception {
-    MainApplication.getApp(c).getSql().settingsSave();
+    MainApplication.getInstance().getSql().settingsSave();
     final String databasePath = c.getDatabasePath(name).getPath();
     final File f = new File(databasePath);
     OutputStream myOutput = null;
@@ -315,7 +342,7 @@ import fr.ralala.worktime.MainApplication;
    * @throws Exception If an exception is reached.
    */
   public static void loadDatabase(Context c, final String name, File in) throws Exception{
-    MainApplication.getApp(c).getSql().settingsLoad(null);
+    MainApplication.getInstance().getSql().settingsLoad(null);
     final String databasePath = c.getDatabasePath(name).getPath();
     final File f = new File(databasePath);
     InputStream myInput = null;

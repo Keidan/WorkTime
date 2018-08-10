@@ -122,7 +122,7 @@
     <string name="chooser_file_size">Taille fichier</string>
     <string name="export_success">Exportation r\u00E9ussie</string>
     <string name="import_success">Importation r\u00E9ussie</string>
-    <string name="permissions_read_ext_storage">Les fonctions d\'import/export ont besoin des autorisations d\'acc\u00E8s en lecture/\u00E9criture au stockage externe et l\'acc\u00E8s internet pour dropbox</string>
+    <string name="permissions_read_ext_storage">Les fonctions d\'import/export ont besoin des autorisations d\'acc\u00E8s en lecture/\u00E9criture au stockage externe, l\'acc\u00E8s internet pour dropbox et la g\u00E9olocalisation pour la localisation du profil.</string>
     <string name="year">Ann\u00E9e :</string>
     <string name="export_no_items">Aucun mois s\u00E9lectionn\u00E9 pour l\'exportation</string>
     <string name="snack_hide">Masquer</string>
@@ -176,4 +176,13 @@
     <string name="confirm_reset_profile">Voulez-vous vraiment remettre \u00E0 z\u00E9ro les apprentissages?</string>
     <string name="db_unsupported">La version de la base de donn\u00E9es n\'est pas support\u00E9e.</string>
     <string name="db_updated">La base de donn\u00E9es a \u00E9t\u00E9 mise \u00E0 jour, l\'application va maintenant red\u00E9marrer.</string>
+    <string name="hint_longitude">Longitude</string>
+    <string name="hint_latitude">Latitude</string>
+    <string name="geolocate_me">G\u00E9olocalisez-moi</string>
+    <string name="geolocation">G\u00E9olocalisation</string>
+    <string name="error_invalid_latitude">Valeur de latitude invalide.</string>
+    <string name="error_invalid_longitude">Valeur de longitude invalide.</string>
+    <string name="error_gps_permissions">Autorisations GPS invalides.</string>
+    <string name="no_location_p1">L\'emplacement pour \'</string>
+    <string name="no_location_p2">\' n\'est pas indiqu\u00E9.</string>
 </resources>
