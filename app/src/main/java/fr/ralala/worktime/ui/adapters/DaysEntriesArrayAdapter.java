@@ -220,10 +220,12 @@ public class DaysEntriesArrayAdapter extends ArrayAdapter<DayEntry> {
           holder.tvOver.setText("*");
           holder.tvOver.setTypeface(Typeface.MONOSPACE, Typeface.NORMAL);
           holder.tvOver.setGravity(Gravity.CENTER);
+          holder.tvOver.setTextColor(holder.tvOverColors);
         } else if(isNotValidMorning(t) && isNotValidAfternoon(t) || w.timeString().equals("00:00")) {
           holder.tvOver.setText("-");
           holder.tvOver.setTypeface(Typeface.MONOSPACE, Typeface.NORMAL);
           holder.tvOver.setGravity(Gravity.CENTER);
+          holder.tvOver.setTextColor(holder.tvOverColors);
         }
         else {
           long overtime = t.getOverTimeMs();
@@ -232,6 +234,7 @@ public class DaysEntriesArrayAdapter extends ArrayAdapter<DayEntry> {
             holder.tvOver.setText("-");
             holder.tvOver.setTypeface(Typeface.MONOSPACE, Typeface.NORMAL);
             holder.tvOver.setGravity(Gravity.CENTER);
+            holder.tvOver.setTextColor(holder.tvOverColors);
           } else {
             holder.tvOver.setTypeface(Typeface.MONOSPACE, Typeface.BOLD);
             holder.tvOver.setGravity(Gravity.END);
