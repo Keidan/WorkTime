@@ -16,7 +16,6 @@ import android.os.Process;
 import android.os.Vibrator;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
-import android.util.Log;
 import android.util.SparseArray;
 
 
@@ -140,7 +139,6 @@ public class AndroidHelper {
    * @param string The string to display before the restart.
    */
   public static void restartApplication(final Context c, final int string) {
-    Log.e("TAG", "*****RESTART");
     Intent startActivity = c.getApplicationContext().getPackageManager()
         .getLaunchIntentForPackage(c.getApplicationContext().getPackageName());
     assert startActivity != null;
