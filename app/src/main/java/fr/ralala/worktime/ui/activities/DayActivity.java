@@ -546,7 +546,13 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
     else if(v.equals(mTvLegalWorktime))
       UIHelper.openTimePicker(this, mWtdLegalWorktime, mTvLegalWorktime);
     else if(v.equals(mIvGeoloc)) {
-      createGeolocateDialog(getString(R.string.geolocation), R.layout.content_dialog_add_geoloc, ((ProfileEntry)mDe).getLocation(), (dialog, latitude, longitude) -> {
+      Location loc = ((ProfileEntry)mDe).getLocation();
+      if((Double.isNaN(loc.getLatitude()) || loc.getLatitude() == 0.0) &&
+          (Double.isNaN(loc.getLongitude()) || loc.getLongitude() == 0.0) && mLocation != null &&
+          !Double.isNaN(mLocation.getLatitude()) && mLocation.getLatitude() != 0.0 &&
+          !Double.isNaN(mLocation.getLongitude()) && mLocation.getLongitude() != 0.0)
+        loc = mLocation;
+      createGeolocateDialog(getString(R.string.geolocation), R.layout.content_dialog_add_geoloc, loc, (dialog, latitude, longitude) -> {
         final String slatitude = latitude.getText().toString();
         final String slongitude = longitude.getText().toString();
         final Location location = new Location("");
@@ -654,10 +660,12 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
     dialog.show();
     TextInputEditText etLatitude = dialog.findViewById(R.id.tieLatitude);
     if(etLatitude != null)
-      etLatitude.setText((defaultLocation == null || Double.isNaN(defaultLocation.getLatitude())) ? "" : String.valueOf(defaultLocation.getLatitude()));
+      etLatitude.setText((defaultLocation == null || Double.isNaN(defaultLocation.getLatitude()) ||
+          defaultLocation.getLatitude() == 0.0) ? "" : String.valueOf(defaultLocation.getLatitude()));
     TextInputEditText etLongitude = dialog.findViewById(R.id.tieLongitude);
     if(etLongitude != null)
-      etLongitude.setText(String.valueOf((defaultLocation == null || Double.isNaN(defaultLocation.getLongitude())) ? "" : defaultLocation.getLongitude()));
+      etLongitude.setText(String.valueOf((defaultLocation == null || Double.isNaN(defaultLocation.getLongitude()) ||
+          defaultLocation.getLongitude() == 0.0) ? "" : defaultLocation.getLongitude()));
     Button btGeolocateMe = dialog.findViewById(R.id.btGeolocateMe);
     if(btGeolocateMe != null)
       btGeolocateMe.setOnClickListener((v) -> {
