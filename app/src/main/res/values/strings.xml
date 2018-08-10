@@ -11,7 +11,7 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="help" translatable="false">\?</string>
-    <string name="help_profile">Swipe the entry for an action.</string>
+    <string name="help_profile">Swipe the entry for an action.\nLong press to locate.</string>
     <string name="help_public_holidays">Swipe the entry for an action.</string>
     <string name="public_holidays_removed">Public holiday removed.</string>
     <string name="profile_removed">Profile removed.</string>
