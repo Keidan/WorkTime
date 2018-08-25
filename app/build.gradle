@@ -1,16 +1,23 @@
 apply plugin: 'com.android.application'
 
+ext {
+    supportVersion = "27.1.1"
+    gmsPlayServicesVersion = "15.0.1"
+    okhttpVersion = "2.7.5"
+    okhttp3Version = "3.7.0"
+    constraintLayoutVersion = "1.1.2"
+}
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation "com.google.android.gms:play-services-location:15.0.1"
-    implementation 'com.android.support:appcompat-v7:27.1.1'
-    implementation 'com.android.support:support-v4:27.1.1'
-    implementation 'com.android.support:design:27.1.1'
-    implementation 'com.android.support.constraint:constraint-layout:1.1.2'
-    implementation 'com.android.support:support-compat:27.1.1'
-    implementation 'com.squareup.okhttp:okhttp:2.7.5'
-    implementation 'com.squareup.okhttp3:okhttp:3.7.0'
+    implementation "com.google.android.gms:play-services-location:$gmsPlayServicesVersion"
+    implementation "com.android.support:appcompat-v7:$supportVersion"
+    implementation "com.android.support:support-v4:$supportVersion"
+    implementation "com.android.support:design:$supportVersion"
+    implementation "com.android.support:support-compat:$supportVersion"
+    implementation "com.android.support.constraint:constraint-layout:$constraintLayoutVersion"
+    implementation "com.squareup.okhttp:okhttp:$okhttpVersion"
+    implementation "com.squareup.okhttp3:okhttp:$okhttp3Version"
     implementation files('libs/poi-3.15.jar')
 }
 
