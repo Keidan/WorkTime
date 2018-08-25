@@ -91,7 +91,7 @@ public class MonthDetailsDialog implements DialogInterface.OnClickListener {
     ctime.setFirstDayOfWeek(Calendar.MONDAY);
     ctime.set(Calendar.YEAR, year);
     ctime.set(Calendar.MONTH, month);
-    List<DayEntry> days = mApp.getDaysFactory().list(year, month, -1);
+    List<DayEntry> days = mApp.getDaysFactory().list(year, month + 1, -1);
     SparseArray<Item> weeks = new SparseArray<>();
     for(DayEntry de : days) {
       ctime.set(Calendar.DAY_OF_MONTH, de.getDay().getDay());
