@@ -107,7 +107,9 @@
     <string name="pref_summary_export_to_dropbox">Export the database to dropbox.</string>
     <string name="pref_summary_import_from_device">Import the database from the device.</string>
     <string name="pref_summary_import_from_dropbox">Import the database from dropbox.</string>
-    <string name="pref_summary_day_row_height">Height of the rows for the days list in the work time view.</string>
+    <string name="pref_summary_day_display_week">Displays the row of the week number in the work time view (the application will need to be restarted).</string>
+    <string name="pref_title_day_display_week">Week number</string>
+    <string name="pref_summary_day_row_height">Height of the rows for the days list in the work time view (the application will need to be restarted).</string>
     <string name="pref_title_day_row_height">Rows height</string>
     <string name="pref_title_learning">Learning of profiles</string>
     <string name="pref_summary_learning">This section allows you to manage the learning of the profile of preference used by the insertion of the days of the main view.</string>
@@ -119,7 +121,7 @@
     <string name="pref_summary_learning_clear">Clear all the learning values.</string>
     <string name="pref_fragments_title">Default home</string>
     <string name="pref_fragments_summary">Selects the default home to display at the start of the application.</string>
-    <string name="pref_summary_scroll_to_current_day">Automatic scrolling of the working time view to the current day.</string>
+    <string name="pref_summary_scroll_to_current_day">Automatic scrolling of the working time view to the current day (the application will need to be restarted).</string>
     <string name="pref_title_scroll_to_current_day">Scroll to the current day</string>
     <string name="pref_summary_hide_exit_button">Hide the exit button from the menu.</string>
     <string name="pref_title_hide_exit_button">Hide the exit button</string>

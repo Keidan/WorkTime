@@ -41,6 +41,7 @@ public class DaysEntriesArrayAdapter extends ArrayAdapter<DayEntry> {
 
   private class ViewHolder {
     LinearLayout llDay = null;
+    TextView tvWeek = null;
     TextView tvDay = null;
     TextView tvStart = null;
     TextView tvEnd = null;
@@ -93,6 +94,7 @@ public class DaysEntriesArrayAdapter extends ArrayAdapter<DayEntry> {
       v = vi.inflate(mId, null);
       holder = new ViewHolder();
       holder.llDay = v.findViewById(R.id.llDay);
+      holder.tvWeek = v.findViewById(R.id.tvWeek);
       holder.tvDay = v.findViewById(R.id.tvDay);
       holder.tvStart = v.findViewById(R.id.tvStart);
       holder.tvEnd = v.findViewById(R.id.tvEnd);
@@ -105,145 +107,167 @@ public class DaysEntriesArrayAdapter extends ArrayAdapter<DayEntry> {
         /* We recycle a View that already exists */
       holder = (ViewHolder) v.getTag();
     }
-    setRowHeight(holder.tvDay);
-    setRowHeight(holder.tvStart);
-    setRowHeight(holder.tvEnd);
-    setRowHeight(holder.tvPause);
-    setRowHeight(holder.tvTotal);
-    setRowHeight(holder.tvOver);
+
     WorkTimeDay today = WorkTimeDay.now();
     if (t != null) {
-
-      Calendar cal = t.getDay().toCalendar();
-      int bg_morning;
-      int bg_afternoon;
-      if (t.matchSimpleDate(today)) {
-        bg_afternoon = bg_morning = mContext.getResources().getColor(R.color.green, null);
+      if(t.getWeekNumber() != DayEntry.INVALID_WEEK && MainApplication.getInstance().isDisplayWeek()) {
+        holder.tvWeek.setMinHeight(0); // Min Height
+        holder.tvWeek.setMinimumHeight(0); // Min Height
+        holder.tvWeek.setHeight(MainApplication.getInstance().getDayRowsHeight() - 30);
+        holder.tvWeek.setVisibility(View.VISIBLE);
+        holder.tvDay.setVisibility(View.GONE);
+        holder.tvStart.setVisibility(View.GONE);
+        holder.tvEnd.setVisibility(View.GONE);
+        holder.tvPause.setVisibility(View.GONE);
+        holder.tvTotal.setVisibility(View.GONE);
+        holder.tvOver.setVisibility(View.GONE);
+        holder.llDay.setBackgroundColor(mContext.getResources().getColor(R.color.color_week, null));
+        String week = mContext.getString(R.string.week).toLowerCase();
+        week = Character.toUpperCase(week.charAt(0)) + week.substring(1);
+        holder.tvWeek.setText((week + " " + t.getWeekNumber()));
       } else {
-        if (cal.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY && t.getTypeMorning() != DayType.PUBLIC_HOLIDAY)
-          bg_morning = mContext.getResources().getColor(R.color.blue_1, null);
-        else if (cal.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY && t.getTypeMorning() != DayType.PUBLIC_HOLIDAY)
-          bg_morning = mContext.getResources().getColor(R.color.blue_2, null);
-        else
-          bg_morning = (t.getTypeMorning() == DayType.HOLIDAY) ?
-              mContext.getResources().getColor(R.color.purple, null) :
-            (t.getTypeMorning() == DayType.PUBLIC_HOLIDAY) ?
-                mContext.getResources().getColor(R.color.purple2, null) :
-              (t.getTypeMorning() == DayType.UNPAID) ?
-                  mContext.getResources().getColor(R.color.red, null) :
-                (t.getTypeMorning() == DayType.SICKNESS) ?
-                    mContext.getResources().getColor(R.color.orange, null) :
-                    (t.getTypeMorning() == DayType.RECOVERY) ?
-                        mContext.getResources().getColor(R.color.gray, null) :
-                        mContext.getResources().getColor(android.R.color.transparent, null);
-
-        if (cal.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY && t.getTypeAfternoon() != DayType.PUBLIC_HOLIDAY)
-          bg_afternoon = mContext.getResources().getColor(R.color.blue_1, null);
-        else if (cal.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY && t.getTypeAfternoon() != DayType.PUBLIC_HOLIDAY)
-          bg_afternoon = mContext.getResources().getColor(R.color.blue_2, null);
-        else
-          bg_afternoon = (t.getTypeAfternoon() == DayType.HOLIDAY) ?
-            mContext.getResources().getColor(R.color.purple, null) :
-            (t.getTypeAfternoon() == DayType.PUBLIC_HOLIDAY) ?
-              mContext.getResources().getColor(R.color.purple2, null) :
-              (t.getTypeAfternoon() == DayType.UNPAID) ?
-                mContext.getResources().getColor(R.color.red, null) :
-                (t.getTypeAfternoon() == DayType.SICKNESS) ?
-                  mContext.getResources().getColor(R.color.orange, null) :
-                    (t.getTypeAfternoon() == DayType.RECOVERY) ?
-                    mContext.getResources().getColor(R.color.gray, null) :
-                  mContext.getResources().getColor(android.R.color.transparent, null);
-      }
-      if(bg_morning == bg_afternoon) {
-        holder.llDay.setBackgroundColor(bg_morning);
-      } else {
-        UIHelper.applyLinearGradient(holder.llDay, bg_afternoon, bg_morning);
-      }
-
-
-      /* Update the texts */
-      if (holder.tvDay != null) {
-        holder.tvDay.setText((String.format(Locale.US, "%02d", cal.get(Calendar.DAY_OF_MONTH)) + " " +
-          DayEntry.getDayString2lt(mContext, cal.get(Calendar.DAY_OF_WEEK))));
-      }
-      if (holder.tvStart != null) {
-        if(isPaidButNotWorkedMorning(t))
-          holder.tvStart.setText("*");
-        else if(t.getTypeMorning() == DayType.RECOVERY && !isNotValidAfternoon(t))
-          holder.tvStart.setText(t.getStartAfternoon().timeString());
-        else if (isNotValidMorning(t))
-          holder.tvStart.setText("-");
-        else {
-          holder.tvStart.setText(t.getStartMorning().timeString());
-        }
-      }
-      if (holder.tvEnd != null) {
-        if(isPaidButNotWorkedAfternoon(t))
-          holder.tvEnd.setText("*");
-        else if(t.getTypeAfternoon() == DayType.RECOVERY && !isNotValidMorning(t))
-          holder.tvEnd.setText(t.getEndMorning().timeString());
-        else if (isNotValidAfternoon(t)) {
-          WorkTimeDay w = t.getEndMorning();
-          if(w.timeString().equals("00:00") || isNotValidMorning(t))
-            holder.tvEnd.setText("-");
+        setRowHeight(holder.tvDay);
+        setRowHeight(holder.tvStart);
+        setRowHeight(holder.tvEnd);
+        setRowHeight(holder.tvPause);
+        setRowHeight(holder.tvTotal);
+        setRowHeight(holder.tvOver);
+        holder.tvWeek.setVisibility(View.GONE);
+        holder.tvDay.setVisibility(View.VISIBLE);
+        holder.tvStart.setVisibility(View.VISIBLE);
+        holder.tvEnd.setVisibility(View.VISIBLE);
+        holder.tvPause.setVisibility(View.VISIBLE);
+        holder.tvTotal.setVisibility(View.VISIBLE);
+        holder.tvOver.setVisibility(View.VISIBLE);
+        Calendar cal = t.getDay().toCalendar();
+        int bg_morning;
+        int bg_afternoon;
+        if (t.matchSimpleDate(today)) {
+          bg_afternoon = bg_morning = mContext.getResources().getColor(R.color.green, null);
+        } else {
+          if (cal.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY && t.getTypeMorning() != DayType.PUBLIC_HOLIDAY)
+            bg_morning = mContext.getResources().getColor(R.color.blue_1, null);
+          else if (cal.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY && t.getTypeMorning() != DayType.PUBLIC_HOLIDAY)
+            bg_morning = mContext.getResources().getColor(R.color.blue_2, null);
           else
-            holder.tvEnd.setText(t.getEndMorning().timeString());
+            bg_morning = (t.getTypeMorning() == DayType.HOLIDAY) ?
+                mContext.getResources().getColor(R.color.purple, null) :
+                (t.getTypeMorning() == DayType.PUBLIC_HOLIDAY) ?
+                    mContext.getResources().getColor(R.color.purple2, null) :
+                    (t.getTypeMorning() == DayType.UNPAID) ?
+                        mContext.getResources().getColor(R.color.red, null) :
+                        (t.getTypeMorning() == DayType.SICKNESS) ?
+                            mContext.getResources().getColor(R.color.orange, null) :
+                            (t.getTypeMorning() == DayType.RECOVERY) ?
+                                mContext.getResources().getColor(R.color.gray, null) :
+                                mContext.getResources().getColor(android.R.color.transparent, null);
+
+          if (cal.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY && t.getTypeAfternoon() != DayType.PUBLIC_HOLIDAY)
+            bg_afternoon = mContext.getResources().getColor(R.color.blue_1, null);
+          else if (cal.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY && t.getTypeAfternoon() != DayType.PUBLIC_HOLIDAY)
+            bg_afternoon = mContext.getResources().getColor(R.color.blue_2, null);
+          else
+            bg_afternoon = (t.getTypeAfternoon() == DayType.HOLIDAY) ?
+                mContext.getResources().getColor(R.color.purple, null) :
+                (t.getTypeAfternoon() == DayType.PUBLIC_HOLIDAY) ?
+                    mContext.getResources().getColor(R.color.purple2, null) :
+                    (t.getTypeAfternoon() == DayType.UNPAID) ?
+                        mContext.getResources().getColor(R.color.red, null) :
+                        (t.getTypeAfternoon() == DayType.SICKNESS) ?
+                            mContext.getResources().getColor(R.color.orange, null) :
+                            (t.getTypeAfternoon() == DayType.RECOVERY) ?
+                                mContext.getResources().getColor(R.color.gray, null) :
+                                mContext.getResources().getColor(android.R.color.transparent, null);
         }
-        else {
-          holder.tvEnd.setText(t.getEndAfternoon().timeString());
+        if (bg_morning == bg_afternoon) {
+          holder.llDay.setBackgroundColor(bg_morning);
+        } else {
+          UIHelper.applyLinearGradient(holder.llDay, bg_afternoon, bg_morning);
         }
-      }
-      if (holder.tvPause != null) {
-        if(isPaidButNotWorkedMorning(t) && isPaidButNotWorkedAfternoon(t))
-          holder.tvPause.setText("*");
-        else {
-          WorkTimeDay w = t.getPause();
-          if (isNotValidMorning(t) && isNotValidAfternoon(t) || w.timeString().equals("00:00"))
-            holder.tvPause.setText("-");
+
+
+        /* Update the texts */
+        if (holder.tvDay != null) {
+          holder.tvDay.setText((String.format(Locale.US, "%02d", cal.get(Calendar.DAY_OF_MONTH)) + " " +
+              DayEntry.getDayString2lt(mContext, cal.get(Calendar.DAY_OF_WEEK))));
+        }
+        if (holder.tvStart != null) {
+          if (isPaidButNotWorkedMorning(t))
+            holder.tvStart.setText("*");
+          else if (t.getTypeMorning() == DayType.RECOVERY && !isNotValidAfternoon(t))
+            holder.tvStart.setText(t.getStartAfternoon().timeString());
+          else if (isNotValidMorning(t))
+            holder.tvStart.setText("-");
           else {
-            holder.tvPause.setText(t.getPause().timeString());
+            holder.tvStart.setText(t.getStartMorning().timeString());
           }
         }
-      }
-      WorkTimeDay w = t.getWorkTime();
-      if (holder.tvTotal != null) {
-        if(isPaidButNotWorkedMorning(t) && isPaidButNotWorkedAfternoon(t))
-          holder.tvTotal.setText("*");
-        else if(isNotValidMorning(t) && isNotValidAfternoon(t) || w.timeString().equals("00:00"))
-          holder.tvTotal.setText("-");
-        else {
-          holder.tvTotal.setText(t.getWorkTime().timeString());
+        if (holder.tvEnd != null) {
+          if (isPaidButNotWorkedAfternoon(t))
+            holder.tvEnd.setText("*");
+          else if (t.getTypeAfternoon() == DayType.RECOVERY && !isNotValidMorning(t))
+            holder.tvEnd.setText(t.getEndMorning().timeString());
+          else if (isNotValidAfternoon(t)) {
+            WorkTimeDay w = t.getEndMorning();
+            if (w.timeString().equals("00:00") || isNotValidMorning(t))
+              holder.tvEnd.setText("-");
+            else
+              holder.tvEnd.setText(t.getEndMorning().timeString());
+          } else {
+            holder.tvEnd.setText(t.getEndAfternoon().timeString());
+          }
         }
-      }
-      if (holder.tvOver != null) {
-        if(isPaidButNotWorkedMorning(t) && isPaidButNotWorkedAfternoon(t)) {
-          holder.tvOver.setText("*");
-          holder.tvOver.setTypeface(Typeface.MONOSPACE, Typeface.NORMAL);
-          holder.tvOver.setGravity(Gravity.CENTER);
-          holder.tvOver.setTextColor(holder.tvOverColors);
-        } else if(isNotValidMorning(t) && isNotValidAfternoon(t) || w.timeString().equals("00:00")) {
-          holder.tvOver.setText("-");
-          holder.tvOver.setTypeface(Typeface.MONOSPACE, Typeface.NORMAL);
-          holder.tvOver.setGravity(Gravity.CENTER);
-          holder.tvOver.setTextColor(holder.tvOverColors);
+        if (holder.tvPause != null) {
+          if (isPaidButNotWorkedMorning(t) && isPaidButNotWorkedAfternoon(t))
+            holder.tvPause.setText("*");
+          else {
+            WorkTimeDay w = t.getPause();
+            if (isNotValidMorning(t) && isNotValidAfternoon(t) || w.timeString().equals("00:00"))
+              holder.tvPause.setText("-");
+            else {
+              holder.tvPause.setText(t.getPause().timeString());
+            }
+          }
         }
-        else {
-          long overtime = t.getOverTimeMs();
-          WorkTimeDay wtd = t.getOverTime(overtime);
-          if(overtime == 0) {
+        WorkTimeDay w = t.getWorkTime();
+        if (holder.tvTotal != null) {
+          if (isPaidButNotWorkedMorning(t) && isPaidButNotWorkedAfternoon(t))
+            holder.tvTotal.setText("*");
+          else if (isNotValidMorning(t) && isNotValidAfternoon(t) || w.timeString().equals("00:00"))
+            holder.tvTotal.setText("-");
+          else {
+            holder.tvTotal.setText(t.getWorkTime().timeString());
+          }
+        }
+        if (holder.tvOver != null) {
+          if (isPaidButNotWorkedMorning(t) && isPaidButNotWorkedAfternoon(t)) {
+            holder.tvOver.setText("*");
+            holder.tvOver.setTypeface(Typeface.MONOSPACE, Typeface.NORMAL);
+            holder.tvOver.setGravity(Gravity.CENTER);
+            holder.tvOver.setTextColor(holder.tvOverColors);
+          } else if (isNotValidMorning(t) && isNotValidAfternoon(t) || w.timeString().equals("00:00")) {
             holder.tvOver.setText("-");
             holder.tvOver.setTypeface(Typeface.MONOSPACE, Typeface.NORMAL);
             holder.tvOver.setGravity(Gravity.CENTER);
             holder.tvOver.setTextColor(holder.tvOverColors);
           } else {
-            holder.tvOver.setTypeface(Typeface.MONOSPACE, Typeface.BOLD);
-            holder.tvOver.setGravity(Gravity.END);
-            if (overtime < 0) {
-              holder.tvOver.setTextColor(mContext.getResources().getColor(R.color.over_neg, null));
+            long overtime = t.getOverTimeMs();
+            WorkTimeDay wtd = t.getOverTime(overtime);
+            if (overtime == 0) {
+              holder.tvOver.setText("-");
+              holder.tvOver.setTypeface(Typeface.MONOSPACE, Typeface.NORMAL);
+              holder.tvOver.setGravity(Gravity.CENTER);
+              holder.tvOver.setTextColor(holder.tvOverColors);
             } else {
-              holder.tvOver.setTextColor(mContext.getResources().getColor(R.color.over_pos, null));
+              holder.tvOver.setTypeface(Typeface.MONOSPACE, Typeface.BOLD);
+              holder.tvOver.setGravity(Gravity.END);
+              if (overtime < 0) {
+                holder.tvOver.setTextColor(mContext.getResources().getColor(R.color.over_neg, null));
+              } else {
+                holder.tvOver.setTextColor(mContext.getResources().getColor(R.color.over_pos, null));
+              }
+              holder.tvOver.setText(wtd.timeString());
             }
-            holder.tvOver.setText(wtd.timeString());
           }
         }
       }

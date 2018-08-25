@@ -19,6 +19,7 @@ import fr.ralala.worktime.sql.SqlConstants;
  *******************************************************************************
  */
 public class DayEntry {
+  public static final int INVALID_WEEK = -1;
   private WorkTimeDay mDay = null;
   private WorkTimeDay mStartMorning = null;
   private WorkTimeDay mEndMorning = null;
@@ -32,6 +33,7 @@ public class DayEntry {
   private WorkTimeDay mLegalWorktime = null;
   private MainApplication mApp = null;
   private long mId = SqlConstants.INVALID_ID;
+  private int mWeekNumber = INVALID_WEEK;
 
   /**
    * Tests if an object is equal to this instance.
@@ -79,6 +81,22 @@ public class DayEntry {
    */
   public DayEntry(final Calendar day, final DayType typeMorning, final DayType typeAfternoon) {
     this(new WorkTimeDay().fromCalendar(day), typeMorning, typeAfternoon);
+  }
+
+  /**
+   * Sets the week number (if != INVALID_WEEK the item is invalidated and not clickable).
+   * @param weekNumber The week number.
+   */
+  public void setWeekNumber(int weekNumber) {
+    mWeekNumber = weekNumber;
+  }
+
+  /**
+   * Returns the week number (if != INVALID_WEEK the item is invalidated and not clickable).
+   * @return int
+   */
+  public int getWeekNumber() {
+    return mWeekNumber;
   }
 
   /**
@@ -179,6 +197,7 @@ public class DayEntry {
    * @param de The object to copy.
    */
   public void copy(DayEntry de) {
+    mWeekNumber = de.mWeekNumber;
     mTypeMorning = de.mTypeMorning;
     mTypeAfternoon = de.mTypeAfternoon;
     mDay.copy(de.mDay);

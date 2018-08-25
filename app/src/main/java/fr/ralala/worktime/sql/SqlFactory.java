@@ -106,6 +106,7 @@ public class SqlFactory implements SqlConstants {
     addSetting(prefs, SettingsExcelExportActivity.PREFS_KEY_EXPORT_HIDE_WAGE, SettingsExcelExportActivity.PREFS_DEFVAL_EXPORT_HIDE_WAGE.equals("true"));
     addSetting(prefs, SettingsDisplayActivity.PREFS_KEY_SCROLL_TO_CURRENT_DAY, SettingsDisplayActivity.PREFS_DEFVAL_SCROLL_TO_CURRENT_DAY.equals("true"));
     addSetting(prefs, SettingsDisplayActivity.PREFS_KEY_HIDE_EXIT_BUTTON, SettingsDisplayActivity.PREFS_DEFVAL_HIDE_EXIT_BUTTON.equals("true"));
+    addSetting(prefs, SettingsDisplayActivity.PREFS_KEY_DISPLAY_WEEK, SettingsDisplayActivity.PREFS_DEFVAL_DISPLAY_WEEK.equals("true"));
     addSetting(prefs, SettingsDatabaseActivity.PREFS_KEY_IMPORT_EXPORT_AUTO_SAVE, SettingsDatabaseActivity.PREFS_DEFVAL_IMPORT_EXPORT_AUTO_SAVE.equals("false"));
     addSetting(prefs, SettingsDatabaseActivity.PREFS_KEY_IMPORT_EXPORT_AUTO_SAVE_PERIODICITY, SettingsDatabaseActivity.PREFS_DEFVAL_IMPORT_EXPORT_AUTO_SAVE_PERIODICITY);
     addSetting(prefs, DropboxAutoExportService.KEY_NEED_UPDATE, DropboxAutoExportService.DEFVAL_NEED_UPDATE.equals("false"));
@@ -130,8 +131,8 @@ public class SqlFactory implements SqlConstants {
           edit.putString(name, value);
         else if(name.equals(SettingsExcelExportActivity.PREFS_KEY_EMAIL_ENABLE) || name.equals(SettingsDisplayActivity.PREFS_KEY_HIDE_WAGE)
             || name.equals(SettingsExcelExportActivity.PREFS_KEY_EXPORT_HIDE_WAGE) || name.equals(SettingsDisplayActivity.PREFS_KEY_SCROLL_TO_CURRENT_DAY)
-            || name.equals(SettingsDisplayActivity.PREFS_KEY_HIDE_EXIT_BUTTON) || name.equals(SettingsDatabaseActivity.PREFS_KEY_IMPORT_EXPORT_AUTO_SAVE)
-            || name.equals(DropboxAutoExportService.KEY_NEED_UPDATE))
+            || name.equals(SettingsDisplayActivity.PREFS_KEY_HIDE_EXIT_BUTTON)|| name.equals(SettingsDisplayActivity.PREFS_KEY_DISPLAY_WEEK)
+            || name.equals(SettingsDatabaseActivity.PREFS_KEY_IMPORT_EXPORT_AUTO_SAVE) || name.equals(DropboxAutoExportService.KEY_NEED_UPDATE))
           edit.putBoolean(name, value.equals("1"));
         if(settings != null)
           settings.add(new Setting(name, value));

@@ -35,7 +35,7 @@
     <string name="name">Nom :</string>
     <string name="date">Date :</string>
     <string name="error">Erreur</string>
-    <string name="error_no_name">Le champ nom ne peut pas être vide</string>
+    <string name="error_no_name">Le champ nom ne peut pas \u00EAtre vide</string>
     <string name="cancel">Annuler</string>
     <string name="clear">Effacer</string>
     <string name="day_monday_2lt">Lu</string>
@@ -98,7 +98,9 @@
     <string name="pref_summary_export_to_dropbox">Exporter la base de donn\u00E9es vers  dropbox.</string>
     <string name="pref_summary_import_from_device">Importer la base de donn\u00E9es depuis le p\u00E9riph\u00E9rique.</string>
     <string name="pref_summary_import_from_dropbox">Importer la base de donn\u00E9es depuis dropbox.</string>
-    <string name="pref_summary_day_row_height">Hauteur des rang\u00E9es de la liste des jours dans la fen\u00EAtre de temps de travail.</string>
+    <string name="pref_summary_day_display_week">Affiche la ligne du num\u00E9ro de semaine dans la vue du temps de travail (l\'application devra \u00EAtre red\u00E9marr\u00E9e).</string>
+    <string name="pref_title_day_display_week">Num\u00E9ro de la semaine</string>
+    <string name="pref_summary_day_row_height">Hauteur des rang\u00E9es de la liste des jours dans la vue de temps de travail (l\'application devra \u00EAtre red\u00E9marr\u00E9e).</string>
     <string name="pref_title_day_row_height">Hauteur des lignes</string>
     <string name="pref_title_learning">Apprentissage des profils</string>
     <string name="pref_summary_learning">Cette section vous permet de g\u00E9rer l\'apprentissage du profil de pr\u00E9f\u00E9rence utilis\u00E9 par l\'insertion des jours de la vue principale.</string>
@@ -110,7 +112,7 @@
     <string name="pref_summary_learning_clear">Effacer toutes les valeurs d\'apprentissation.</string>
     <string name="pref_fragments_title">Accueil par d\u00E9faut</string>
     <string name="pref_fragments_summary">S\u00E9lectionne l\'accueil par d\u00E9faut \u00E0 afficher au d\u00E9but de l\'application..</string>
-    <string name="pref_summary_scroll_to_current_day">D\u00E9filement automatique de la vue du temps de travail vers le jour en cours.</string>
+    <string name="pref_summary_scroll_to_current_day">D\u00E9filement automatique de la vue du temps de travail vers le jour en cours (l\'application devra \u00EAtre red\u00E9marr\u00E9e).</string>
     <string name="pref_title_scroll_to_current_day">D\u00E9filement vers le jour en cours</string>
     <string name="pref_summary_hide_exit_button">Masquer le bouton de sortie dans le menu.</string>
     <string name="pref_title_hide_exit_button">Masquer le bouton de sortie</string>

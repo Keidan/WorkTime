@@ -20,6 +20,11 @@
             android:title="@string/pref_title_day_row_height"
             android:inputType="numberDecimal" />
         <CheckBoxPreference
+            android:key="prefDayDisplayWeek"
+            android:defaultValue="true"
+            android:summary="@string/pref_summary_day_display_week"
+            android:title="@string/pref_title_day_display_week"/>
+        <CheckBoxPreference
             android:key="prefScrollToCurrentDay"
             android:defaultValue="false"
             android:summary="@string/pref_summary_scroll_to_current_day"

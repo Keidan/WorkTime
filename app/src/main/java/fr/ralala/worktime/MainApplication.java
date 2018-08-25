@@ -365,6 +365,15 @@ public class MainApplication extends Application  {
     return prefs.getBoolean(SettingsDisplayActivity.PREFS_KEY_HIDE_EXIT_BUTTON, SettingsDisplayActivity.PREFS_DEFVAL_HIDE_EXIT_BUTTON.equals("true"));
   }
 
+  /**
+   * Tests if the week number must be displayed.
+   * @return boolean
+   */
+  public boolean isDisplayWeek() {
+    SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+    return prefs.getBoolean(SettingsDisplayActivity.PREFS_KEY_DISPLAY_WEEK, SettingsDisplayActivity.PREFS_DEFVAL_DISPLAY_WEEK.equals("true"));
+  }
+
   /* ----------------------------------
    * Database management
    * ----------------------------------

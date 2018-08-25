@@ -29,6 +29,7 @@
     <color name="blue_1">#c8c0f2ff</color>
     <color name="blue_2">#c888e7ff</color>
 
+    <color name="color_week">#ececec</color>
     <color name="color_morning">#c8b0cab4</color>
     <color name="color_afternoon">#c8e0b1ff</color>
     <color name="color_pause">#c8f9d793</color>

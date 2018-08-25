@@ -12,6 +12,7 @@
 
     <dimen name="logo_text_size">22sp</dimen>
     <dimen name="main_list_text_size">14sp</dimen>
+    <dimen name="main_list_text_size_week">12sp</dimen>
     <dimen name="widget_margin">5dp</dimen>
     <dimen name="widget_text_size_day">22sp</dimen>
     <dimen name="widget_text_size_month">9sp</dimen>

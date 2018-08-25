@@ -160,6 +160,8 @@ public class WorkTimeFragment extends Fragment implements View.OnClickListener, 
       UIHelper.toast(getActivity(), R.string.error_editing_public_holiday);
       return;
     }
+    if(de.getWeekNumber() != DayEntry.INVALID_WEEK)
+      return;
     DayActivity.startActivity(this, de.getDay().dateString(), true);
   }
 
@@ -239,11 +241,21 @@ public class WorkTimeFragment extends Fragment implements View.OnClickListener, 
     int firstWeek = mApp.getCurrentDate().get(Calendar.WEEK_OF_YEAR);
     WorkTimeDay wtdTotalWorkTime = new WorkTimeDay();
     WorkTimeDay wtdnow = WorkTimeDay.now();
+    int weekNumber = DayEntry.INVALID_WEEK;
     List<DayEntry> dbDays = mApp.getDaysFactory().list(+mApp.getCurrentDate().get(Calendar.YEAR), +mApp.getCurrentDate().get(Calendar.MONTH) + 1, -1);
     /* loop for each days in the month */
     for(int day = minDay; day <= maxDay; ++day) {
       mApp.getCurrentDate().set(Calendar.DAY_OF_MONTH, day);
       DayEntry de = new DayEntry(mApp.getCurrentDate(), DayType.ERROR, DayType.ERROR);
+
+      if(mApp.isDisplayWeek() && weekNumber != mApp.getCurrentDate().get(Calendar.WEEK_OF_YEAR)) {
+        weekNumber = mApp.getCurrentDate().get(Calendar.WEEK_OF_YEAR);
+        de.setWeekNumber(weekNumber);
+        final DayEntry fde = de;
+        mActivity.runOnUiThread(() -> mLvAdapter.add(fde));
+        de = new DayEntry(mApp.getCurrentDate(), DayType.ERROR, DayType.ERROR);
+      }
+
       de.setAmountByHour(mApp.getAmountByHour()); /* set default amount */
       /* Force public holiday */
       boolean isPublicHoliday = mApp.getPublicHolidaysFactory().isPublicHolidays(publicHolidays, de.getDay());
@@ -260,7 +272,8 @@ public class WorkTimeFragment extends Fragment implements View.OnClickListener, 
         if(de.getTypeMorning() == DayType.AT_WORK || de.getTypeAfternoon() == DayType.RECOVERY) realwDays += 0.5;
         if(de.getTypeAfternoon() == DayType.AT_WORK || de.getTypeAfternoon() == DayType.RECOVERY) realwDays += 0.5;
       }
-      mActivity.runOnUiThread(() -> mLvAdapter.add(de));
+      final DayEntry fde = de;
+      mActivity.runOnUiThread(() -> mLvAdapter.add(fde));
       if(mApp.isScrollToCurrentDay() && mApp.getLastFirstVisibleItem() == 0 && de.getDay().dateString().equals(wtdnow.dateString())) {
         mApp.setLastFirstVisibleItem(index);
       }
