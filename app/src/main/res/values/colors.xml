@@ -36,6 +36,8 @@
     <color name="color_under">#c8ea8825</color>
     <color name="color_over">#c8cb4f59</color>
     <color name="color_work">#c883ce8f</color>
+    <color name="color_holiday">#c8a483ce</color>
+    <color name="color_public_holiday">#c883a5ce</color>
 
     <color name="item_edit">#c883ce8f</color>
     <color name="item_delete">#c8cb4f59</color>

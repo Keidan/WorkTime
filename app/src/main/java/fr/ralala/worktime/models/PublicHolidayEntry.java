@@ -33,6 +33,14 @@ public class PublicHolidayEntry {
   }
 
   /**
+   * Converts the PublicHolidayEntry to DayEntry.
+   * @return DayEntry
+   */
+  public DayEntry toDayEntry() {
+    return new DayEntry(mDay, mTypeMorning, mTypeAfternoon);
+  }
+
+  /**
    * Sets the DB id.
    * @param id The new ID.
    */

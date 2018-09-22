@@ -70,6 +70,15 @@ public class StatisticsFragment extends Fragment implements View.OnClickListener
   private GraphicalView mChartView = null;
   private View mRootView = null;
   private MainActivity mActivity;
+  private int mDefaultColor;
+  private int mColorUnder;
+  private int mColorOver;
+  private int mColorWork;
+  private int mColorHoliday;
+  private int mColorPublicHoliday;
+  private int mColorMorning;
+  private int mColorAfternoon;
+  private int mColorPause;
 
   private enum CurrentView{
     YEARS,
@@ -85,6 +94,8 @@ public class StatisticsFragment extends Fragment implements View.OnClickListener
     WorkTimeDay pause = new WorkTimeDay();
     WorkTimeDay morning = new WorkTimeDay();
     WorkTimeDay afternoon = new WorkTimeDay();
+    DayType dt_morning = DayType.ERROR;
+    DayType dt_afternoon = DayType.ERROR;
     String x_label;
     double dover;
     double dwork;
@@ -142,7 +153,8 @@ public class StatisticsFragment extends Fragment implements View.OnClickListener
       entries.put(key, new ChartEntry());
     }
     entries.get(key).work.addTime(de.getWorkTime());
-    entries.get(key).over.addTime(de.getOverTime());
+    if(!(de.getTypeAfternoon() == DayType.HOLIDAY  && de.getTypeMorning() == DayType.HOLIDAY) && !(de.getTypeAfternoon() == DayType.PUBLIC_HOLIDAY  && de.getTypeMorning() == DayType.PUBLIC_HOLIDAY))
+      entries.get(key).over.addTime(de.getOverTime());
     entries.get(key).x_label = x_label;
     WorkTimeDay wm = de.isValidMorningType() ? de.getEndMorning().clone() : new WorkTimeDay();
     if(!wm.timeString().equals("00:00"))
@@ -153,6 +165,8 @@ public class StatisticsFragment extends Fragment implements View.OnClickListener
       wa.delTime(de.isValidAfternoonType() ? de.getStartAfternoon().clone() : new WorkTimeDay());
     entries.get(key).afternoon = wa;
     entries.get(key).pause = de.getPause();
+    entries.get(key).dt_afternoon = de.getTypeAfternoon();
+    entries.get(key).dt_morning = de.getTypeMorning();
   }
 
   /**
@@ -177,6 +191,15 @@ public class StatisticsFragment extends Fragment implements View.OnClickListener
     mActivity.getWindowManager().getDefaultDisplay().getMetrics(mMetrics);
     /* uses 80% of the screen */
     mChartContainer.getLayoutParams().height = (int)getPercentOf(mMetrics.heightPixels, 85);
+    mDefaultColor = getResources().getColor(R.color.half_black, mActivity.getTheme());
+    mColorUnder = getResources().getColor(R.color.color_under, mActivity.getTheme());
+    mColorOver = getResources().getColor(R.color.color_over, mActivity.getTheme());
+    mColorWork = getResources().getColor(R.color.color_work, mActivity.getTheme());
+    mColorHoliday = getResources().getColor(R.color.color_holiday, mActivity.getTheme());
+    mColorPublicHoliday = getResources().getColor(R.color.color_public_holiday, mActivity.getTheme());
+    mColorMorning = getResources().getColor(R.color.color_morning, mActivity.getTheme());
+    mColorAfternoon = getResources().getColor(R.color.color_afternoon, mActivity.getTheme());
+    mColorPause = getResources().getColor(R.color.color_pause, mActivity.getTheme());
     redrawChart();
     return rootView;
   }
@@ -213,7 +236,7 @@ public class StatisticsFragment extends Fragment implements View.OnClickListener
     else
       mRootView.findViewById(R.id.cancel).setVisibility(View.VISIBLE);
     SparseArray<ChartEntry> entries = new SparseArray<>();
-
+    boolean addPublicHoliday = true;
     List<Integer> years = mApp.getDaysFactory().getYears();
     for(int nYear = 0; nYear < years.size(); nYear++) {
       Integer year = years.get(nYear);
@@ -228,6 +251,22 @@ public class StatisticsFragment extends Fragment implements View.OnClickListener
             int nWeek = 0;
             for (Integer week : keysWeeks) {
               if(mCurrentView == CurrentView.YEARS || mCurrentView == CurrentView.MONTHS || mCurrentView == CurrentView.WEEKS || mCurrentWeekIndex == nWeek) {
+                /* Includes public holiday for the days view */
+                if(addPublicHoliday && mCurrentView == CurrentView.DAYS) {
+                  addPublicHoliday = false;
+                  mApp.getPublicHolidaysFactory().list(-1, month).forEach((ph) -> {
+                    if(ph.getDay().getYear() == year || (ph.getDay().getYear() != year && ph.isRecurrence())) {
+                      DayEntry dePh = ph.toDayEntry();
+                      dePh.getDay().setYear(year);
+                      int w = dePh.getDay().toCalendar().get(Calendar.WEEK_OF_YEAR);
+                      if(w != week)
+                        return;
+                      Integer e = dePh.getDay().toCalendar().get(Calendar.DAY_OF_WEEK) - 1;
+                      String x_label = getResources().getStringArray(R.array.days_letter)[e - 1] + " " + dePh.getDay().getDay();
+                      addDayEntry(entries, e, dePh, x_label);
+                    }
+                  });
+                }
                 List<DayEntry> days = weeks.get(week);
                 for (int nDay = 0; nDay < days.size(); nDay++) {
                   DayEntry de = days.get(nDay);
@@ -263,8 +302,8 @@ public class StatisticsFragment extends Fragment implements View.OnClickListener
     String title = null;
     int day = de.getDay().getDay();
     if (mCurrentView == CurrentView.YEARS || mCurrentView == CurrentView.MONTHS || mCurrentView == CurrentView.WEEKS || mCurrentView == CurrentView.DAYS || mCurrentDayIndex == nDay) {
-      if ((de.getTypeMorning() == DayType.PUBLIC_HOLIDAY && de.getTypeAfternoon() == DayType.PUBLIC_HOLIDAY) || (de.getTypeMorning() == DayType.HOLIDAY && de.getTypeAfternoon() == DayType.HOLIDAY))
-        return null;
+      //if ((de.getTypeMorning() == DayType.PUBLIC_HOLIDAY && de.getTypeAfternoon() == DayType.PUBLIC_HOLIDAY) || (de.getTypeMorning() == DayType.HOLIDAY && de.getTypeAfternoon() == DayType.HOLIDAY))
+      //  return null;
       if (!de.isValidMorningType() && !de.isValidAfternoonType())
         return null;
       Integer e = 0;
@@ -327,7 +366,6 @@ public class StatisticsFragment extends Fragment implements View.OnClickListener
    * @param legendHours Legend used for the hours.
    */
   private void initMultiRender(final String title, final String legendHours) {
-    int defaultColor = getResources().getColor(R.color.half_black, mActivity.getTheme());
     if(mMultiRenderer != null) {
       mMultiRenderer.clearXTextLabels();
       mMultiRenderer.clearYTextLabels();
@@ -361,11 +399,11 @@ public class StatisticsFragment extends Fragment implements View.OnClickListener
 
     mMultiRenderer.setYAxisAlign(Paint.Align.LEFT, 0);
     mMultiRenderer.setYLabelsAlign(Paint.Align.LEFT, 0);
-    mMultiRenderer.setYLabelsColor(0, defaultColor);
-    mMultiRenderer.setXLabelsColor(defaultColor);
-    mMultiRenderer.setLabelsColor(defaultColor);
-    mMultiRenderer.setGridColor(defaultColor);
-    mMultiRenderer.setAxesColor(defaultColor);
+    mMultiRenderer.setYLabelsColor(0, mDefaultColor);
+    mMultiRenderer.setXLabelsColor(mDefaultColor);
+    mMultiRenderer.setLabelsColor(mDefaultColor);
+    mMultiRenderer.setGridColor(mDefaultColor);
+    mMultiRenderer.setAxesColor(mDefaultColor);
 
     mMultiRenderer.setYLabels(10);
     //setting used to move the graph on xaxiz to .5 to the right
@@ -410,10 +448,6 @@ public class StatisticsFragment extends Fragment implements View.OnClickListener
     int i = 1;
     double max = 0.0, min = Double.MAX_VALUE;
 
-    int defaultColor = getResources().getColor(R.color.half_black, mActivity.getTheme());
-    int cunder = getResources().getColor(R.color.color_under, mActivity.getTheme());
-    int cover = getResources().getColor(R.color.color_over, mActivity.getTheme());
-    int cwork = getResources().getColor(R.color.color_work, mActivity.getTheme());
     int seriesIdx = 0;
     List<AnnotationEntry> annotations = new ArrayList<>();
     for (Integer key : keys) {
@@ -431,22 +465,36 @@ public class StatisticsFragment extends Fragment implements View.OnClickListener
         else {
           annotation = ce.work.timeString() + "\n(+" + ce.over.timeString() + ")";
         }
-      /* over */
-        addBarChartEntry(defaultColor, cover, key, i, ce.dover);
+        /* over */
+        addBarChartEntry(mDefaultColor, mColorOver, key, i, ce.dover);
         seriesIdx++;
-      /* work */
-        addBarChartEntry(defaultColor, cwork, key, i, ce.dwork);
+        /* work */
+        if(mCurrentView == CurrentView.DAYS && ce.dt_morning == DayType.HOLIDAY && ce.dt_afternoon == DayType.HOLIDAY)
+          addBarChartEntry(mDefaultColor, mColorHoliday, key, i, ce.dwork);
+        else
+          addBarChartEntry(mDefaultColor, mColorWork, key, i, ce.dwork);
         annotations.add(new AnnotationEntry(seriesIdx - 1, annotation, i, ce.dover));
         seriesIdx++;
       } else {
-        String annotation = ce.work.timeString() + "\n(" + ce.over.timeString() + ")";
-      /* under */
-        addBarChartEntry(defaultColor, cunder, key, i, ce.dwork);
-        seriesIdx++;
-      /* work */
-        addBarChartEntry(defaultColor, cwork, key, i, ce.dover);
-        annotations.add(new AnnotationEntry(seriesIdx - 1, annotation, i, ce.dwork));
-        seriesIdx++;
+        String annotation;
+        if(mCurrentView == CurrentView.DAYS && !ce.work.isValidTime() && ce.dwork > 0 &&
+                ((ce.dt_morning == DayType.PUBLIC_HOLIDAY && ce.dt_afternoon == DayType.PUBLIC_HOLIDAY) || ce.dt_morning == DayType.HOLIDAY && ce.dt_afternoon == DayType.HOLIDAY)) {
+          int decimal = (int)ce.dwork;
+          int fractional = (int)Math.round((ce.dwork - decimal) * 100);
+          annotation = String.format(Locale.US, "%02d:%02d", decimal, fractional);
+          addBarChartEntry(mDefaultColor, mColorPublicHoliday, key, i, ce.dwork);
+          annotations.add(new AnnotationEntry(seriesIdx == 0 ? 0 : seriesIdx - 1, annotation, i, ce.dwork));
+          seriesIdx++;
+        } else {
+          annotation = ce.work.timeString() + "\n(" + ce.over.timeString() + ")";
+          /* under */
+          addBarChartEntry(mDefaultColor, mColorUnder, key, i, ce.dwork);
+          seriesIdx++;
+          /* work */
+          addBarChartEntry(mDefaultColor, mColorWork, key, i, ce.dover);
+          annotations.add(new AnnotationEntry(seriesIdx - 1, annotation, i, ce.dwork));
+          seriesIdx++;
+        }
       }
 
       mMultiRenderer.addXTextLabel(i, ce.x_label);
@@ -463,6 +511,7 @@ public class StatisticsFragment extends Fragment implements View.OnClickListener
     int orientation = mActivity.getResources().getConfiguration().orientation;
     int offsetPercent = orientation == Configuration.ORIENTATION_PORTRAIT ? 3 : 6;
     for (AnnotationEntry ae : annotations) {
+
       mDatasetBar.getSeriesAt(ae.idx).addAnnotation(ae.annotation, ae.x, ae.y + getPercentOf(max, offsetPercent));
     }
 
@@ -513,9 +562,6 @@ public class StatisticsFragment extends Fragment implements View.OnClickListener
     initMultiRender(title, null);
     final CategorySeries dataset = new CategorySeries("title");
     SortedSet<Integer> keys = toSortedSet(values);
-    int cm = getResources().getColor(R.color.color_morning, mActivity.getTheme());
-    int ca = getResources().getColor(R.color.color_afternoon, mActivity.getTheme());
-    int cp = getResources().getColor(R.color.color_pause, mActivity.getTheme());
     final String [] titles = new String[3];
     for (Integer key : keys) {
       int i = 0;
@@ -523,9 +569,12 @@ public class StatisticsFragment extends Fragment implements View.OnClickListener
       titles[i++] = getString(R.string.statistics_morning);
       titles[i++] = getString(R.string.statistics_break);
       titles[i] = getString(R.string.statistics_afternoon);
-      addPieChartEntry(dataset, cm, getString(R.string.statistics_morning), toDouble(ce.morning));
-      addPieChartEntry(dataset, cp, getString(R.string.statistics_break), toDouble(ce.pause));
-      addPieChartEntry(dataset, ca, getString(R.string.statistics_afternoon), toDouble(ce.afternoon));
+      if(ce.dt_morning != DayType.ERROR &&  ce.dt_morning != DayType.RECOVERY)
+        addPieChartEntry(dataset, mColorMorning, getString(R.string.statistics_morning), toDouble(ce.morning));
+      if(ce.pause.isValidTime())
+        addPieChartEntry(dataset, mColorPause, getString(R.string.statistics_break), toDouble(ce.pause));
+      if(ce.dt_afternoon != DayType.ERROR &&  ce.dt_afternoon != DayType.RECOVERY)
+        addPieChartEntry(dataset, mColorAfternoon, getString(R.string.statistics_afternoon), toDouble(ce.afternoon));
     }
     PieChart pchart = new PieChart(dataset, mMultiRenderer);
     mChartView = new GraphicalView(mActivity, pchart);

@@ -40,6 +40,17 @@ public class PublicHolidaysFactory {
       return Collections.emptyList();
     return mSql.getPublicHolidays(-1, -1, -1);
   }
+  /**
+   * Returns the list of public holidays.
+   * @param year The public holiday year.
+   * @param month The public holiday month.
+   * @return List<PublicHolidayEntry>
+   */
+  public List<PublicHolidayEntry> list(int year, int month) {
+    if(mSql == null)
+      return Collections.emptyList();
+    return mSql.getPublicHolidays(year, month, -1);
+  }
 
   /**
    * Returns the public holiday by name and date.
