@@ -46,21 +46,23 @@ public class ProfilesFactory {
    * @param fromClear Called from clear.
    */
   public void updateProfilesLearningWeight(ProfileEntry profile, int weightLimit, boolean fromClear) {
+    if(fromClear) /* Nothing to do when the day is deleted */
+      return;
     List<ProfileEntry> list = mSql.getProfiles(-1, -1, -1);
-    boolean selected = false;
-    for(ProfileEntry p : list) {
+    int max = weightLimit*2;
+    final String name = (profile != null ? profile.getName() : "");
+    list.forEach((p) -> {
       int weight = p.getLearningWeight();
-      int max = weightLimit*2;
-      if(profile != null && p.getName().equals(profile.getName())) {
+      /* increase/decrease current profile */
+      if(p.getName().equals(name)) {
         p.setLearningWeight(weight < max ? ++weight : max);
         mSql.insertOrUpdateProfile(p, true);
-        selected = true;
       } else if(weight > 0) {
-        if(fromClear || selected)
-          p.setLearningWeight(p.getLearningWeight() - 1);
+        /* decrease other profiles. */
+        p.setLearningWeight(p.getLearningWeight() - 1);
         mSql.insertOrUpdateProfile(p, true);
       }
-    }
+    });
   }
 
   /**
