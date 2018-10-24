@@ -46,11 +46,11 @@ public class ProfilesFactory {
    * @param fromClear Called from clear.
    */
   public void updateProfilesLearningWeight(ProfileEntry profile, int weightLimit, boolean fromClear) {
-    if(fromClear) /* Nothing to do when the day is deleted */
+    if(fromClear || profile == null) /* Nothing to do when the day is deleted or if the profile is null*/
       return;
     List<ProfileEntry> list = mSql.getProfiles(-1, -1, -1);
     int max = weightLimit*2;
-    final String name = (profile != null ? profile.getName() : "");
+    final String name = profile.getName();
     list.forEach((p) -> {
       int weight = p.getLearningWeight();
       /* increase/decrease current profile */
