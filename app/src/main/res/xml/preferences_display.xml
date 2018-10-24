@@ -15,7 +15,7 @@
             android:title="@string/pref_title_hide_wage" />
         <EditTextPreference
             android:key="prefDayRowsHeight"
-            android:defaultValue="44"
+            android:defaultValue="80"
             android:summary="@string/pref_summary_day_row_height"
             android:title="@string/pref_title_day_row_height"
             android:inputType="numberDecimal" />
