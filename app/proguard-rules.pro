@@ -18,6 +18,8 @@
 
 # OkHttp and Servlet optional dependencies
 
+-dontwarn com.squareup.okhttp.**
+-dontnote com.squareup.okhttp.**
 -dontwarn okio.**
 -dontnote okio.**
 -dontwarn okhttp3.**
