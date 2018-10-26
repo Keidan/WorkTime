@@ -1,64 +1,71 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    android:id="@+id/llDay"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_height="fill_parent"
-    android:layout_width="fill_parent">
-    <TextView
-        android:id="@+id/tvWeek"
-        android:typeface="monospace"
-        android:textStyle="italic|bold"
-        android:textSize="@dimen/main_list_text_size_week"
-        android:layout_width="match_parent"
-        android:gravity="center"
-        android:layout_height="wrap_content"
-        android:visibility="gone"/>
-    <TextView
-        android:id="@+id/tvDay"
-        android:typeface="monospace"
-        android:textSize="@dimen/main_list_text_size"
-        android:layout_width="@dimen/days_listview_item_tvDay_layout_width"
-        android:gravity="center"
-        android:layout_height="wrap_content"
-        android:layout_weight="@dimen/days_listview_item_tvDay_layout_weight"/>
-    <TextView
-        android:id="@+id/tvStart"
-        android:typeface="monospace"
-        android:textSize="@dimen/main_list_text_size"
-        android:layout_width="@dimen/days_listview_item_tvStart_layout_width"
-        android:gravity="center"
-        android:layout_height="wrap_content"
-        android:layout_weight="@dimen/days_listview_item_tvStart_layout_weight"/>
-    <TextView
-        android:id="@+id/tvEnd"
-        android:typeface="monospace"
-        android:textSize="@dimen/main_list_text_size"
-        android:layout_width="@dimen/days_listview_item_tvEnd_layout_width"
-        android:gravity="center"
-        android:layout_height="wrap_content"
-        android:layout_weight="@dimen/days_listview_item_tvEnd_layout_weight"/>
-    <TextView
-        android:id="@+id/tvPause"
-        android:typeface="monospace"
-        android:textSize="@dimen/main_list_text_size"
-        android:layout_width="@dimen/days_listview_item_tvPause_layout_width"
-        android:gravity="center"
-        android:layout_height="wrap_content"
-        android:layout_weight="@dimen/days_listview_item_tvPause_layout_weight"/>
-    <TextView
-        android:id="@+id/tvTotal"
-        android:typeface="monospace"
-        android:textSize="@dimen/main_list_text_size"
-        android:layout_width="@dimen/days_listview_item_tvTotal_layout_width"
-        android:gravity="center"
-        android:layout_height="wrap_content"
-        android:layout_weight="@dimen/days_listview_item_tvTotal_layout_weight"/>
-    <TextView
-        android:id="@+id/tvOver"
-        android:typeface="monospace"
-        android:textSize="@dimen/main_list_text_size"
-        android:layout_width="@dimen/days_listview_item_tvOver_layout_width"
-        android:gravity="center"
-        android:layout_height="wrap_content"
-        android:layout_weight="@dimen/days_listview_item_tvOver_layout_weight"/>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  android:id="@+id/llDay"
+  android:layout_width="fill_parent"
+  android:layout_height="fill_parent"
+  android:orientation="horizontal">
+
+  <TextView
+    android:id="@+id/tvWeek"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    android:textSize="@dimen/main_list_text_size_week"
+    android:textStyle="italic|bold"
+    android:typeface="monospace"
+    android:visibility="gone" />
+
+  <TextView
+    android:id="@+id/tvDay"
+    android:layout_width="@dimen/days_listview_item_tvDay_layout_width"
+    android:layout_height="wrap_content"
+    android:layout_weight="@dimen/days_listview_item_tvDay_layout_weight"
+    android:gravity="center"
+    android:textSize="@dimen/main_list_text_size"
+    android:typeface="monospace" />
+
+  <TextView
+    android:id="@+id/tvStart"
+    android:layout_width="@dimen/days_listview_item_tvStart_layout_width"
+    android:layout_height="wrap_content"
+    android:layout_weight="@dimen/days_listview_item_tvStart_layout_weight"
+    android:gravity="center"
+    android:textSize="@dimen/main_list_text_size"
+    android:typeface="monospace" />
+
+  <TextView
+    android:id="@+id/tvEnd"
+    android:layout_width="@dimen/days_listview_item_tvEnd_layout_width"
+    android:layout_height="wrap_content"
+    android:layout_weight="@dimen/days_listview_item_tvEnd_layout_weight"
+    android:gravity="center"
+    android:textSize="@dimen/main_list_text_size"
+    android:typeface="monospace" />
+
+  <TextView
+    android:id="@+id/tvPause"
+    android:layout_width="@dimen/days_listview_item_tvPause_layout_width"
+    android:layout_height="wrap_content"
+    android:layout_weight="@dimen/days_listview_item_tvPause_layout_weight"
+    android:gravity="center"
+    android:textSize="@dimen/main_list_text_size"
+    android:typeface="monospace" />
+
+  <TextView
+    android:id="@+id/tvTotal"
+    android:layout_width="@dimen/days_listview_item_tvTotal_layout_width"
+    android:layout_height="wrap_content"
+    android:layout_weight="@dimen/days_listview_item_tvTotal_layout_weight"
+    android:gravity="center"
+    android:textSize="@dimen/main_list_text_size"
+    android:typeface="monospace" />
+
+  <TextView
+    android:id="@+id/tvOver"
+    android:layout_width="@dimen/days_listview_item_tvOver_layout_width"
+    android:layout_height="wrap_content"
+    android:layout_weight="@dimen/days_listview_item_tvOver_layout_weight"
+    android:gravity="center"
+    android:textSize="@dimen/main_list_text_size"
+    android:typeface="monospace" />
 </LinearLayout>
