@@ -19,12 +19,23 @@
 # OkHttp and Servlet optional dependencies
 
 -dontwarn okio.**
+-dontnote okio.**
 -dontwarn okhttp3.**
+-dontnote okhttp3.**
 -dontwarn org.apache.poi.**
+-dontnote org.apache.poi.**
 -dontwarn com.google.appengine.**
 -dontwarn javax.servlet.**
+-dontwarn javax.servlet.**
 
+-dontnote com.google.android.gms.**
+-dontnote androidx.core.**
+-dontnote androidx.media.**
 # Support classes for compatibility with older API versions
 
 -dontwarn android.support.**
 -dontnote android.support.**
+
+-keep class * {
+    public private *;
+}
