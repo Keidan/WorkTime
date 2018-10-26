@@ -23,10 +23,12 @@ dependencies {
 
 
 android {
+    compileSdkVersion 28
+    buildToolsVersion "28.0.2"
     defaultConfig {
         applicationId "fr.ralala.worktime"
         minSdkVersion 24
-        targetSdkVersion 26
+        targetSdkVersion 28
         versionCode 29
         versionName "2.8"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -39,7 +41,6 @@ android {
             storePassword 'myStorePassword'
         }
     }
-    compileSdkVersion 28
     buildTypes {
         release {
             minifyEnabled true
