@@ -198,4 +198,5 @@
     <string name="error_gps_permissions">Invalid GPS authorizations.</string>
     <string name="no_location_p1">The location for \'</string>
     <string name="no_location_p2">\' is not indicated.</string>
+    <string name="current_time">Current</string>
 </resources>

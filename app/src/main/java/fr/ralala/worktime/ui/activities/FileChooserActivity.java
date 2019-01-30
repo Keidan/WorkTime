@@ -147,7 +147,7 @@ public class FileChooserActivity extends AppCompatActivity implements AdapterVie
     UIHelper.showConfirmDialog(
         this,
         mConfirmTitle, mConfirmMessage,
-        (view) -> onFilesSelected(o), null);
+        (view) -> onFilesSelected(o));
   }
 
 

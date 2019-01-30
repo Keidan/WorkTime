@@ -117,7 +117,7 @@ public class ExportFragment extends Fragment implements AdapterView.OnItemSelect
     if(file.exists()) {
       UIHelper.showConfirmDialog(mActivity, getString(R.string.confirm),
         getString(R.string.the_file_exists_part_1) + " " + file.getName() + " " + getString(R.string.the_file_exists_part_2),
-        (view) -> exportXLS(entries, email, file), null);
+        (view) -> exportXLS(entries, email, file));
     } else
       exportXLS(entries, email, file);
   }

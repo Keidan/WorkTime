@@ -76,7 +76,7 @@ public class MainActivity extends RuntimePermissionsActivity implements Navigati
       String msg = intent.getExtras().getString(AndroidHelper.EXTRA_RESTART);
       UIHelper.toast(this, msg);
     }
-    mProgress = UIHelper.showCircularProgressDialog(this, null);
+    mProgress = UIHelper.showCircularProgressDialog(this);
     Toolbar toolbar = findViewById(R.id.toolbar);
     setSupportActionBar(toolbar);
     mSwipeDetector = new SwipeDetector(this);

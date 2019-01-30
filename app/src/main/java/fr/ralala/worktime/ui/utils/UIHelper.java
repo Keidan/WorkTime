@@ -3,7 +3,6 @@ package fr.ralala.worktime.ui.utils;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.LinearGradient;
 import android.graphics.Shader;
@@ -48,19 +47,14 @@ public class UIHelper {
   /**
    * Displays a circular progress dialog.
    * @param context The Android context.
-   * @param cancel The cancel event callback (if null the dialog is not cancelable).
    * @return AlertDialog
    */
-  public static AlertDialog showCircularProgressDialog(Context context,DialogInterface.OnCancelListener cancel) {
+  public static AlertDialog showCircularProgressDialog(Context context) {
     LayoutInflater layoutInflater = LayoutInflater.from(context);
     final ViewGroup nullParent = null;
     View view = layoutInflater.inflate(R.layout.circular_progress, nullParent);
     AlertDialog progress = new AlertDialog.Builder(context).create();
-    if(cancel != null) {
-      progress.setOnCancelListener(cancel);
-      progress.setCancelable(true);
-    } else
-      progress.setCancelable(false);
+    progress.setCancelable(false);
     progress.setView(view);
     return progress;
   }
@@ -211,11 +205,9 @@ public class UIHelper {
    * @param title The dialog title.
    * @param message The dialog message.
    * @param yes Listener used when the 'yes' button is clicked.
-   * @param no Listener used when the 'no' button is clicked.
    */
   public static void showConfirmDialog(final Context c, final String title,
-                                       String message, final android.view.View.OnClickListener yes,
-                                       final android.view.View.OnClickListener no) {
+                                       String message, final android.view.View.OnClickListener yes) {
     new AlertDialog.Builder(c)
         .setTitle(title)
         .setMessage(message)
@@ -224,7 +216,6 @@ public class UIHelper {
           if(yes != null) yes.onClick(null);
         })
         .setNegativeButton(android.R.string.no, (dialog, whichButton) -> {
-          if(no != null) no.onClick(null);
         }).show();
   }
 
@@ -252,6 +243,7 @@ public class UIHelper {
     // Set up the buttons
     builder.setPositiveButton(c.getString(R.string.ok), null);
     builder.setNegativeButton(c.getString(R.string.cancel), null);
+    builder.setNeutralButton(c.getString(R.string.current_time), null);
     final AlertDialog mAlertDialog = builder.create();
 
     mAlertDialog.setOnShowListener((dialog) -> {
@@ -264,6 +256,15 @@ public class UIHelper {
           current.setMinutes(timePicker.getMinute());
         }
         mAlertDialog.dismiss();
+      });
+      b = mAlertDialog.getButton(AlertDialog.BUTTON_NEUTRAL);
+      b.setOnClickListener((view) -> {
+        final TimePicker timePicker = mAlertDialog.findViewById(R.id.timepicker);
+        if(timePicker != null) {
+          WorkTimeDay time = WorkTimeDay.now();
+          timePicker.setHour(time.getHours());
+          timePicker.setMinute(time.getMinutes());
+        }
       });
     });
     mAlertDialog.show();
