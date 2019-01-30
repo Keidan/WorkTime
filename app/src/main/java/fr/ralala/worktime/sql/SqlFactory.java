@@ -119,11 +119,11 @@ public class SqlFactory implements SqlConstants {
   public void settingsLoad(List<Setting> settings) {
     final Cursor c = getBdd().rawQuery("SELECT * FROM " + TABLE_SETTINGS, null);
     if (c.moveToFirst()) {
+      SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext.getApplicationContext());
+      SharedPreferences.Editor edit = prefs.edit();
       do {
         String name = c.getString(NUM_SETTINGS_NAME);
         String value = c.getString(NUM_SETTINGS_VALUE);
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext.getApplicationContext());
-        SharedPreferences.Editor edit = prefs.edit();
         if(name.equals(SettingsDisplayActivity.PREFS_KEY_DEFAULT_HOME) || name.equals(SettingsLearningActivity.PREFS_KEY_PROFILES_WEIGHT_DEPTH)
             || name.equals(SettingsDisplayActivity.PREFS_KEY_DAY_ROWS_HEIGHT) || name.equals(SettingsActivity.PREFS_KEY_WORKTIME_BY_DAY)
             || name.equals(SettingsActivity.PREFS_KEY_AMOUNT_BY_HOUR) || name.equals(SettingsActivity.PREFS_KEY_CURRENCY )
@@ -136,8 +136,8 @@ public class SqlFactory implements SqlConstants {
           edit.putBoolean(name, value.equals("1"));
         if(settings != null)
           settings.add(new Setting(name, value));
-        edit.apply();
       } while (c.moveToNext());
+      edit.apply();
     }
     c.close();
   }
