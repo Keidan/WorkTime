@@ -169,6 +169,8 @@
     <string name="statistics_break">Midi</string>
     <string name="statistics_afternoon">Apr\u00E8s-midi</string>
     <string name="statistics_reload">Recharger</string>
+    <string name="statistics_summary">R\u00E9capitulatif</string>
+    <string name="statistics_summary_empty">Aucune information sur les r\u00E9sum\u00E9s</string>
     <string name="tv_morning_widget">Matin: </string>
     <string name="tv_break_widget">Pause: </string>
     <string name="tv_afternoon_widget">Apr\u00E8s-midi: </string>

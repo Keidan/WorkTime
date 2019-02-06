@@ -1,11 +1,14 @@
 package fr.ralala.worktime.ui.fragments;
 
+import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.SparseArray;
@@ -14,6 +17,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.TableLayout;
+import android.widget.TableRow;
+import android.widget.TextView;
 
 import org.achartengine.GraphicalView;
 import org.achartengine.chart.BarChart;
@@ -68,7 +74,6 @@ public class StatisticsFragment extends Fragment implements View.OnClickListener
   private XYMultipleSeriesRenderer mMultiRenderer = null;
   private XYMultipleSeriesDataset mDatasetBar = null;
   private GraphicalView mChartView = null;
-  private View mRootView = null;
   private MainActivity mActivity;
   private int mDefaultColor;
   private int mColorUnder;
@@ -79,6 +84,8 @@ public class StatisticsFragment extends Fragment implements View.OnClickListener
   private int mColorMorning;
   private int mColorAfternoon;
   private int mColorPause;
+  private Button btAction;
+  private SparseArray<SummaryEntry> mSummaries;
 
   private enum CurrentView{
     YEARS,
@@ -86,6 +93,16 @@ public class StatisticsFragment extends Fragment implements View.OnClickListener
     WEEKS,
     DAYS,
     DETAIL
+  }
+
+  private class SummaryEntry {
+    double nbWork;
+    double nbHolidays;
+    double nbSickness;
+    double nbUnpaid;
+    double nbRecovery;
+    long hWork;
+    long hWorkOver;
   }
 
   private class ChartEntry {
@@ -167,6 +184,49 @@ public class StatisticsFragment extends Fragment implements View.OnClickListener
     entries.get(key).pause = de.getPause();
     entries.get(key).dt_afternoon = de.getTypeAfternoon();
     entries.get(key).dt_morning = de.getTypeMorning();
+
+    if(mSummaries != null) {
+      if (AndroidHelper.notContainsKey(mSummaries, key)) {
+        mSummaries.put(key, new SummaryEntry());
+      }
+      SummaryEntry se = mSummaries.get(key);
+      switch (de.getTypeMorning()) {
+        case AT_WORK:
+          se.nbWork+=0.5;
+          break;
+        case HOLIDAY:
+          se.nbHolidays+=0.5;
+          break;
+        case SICKNESS:
+          se.nbSickness+=0.5;
+          break;
+        case UNPAID:
+          se.nbUnpaid+=0.5;
+          break;
+        case RECOVERY:
+          se.nbRecovery+=0.5;
+          break;
+      }
+      switch (de.getTypeAfternoon()) {
+        case AT_WORK:
+          se.nbWork+=0.5;
+          break;
+        case HOLIDAY:
+          se.nbHolidays+=0.5;
+          break;
+        case SICKNESS:
+          se.nbSickness+=0.5;
+          break;
+        case UNPAID:
+          se.nbUnpaid+=0.5;
+          break;
+        case RECOVERY:
+          se.nbRecovery+=0.5;
+          break;
+      }
+      se.hWork = entries.get(key).work.getTimeMs();
+      se.hWorkOver = entries.get(key).over.getTimeMs();
+    }
   }
 
   /**
@@ -180,12 +240,11 @@ public class StatisticsFragment extends Fragment implements View.OnClickListener
   public View onCreateView(@NonNull final LayoutInflater inflater,
                            final ViewGroup container, final Bundle savedInstanceState) {
     final ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_statistics, container, false);
-    this.mRootView = rootView;
     mActivity = (MainActivity)getActivity();
     assert mActivity != null;
     mApp = MainApplication.getInstance();
-    Button cancel = rootView.findViewById(R.id.cancel);
-    cancel.setOnClickListener(this);
+    btAction = rootView.findViewById(R.id.action);
+    btAction.setOnClickListener(this);
     mChartContainer = rootView.findViewById(R.id.graph);
     mMetrics = new DisplayMetrics();
     mActivity.getWindowManager().getDefaultDisplay().getMetrics(mMetrics);
@@ -211,8 +270,18 @@ public class StatisticsFragment extends Fragment implements View.OnClickListener
    */
   @Override
   public void onClick(View view) {
-    mCurrentView = CurrentView.YEARS;
-    redrawChart();
+    if(view.equals(btAction)) {
+      if(btAction.getText().toString().equals(getString(R.string.statistics_summary))) {
+        if(mSummaries == null) {
+          UIHelper.showAlertDialog(mActivity, R.string.statistics_summary, getString(R.string.statistics_summary_empty));
+          return;
+        }
+        displaySummaryDialog();
+      } else {
+        mCurrentView = CurrentView.YEARS;
+        redrawChart();
+      }
+    }
   }
 
   /**
@@ -231,10 +300,19 @@ public class StatisticsFragment extends Fragment implements View.OnClickListener
   public void redrawChart() {
     String title = null;
 
-    if(mCurrentView == CurrentView.YEARS)
-      mRootView.findViewById(R.id.cancel).setVisibility(View.GONE);
-    else
-      mRootView.findViewById(R.id.cancel).setVisibility(View.VISIBLE);
+    if(mCurrentView == CurrentView.YEARS) {
+      btAction.setCompoundDrawablesWithIntrinsicBounds(R.mipmap.ic_summary, 0, 0, 0);
+      btAction.setText(R.string.statistics_summary);
+      if(mSummaries != null)
+        mSummaries.clear();
+      mSummaries = new SparseArray<>();
+    } else {
+      btAction.setCompoundDrawablesWithIntrinsicBounds(R.mipmap.ic_cancel_white, 0, 0, 0);
+      btAction.setText(R.string.statistics_reload);
+      if(mSummaries != null)
+        mSummaries.clear();
+      mSummaries = null;
+    }
     SparseArray<ChartEntry> entries = new SparseArray<>();
     boolean addPublicHoliday = true;
     List<Integer> years = mApp.getDaysFactory().getYears();
@@ -653,11 +731,142 @@ public class StatisticsFragment extends Fragment implements View.OnClickListener
    * @param entries The entries.
    * @return SortedSet<Integer>
    */
-  private SortedSet<Integer> toSortedSet(SparseArray<ChartEntry> entries) {
+  private SortedSet<Integer> toSortedSet(SparseArray<?> entries) {
     SortedSet<Integer> keys = new TreeSet<>();
     for(int i = 0; i < entries.size(); i++)
       keys.add(entries.keyAt(i));
     return keys;
   }
 
+  /**
+   * Normalizes the value of a double avoiding the fractional part if it is equal to zero.
+   * @param d The double to normalize.
+   * @return String
+   */
+  private String fixDouble(double d) {
+    return (d % 1) == 0 ? String.valueOf((int)d) : String.valueOf(d);
+  }
+  /**
+   * Displays the summary alert dialog.
+   */
+  private void displaySummaryDialog() {
+    AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
+    Context dialogContext = builder.getContext();
+    LayoutInflater inflater = LayoutInflater.from(dialogContext);
+    final ViewGroup nullViewGroup = null;
+    View alertView = inflater.inflate(R.layout.content_dialog_statistics_summary, nullViewGroup);
+    builder.setView(alertView);
+    TableLayout tableLayout = alertView.findViewById(R.id.table);
+    SortedSet<Integer> years = toSortedSet(mSummaries);
+    WorkTimeDay wtd = WorkTimeDay.now();
+    for (Integer year : years) {
+      SummaryEntry se = mSummaries.get(year);
+      /* Year */
+      TableRow tableRow = new TableRow(dialogContext);
+      tableRow.setLayoutParams(new LinearLayout.LayoutParams
+          (LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+      TextView textView = new TextView(dialogContext);
+      textView.setTypeface(null, Typeface.BOLD);
+      textView.setText(String.valueOf(year));
+      tableRow.addView(textView);
+      tableLayout.addView(tableRow);
+      /* hWork */
+      tableRow = new TableRow(dialogContext);
+      tableRow.setLayoutParams(new LinearLayout.LayoutParams
+          (LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+      tableRow.addView(new TextView(dialogContext)); /* empty view */
+      textView = new TextView(dialogContext);
+      textView.setText(R.string.work_time);
+      tableRow.addView(textView);
+      textView = new TextView(dialogContext);
+      textView.setText(wtd.fromTimeMS(se.hWork).timeString());
+      textView.setTypeface(null, Typeface.BOLD);
+      tableRow.addView(textView);
+      tableLayout.addView(tableRow);
+      /* hWorkOver */
+      tableRow = new TableRow(dialogContext);
+      tableRow.setLayoutParams(new LinearLayout.LayoutParams
+          (LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+      tableRow.addView(new TextView(dialogContext)); /* empty view */
+      textView = new TextView(dialogContext);
+      textView.setText(R.string.overtime);
+      tableRow.addView(textView);
+      textView = new TextView(dialogContext);
+      textView.setText(wtd.fromTimeMS(se.hWorkOver).timeString());
+      textView.setTypeface(null, Typeface.BOLD);
+      tableRow.addView(textView);
+      tableLayout.addView(tableRow);
+      /* nbWork */
+      tableRow = new TableRow(dialogContext);
+      tableRow.setLayoutParams(new LinearLayout.LayoutParams
+          (LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+      tableRow.addView(new TextView(dialogContext)); /* empty view */
+      textView = new TextView(dialogContext);
+      textView.setText(R.string.at_work);
+      tableRow.addView(textView);
+      textView = new TextView(dialogContext);
+      textView.setText(fixDouble(se.nbWork));
+      textView.setTypeface(null, Typeface.BOLD);
+      tableRow.addView(textView);
+      tableLayout.addView(tableRow);
+      /* nbHolidays */
+      tableRow = new TableRow(dialogContext);
+      tableRow.setLayoutParams(new LinearLayout.LayoutParams
+          (LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+      tableRow.addView(new TextView(dialogContext)); /* empty view */
+      textView = new TextView(dialogContext);
+      textView.setText(R.string.holidays);
+      tableRow.addView(textView);
+      textView = new TextView(dialogContext);
+      textView.setText(fixDouble(se.nbHolidays));
+      textView.setTypeface(null, Typeface.BOLD);
+      tableRow.addView(textView);
+      tableLayout.addView(tableRow);
+      /* nbSickness */
+      tableRow = new TableRow(dialogContext);
+      tableRow.setLayoutParams(new LinearLayout.LayoutParams
+          (LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+      tableRow.addView(new TextView(dialogContext)); /* empty view */
+      textView = new TextView(dialogContext);
+      textView.setText(R.string.sickness);
+      tableRow.addView(textView);
+      textView = new TextView(dialogContext);
+      textView.setText(fixDouble(se.nbSickness));
+      textView.setTypeface(null, Typeface.BOLD);
+      tableRow.addView(textView);
+      tableLayout.addView(tableRow);
+      /* nbUnpaid */
+      tableRow = new TableRow(dialogContext);
+      tableRow.setLayoutParams(new LinearLayout.LayoutParams
+          (LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+      tableRow.addView(new TextView(dialogContext)); /* empty view */
+      textView = new TextView(dialogContext);
+      textView.setText(R.string.unpaid);
+      tableRow.addView(textView);
+      textView = new TextView(dialogContext);
+      textView.setText(fixDouble(se.nbUnpaid));
+      textView.setTypeface(null, Typeface.BOLD);
+      tableRow.addView(textView);
+      tableLayout.addView(tableRow);
+      /* nbRecovery */
+      tableRow = new TableRow(dialogContext);
+      tableRow.setLayoutParams(new LinearLayout.LayoutParams
+          (LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+      tableRow.addView(new TextView(dialogContext)); /* empty view */
+      textView = new TextView(dialogContext);
+      textView.setText(R.string.recovery);
+      tableRow.addView(textView);
+      textView = new TextView(dialogContext);
+      textView.setText(fixDouble(se.nbRecovery));
+      textView.setTypeface(null, Typeface.BOLD);
+      tableRow.addView(textView);
+      tableLayout.addView(tableRow);
+    }
+
+    builder.setCancelable(true);
+    AlertDialog alertDialog = builder.create();
+    alertDialog.setTitle(getString(R.string.statistics_summary));
+    alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.ok), (dialog, which) -> dialog.dismiss());
+    alertDialog.show();
+  }
 }

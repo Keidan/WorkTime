@@ -61,7 +61,7 @@ public class WorkTimeDay {
    * @param ms The time in milliseconds.
    * @return WorkTimeDay
    */
-  private WorkTimeDay fromTimeMS(long ms) {
+  public WorkTimeDay fromTimeMS(long ms) {
     mHours = (int)TimeUnit.MILLISECONDS.toHours(ms);
     mMinutes = (int)(TimeUnit.MILLISECONDS.toMinutes(ms) - (mHours * 60));
     return this;

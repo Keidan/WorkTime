@@ -179,6 +179,8 @@
     <string name="statistics_morning">Morning</string>
     <string name="statistics_break">Break</string>
     <string name="statistics_afternoon">Afternoon</string>
+    <string name="statistics_summary">Summary</string>
+    <string name="statistics_summary_empty">No information on summaries</string>
     <string name="statistics_reload">Reload</string>
     <string name="tv_morning_widget">Morning: </string>
     <string name="tv_break_widget">Break: </string>
