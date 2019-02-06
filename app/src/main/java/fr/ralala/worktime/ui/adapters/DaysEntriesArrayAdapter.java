@@ -192,8 +192,12 @@ public class DaysEntriesArrayAdapter extends ArrayAdapter<DayEntry> {
               DayEntry.getDayString2lt(mContext, cal.get(Calendar.DAY_OF_WEEK))));
         }
         if (holder.tvStart != null) {
-          if (isPaidButNotWorkedMorning(t))
-            holder.tvStart.setText("*");
+          if (isPaidButNotWorkedMorning(t)) {
+            if(!isNotValidAfternoon(t))
+              holder.tvStart.setText(t.getStartAfternoon().timeString());
+            else
+              holder.tvStart.setText("*");
+          }
           else if (t.getTypeMorning() == DayType.RECOVERY && !isNotValidAfternoon(t))
             holder.tvStart.setText(t.getStartAfternoon().timeString());
           else if (isNotValidMorning(t))
@@ -203,8 +207,13 @@ public class DaysEntriesArrayAdapter extends ArrayAdapter<DayEntry> {
           }
         }
         if (holder.tvEnd != null) {
-          if (isPaidButNotWorkedAfternoon(t))
+          if (isPaidButNotWorkedAfternoon(t)) {
             holder.tvEnd.setText("*");
+            if(!isNotValidMorning(t))
+              holder.tvEnd.setText(t.getEndMorning().timeString());
+            else
+              holder.tvEnd.setText("*");
+          }
           else if (t.getTypeAfternoon() == DayType.RECOVERY && !isNotValidMorning(t))
             holder.tvEnd.setText(t.getEndMorning().timeString());
           else if (isNotValidAfternoon(t)) {
