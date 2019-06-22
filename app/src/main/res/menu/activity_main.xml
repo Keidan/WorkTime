@@ -1,0 +1,10 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto" >
+
+    <item
+        android:id="@+id/action_last_export"
+        android:orderInCategory="100"
+        app:showAsAction="always"
+        android:title="@null"
+        android:icon="@mipmap/ic_share_white"/>
+</menu>

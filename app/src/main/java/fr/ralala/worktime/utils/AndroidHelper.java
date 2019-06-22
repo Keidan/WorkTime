@@ -12,10 +12,12 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.net.Uri;
+import android.os.Environment;
 import android.os.Process;
 import android.os.Vibrator;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
+import android.util.Log;
 import android.util.SparseArray;
 
 
@@ -23,6 +25,13 @@ import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 
 import java.text.DateFormatSymbols;
+
+import fr.ralala.worktime.MainApplication;
+import fr.ralala.worktime.R;
+import fr.ralala.worktime.services.DropboxAutoExportService;
+import fr.ralala.worktime.sql.SqlHelper;
+import fr.ralala.worktime.ui.activities.FileChooserActivity;
+import fr.ralala.worktime.ui.utils.UIHelper;
 
 /**
  *******************************************************************************
@@ -194,6 +203,57 @@ public class AndroidHelper {
     Vibrator v = (Vibrator) c.getSystemService(Context.VIBRATOR_SERVICE);
     if(v != null)
       v.vibrate(100);
+  }
+
+  /**
+   * Export the database to dropbox.
+   * @param app Main application
+   * @param c Android context.
+   */
+  public static void exportDropbox(MainApplication app, Context c) {
+    DropboxAutoExportService.setNeedUpdate(app, false);
+    app.reloadDatabaseMD5();
+    app.getDropboxImportExport().exportDatabase(c, true, null);
+  }
+
+  /**
+   * Export the database to device.
+   * @param a Activity.
+   */
+  public static void exportDevice(Activity a){
+    final Intent i = new Intent(a.getApplicationContext(), FileChooserActivity.class);
+    i.putExtra(FileChooserActivity.FILECHOOSER_TYPE_KEY, "" + FileChooserActivity.FILECHOOSER_TYPE_DIRECTORY_ONLY);
+    i.putExtra(FileChooserActivity.FILECHOOSER_TITLE_KEY, a.getString(R.string.pref_title_export));
+    i.putExtra(FileChooserActivity.FILECHOOSER_MESSAGE_KEY, a.getString(R.string.use_folder) + ":? ");
+    i.putExtra(FileChooserActivity.FILECHOOSER_DEFAULT_DIR, Environment
+        .getExternalStorageDirectory().getAbsolutePath());
+    i.putExtra(FileChooserActivity.FILECHOOSER_SHOW_KEY, "" + FileChooserActivity.FILECHOOSER_SHOW_DIRECTORY_ONLY);
+    a.startActivityForResult(i, FileChooserActivity.FILECHOOSER_SELECTION_TYPE_DIRECTORY);
+  }
+
+  /**
+   * Called when the file chooser is disposed with a result.
+   * @param a Activity.
+   * @param requestCode The request code.
+   * @param resultCode The result code.
+   * @param data The Intent data.
+   * @return true if consumed.
+   */
+  public static boolean exportDeviceActivityResult(Activity a, final int requestCode, final int resultCode, final Intent data) {
+    if (requestCode == FileChooserActivity.FILECHOOSER_SELECTION_TYPE_DIRECTORY) {
+      if (resultCode == Activity.RESULT_OK) {
+        String dir = data.getStringExtra(FileChooserActivity.FILECHOOSER_SELECTION_KEY);
+        try {
+          SqlHelper.copyDatabase(a, SqlHelper.DB_NAME, dir);
+          UIHelper.toast(a, a.getString(R.string.export_success));
+        } catch(Exception e) {
+          UIHelper.toastLong(a, a.getString(R.string.error) + ": " + e.getMessage());
+          Log.e(AndroidHelper.class.getSimpleName(), "Error: " + e.getMessage(), e);
+        }
+      }
+      return true;
+    }
+    return false;
   }
 
 }

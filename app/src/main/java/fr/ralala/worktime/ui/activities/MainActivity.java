@@ -16,11 +16,11 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
-
 
 import fr.ralala.worktime.MainApplication;
 import fr.ralala.worktime.R;
@@ -114,6 +114,50 @@ public class MainActivity extends RuntimePermissionsActivity implements Navigati
         R.string.changelog_show_full), this);
     if(changeLog.firstRun())
       changeLog.getLogDialog().show();
+  }
+
+  /**
+   * Called to create the option menu.
+   * @param menu The main menu.
+   * @return boolean
+   */
+  @Override
+  public boolean onCreateOptionsMenu(final Menu menu) {
+    getMenuInflater().inflate(R.menu.activity_main, menu);
+    return true;
+  }
+
+
+
+  /**
+   * Called when the user select an option menu item.
+   * @param item The selected item.
+   * @return boolean
+   */
+  @Override
+  public boolean onOptionsItemSelected(final MenuItem item) {
+    final int id = item.getItemId();
+    if (id == R.id.action_last_export) {
+      if(mApp.getLastExportType().equals(MainApplication.PREFS_VAL_LAST_EXPORT_DEVICE)) {
+        AndroidHelper.exportDevice(this);
+      } else if(mApp.getLastExportType().equals(MainApplication.PREFS_VAL_LAST_EXPORT_DROPBOX)) {
+        AndroidHelper.exportDropbox(mApp, this);
+      }
+      return true;
+    }
+    return super.onOptionsItemSelected(item);
+  }
+
+  /**
+   * Called when the file chooser is disposed with a result.
+   * @param requestCode The request code.
+   * @param resultCode The result code.
+   * @param data The Intent data.
+   */
+  @Override
+  protected void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
+    // Check which request we're responding to
+    AndroidHelper.exportDeviceActivityResult(this, requestCode, resultCode, data);
   }
 
   /**

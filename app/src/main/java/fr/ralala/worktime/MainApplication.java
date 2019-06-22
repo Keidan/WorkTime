@@ -41,6 +41,9 @@ import fr.ralala.worktime.ui.utils.UIHelper;
  *******************************************************************************
  */
 public class MainApplication extends Application  {
+  private static final String PREFS_KEY_LAST_EXPORT = "pKeyLastExportType";
+  public static final String PREFS_VAL_LAST_EXPORT_DROPBOX = "dropbox";
+  public static final String PREFS_VAL_LAST_EXPORT_DEVICE = "device";
   private static final int NFY_QUICK_ACCESS = 1;
   private PublicHolidaysFactory mPublicHolidaysFactory;
   private ProfilesFactory mProfilesFactory;
@@ -236,6 +239,28 @@ public class MainApplication extends Application  {
    * Global configuration
    * ----------------------------------
    */
+
+  /**
+   * Returns the last export mode used.
+   * Will change the behavior of the export icon
+   * @return String (see PREF_VAL_LAST_EXPORT_xxxxxxx)
+   */
+  public String getLastExportType() {
+    SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+    return prefs.getString(PREFS_KEY_LAST_EXPORT, PREFS_VAL_LAST_EXPORT_DROPBOX);
+  }
+
+  /**
+   * Sets the last export mode used.
+   * Will change the behavior of the export icon
+   * @param last see PREF_VAL_LAST_EXPORT_xxxxxxx
+   */
+  public void setLastExportType(String last) {
+    SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+    SharedPreferences.Editor e = prefs.edit();
+    e.putString(PREFS_KEY_LAST_EXPORT, last);
+    e.apply();
+  }
 
   /**
    * Returns the periodicity with which the application must backup the databases (Only with dropbox and whether automatic export is enabled).

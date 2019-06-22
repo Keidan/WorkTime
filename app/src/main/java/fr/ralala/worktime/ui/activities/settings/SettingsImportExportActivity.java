@@ -22,10 +22,9 @@ import java.util.Set;
 import fr.ralala.worktime.MainApplication;
 import fr.ralala.worktime.R;
 import fr.ralala.worktime.dropbox.DropboxImportExport;
-import fr.ralala.worktime.services.DropboxAutoExportService;
-import fr.ralala.worktime.sql.SqlHelper;
 import fr.ralala.worktime.ui.activities.FileChooserActivity;
 import fr.ralala.worktime.ui.utils.UIHelper;
+import fr.ralala.worktime.utils.AndroidHelper;
 
 
 /**
@@ -103,12 +102,13 @@ public class SettingsImportExportActivity extends PreferenceActivity implements 
   @Override
   public boolean onPreferenceClick(final Preference preference) {
     if (preference.equals(mPrefFrag.findPreference(PREFS_KEY_EXPORT_TO_DROPBOX))) {
-      DropboxAutoExportService.setNeedUpdate(mApp, false);
-      mApp.reloadDatabaseMD5();
-      mApp.getDropboxImportExport().exportDatabase(this, true, null);
+      mApp.setLastExportType(MainApplication.PREFS_VAL_LAST_EXPORT_DROPBOX);
+      AndroidHelper.exportDropbox(mApp, this);
     } else if (preference.equals(mPrefFrag.findPreference(PREFS_KEY_IMPORT_FROM_DROPBOX))) {
       mApp.getDropboxImportExport().importDatabase(this);
     } else if (preference.equals(mPrefFrag.findPreference(PREFS_KEY_EXPORT_TO_DEVICE))) {
+      mApp.setLastExportType(MainApplication.PREFS_VAL_LAST_EXPORT_DROPBOX);
+      AndroidHelper.exportDevice(this);
       Map<String, String> extra = new HashMap<>();
       extra.put(FileChooserActivity.FILECHOOSER_TYPE_KEY, "" + FileChooserActivity.FILECHOOSER_TYPE_DIRECTORY_ONLY);
       extra.put(FileChooserActivity.FILECHOOSER_TITLE_KEY, getString(R.string.pref_title_export));
@@ -118,14 +118,14 @@ public class SettingsImportExportActivity extends PreferenceActivity implements 
       extra.put(FileChooserActivity.FILECHOOSER_SHOW_KEY, "" + FileChooserActivity.FILECHOOSER_SHOW_DIRECTORY_ONLY);
       myStartActivity(extra, FileChooserActivity.class, FileChooserActivity.FILECHOOSER_SELECTION_TYPE_DIRECTORY);
     } else if (preference.equals(mPrefFrag.findPreference(PREFS_KEY_IMPORT_FROM_DEVICE))) {
-      Map<String, String> extra = new HashMap<>();
-      extra.put(FileChooserActivity.FILECHOOSER_TYPE_KEY, "" + FileChooserActivity.FILECHOOSER_TYPE_FILE_AND_DIRECTORY);
-      extra.put(FileChooserActivity.FILECHOOSER_TITLE_KEY, getString(R.string.pref_title_import));
-      extra.put(FileChooserActivity.FILECHOOSER_MESSAGE_KEY, getString(R.string.use_file) + ":? ");
-      extra.put(FileChooserActivity.FILECHOOSER_DEFAULT_DIR, Environment
+      final Intent i = new Intent(getApplicationContext(), FileChooserActivity.class);
+      i.putExtra(FileChooserActivity.FILECHOOSER_TYPE_KEY, "" + FileChooserActivity.FILECHOOSER_TYPE_FILE_AND_DIRECTORY);
+      i.putExtra(FileChooserActivity.FILECHOOSER_TITLE_KEY, getString(R.string.pref_title_import));
+      i.putExtra(FileChooserActivity.FILECHOOSER_MESSAGE_KEY, getString(R.string.use_file) + ":? ");
+      i.putExtra(FileChooserActivity.FILECHOOSER_DEFAULT_DIR, Environment
         .getExternalStorageDirectory().getAbsolutePath());
-      extra.put(FileChooserActivity.FILECHOOSER_SHOW_KEY, "" + FileChooserActivity.FILECHOOSER_SHOW_FILE_AND_DIRECTORY);
-      myStartActivity(extra, FileChooserActivity.class, FileChooserActivity.FILECHOOSER_SELECTION_TYPE_FILE);
+      i.putExtra(FileChooserActivity.FILECHOOSER_SHOW_KEY, "" + FileChooserActivity.FILECHOOSER_SHOW_FILE_AND_DIRECTORY);
+      startActivityForResult(i, FileChooserActivity.FILECHOOSER_SELECTION_TYPE_FILE);
     }
     return true;
   }
@@ -139,18 +139,7 @@ public class SettingsImportExportActivity extends PreferenceActivity implements 
   @Override
   protected void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
     // Check which request we're responding to
-    if (requestCode == FileChooserActivity.FILECHOOSER_SELECTION_TYPE_DIRECTORY) {
-      if (resultCode == RESULT_OK) {
-        String dir = data.getStringExtra(FileChooserActivity.FILECHOOSER_SELECTION_KEY);
-        try {
-          SqlHelper.copyDatabase(this, SqlHelper.DB_NAME, dir);
-          UIHelper.toast(this, getString(R.string.export_success));
-        } catch(Exception e) {
-          UIHelper.toastLong(this, getString(R.string.error) + ": " + e.getMessage());
-          Log.e(getClass().getSimpleName(), "Error: " + e.getMessage(), e);
-        }
-      }
-    } else if (requestCode == FileChooserActivity.FILECHOOSER_SELECTION_TYPE_FILE) {
+    if (!AndroidHelper.exportDeviceActivityResult(this, requestCode, resultCode, data) && requestCode == FileChooserActivity.FILECHOOSER_SELECTION_TYPE_FILE) {
       if (resultCode == RESULT_OK) {
         String file = data.getStringExtra(FileChooserActivity.FILECHOOSER_SELECTION_KEY);
         Log.d(getClass().getSimpleName(), "Selected file: '" + file + "'");
