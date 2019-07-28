@@ -7,6 +7,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.RectF;
+import android.support.annotation.NonNull;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
@@ -35,12 +36,10 @@ public class SwipeEditDeleteRecyclerViewItem extends ItemTouchHelper.SimpleCallb
   private RectF mBackgroundEdit = null;
   private RectF mBackgroundDelete = null;
   private int mAdapterPosition = -1;
-  private RecyclerView mRecyclerView;
 
   public SwipeEditDeleteRecyclerViewItem(Activity activity, RecyclerView recyclerView, SwipeEditDeleteRecyclerViewItemListener listener) {
     super(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT);
     mListener = listener;
-    mRecyclerView = recyclerView;
     colorEdit = ResourcesCompat.getColor(activity.getResources(), R.color.item_edit, activity.getTheme());
     colorDelete = ResourcesCompat.getColor(activity.getResources(), R.color.item_delete, activity.getTheme());
     iconEdit = BitmapFactory.decodeResource(activity.getResources(), R.mipmap.ic_edit);
@@ -70,16 +69,18 @@ public class SwipeEditDeleteRecyclerViewItem extends ItemTouchHelper.SimpleCallb
    * @return true if this OnItemTouchListener wishes to begin intercepting touch events, false to continue with the current behavior and continue observing future events in the gesture.
    */
   @Override
-  public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
+  public boolean onInterceptTouchEvent(@NonNull RecyclerView rv, @NonNull MotionEvent e) {
     if(e.getAction() == MotionEvent.ACTION_UP) {
       if (mBackgroundDelete != null && (e.getX() >= mBackgroundDelete.left && e.getX() <= mBackgroundDelete.right && e.getY() >= mBackgroundDelete.top && e.getY() <= mBackgroundDelete.bottom)) {
         mListener.onClickDelete(mAdapterPosition);
-        mRecyclerView.getAdapter().notifyItemChanged(mAdapterPosition);
+        if(rv.getAdapter() != null)
+          rv.getAdapter().notifyItemChanged(mAdapterPosition);
         mAdapterPosition = -1;
         return true;
       } else if (mBackgroundEdit != null && (e.getX() >= mBackgroundEdit.right && e.getX() <= mBackgroundEdit.left && e.getY() >= mBackgroundEdit.top && e.getY() <= mBackgroundEdit.bottom)) {
         mListener.onClickEdit(mAdapterPosition);
-        mRecyclerView.getAdapter().notifyItemChanged(mAdapterPosition);
+        if(rv.getAdapter() != null)
+          rv.getAdapter().notifyItemChanged(mAdapterPosition);
         mAdapterPosition = -1;
         return true;
       }
@@ -93,7 +94,7 @@ public class SwipeEditDeleteRecyclerViewItem extends ItemTouchHelper.SimpleCallb
    * @param e MotionEvent describing the touch event. All coordinates are in the RecyclerView's coordinate system.
    */
   @Override
-  public void onTouchEvent(RecyclerView rv, MotionEvent e) {
+  public void onTouchEvent(@NonNull RecyclerView rv, @NonNull MotionEvent e) {
 
   }
 
@@ -113,9 +114,10 @@ public class SwipeEditDeleteRecyclerViewItem extends ItemTouchHelper.SimpleCallb
    * @return True if the viewHolder has been moved to the adapter position of target.
    */
   @Override
-  public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+  public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
     if(mAdapterPosition != -1) {
-      mRecyclerView.getAdapter().notifyItemChanged(mAdapterPosition);
+      if(recyclerView.getAdapter() != null)
+        recyclerView.getAdapter().notifyItemChanged(mAdapterPosition);
       mAdapterPosition = -1;
     }
     return false;
@@ -127,7 +129,7 @@ public class SwipeEditDeleteRecyclerViewItem extends ItemTouchHelper.SimpleCallb
    * @param direction The direction to which the ViewHolder is swiped. It is one of UP, DOWN, LEFT or RIGHT.
    */
   @Override
-  public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+  public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
     mAdapterPosition = viewHolder.getAdapterPosition();
   }
 
@@ -142,13 +144,13 @@ public class SwipeEditDeleteRecyclerViewItem extends ItemTouchHelper.SimpleCallb
    * @param isCurrentlyActive True if this view is currently being controlled by the user or false it is simply animating back to its original state.
    */
   @Override
-  public void onChildDraw(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
+  public void onChildDraw(@NonNull Canvas c, @NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
     if(actionState == ItemTouchHelper.ACTION_STATE_SWIPE){
       View itemView = viewHolder.itemView;
       float height = (float) itemView.getBottom() - (float) itemView.getTop();
-      float width = height / 5;
       if(mAdapterPosition != -1 && mAdapterPosition != viewHolder.getAdapterPosition()) {
-        mRecyclerView.getAdapter().notifyItemChanged(mAdapterPosition);
+        if(recyclerView.getAdapter() != null)
+          recyclerView.getAdapter().notifyItemChanged(mAdapterPosition);
         mAdapterPosition = -1;
       }
       if(dX != 0) {
@@ -156,21 +158,32 @@ public class SwipeEditDeleteRecyclerViewItem extends ItemTouchHelper.SimpleCallb
         if (dX > 0) {
           mPaint.setColor(colorEdit);
           mBackgroundEdit = new RectF((float) itemView.getLeft() + dX / 5, (float) itemView.getTop(), (float) itemView.getLeft(), (float) itemView.getBottom());
+          // Draw Rect with varying right side, equal to displacement dX
           c.drawRect(mBackgroundEdit, mPaint);
-          RectF icon_dest = new RectF((itemView.getLeft() + dX / 7), (float) itemView.getTop() + width, (float) itemView.getLeft() + dX / 20, (float) itemView.getBottom() - width);
-          c.drawBitmap(iconEdit, null, icon_dest, mPaint);
+          // Set the image icon for Right swipe
+          float offset = Math.abs((mBackgroundEdit.right) / 2) - (iconEdit.getWidth() / 2);
+          mPaint.setAlpha((int)((dX * 255) / itemView.getWidth()));
+          c.drawBitmap(iconEdit,
+              mBackgroundEdit.right - offset,
+              (float) itemView.getTop() + (height - iconEdit.getHeight())/2,
+              mPaint);
         } else {
           mPaint.setColor(colorDelete);
           mBackgroundDelete = new RectF((float) itemView.getRight() + dX / 5, (float) itemView.getTop(), (float) itemView.getRight(), (float) itemView.getBottom());
           c.drawRect(mBackgroundDelete, mPaint);
-          RectF icon_dest = new RectF((itemView.getRight() + dX / 7), (float) itemView.getTop() + width, (float) itemView.getRight() + dX / 20, (float) itemView.getBottom() - width);
-          c.drawBitmap(iconDelete, null, icon_dest, mPaint);
+          //Set the image icon for Left swipe
+          float offset = Math.abs((mBackgroundDelete.right) / 2) - (iconDelete.getWidth() / 2);
+          mPaint.setAlpha((int)((Math.abs(dX) * 255) / itemView.getWidth()));
+          c.drawBitmap(iconDelete,
+              mBackgroundDelete.right - (offset/3),
+              (float) itemView.getTop() + (height - iconDelete.getHeight())/2,
+              mPaint);
         }
+
       } else {
         mBackgroundEdit = null;
         mBackgroundDelete = null;
       }
     }
-
   }
 }
