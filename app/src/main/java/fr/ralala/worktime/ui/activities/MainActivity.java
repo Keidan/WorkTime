@@ -157,7 +157,9 @@ public class MainActivity extends RuntimePermissionsActivity implements Navigati
   @Override
   protected void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
     // Check which request we're responding to
-    AndroidHelper.exportDeviceActivityResult(this, requestCode, resultCode, data);
+    if(!AndroidHelper.exportDeviceActivityResult(this, requestCode, resultCode, data))
+      // the event is not consumed by the activity, it must be propagated to fragments
+      super.onActivityResult(requestCode, resultCode, data);
   }
 
   /**
