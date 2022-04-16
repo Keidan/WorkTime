@@ -18,6 +18,7 @@ dependencies {
     implementation "com.android.support.constraint:constraint-layout:$constraintLayoutVersion"
     implementation "com.squareup.okhttp:okhttp:$okhttpVersion"
     implementation "com.squareup.okhttp3:okhttp:$okhttp3Version"
+    implementation 'com.dropbox.core:dropbox-core-sdk:5.2.0'
     implementation files('libs/poi-3.15.jar')
 }
 
@@ -29,8 +30,8 @@ android {
         applicationId "fr.ralala.worktime"
         minSdkVersion 24
         targetSdkVersion 28
-        versionCode 34
-        versionName "2.13"
+        versionCode 35
+        versionName "2.14"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     signingConfigs {

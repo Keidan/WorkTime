@@ -89,9 +89,8 @@ public class DropboxHelper {
    */
   private void initDropBox(String accessToken) {
     if (mDbxClient == null) {
-      DbxRequestConfig requestConfig = DbxRequestConfig.newBuilder(getClass().getPackage().getName())
-        .withHttpRequestor(OkHttp3Requestor.INSTANCE)
-        .build();
+      DbxRequestConfig.Builder b = DbxRequestConfig.newBuilder(getClass().getPackage().getName());
+      DbxRequestConfig requestConfig = b.build();
       mDbxClient = new DbxClientV2(requestConfig, accessToken);
     }
   }
