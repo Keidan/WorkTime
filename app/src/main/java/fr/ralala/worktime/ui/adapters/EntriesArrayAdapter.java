@@ -1,7 +1,6 @@
 package fr.ralala.worktime.ui.adapters;
 
-import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
+import android.annotation.SuppressLint;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,9 +8,12 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
 import java.util.List;
+
 import fr.ralala.worktime.R;
-import fr.ralala.worktime.models.ProfileEntry;
 
 /**
  * ******************************************************************************
@@ -20,30 +22,33 @@ import fr.ralala.worktime.models.ProfileEntry;
  * </p>
  *
  * @author Keidan
- *         <p>
- *******************************************************************************
+ * <p>
+ * ******************************************************************************
  */
-public abstract class EntriesArrayAdapter<T> extends RecyclerView.Adapter<EntriesArrayAdapter.ViewHolder>{
+public abstract class EntriesArrayAdapter<T> extends RecyclerView.Adapter<EntriesArrayAdapter.ViewHolder> {
   public interface OnLongPressListener<T> {
     /**
      * Called when a long click is captured.
+     *
      * @param t The associated item.
      */
     void onLongPressListener(@NonNull T t);
   }
-  private int mId;
-  private List<T> mItems;
-  private RecyclerView mRecyclerView;
+
+  private final int mId;
+  private final List<T> mItems;
+  private final RecyclerView mRecyclerView;
   private OnLongPressListener<T> mOnLongPressListener;
 
   /**
    * Creates the array adapter.
-   * @param recyclerView The owner object.
+   *
+   * @param recyclerView  The owner object.
    * @param rowResourceId The resource id of the container.
-   * @param objects The objects list.
+   * @param objects       The objects list.
    */
   EntriesArrayAdapter(RecyclerView recyclerView, final int rowResourceId,
-                                     final List<T> objects) {
+                      final List<T> objects) {
     mRecyclerView = recyclerView;
     mId = rowResourceId;
     mItems = objects;
@@ -51,6 +56,7 @@ public abstract class EntriesArrayAdapter<T> extends RecyclerView.Adapter<Entrie
 
   /**
    * Returns an item.
+   *
    * @param position Item position.
    * @return T
    */
@@ -60,6 +66,7 @@ public abstract class EntriesArrayAdapter<T> extends RecyclerView.Adapter<Entrie
 
   /**
    * Sets OnLongPressListener.
+   *
    * @param listener New Listener.
    */
   public void setOnLongPressListener(OnLongPressListener<T> listener) {
@@ -68,8 +75,9 @@ public abstract class EntriesArrayAdapter<T> extends RecyclerView.Adapter<Entrie
 
   /**
    * Called when the view is created.
+   *
    * @param viewGroup The view group.
-   * @param i The position
+   * @param i         The position
    * @return ViewHolder
    */
   @Override
@@ -80,25 +88,27 @@ public abstract class EntriesArrayAdapter<T> extends RecyclerView.Adapter<Entrie
 
   /**
    * Called on Binding the view holder.
+   *
    * @param viewHolder The view holder.
-   * @param t The associated item.
+   * @param t          The associated item.
    */
   public abstract void onBindViewHolderEntry(EntriesArrayAdapter.ViewHolder viewHolder, T t);
 
   /**
    * Called on Binding the view holder.
+   *
    * @param viewHolder The view holder.
-   * @param i The position.
+   * @param i          The position.
    */
   @Override
   public void onBindViewHolder(@NonNull EntriesArrayAdapter.ViewHolder viewHolder, int i) {
-    if(mItems.isEmpty()) return;
-    if(i > mItems.size())
+    if (mItems.isEmpty()) return;
+    if (i > mItems.size())
       i = 0;
     final T t = mItems.get(i);
     if (t != null) {
-      if(viewHolder.rl != null && mOnLongPressListener != null)
-        viewHolder.rl.setOnLongClickListener((v) -> {
+      if (viewHolder.rl != null && mOnLongPressListener != null)
+        viewHolder.rl.setOnLongClickListener(v -> {
           mOnLongPressListener.onLongPressListener(t);
           return true;
         });
@@ -108,6 +118,7 @@ public abstract class EntriesArrayAdapter<T> extends RecyclerView.Adapter<Entrie
 
   /**
    * Returns the items count/
+   *
    * @return int
    */
   @Override
@@ -117,6 +128,7 @@ public abstract class EntriesArrayAdapter<T> extends RecyclerView.Adapter<Entrie
 
   /**
    * Adds an item.
+   *
    * @param item The item to add.
    */
   public void addItem(T item) {
@@ -126,6 +138,7 @@ public abstract class EntriesArrayAdapter<T> extends RecyclerView.Adapter<Entrie
 
   /**
    * Removes an item.
+   *
    * @param item The item to remove.
    */
   public void removeItem(T item) {
@@ -136,16 +149,17 @@ public abstract class EntriesArrayAdapter<T> extends RecyclerView.Adapter<Entrie
   /**
    * This method call mRecyclerView.getRecycledViewPool().clear() and notifyDataSetChanged().
    */
+  @SuppressLint("NotifyDataSetChanged")
   public void safeNotifyDataSetChanged() {
     mRecyclerView.getRecycledViewPool().clear();
     try {
       notifyDataSetChanged();
-    } catch(Exception e) {
+    } catch (Exception e) {
       Log.e(getClass().getSimpleName(), "Exception: " + e.getMessage(), e);
     }
   }
 
-  class ViewHolder extends RecyclerView.ViewHolder{
+  static class ViewHolder extends RecyclerView.ViewHolder {
     TextView name;
     TextView info;
     RelativeLayout rl;

@@ -3,8 +3,9 @@ package fr.ralala.worktime;
 import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 import android.util.Log;
+
+import androidx.preference.PreferenceManager;
 
 import java.util.Arrays;
 import java.util.Calendar;
@@ -12,57 +13,48 @@ import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 
-import fr.ralala.worktime.sql.SqlHelper;
-import fr.ralala.worktime.ui.activities.DayActivity;
-import fr.ralala.worktime.ui.activities.MainActivity;
 import fr.ralala.worktime.dropbox.DropboxImportExport;
 import fr.ralala.worktime.factories.DaysFactory;
 import fr.ralala.worktime.factories.ProfilesFactory;
 import fr.ralala.worktime.factories.PublicHolidaysFactory;
 import fr.ralala.worktime.models.DayEntry;
 import fr.ralala.worktime.models.WorkTimeDay;
-import fr.ralala.worktime.ui.activities.settings.SettingsActivity;
-import fr.ralala.worktime.ui.activities.settings.SettingsDatabaseActivity;
-import fr.ralala.worktime.ui.activities.settings.SettingsDisplayActivity;
-import fr.ralala.worktime.ui.activities.settings.SettingsExcelExportActivity;
-import fr.ralala.worktime.ui.activities.settings.SettingsLearningActivity;
-import fr.ralala.worktime.ui.quickaccess.QuickAccessNotification;
 import fr.ralala.worktime.sql.SqlFactory;
-import fr.ralala.worktime.utils.MyActivityLifecycleCallbacks;
+import fr.ralala.worktime.sql.SqlHelper;
+import fr.ralala.worktime.ui.activities.DayActivity;
+import fr.ralala.worktime.ui.activities.MainActivity;
+import fr.ralala.worktime.ui.fragments.settings.SettingsDatabaseFragment;
+import fr.ralala.worktime.ui.fragments.settings.SettingsDisplayFragment;
+import fr.ralala.worktime.ui.fragments.settings.SettingsExcelExportFragment;
+import fr.ralala.worktime.ui.fragments.settings.SettingsFragment;
+import fr.ralala.worktime.ui.fragments.settings.SettingsLearningFragment;
 import fr.ralala.worktime.ui.utils.UIHelper;
+import fr.ralala.worktime.utils.MyActivityLifecycleCallbacks;
 
 /**
- *******************************************************************************
+ * ******************************************************************************
  * <p><b>Project WorkTime</b><br/>
  * Application context
  * </p>
- * @author Keidan
  *
- *******************************************************************************
+ * @author Keidan
+ * <p>
+ * ******************************************************************************
  */
-public class MainApplication extends Application  {
+public class MainApplication extends Application {
   private static final String PREFS_KEY_LAST_EXPORT = "pKeyLastExportType";
   public static final String PREFS_VAL_LAST_EXPORT_DROPBOX = "dropbox";
-  public static final String PREFS_VAL_LAST_EXPORT_DEVICE = "device";
-  private static final int NFY_QUICK_ACCESS = 1;
   private PublicHolidaysFactory mPublicHolidaysFactory;
   private ProfilesFactory mProfilesFactory;
   private DaysFactory mDaysFactory;
   private SqlFactory mSql = null;
   private Calendar mCurrentDate = null;
-  private boolean mQuickAccessPause = true;
-  private QuickAccessNotification mQuickAccessNotification = null;
   private int mLastFirstVisibleItem = 0;
   private DropboxImportExport mDropboxImportExport = null;
-  private WorkTimeDay mLastQuickAccessBreak = null;
   private long mLastWidgetOpen = 0L;
   private MyActivityLifecycleCallbacks mLifeCycle;
   private static int mResumedCounter = 0;
   private String mDbMD5 = null;
-  public static MainApplication mInstace;
-
-  public MainApplication() {
-  }
 
   /**
    * Called by Android to create the application context.
@@ -70,56 +62,49 @@ public class MainApplication extends Application  {
   @Override
   public void onCreate() {
     super.onCreate();
-    mInstace = this;
     mPublicHolidaysFactory = new PublicHolidaysFactory();
     mProfilesFactory = new ProfilesFactory();
     mDaysFactory = new DaysFactory();
-    mQuickAccessNotification = new QuickAccessNotification(this, NFY_QUICK_ACCESS);
     mDropboxImportExport = new DropboxImportExport();
     // Register for activity state changes notifications
-    Class<?>[] classes = new Class<?>[] { MainActivity.class, DayActivity.class };
-    registerActivityLifecycleCallbacks(mLifeCycle = new MyActivityLifecycleCallbacks(Arrays.asList(classes)));
+    Class<?>[] classes = new Class<?>[]{MainActivity.class, DayActivity.class};
+    mLifeCycle = new MyActivityLifecycleCallbacks(Arrays.asList(classes));
+    registerActivityLifecycleCallbacks(mLifeCycle);
     reloadDatabaseMD5();
   }
 
   /**
    * Returns the onResumed method call counter.
+   *
    * @return int
    */
-  public int getResumedCounter() {
+  public static int getResumedCounter() {
     return mResumedCounter;
   }
 
   /**
    * Increments the onResumed method call counter.
    */
-  public void incResumedCounter() {
+  public static void incResumedCounter() {
     mResumedCounter++;
   }
 
   /**
    * Returns the application ActivityLifecycleCallbacks
+   *
    * @return MyActivityLifecycleCallbacks
    */
   public MyActivityLifecycleCallbacks getLifeCycle() {
     return mLifeCycle;
   }
 
-
-  /**
-   * Returns the current application instance.
-   * @return MainApplication
-   */
-  public static MainApplication getInstance() {
-    return mInstace;
-  }
-
   /**
    * Returns the current date time.
+   *
    * @return Calendar
    */
   public Calendar getCurrentDate() {
-    if(mCurrentDate == null) {
+    if (mCurrentDate == null) {
       mCurrentDate = Calendar.getInstance();
       mCurrentDate.setTimeZone(TimeZone.getTimeZone("GMT"));
       mCurrentDate.setTime(new Date());
@@ -128,31 +113,8 @@ public class MainApplication extends Application  {
   }
 
   /**
-   * Returns the last quick access break time.
-   * @return WorkTimeDay
-   */
-  public WorkTimeDay getLastQuickAccessBreak() {
-    return mLastQuickAccessBreak;
-  }
-
-  /**
-   * Sets the last quick access break time.
-   * @param lastQuickAccessBreak The new break time.
-   */
-  public void setLastQuickAccessBreak(WorkTimeDay lastQuickAccessBreak) {
-    mLastQuickAccessBreak = lastQuickAccessBreak;
-  }
-
-  /**
-   * Returns the instance of quick access notification.
-   * @return QuickAccessNotification
-   */
-  public QuickAccessNotification getQuickAccessNotification() {
-    return mQuickAccessNotification;
-  }
-
-  /**
    * Returns the instance of the profiles factory.
+   *
    * @return ProfilesFactory
    */
   public ProfilesFactory getProfilesFactory() {
@@ -161,6 +123,7 @@ public class MainApplication extends Application  {
 
   /**
    * Returns the instance of the days factory.
+   *
    * @return DaysFactory
    */
   public DaysFactory getDaysFactory() {
@@ -169,6 +132,7 @@ public class MainApplication extends Application  {
 
   /**
    * Returns the instance of the public holidays factory.
+   *
    * @return PublicHolidaysFactory
    */
   public PublicHolidaysFactory getPublicHolidaysFactory() {
@@ -177,6 +141,7 @@ public class MainApplication extends Application  {
 
   /**
    * Returns the instance of the SQLite object.
+   *
    * @return SqlFactory
    */
   public SqlFactory getSql() {
@@ -185,34 +150,20 @@ public class MainApplication extends Application  {
 
   /**
    * Returns the estimated hours in accordance to the input list.
+   *
    * @param wDays The input list.
    * @return WorkTimeDay
    */
   public WorkTimeDay getEstimatedHours(List<DayEntry> wDays) {
     WorkTimeDay w = new WorkTimeDay();
-    for(int i = 0; i < wDays.size(); ++i)
-      w.addTime(wDays.get(i).getLegalWorktime());
+    for (int i = 0; i < wDays.size(); ++i)
+      w.addTime(wDays.get(i).getLegalWorkTime());
     return w;
   }
 
   /**
-   * Sets if the quick access is paused.
-   * @param quickAccessPause The new value.
-   */
-  public void setQuickAccessPause(boolean quickAccessPause) {
-    mQuickAccessPause = quickAccessPause;
-  }
-
-  /**
-   * Tests if the quick access is paused.
-   * @return boolean
-   */
-  public boolean isQuickAccessPause() {
-    return mQuickAccessPause;
-  }
-
-  /**
    * Sets the last visible day (first of the display).
+   *
    * @param lastFirstVisibleItem The new index.
    */
   public void setLastFirstVisibleItem(int lastFirstVisibleItem) {
@@ -221,6 +172,7 @@ public class MainApplication extends Application  {
 
   /**
    * Returns the index of the last visible day (first of the display).
+   *
    * @return int
    */
   public int getLastFirstVisibleItem() {
@@ -229,6 +181,7 @@ public class MainApplication extends Application  {
 
   /**
    * Returns the DropboxImportExport object.
+   *
    * @return DropboxImportExport
    */
   public DropboxImportExport getDropboxImportExport() {
@@ -243,6 +196,7 @@ public class MainApplication extends Application  {
   /**
    * Returns the last export mode used.
    * Will change the behavior of the export icon
+   *
    * @return String (see PREF_VAL_LAST_EXPORT_xxxxxxx)
    */
   public String getLastExportType() {
@@ -253,6 +207,7 @@ public class MainApplication extends Application  {
   /**
    * Sets the last export mode used.
    * Will change the behavior of the export icon
+   *
    * @param last see PREF_VAL_LAST_EXPORT_xxxxxxx
    */
   public void setLastExportType(String last) {
@@ -264,139 +219,154 @@ public class MainApplication extends Application  {
 
   /**
    * Returns the periodicity with which the application must backup the databases (Only with dropbox and whether automatic export is enabled).
+   *
    * @return int
    */
   public int getExportAutoSavePeriodicity() {
     SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-    return Integer.parseInt(prefs.getString(SettingsDatabaseActivity.PREFS_KEY_IMPORT_EXPORT_AUTO_SAVE_PERIODICITY, SettingsDatabaseActivity.PREFS_DEFVAL_IMPORT_EXPORT_AUTO_SAVE_PERIODICITY));
+    return Integer.parseInt(prefs.getString(SettingsDatabaseFragment.PREFS_KEY_IMPORT_EXPORT_AUTO_SAVE_PERIODICITY, SettingsDatabaseFragment.PREFS_DEF_VAL_IMPORT_EXPORT_AUTO_SAVE_PERIODICITY));
   }
 
   /**
    * Tests whether the application should enable automatic saving.
+   *
    * @return boolean
    */
   public boolean isExportAutoSave() {
     SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-    return prefs.getBoolean(SettingsDatabaseActivity.PREFS_KEY_IMPORT_EXPORT_AUTO_SAVE, SettingsDatabaseActivity.PREFS_DEFVAL_IMPORT_EXPORT_AUTO_SAVE.equals("true"));
+    return prefs.getBoolean(SettingsDatabaseFragment.PREFS_KEY_IMPORT_EXPORT_AUTO_SAVE, SettingsDatabaseFragment.PREFS_DEF_VAL_IMPORT_EXPORT_AUTO_SAVE);
   }
 
   /**
    * Returns the default home that the application should display.
+   *
    * @return int
    */
   public int getDefaultHome() {
     SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-    return Integer.parseInt(prefs.getString(SettingsDisplayActivity.PREFS_KEY_DEFAULT_HOME, SettingsDisplayActivity.PREFS_DEFVAL_DEFAULT_HOME));
+    return Integer.parseInt(prefs.getString(SettingsDisplayFragment.PREFS_KEY_DEFAULT_HOME, SettingsDisplayFragment.PREFS_DEF_VAL_DEFAULT_HOME));
   }
 
   /**
    * Returns the depth of weight used by learning profiles.
+   *
    * @return int
    */
   public int getProfilesWeightDepth() {
     SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-    return Integer.parseInt(prefs.getString(SettingsLearningActivity.PREFS_KEY_PROFILES_WEIGHT_DEPTH, SettingsLearningActivity.PREFS_DEFVAL_PROFILES_WEIGHT_DEPTH));
+    return Integer.parseInt(prefs.getString(SettingsLearningFragment.PREFS_KEY_PROFILES_WEIGHT_DEPTH, SettingsLearningFragment.PREFS_DEF_VAL_PROFILES_WEIGHT_DEPTH));
   }
 
   /**
    * Returns the row height of the days view (WorkTimeFragment).
+   *
    * @return int
    */
   public int getDayRowsHeight() {
     SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-    return Integer.parseInt(prefs.getString(SettingsDisplayActivity.PREFS_KEY_DAY_ROWS_HEIGHT, SettingsDisplayActivity.PREFS_DEFVAL_DAY_ROWS_HEIGHT));
+    return Integer.parseInt(prefs.getString(SettingsDisplayFragment.PREFS_KEY_DAY_ROWS_HEIGHT, SettingsDisplayFragment.PREFS_DEF_VAL_DAY_ROWS_HEIGHT));
   }
 
   /**
    * Returns the legal work time value by day.
+   *
    * @return WorkTimeDay
    */
   public WorkTimeDay getLegalWorkTimeByDay() {
     SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-    String [] split = prefs.getString(SettingsActivity.PREFS_KEY_WORKTIME_BY_DAY, SettingsActivity.PREFS_DEFVAL_WORKTIME_BY_DAY).split(":");
+    String[] split = prefs.getString(SettingsFragment.PREFS_KEY_WORK_TIME_BY_DAY, SettingsFragment.PREFS_DEF_VAL_WORK_TIME_BY_DAY).split(":");
     return new WorkTimeDay(0, 0, 0, Integer.parseInt(split[0]), Integer.parseInt(split[1]));
   }
 
   /**
    * Returns the default amount by hour.
+   *
    * @return double
    */
   public double getAmountByHour() {
     SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-    return Double.parseDouble(prefs.getString(SettingsActivity.PREFS_KEY_AMOUNT_BY_HOUR, SettingsActivity.PREFS_DEFVAL_AMOUNT_BY_HOUR).replaceAll(",", "."));
+    return Double.parseDouble(prefs.getString(SettingsFragment.PREFS_KEY_AMOUNT_BY_HOUR, SettingsFragment.PREFS_DEF_VAL_AMOUNT_BY_HOUR).replace(",", "."));
   }
 
   /**
    * Returns the currency that must be used by the application.
+   *
    * @return String
    */
   public String getCurrency() {
     SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-    return prefs.getString(SettingsActivity.PREFS_KEY_CURRENCY, SettingsActivity.PREFS_DEFVAL_CURRENCY);
+    return prefs.getString(SettingsFragment.PREFS_KEY_CURRENCY, SettingsFragment.PREFS_DEF_VAL_CURRENCY);
   }
 
   /**
    * Returns the email address that the application must use for the export function.
+   *
    * @return String
    */
   public String getEMail() {
     SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-    return prefs.getString(SettingsExcelExportActivity.PREFS_KEY_EMAIL, SettingsExcelExportActivity.PREFS_DEFVAL_EMAIL);
+    return prefs.getString(SettingsExcelExportFragment.PREFS_KEY_EMAIL, SettingsExcelExportFragment.PREFS_DEF_VAL_EMAIL);
   }
 
   /**
    * Tests whether the exported file should be sent by e-mail.
+   *
    * @return boolean
    */
   public boolean isExportMailEnabled() {
     SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-    return prefs.getBoolean(SettingsExcelExportActivity.PREFS_KEY_EMAIL_ENABLE, SettingsExcelExportActivity.PREFS_DEFVAL_EMAIL_ENABLE.equals("true"));
+    return prefs.getBoolean(SettingsExcelExportFragment.PREFS_KEY_EMAIL_ENABLE, SettingsExcelExportFragment.PREFS_DEF_VAL_EMAIL_ENABLE);
   }
 
   /**
    * Tests if the application (DayActivity) should display the wage part.
+   *
    * @return boolean
    */
   public boolean isHideWage() {
     SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-    return prefs.getBoolean(SettingsDisplayActivity.PREFS_KEY_HIDE_WAGE, SettingsDisplayActivity.PREFS_DEFVAL_HIDE_WAGE.equals("true"));
+    return prefs.getBoolean(SettingsDisplayFragment.PREFS_KEY_HIDE_WAGE, SettingsDisplayFragment.PREFS_DEF_VAL_HIDE_WAGE);
   }
 
   /**
    * Tests whether the wage section should be displayed when exporting work time.
+   *
    * @return boolean
    */
   @SuppressWarnings("BooleanMethodIsAlwaysInverted")
   public boolean isExportHideWage() {
     SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-    return prefs.getBoolean(SettingsExcelExportActivity.PREFS_KEY_EXPORT_HIDE_WAGE, SettingsExcelExportActivity.PREFS_DEFVAL_EXPORT_HIDE_WAGE.equals("true"));
+    return prefs.getBoolean(SettingsExcelExportFragment.PREFS_KEY_EXPORT_HIDE_WAGE, SettingsExcelExportFragment.PREFS_DEF_VAL_EXPORT_HIDE_WAGE);
   }
 
   /**
    * Tests whether the application (WorkTimeFragment) should scroll to the current day.
+   *
    * @return boolean
    */
   public boolean isScrollToCurrentDay() {
     SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-    return prefs.getBoolean(SettingsDisplayActivity.PREFS_KEY_SCROLL_TO_CURRENT_DAY, SettingsDisplayActivity.PREFS_DEFVAL_SCROLL_TO_CURRENT_DAY.equals("true"));
+    return prefs.getBoolean(SettingsDisplayFragment.PREFS_KEY_SCROLL_TO_CURRENT_DAY, SettingsDisplayFragment.PREFS_DEF_VAL_SCROLL_TO_CURRENT_DAY);
   }
 
   /**
    * Tests whether the exit button must be displayed or hidden.
+   *
    * @return boolean
    */
   public boolean isHideExitButton() {
     SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-    return prefs.getBoolean(SettingsDisplayActivity.PREFS_KEY_HIDE_EXIT_BUTTON, SettingsDisplayActivity.PREFS_DEFVAL_HIDE_EXIT_BUTTON.equals("true"));
+    return prefs.getBoolean(SettingsDisplayFragment.PREFS_KEY_HIDE_EXIT_BUTTON, SettingsDisplayFragment.PREFS_DEF_VAL_HIDE_EXIT_BUTTON);
   }
 
   /**
    * Tests if the week number must be displayed.
+   *
    * @return boolean
    */
   public boolean isDisplayWeek() {
     SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-    return prefs.getBoolean(SettingsDisplayActivity.PREFS_KEY_DISPLAY_WEEK, SettingsDisplayActivity.PREFS_DEFVAL_DISPLAY_WEEK.equals("true"));
+    return prefs.getBoolean(SettingsDisplayFragment.PREFS_KEY_DISPLAY_WEEK, SettingsDisplayFragment.PREFS_DEF_VAL_DISPLAY_WEEK);
   }
 
   /* ----------------------------------
@@ -406,6 +376,7 @@ public class MainApplication extends Application  {
 
   /**
    * Detects a change in the SQLite tables.
+   *
    * @return boolean
    */
   public boolean isTablesChanges() {
@@ -418,7 +389,7 @@ public class MainApplication extends Application  {
    * Reloads the database MD5.
    */
   public void reloadDatabaseMD5() {
-    if(isExportAutoSave()) {
+    if (isExportAutoSave()) {
       mDbMD5 = SqlHelper.getDatabaseMD5(this);
       Log.i(getClass().getSimpleName(), "reloadDatabaseMD5 -> Database MD5: " + mDbMD5);
     }
@@ -426,6 +397,7 @@ public class MainApplication extends Application  {
 
   /**
    * Opens the SQLite connection and loads the application databases.
+   *
    * @param c The Android context.
    * @return false on error.
    */
@@ -445,12 +417,13 @@ public class MainApplication extends Application  {
     return false;
   }
   /* ----------------------------------
-   * Widget management 
+   * Widget management
    * ----------------------------------
    */
 
   /**
    * Returns the time, in milliseconds, at which the widget opened the day activity.
+   *
    * @return long.
    */
   public long getLastWidgetOpen() {
@@ -459,6 +432,7 @@ public class MainApplication extends Application  {
 
   /**
    * Sets the time, in milliseconds, at which the widget opened the day activity.
+   *
    * @param lastWidgetOpen The time in milliseconds.
    */
   public void setLastWidgetOpen(long lastWidgetOpen) {

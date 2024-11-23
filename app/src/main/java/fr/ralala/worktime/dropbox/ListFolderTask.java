@@ -1,25 +1,39 @@
 package fr.ralala.worktime.dropbox;
 
-import android.os.AsyncTask;
 
 import com.dropbox.core.DbxException;
 import com.dropbox.core.v2.DbxClientV2;
+import com.dropbox.core.v2.files.DbxUserFilesRequests;
 import com.dropbox.core.v2.files.ListFolderResult;
 
-/**
- * Async task to list items in a folder
- * Source https://github.com/dropbox/dropbox-sdk-java/blob/master/examples/android/src/main/java/com/dropbox/core/examples/android/ListFolderTask.java
- */
-public class ListFolderTask extends AsyncTask<String, Void, ListFolderResult> {
+import fr.ralala.worktime.tasks.TaskRunner;
 
-  private final DbxClientV2 mDbxClient;
+/**
+ * ******************************************************************************
+ * <p><b>Project WorkTime</b><br/>
+ * Task to list items in a folder
+ * </p>
+ *
+ * @author Keidan
+ * <p>
+ * License: GPLv3
+ * <p>
+ * ******************************************************************************
+ */
+public class ListFolderTask extends TaskRunner<DbxClientV2, String, Void, ListFolderTask.Result> {
+  public static class Result {
+    private ListFolderResult file = null;
+    private Exception exception = null;
+  }
+
   private final DropboxListener mCallback;
-  private Exception mException;
+  private final DbxClientV2 mDbxClient;
 
   /**
    * Creates a task.
+   *
    * @param dbxClient Dropbox client.
-   * @param callback Dropbox client.
+   * @param callback  Dropbox client.
    */
   ListFolderTask(DbxClientV2 dbxClient, DropboxListener callback) {
     mDbxClient = dbxClient;
@@ -27,33 +41,50 @@ public class ListFolderTask extends AsyncTask<String, Void, ListFolderResult> {
   }
 
   /**
+   * Called before the execution of the task.
+   *
+   * @return The Config.
+   */
+  @Override
+  public DbxClientV2 onPreExecute() {
+    return mDbxClient;
+  }
+
+  /**
    * Executed when the task is finished.
+   *
    * @param result The task result.
    */
   @Override
-  protected void onPostExecute(ListFolderResult result) {
+  public void onPostExecute(Result result) {
     super.onPostExecute(result);
 
-    if (mException != null) {
-      mCallback.onDroptboxListFoderError(mException);
+    if (result.exception != null) {
+      mCallback.onDropboxListFolderError(result.exception);
     } else {
-      mCallback.onDroptboxListFoderDataLoaded(result);
+      mCallback.onDropboxListFolderDataLoaded(result.file);
     }
   }
 
   /**
    * Executed in background.
-   * @param params [0]=folder path
+   *
+   * @param param folder path
    * @return ListFolderResult
    */
   @Override
-  protected ListFolderResult doInBackground(String... params) {
+  public Result doInBackground(DbxClientV2 client, String param) {
+    Result res = new Result();
     try {
-      return mDbxClient.files().listFolder(params[0]);
-    } catch (DbxException e) {
-      mException = e;
+      if (client == null)
+        throw new NullPointerException("Null client");
+      DbxUserFilesRequests files = client.files();
+      if (files == null)
+        throw new NullPointerException("Null client files");
+      res.file = files.listFolder(param);
+    } catch (DbxException | NullPointerException e) {
+      res.exception = e;
     }
-
-    return null;
+    return res;
   }
 }

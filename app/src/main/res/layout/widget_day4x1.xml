@@ -1,124 +1,117 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-              android:id="@+id/rl"
-              android:orientation="vertical"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:padding="@dimen/widget_margin"
-              android:background="@drawable/widget_background">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  android:id="@+id/rl"
+  android:orientation="vertical"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  android:padding="@dimen/widget_margin"
+  android:background="?attr/colorPrimaryContainer"
+  android:theme="@style/Theme.Material3.DynamicColors.DayNight">
 
+  <TextView
+    android:text="@null"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/tvDate"
+    android:textColor="?attr/colorOnPrimaryContainer"
+    android:layout_margin="@dimen/widget_day4x1_tvDate_layout_margin"
+    android:gravity="center"
+    android:textSize="@dimen/widget_text_size_date_4x1" />
 
-    <ImageView
-        android:id="@+id/icon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:src="@mipmap/ic_launcher"
-        android:contentDescription="@null"/>
-
-    <TextView
-        android:text="@null"
-        android:layout_toEndOf="@id/icon"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/tvDate"
-        android:textColor="@color/white"
-        android:layout_margin="@dimen/widget_day4x1_tvDate_layout_margin"
-        android:gravity="center"
-        android:textSize="@dimen/widget_text_size_4x1"/>
-
-    <LinearLayout
-        android:id="@+id/ll1"
-        android:layout_below="@id/tvDate"
-        android:layout_toEndOf="@id/icon"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <TextView
-            android:text="@string/tv_morning_widget"
-            android:layout_weight="@dimen/widget_day4x1_tvLblMorning_layout_weight"
-            android:layout_width="@dimen/widget_day4x1_tvLblMorning_layout_width"
-            android:layout_height="wrap_content"
-            android:id="@+id/tvLblMorning"
-            android:textColor="@color/white"
-            android:layout_margin="@dimen/widget_day4x1_tvLblMorning_layout_margin"
-            android:textSize="@dimen/widget_text_size_4x1"/>
-        <TextView
-            android:text="@null"
-            android:layout_weight="@dimen/widget_day4x1_tvMorning_layout_weight"
-            android:layout_width="@dimen/widget_day4x1_tvMorning_layout_width"
-            android:layout_height="wrap_content"
-            android:id="@+id/tvMorning"
-            android:textColor="@color/white"
-            android:layout_margin="@dimen/widget_day4x1_tvMorning_layout_margin"
-            android:textSize="@dimen/widget_text_size_4x1"/>
-
-
-        <TextView
-            android:text="@string/tv_break_widget"
-            android:layout_weight="@dimen/widget_day4x1_tvLblBreak_layout_weight"
-            android:layout_width="@dimen/widget_day4x1_tvLblBreak_layout_width"
-            android:layout_height="wrap_content"
-            android:id="@+id/tvLblBreak"
-            android:textColor="@color/white"
-            android:layout_margin="@dimen/widget_day4x1_tvLblBreak_layout_margin"
-            android:textSize="@dimen/widget_text_size_4x1"/>
-        <TextView
-            android:text="@null"
-            android:layout_weight="@dimen/widget_day4x1_tvBreak_layout_weight"
-            android:layout_width="@dimen/widget_day4x1_tvBreak_layout_width"
-            android:layout_height="wrap_content"
-            android:id="@+id/tvBreak"
-            android:textColor="@color/white"
-            android:layout_margin="@dimen/widget_day4x1_tvBreak_layout_margin"
-            android:textSize="@dimen/widget_text_size_4x1"/>
-    </LinearLayout>
-
-
-    <LinearLayout
-        android:id="@+id/ll2"
-        android:layout_below="@id/ll1"
-        android:layout_toEndOf="@id/icon"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-    <TextView
-        android:text="@string/tv_afternoon_widget"
-        android:layout_weight="@dimen/widget_day4x1_tvLblAfternoon_layout_weight"
-        android:layout_width="@dimen/widget_day4x1_tvLblAfternoon_layout_width"
-        android:layout_height="wrap_content"
-        android:id="@+id/tvLblAfternoon"
-        android:textColor="@color/white"
-        android:layout_margin="@dimen/widget_day4x1_tvLblAfternoon_layout_margin"
-        android:textSize="@dimen/widget_text_size_4x1"/>
-    <TextView
-        android:text="@null"
-        android:layout_weight="@dimen/widget_day4x1_tvAfternoon_layout_weight"
-        android:layout_width="@dimen/widget_day4x1_tvAfternoon_layout_width"
-        android:layout_height="wrap_content"
-        android:id="@+id/tvAfternoon"
-        android:textColor="@color/white"
-        android:layout_margin="@dimen/widget_day4x1_tvAfternoon_layout_margin"
-        android:textSize="@dimen/widget_text_size_4x1"/>
+  <LinearLayout
+    android:id="@+id/ll1"
+    android:layout_below="@id/tvDate"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
 
     <TextView
-        android:text="@string/tv_worktime_widget"
-        android:layout_weight="@dimen/widget_day4x1_tvLblWorkTime_layout_weight"
-        android:layout_width="@dimen/widget_day4x1_tvLblWorkTime_layout_width"
-        android:layout_height="wrap_content"
-        android:id="@+id/tvLblWorkTime"
-        android:textColor="@color/white"
-        android:layout_margin="@dimen/widget_day4x1_tvLblWorkTime_layout_margin"
-        android:textSize="@dimen/widget_text_size_4x1"/>
-    <TextView
-        android:text="@null"
-        android:layout_weight="@dimen/widget_day4x1_tvWorkTime_layout_weight"
-        android:layout_width="@dimen/widget_day4x1_tvWorkTime_layout_width"
-        android:layout_height="wrap_content"
-        android:id="@+id/tvWorkTime"
-        android:textColor="@color/white"
-        android:layout_margin="@dimen/widget_day4x1_tvWorkTime_layout_margin"
-        android:textSize="@dimen/widget_text_size_4x1"/>
+      android:text="@string/tv_morning_widget"
+      android:layout_weight="@dimen/widget_day4x1_tvLblMorning_layout_weight"
+      android:layout_width="@dimen/widget_day4x1_tvLblMorning_layout_width"
+      android:layout_height="wrap_content"
+      android:id="@+id/tvLblMorning"
+      android:textColor="?attr/colorOnPrimaryContainer"
+      android:layout_margin="@dimen/widget_day4x1_tvLblMorning_layout_margin"
+      android:textSize="@dimen/widget_text_size_4x1" />
 
-    </LinearLayout>
+    <TextView
+      android:text="@null"
+      android:layout_weight="@dimen/widget_day4x1_tvMorning_layout_weight"
+      android:layout_width="@dimen/widget_day4x1_tvMorning_layout_width"
+      android:layout_height="wrap_content"
+      android:id="@+id/tvMorning"
+      android:textColor="?attr/colorOnPrimaryContainer"
+      android:layout_margin="@dimen/widget_day4x1_tvMorning_layout_margin"
+      android:textSize="@dimen/widget_text_size_4x1" />
+
+
+    <TextView
+      android:text="@string/tv_break_widget"
+      android:layout_weight="@dimen/widget_day4x1_tvLblBreak_layout_weight"
+      android:layout_width="@dimen/widget_day4x1_tvLblBreak_layout_width"
+      android:layout_height="wrap_content"
+      android:id="@+id/tvLblBreak"
+      android:textColor="?attr/colorOnPrimaryContainer"
+      android:layout_margin="@dimen/widget_day4x1_tvLblBreak_layout_margin"
+      android:textSize="@dimen/widget_text_size_4x1" />
+
+    <TextView
+      android:text="@null"
+      android:layout_weight="@dimen/widget_day4x1_tvBreak_layout_weight"
+      android:layout_width="@dimen/widget_day4x1_tvBreak_layout_width"
+      android:layout_height="wrap_content"
+      android:id="@+id/tvBreak"
+      android:textColor="?attr/colorOnPrimaryContainer"
+      android:layout_margin="@dimen/widget_day4x1_tvBreak_layout_margin"
+      android:textSize="@dimen/widget_text_size_4x1" />
+  </LinearLayout>
+
+
+  <LinearLayout
+    android:id="@+id/ll2"
+    android:layout_below="@id/ll1"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <TextView
+      android:text="@string/tv_afternoon_widget"
+      android:layout_weight="@dimen/widget_day4x1_tvLblAfternoon_layout_weight"
+      android:layout_width="@dimen/widget_day4x1_tvLblAfternoon_layout_width"
+      android:layout_height="wrap_content"
+      android:id="@+id/tvLblAfternoon"
+      android:textColor="?attr/colorOnPrimaryContainer"
+      android:layout_margin="@dimen/widget_day4x1_tvLblAfternoon_layout_margin"
+      android:textSize="@dimen/widget_text_size_4x1" />
+
+    <TextView
+      android:text="@null"
+      android:layout_weight="@dimen/widget_day4x1_tvAfternoon_layout_weight"
+      android:layout_width="@dimen/widget_day4x1_tvAfternoon_layout_width"
+      android:layout_height="wrap_content"
+      android:id="@+id/tvAfternoon"
+      android:textColor="?attr/colorOnPrimaryContainer"
+      android:layout_margin="@dimen/widget_day4x1_tvAfternoon_layout_margin"
+      android:textSize="@dimen/widget_text_size_4x1" />
+
+    <TextView
+      android:text="@string/tv_work_time_widget"
+      android:layout_weight="@dimen/widget_day4x1_tvLblWorkTime_layout_weight"
+      android:layout_width="@dimen/widget_day4x1_tvLblWorkTime_layout_width"
+      android:layout_height="wrap_content"
+      android:id="@+id/tvLblWorkTime"
+      android:textColor="?attr/colorOnPrimaryContainer"
+      android:layout_margin="@dimen/widget_day4x1_tvLblWorkTime_layout_margin"
+      android:textSize="@dimen/widget_text_size_4x1" />
+
+    <TextView
+      android:text="@null"
+      android:layout_weight="@dimen/widget_day4x1_tvWorkTime_layout_weight"
+      android:layout_width="@dimen/widget_day4x1_tvWorkTime_layout_width"
+      android:layout_height="wrap_content"
+      android:id="@+id/tvWorkTime"
+      android:textColor="?attr/colorOnPrimaryContainer"
+      android:layout_margin="@dimen/widget_day4x1_tvWorkTime_layout_margin"
+      android:textSize="@dimen/widget_text_size_4x1" />
+
+  </LinearLayout>
 </RelativeLayout>

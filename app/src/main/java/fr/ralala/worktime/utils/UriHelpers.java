@@ -11,20 +11,21 @@ import android.provider.MediaStore;
 import java.io.File;
 
 /**
- *  Utility functions to support Uri conversion and processing.
- *  Source https://github.com/dropbox/dropbox-sdk-java/blob/master/examples/android/src/main/java/com/dropbox/core/examples/android/UriHelpers.java
+ * Utility functions to support Uri conversion and processing.
+ * Source <a href="https://github.com/dropbox/dropbox-sdk-java/blob/master/examples/android/src/main/java/com/dropbox/core/examples/android/UriHelpers.java">...</a>
  */
 public final class UriHelpers {
 
-  private UriHelpers() {}
+  private UriHelpers() {
+  }
 
   /**
    * Get the file path for a uri. This is a convoluted way to get the path for an Uri created using the
    * StorageAccessFramework. This in no way is the official way to do this but there does not seem to be a better
-   * way to do this at this point. It is taken from https://github.com/iPaulPro/aFileChooser.
+   * way to do this at this point. It is taken from <a href="https://github.com/iPaulPro/aFileChooser">...</a>.
    *
    * @param context The context of the application
-   * @param uri The uri of the saved file
+   * @param uri     The uri of the saved file
    * @return The file with path pointing to the saved file. It can return null if we can't resolve the uri properly.
    */
   public static File getFileForUri(final Context context, final Uri uri) {
@@ -33,41 +34,11 @@ public final class UriHelpers {
     if (DocumentsContract.isDocumentUri(context, uri)) {
       // ExternalStorageProvider
       if (isExternalStorageDocument(uri)) {
-        final String docId = DocumentsContract.getDocumentId(uri);
-        final String[] split = docId.split(":");
-        final String type = split[0];
-
-        if ("primary".equalsIgnoreCase(type)) {
-          path = Environment.getExternalStorageDirectory() + "/" + split[1];
-        }
+        path = processExternalStorageDocument(uri);
       } else if (isDownloadsDocument(uri)) {
-        // DownloadsProvider
-        final String id = DocumentsContract.getDocumentId(uri);
-        final Uri contentUri = ContentUris
-          .withAppendedId(Uri.parse("content://downloads/public_downloads"), Long.valueOf(id));
-
-        path = getDataColumn(context, contentUri, null, null);
+        path = processDownloadsDocument(context, uri);
       } else if (isMediaDocument(uri)) {
-        // MediaProvider
-        final String docId = DocumentsContract.getDocumentId(uri);
-        final String[] split = docId.split(":");
-        final String type = split[0];
-
-        Uri contentUri = null;
-        if ("image".equals(type)) {
-          contentUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
-        } else if ("video".equals(type)) {
-          contentUri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
-        } else if ("audio".equals(type)) {
-          contentUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
-        }
-
-        final String selection = "_id=?";
-        final String[] selectionArgs = new String[] {
-          split[1]
-        };
-
-        path = getDataColumn(context, contentUri, selection, selectionArgs);
+        path = processMediaDocument(context, uri);
       }
     } else if ("content".equalsIgnoreCase(uri.getScheme())) {
       // MediaStore (and general)
@@ -76,18 +47,59 @@ public final class UriHelpers {
       // File
       path = uri.getPath();
     }
+    return path != null ? new File(path) : null;
+  }
 
-    if (path != null) {
-      return new File(path);
+  private static String processExternalStorageDocument(final Uri uri) {
+    final String docId = DocumentsContract.getDocumentId(uri);
+    final String[] split = docId.split(":");
+    final String type = split[0];
+    String path = null;
+
+    if ("primary".equalsIgnoreCase(type)) {
+      path = Environment.getExternalStorageDirectory() + File.separator + split[1];
     }
-    return null;
+    return path;
+  }
+
+  private static String processDownloadsDocument(final Context context, final Uri uri) {
+    // DownloadsProvider
+    final String id = DocumentsContract.getDocumentId(uri);
+    final Uri contentUri = ContentUris
+      .withAppendedId(Uri.parse("content://downloads/public_downloads"), Long.parseLong(id));
+
+    return getDataColumn(context, contentUri, null, null);
+  }
+
+  private static String processMediaDocument(final Context context, final Uri uri) {
+// MediaProvider
+    final String docId = DocumentsContract.getDocumentId(uri);
+    final String[] split = docId.split(":");
+    final String type = split[0];
+
+    Uri contentUri = null;
+    if ("image".equals(type)) {
+      contentUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+    } else if ("video".equals(type)) {
+      contentUri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
+    } else if ("audio".equals(type)) {
+      contentUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+    }
+
+    final String selection = "_id=?";
+    final String[] selectionArgs = new String[]{
+      split[1]
+    };
+
+    return getDataColumn(context, contentUri, selection, selectionArgs);
   }
 
   /**
    * Returns the data column.
-   * @param context The Android context.
-   * @param uri The input Uri.
-   * @param selection The selection value.
+   *
+   * @param context       The Android context.
+   * @param uri           The input Uri.
+   * @param selection     The selection value.
    * @param selectionArgs The selection arguments.
    * @return String
    */
@@ -118,6 +130,7 @@ public final class UriHelpers {
 
   /**
    * Test if the Uri authority match with an external storage document.
+   *
    * @param uri The input Uri
    * @return boolean
    */
@@ -127,6 +140,7 @@ public final class UriHelpers {
 
   /**
    * Test if the Uri authority match with a downloads document.
+   *
    * @param uri The input Uri
    * @return boolean
    */
@@ -136,6 +150,7 @@ public final class UriHelpers {
 
   /**
    * Test if the Uri authority match with an media document.
+   *
    * @param uri The input Uri
    * @return boolean
    */

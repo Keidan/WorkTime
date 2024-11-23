@@ -1,50 +1,68 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" android:key="prefScreen"
-    android:clearTaskOnLaunch="true"
-    android:launchMode="singleTask">
-    <PreferenceCategory android:title="@string/pref_title_settings" android:key="prefCatSettings" >
-        <fr.ralala.worktime.ui.dialogs.TimePreferenceDialog
-            android:key="prefWorkTimeByDay"
-            android:title="@string/pref_title_work_time_by_day"
-            android:defaultValue="00:00"
-            android:summary="@string/pref_summary_work_time_by_day"/>
-        <EditTextPreference
-            android:key="prefAmountByHour"
-            android:defaultValue="0.0"
-            android:summary="@string/pref_summary_hourly_rate"
-            android:title="@string/pref_title_hourly_rate"
-            android:inputType="numberDecimal" />
-        <EditTextPreference
-            android:key="prefCurrency"
-            android:defaultValue="€"
-            android:summary="@string/pref_summary_currency"
-            android:title="@string/pref_title_currency"
-            android:inputType="text" />
-        <Preference android:key="prefSelectDisplay"
-            android:summary="@string/pref_summary_display"
-            android:title="@string/pref_title_display" />
-        <Preference android:key="prefSelectExcelExport"
-            android:summary="@string/pref_summary_excel_export"
-            android:title="@string/pref_title_excel_export" />
-        <Preference android:key="prefSelectLearning"
-            android:summary="@string/pref_summary_learning"
-            android:title="@string/pref_title_learning" />
-        <Preference android:key="prefSelectDatabaseExport"
-            android:summary="@string/pref_summary_database"
-            android:title="@string/pref_title_database" />
-    </PreferenceCategory>
-    <PreferenceCategory android:title="@string/pref_title_infos" >
-        <Preference
-            android:key="prefChangelog"
-            android:title="@string/pref_changelog_title"
-            android:summary="@string/pref_changelog_summary">
-        </Preference>
-        <Preference
-            android:key="prefVersion"
-            android:enabled="false"
-            android:selectable="false"
-            android:persistent="false"
-            android:shouldDisableView="false" >
-        </Preference>
-    </PreferenceCategory>
-</PreferenceScreen>
+<androidx.preference.PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:key="prefScreen"
+  android:clearTaskOnLaunch="true"
+  android:launchMode="singleTask">
+  <androidx.preference.PreferenceCategory
+    android:title="@string/pref_title_settings"
+    android:key="prefCatSettings"
+    app:iconSpaceReserved="false">
+    <fr.ralala.worktime.ui.fragments.settings.TimePreference
+      android:key="prefWorkTimeByDay"
+      app:iconSpaceReserved="false"
+      android:title="@string/pref_title_work_time_by_day"
+      android:defaultValue="00:00"
+      android:summary="@string/pref_summary_work_time_by_day" />
+    <androidx.preference.EditTextPreference
+      android:key="prefAmountByHour"
+      app:iconSpaceReserved="false"
+      android:defaultValue="0.0"
+      android:summary="@string/pref_summary_hourly_rate"
+      android:title="@string/pref_title_hourly_rate"
+      android:inputType="numberDecimal" />
+    <androidx.preference.EditTextPreference
+      android:key="prefCurrency"
+      app:iconSpaceReserved="false"
+      android:defaultValue="€"
+      android:summary="@string/pref_summary_currency"
+      android:title="@string/pref_title_currency"
+      android:inputType="text" />
+    <androidx.preference.Preference
+      android:key="prefSelectDisplay"
+      app:iconSpaceReserved="false"
+      android:summary="@string/pref_summary_display"
+      android:title="@string/pref_title_display" />
+    <androidx.preference.Preference
+      android:key="prefSelectExcelExport"
+      app:iconSpaceReserved="false"
+      android:summary="@string/pref_summary_excel_export"
+      android:title="@string/pref_title_excel_export" />
+    <androidx.preference.Preference
+      android:key="prefSelectLearning"
+      app:iconSpaceReserved="false"
+      android:summary="@string/pref_summary_learning"
+      android:title="@string/pref_title_learning" />
+    <androidx.preference.Preference
+      android:key="prefSelectDatabaseExport"
+      app:iconSpaceReserved="false"
+      android:summary="@string/pref_summary_database"
+      android:title="@string/pref_title_database" />
+  </androidx.preference.PreferenceCategory>
+  <androidx.preference.PreferenceCategory
+    android:title="@string/pref_title_info"
+    app:iconSpaceReserved="false">
+    <androidx.preference.Preference
+      app:iconSpaceReserved="false"
+      android:key="prefChangelog"
+      android:title="@string/pref_changelog_title"
+      android:summary="@string/pref_changelog_summary"></androidx.preference.Preference>
+    <androidx.preference.Preference
+      app:iconSpaceReserved="false"
+      android:key="prefVersion"
+      android:enabled="false"
+      android:selectable="false"
+      android:persistent="false"
+      android:shouldDisableView="false"></androidx.preference.Preference>
+  </androidx.preference.PreferenceCategory>
+</androidx.preference.PreferenceScreen>

@@ -17,36 +17,38 @@ import java.util.Iterator;
 
 
 /**
- *******************************************************************************
+ * ******************************************************************************
  * <p><b>Project WorkTime</b><br/>
  * Helper functions for the Excel API
  * </p>
- * @author Keidan
  *
- *******************************************************************************
+ * @author Keidan
+ * <p>
+ * ******************************************************************************
  */
 public class ExcelHelper {
-  private CellStyle mTimesDateBold;
-  private CellStyle mTimesDate;
-  private CellStyle mTimesBold;
-  private CellStyle mTimes;
-  private Workbook mWorkbook;
-  private File mFile;
-  private CreationHelper mCreateHelper;
+  private final CellStyle mTimesDateBold;
+  private final CellStyle mTimesDate;
+  private final CellStyle mTimesBold;
+  private final CellStyle mTimes;
+  private final Workbook mWorkbook;
+  private final File mFile;
+  private final CreationHelper mCreateHelper;
 
   /**
    * Creates the Excel helper object and initialize the required objects.
+   *
    * @param file The excel file.
    */
   public ExcelHelper(final File file) {
     mFile = file;
-    mWorkbook = new HSSFWorkbook();  // or new XSSFWorkbook();
+    mWorkbook = new HSSFWorkbook();
     mCreateHelper = mWorkbook.getCreationHelper();
     Font times10pt = mWorkbook.createFont();
-    times10pt.setFontHeightInPoints((short)10);
+    times10pt.setFontHeightInPoints((short) 10);
     times10pt.setFontName("Times");
     Font times10ptBold = mWorkbook.createFont();
-    times10ptBold.setFontHeightInPoints((short)10);
+    times10ptBold.setFontHeightInPoints((short) 10);
     times10ptBold.setFontName("Times");
     times10ptBold.setBold(true);
     DataFormat df = mWorkbook.createDataFormat();
@@ -65,6 +67,7 @@ public class ExcelHelper {
 
   /**
    * Creates a new sheet.
+   *
    * @param sheetTitle The sheet title.
    * @return Sheet
    */
@@ -75,6 +78,7 @@ public class ExcelHelper {
 
   /**
    * Writes the file.
+   *
    * @throws IOException Called when an IO exception is thrown.
    */
   public void write() throws IOException {
@@ -86,21 +90,23 @@ public class ExcelHelper {
 
   /**
    * Creates a horizontal header.
-   * @param sheet The current sheet
-   * @param row The current row index.
-   * @param column The first column index.
+   *
+   * @param sheet   The current sheet
+   * @param row     The current row index.
+   * @param column  The first column index.
    * @param headers The  list oif header.
    */
   public void createHorizontalHeader(Sheet sheet, int row, int column, String[] headers) {
-    for(String header : headers)
+    for (String header : headers)
       addLabel(sheet, row, column++, header, true);
   }
 
   /**
    * Adds a new formula.
-   * @param sheet The current sheet
-   * @param row The current row index.
-   * @param column The first column index.
+   *
+   * @param sheet   The current sheet
+   * @param row     The current row index.
+   * @param column  The first column index.
    * @param formula The formula to add.
    */
   public void addFormula(Sheet sheet, int row, int column, StringBuilder formula) {
@@ -109,9 +115,10 @@ public class ExcelHelper {
 
   /**
    * Adds a new formula.
-   * @param sheet The current sheet
-   * @param row The current row index.
-   * @param column The first column index.
+   *
+   * @param sheet   The current sheet
+   * @param row     The current row index.
+   * @param column  The first column index.
    * @param formula The formula to add.
    */
   private void addFormula(Sheet sheet, int row, int column, String formula) {
@@ -122,11 +129,12 @@ public class ExcelHelper {
 
   /**
    * Adds a new label.
-   * @param sheet The current sheet
-   * @param row The current row index.
+   *
+   * @param sheet  The current sheet
+   * @param row    The current row index.
    * @param column The first column index.
-   * @param s The label text.
-   * @param bold Font style (bold or normal)
+   * @param s      The label text.
+   * @param bold   Font style (bold or normal)
    */
   public void addLabel(Sheet sheet, int row, int column, String s, boolean bold) {
     Cell cell = getCell(sheet, row, column);
@@ -136,27 +144,27 @@ public class ExcelHelper {
 
   /**
    * Adds a new time.
-   * @param sheet The current sheet
-   * @param row The current row index.
+   *
+   * @param sheet  The current sheet
+   * @param row    The current row index.
    * @param column The first column index.
-   * @param s The label text.
-   * @param bold Font style (bold or normal)
+   * @param s      The label text.
+   * @param bold   Font style (bold or normal)
    */
   public void addTime(Sheet sheet, int row, int column, String s, boolean bold) {
     Cell cell = getCell(sheet, row, column);
-    cell.setCellFormula("TIME(" + s.replaceAll(":", ",") + ",00)"); // 00:00:00
+    cell.setCellFormula("TIME(" + s.replace(":", ",") + ",00)"); // 00:00:00
     cell.setCellStyle(bold ? mTimesDateBold : mTimesDate);
   }
 
   /**
-   *
-   * @param sheet The current sheet
-   * @param row The current row index.
+   * @param sheet  The current sheet
+   * @param row    The current row index.
    * @param column The first column index.
-   * @param val The value.
+   * @param val    The value.
    */
   public void addNumber(Sheet sheet, int row, int column,
-                         double val) {
+                        double val) {
     Cell cell = getCell(sheet, row, column);
     cell.setCellValue(val);
     cell.setCellStyle(mTimes);
@@ -164,8 +172,9 @@ public class ExcelHelper {
 
   /**
    * Returns a specific cell.
-   * @param sheet The current sheet
-   * @param row The current row index.
+   *
+   * @param sheet  The current sheet
+   * @param row    The current row index.
    * @param column The first column index.
    * @return Cell.
    */
@@ -192,7 +201,10 @@ public class ExcelHelper {
         }
       }
     }
-    return c == null ? ((r == null ? sheet.createRow(row) : r).createCell(column)) : c;
+    Row rrow = r;
+    if (r == null)
+      rrow = sheet.createRow(row);
+    return c == null ? (rrow.createCell(column)) : c;
   }
 
 }

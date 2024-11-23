@@ -1,6 +1,8 @@
 package fr.ralala.worktime.models;
 
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -9,13 +11,14 @@ import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
 /**
- *******************************************************************************
+ * ******************************************************************************
  * <p><b>Project WorkTime</b><br/>
  * Representation of a worktime day
  * </p>
- * @author Keidan
  *
- *******************************************************************************
+ * @author Keidan
+ * <p>
+ * ******************************************************************************
  */
 public class WorkTimeDay {
   private int mDay = 1;
@@ -33,6 +36,7 @@ public class WorkTimeDay {
 
   /**
    * Creates an instance using the time in milliseconds.
+   *
    * @param ms Current time in milliseconds.
    */
   public WorkTimeDay(long ms) {
@@ -42,10 +46,11 @@ public class WorkTimeDay {
 
   /**
    * Creates an instance using detailed date time.
-   * @param year Current year.
-   * @param month Current month.
-   * @param day Current day.
-   * @param hours Current hours.
+   *
+   * @param year    Current year.
+   * @param month   Current month.
+   * @param day     Current day.
+   * @param hours   Current hours.
    * @param minutes Current minutes.
    */
   public WorkTimeDay(int year, int month, int day, int hours, int minutes) {
@@ -57,18 +62,36 @@ public class WorkTimeDay {
   }
 
   /**
+   * Clones the current instance.
+   *
+   * @return WorkTimeDay
+   */
+  public @NonNull WorkTimeDay copy() {
+    WorkTimeDay wtd = new WorkTimeDay();
+    wtd.mDay = mDay;
+    wtd.mMonth = mMonth;
+    wtd.mYear = mYear;
+    wtd.mHours = mHours;
+    wtd.mMinutes = mMinutes;
+    wtd.mSeconds = mSeconds;
+    return wtd;
+  }
+
+  /**
    * Initializes the current instance from a time in milliseconds.
+   *
    * @param ms The time in milliseconds.
    * @return WorkTimeDay
    */
   public WorkTimeDay fromTimeMS(long ms) {
-    mHours = (int)TimeUnit.MILLISECONDS.toHours(ms);
-    mMinutes = (int)(TimeUnit.MILLISECONDS.toMinutes(ms) - (mHours * 60));
+    mHours = (int) TimeUnit.MILLISECONDS.toHours(ms);
+    mMinutes = (int) (TimeUnit.MILLISECONDS.toMinutes(ms) - (mHours * 60));
     return this;
   }
 
   /**
    * Deletes a time.
+   *
    * @param wtd Time to delete.
    * @return WorkTimeDay
    */
@@ -79,6 +102,7 @@ public class WorkTimeDay {
 
   /**
    * Adds a time.
+   *
    * @param wtd Time to add.
    * @return WorkTimeDay
    */
@@ -88,6 +112,7 @@ public class WorkTimeDay {
 
   /**
    * Returns the current instance initialized to the current time.
+   *
    * @return WorkTimeDay
    */
   public static WorkTimeDay now() {
@@ -100,23 +125,27 @@ public class WorkTimeDay {
   }
 
   /**
-   * Clones the current instance.
+   * Converts a string date to a WorkTimeDay instance.
+   *
+   * @param d String date to convert.
    * @return WorkTimeDay
    */
-  @SuppressWarnings("CloneDoesntCallSuperClone")
-  public WorkTimeDay clone() {
+  public static WorkTimeDay fromDate(@Nullable final String d) {
     WorkTimeDay wtd = new WorkTimeDay();
-    wtd.mDay = mDay;
-    wtd.mMonth = mMonth;
-    wtd.mYear = mYear;
-    wtd.mHours = mHours;
-    wtd.mMinutes = mMinutes;
-    wtd.mSeconds = mSeconds;
+    if(d == null)
+      return now();
+    String[] split = d.split("/");
+    wtd.mYear = Integer.parseInt(split[2]);
+    wtd.mMonth = Integer.parseInt(split[1]);
+    wtd.mDay = Integer.parseInt(split[0]);
+    wtd.mHours = 0;
+    wtd.mMinutes = 0;
     return wtd;
   }
 
   /**
    * Copies the input entry to this instance.
+   *
    * @param wtd The instance to copy.
    */
   void copy(WorkTimeDay wtd) {
@@ -130,14 +159,16 @@ public class WorkTimeDay {
 
   /**
    * Returns the date and the time.
+   *
    * @return String
    */
-  public String toString() {
+  public @NonNull String toString() {
     return dateString() + " " + timeString();
   }
 
   /**
    * Sets the Calendar entry to the current instance.
+   *
    * @param c Calendar input.
    */
   public void setTime(Calendar c) {
@@ -146,6 +177,7 @@ public class WorkTimeDay {
 
   /**
    * Returns the time in milliseconds.
+   *
    * @return long
    */
   public long getTimeMs() {
@@ -154,6 +186,7 @@ public class WorkTimeDay {
 
   /**
    * Compares the current instance to another.
+   *
    * @param wtd The instance to compare.
    * @return int
    */
@@ -164,7 +197,8 @@ public class WorkTimeDay {
   }
 
   /**
-   * Converts the a Calendar to a WorkTimeDay instance.
+   * Converts a Calendar to a WorkTimeDay instance.
+   *
    * @param c Calendar to convert.
    * @return WorkTimeDay
    */
@@ -179,6 +213,7 @@ public class WorkTimeDay {
 
   /**
    * Converts the current instance to a Calendar value.
+   *
    * @return Calendar
    */
   public Calendar toCalendar() {
@@ -194,7 +229,8 @@ public class WorkTimeDay {
 
   /**
    * Returns the time in string format.
-   * @param hours The hours.
+   *
+   * @param hours   The hours.
    * @param minutes The minutes.
    * @return String
    */
@@ -204,26 +240,29 @@ public class WorkTimeDay {
 
   /**
    * Returns the time in string format.
+   *
    * @param plusSign True to add the '+' sign.
    * @return String
    */
   public String timeString(boolean plusSign) {
     String s = timeString(mHours, mMinutes);
-    if(plusSign && !s.startsWith("-"))
+    if (plusSign && !s.startsWith("-"))
       return "+" + s;
     return s;
   }
 
   /**
    * Returns the time in string format.
+   *
    * @return String
    */
   public String timeString() {
-    return timeString(false) ;
+    return timeString(false);
   }
 
   /**
    * Returns the date in string format.
+   *
    * @return String
    */
   public String dateString() {
@@ -232,6 +271,7 @@ public class WorkTimeDay {
 
   /**
    * Tests if the current time matches with another.
+   *
    * @param wtd The time to test.
    * @return boolean
    */
@@ -241,6 +281,7 @@ public class WorkTimeDay {
 
   /**
    * Tests if the time is valid.
+   *
    * @return boolean
    */
   public boolean isValidTime() {
@@ -249,6 +290,7 @@ public class WorkTimeDay {
 
   /**
    * Returns the day.
+   *
    * @return int
    */
   public int getDay() {
@@ -257,6 +299,7 @@ public class WorkTimeDay {
 
   /**
    * Returns the day.
+   *
    * @return String
    */
   public String getDayString() {
@@ -265,6 +308,7 @@ public class WorkTimeDay {
 
   /**
    * Sets the day.
+   *
    * @param day The new value.
    */
   public void setDay(int day) {
@@ -273,6 +317,7 @@ public class WorkTimeDay {
 
   /**
    * Returns the month.
+   *
    * @return int
    */
   public int getMonth() {
@@ -281,6 +326,7 @@ public class WorkTimeDay {
 
   /**
    * Returns the month.
+   *
    * @return String
    */
   public String getMonthString() {
@@ -289,6 +335,7 @@ public class WorkTimeDay {
 
   /**
    * Sets the month.
+   *
    * @param month The new value.
    */
   public void setMonth(int month) {
@@ -297,6 +344,7 @@ public class WorkTimeDay {
 
   /**
    * Returns the year.
+   *
    * @return int
    */
   public int getYear() {
@@ -305,6 +353,7 @@ public class WorkTimeDay {
 
   /**
    * Returns the year.
+   *
    * @return String
    */
   public String getYearString() {
@@ -313,6 +362,7 @@ public class WorkTimeDay {
 
   /**
    * Sets the year.
+   *
    * @param year The new value.
    */
   public void setYear(int year) {
@@ -321,6 +371,7 @@ public class WorkTimeDay {
 
   /**
    * Returns the hours.
+   *
    * @return int
    */
   public int getHours() {
@@ -329,6 +380,7 @@ public class WorkTimeDay {
 
   /**
    * Sets the hours.
+   *
    * @param hours The new value.
    */
   public void setHours(int hours) {
@@ -337,6 +389,7 @@ public class WorkTimeDay {
 
   /**
    * Returns the minutes.
+   *
    * @return int
    */
   public int getMinutes() {
@@ -345,6 +398,7 @@ public class WorkTimeDay {
 
   /**
    * Sets the minutes.
+   *
    * @param minutes The new value.
    */
   public void setMinutes(int minutes) {
@@ -353,6 +407,7 @@ public class WorkTimeDay {
 
   /**
    * Returns the seconds.
+   *
    * @return int
    */
   public int getSeconds() {
@@ -361,6 +416,7 @@ public class WorkTimeDay {
 
   /**
    * Sets the seconds.
+   *
    * @param seconds The new value.
    */
   public void setSeconds(int seconds) {

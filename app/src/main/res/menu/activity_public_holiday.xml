@@ -1,16 +1,16 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto" >
+  xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <item
-        android:id="@+id/action_cancel"
-        android:orderInCategory="100"
-        app:showAsAction="ifRoom"
-        android:title="@null"
-        android:icon="@mipmap/ic_cancel_white"/>
-    <item
-        android:id="@+id/action_done"
-        android:orderInCategory="100"
-        app:showAsAction="always"
-        android:title="@null"
-        android:icon="@mipmap/ic_apply_white"/>
+  <item
+    android:id="@+id/action_cancel"
+    android:orderInCategory="100"
+    app:showAsAction="ifRoom"
+    android:title="@null"
+    android:icon="@mipmap/ic_cancel_white" />
+  <item
+    android:id="@+id/action_done"
+    android:orderInCategory="100"
+    app:showAsAction="always"
+    android:title="@null"
+    android:icon="@mipmap/ic_apply_white" />
 </menu>

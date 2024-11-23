@@ -1,97 +1,129 @@
 package fr.ralala.worktime.dropbox;
 
 import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
-import android.os.AsyncTask;
+import android.media.MediaScannerConnection;
 import android.os.Environment;
 
+import com.dropbox.core.DbxDownloader;
 import com.dropbox.core.DbxException;
 import com.dropbox.core.v2.DbxClientV2;
+import com.dropbox.core.v2.files.DbxUserFilesRequests;
 import com.dropbox.core.v2.files.FileMetadata;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.lang.ref.WeakReference;
+import java.nio.file.Files;
+
+import fr.ralala.worktime.tasks.TaskRunner;
 
 /**
+ * ******************************************************************************
+ * <p><b>Project WorkTime</b><br/>
  * Task to download a file from Dropbox and put it in the Downloads folder
- * Source https://github.com/dropbox/dropbox-sdk-java/blob/master/examples/android/src/main/java/com/dropbox/core/examples/android/DownloadFileTask.java
+ * </p>
+ *
+ * @author Keidan
+ * <p>
+ * License: GPLv3
+ * <p>
+ * ******************************************************************************
  */
-public class DownloadFileTask extends AsyncTask<FileMetadata, Void, File> {
+public class DownloadFileTask extends TaskRunner<DownloadFileTask.Config, FileMetadata, Void, DownloadFileTask.Result> {
+  public static class Result {
+    private File file = null;
+    private Exception exception = null;
+  }
 
-  private final DbxClientV2 mDbxClient;
+  public static class Config {
+    private Context context = null;
+    private DbxClientV2 client = null;
+  }
+
   private final DropboxListener mCallback;
-  private Exception mException;
-  private final WeakReference<Context> mWeakContext;
+  private final Config mConfig = new Config();
 
   /**
    * Creates the task.
-   * @param context The Android context.
+   *
+   * @param context   The Android context.
    * @param dbxClient The dropbox client.
-   * @param callback The dropbox listener.
+   * @param callback  The dropbox listener.
    */
   DownloadFileTask(Context context, DbxClientV2 dbxClient, DropboxListener callback) {
-    mWeakContext = new WeakReference<>(context);
-    mDbxClient = dbxClient;
+    mConfig.context = context;
+    mConfig.client = dbxClient;
     mCallback = callback;
   }
 
   /**
-   * Executed when the task is finished.
-   * @param result The task result.
+   * Called before the execution of the task.
+   *
+   * @return The Config.
    */
   @Override
-  protected void onPostExecute(File result) {
+  public Config onPreExecute() {
+    return mConfig;
+  }
+
+  /**
+   * Called after the execution of the task.
+   *
+   * @param result The result.
+   */
+  @Override
+  public void onPostExecute(Result result) {
     super.onPostExecute(result);
-    if (mException != null) {
-      mCallback.onDroptboxDownloadError(mException);
+    if (result.exception != null) {
+      mCallback.onDropboxDownloadError(result.exception);
     } else {
-      mCallback.onDroptboxDownloadComplete(result);
+      mCallback.onDropboxDownloadComplete(result.file);
     }
   }
 
   /**
    * Executed in background.
-   * @param params [0]=FileMetadata
+   *
+   * @param metadata FileMetadata
    * @return File
    */
   @Override
-  protected File doInBackground(FileMetadata... params) {
-    FileMetadata metadata = params[0];
+  public Result doInBackground(Config cfg, FileMetadata metadata) {
+    Result res = new Result();
     try {
       File path = Environment.getExternalStoragePublicDirectory(
         Environment.DIRECTORY_DOWNLOADS);
+      if (metadata == null)
+        throw new NullPointerException("Null metadata");
+
       File file = new File(path, metadata.getName());
 
       // Make sure the Downloads directory exists.
       if (!path.exists()) {
         if (!path.mkdirs()) {
-          mException = new RuntimeException("Unable to create directory: " + path);
+          res.exception = new RuntimeException("Unable to create directory: " + path);
         }
       } else if (!path.isDirectory()) {
-        mException = new IllegalStateException("Download path is not a directory: " + path);
+        res.exception = new IllegalStateException("Download path is not a directory: " + path);
         return null;
       }
 
       // Download the file.
-      try (OutputStream outputStream = new FileOutputStream(file)) {
-        mDbxClient.files().download(metadata.getPathLower(), metadata.getRev())
-          .download(outputStream);
+      try (OutputStream outputStream = Files.newOutputStream(file.toPath())) {
+        DbxUserFilesRequests files = cfg.client.files();
+        DbxDownloader<FileMetadata> downloader = files.download(metadata.getPathLower(), metadata.getRev());
+        downloader.download(outputStream);
+        downloader.close();
       }
 
       // Tell android about the file
-      Intent intent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-      intent.setData(Uri.fromFile(file));
-      mWeakContext.get().sendBroadcast(intent);
+      MediaScannerConnection.scanFile(cfg.context,
+        new String[]{file.toString()}, null, null);
 
-      return file;
-    } catch (DbxException | IOException e) {
-      mException = e;
+      res.file = file;
+    } catch (DbxException | IOException | NullPointerException e) {
+      res.exception = e;
     }
-
-    return null;
+    return res;
   }
 }

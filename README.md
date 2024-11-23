@@ -1,7 +1,6 @@
 # WorkTime
-[![Build Status](https://img.shields.io/travis/Keidan/WorkTime/master.svg?style=plastic)](https://travis-ci.org/Keidan/WorkTime)
-[![GitHub license](https://img.shields.io/github/license/Keidan/WorkTime.svg?style=plastic)](https://github.com/Keidan/WorkTime/blob/master/license.txt)
-
+[![Build Status](https://github.com/Keidan/WorkTime/actions/workflows/build.yml/badge.svg)][build]
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)][license]
 
 (GPL) Android Work time management is a FREE software.
 
@@ -31,3 +30,6 @@ download the software :
 ## License
 
 [GPLv3](https://github.com/Keidan/WorkTime/blob/master/license.txt)
+
+[build]: https://github.com/Keidan/WorkTime/actions
+[license]: https://github.com/Keidan/HexViewer/blob/master/license.txt

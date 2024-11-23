@@ -1,22 +1,28 @@
 package fr.ralala.worktime.models;
 
 
+import androidx.annotation.NonNull;
+
+import java.util.Objects;
+
 /**
- *******************************************************************************
+ * ******************************************************************************
  * <p><b>Project WorkTime</b><br/>
  * Setting representation
  * </p>
- * @author Keidan
  *
- *******************************************************************************
+ * @author Keidan
+ * <p>
+ * ******************************************************************************
  */
 public class Setting {
   private String mName;
-  private String mValue;
+  private final String mValue;
 
   /**
    * Creates a setting instance.
-   * @param name Setting name.
+   *
+   * @param name  Setting name.
    * @param value Setting value.
    */
   public Setting(final String name, final String value) {
@@ -24,28 +30,36 @@ public class Setting {
     mValue = value;
   }
 
+  @Override
+  public int hashCode() {
+    return Objects.hash(this);
+  }
+
   /**
    * Tests if the input settings matches with this instance.
+   *
    * @param o The input setting.
    * @return boolean
    */
   public boolean equals(Object o) {
-    if(o == null || !Setting.class.isInstance(o))
+    if (!(o instanceof Setting))
       return false;
-    Setting s = (Setting)o;
+    Setting s = (Setting) o;
     return s.mName.compareTo(mName) == 0 && s.mValue.compareTo(mValue) == 0;
   }
 
   /**
    * Returns the setting name and value.
+   *
    * @return String
    */
-  public String toString() {
-    return mName+":"+mValue;
+  public @NonNull String toString() {
+    return mName + ":" + mValue;
   }
 
   /**
    * Returns the name.
+   *
    * @return String
    */
   public String getName() {
@@ -54,17 +68,11 @@ public class Setting {
 
   /**
    * Sets the name.
+   *
    * @param name The new name.
    */
   public void setName(final String name) {
     mName = name;
-  }
-
-  /**
-   * Forces the value to 'false'.
-   */
-  public void disable() {
-    mValue = "false";
   }
 
 }

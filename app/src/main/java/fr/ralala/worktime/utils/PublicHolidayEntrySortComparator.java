@@ -11,13 +11,14 @@ import fr.ralala.worktime.models.PublicHolidayEntry;
 import fr.ralala.worktime.models.WorkTimeDay;
 
 /**
- *******************************************************************************
+ * ******************************************************************************
  * <p><b>Project WorkTime</b><br/>
  * Simple sort comparator for the public holidays.
  * </p>
- * @author Keidan
  *
- *******************************************************************************
+ * @author Keidan
+ * <p>
+ * ******************************************************************************
  */
 public enum PublicHolidayEntrySortComparator implements Comparator<PublicHolidayEntry> {
   SORT_BY_RECURRENCE {
@@ -27,24 +28,28 @@ public enum PublicHolidayEntrySortComparator implements Comparator<PublicHoliday
   },
   SORT_BY_DATE {
     public int compare(PublicHolidayEntry a, PublicHolidayEntry b) {
-      WorkTimeDay a_wtd = a.getDay();
-      WorkTimeDay b_wtd = b.getDay();
-      String a_date = String.format(Locale.US, "%02d/%02d/%04d", a_wtd.getDay(), a_wtd.getMonth(), (!a.isRecurrence() ? a_wtd.getYear() : 1900));
-      String b_date = String.format(Locale.US, "%02d/%02d/%04d", b_wtd.getDay(), b_wtd.getMonth(), (!b.isRecurrence() ? b_wtd.getYear() : 1900));
+      WorkTimeDay aWTD = a.getDay();
+      WorkTimeDay bWTD = b.getDay();
+      String aDate = String.format(Locale.US, "%02d/%02d/%04d", aWTD.getDay(), aWTD.getMonth(), (!a.isRecurrence() ? aWTD.getYear() : 1900));
+      String bDate = String.format(Locale.US, "%02d/%02d/%04d", bWTD.getDay(), bWTD.getMonth(), (!b.isRecurrence() ? bWTD.getYear() : 1900));
       SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy", Locale.US);
       try {
-        Date date1 = format.parse(a_date);
-        Date date2 = format.parse(b_date);
+        Date date1 = format.parse(aDate);
+        Date date2 = format.parse(bDate);
+        if (date1 == null || date2 == null)
+          return -1;
         return date2.compareTo(date1);
-      } catch(Exception e) {
+      } catch (Exception e) {
         Log.e(getClass().getSimpleName(), "Exception: " + e.getMessage(), e);
         return -1;
       }
     }
-  },;
+  },
+  ;
 
   /**
    * Compares entry.
+   *
    * @param other The comparator entry.
    * @return Comparator<PublicHolidayEntry>
    */
@@ -54,6 +59,7 @@ public enum PublicHolidayEntrySortComparator implements Comparator<PublicHoliday
 
   /**
    * Returns the comparate to use.
+   *
    * @param multipleOptions Multiple comparator.
    * @return Comparator<DayEntry>
    */

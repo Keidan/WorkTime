@@ -1,76 +1,75 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  android:orientation="vertical"
+  android:paddingBottom="@dimen/activity_vertical_margin"
+  android:paddingLeft="@dimen/activity_horizontal_margin"
+  android:paddingRight="@dimen/activity_horizontal_margin"
+  android:paddingTop="@dimen/activity_vertical_margin"
+  android:clearTaskOnLaunch="true"
+  android:launchMode="singleTask">
+
+  <GridLayout
+    android:id="@+id/grid"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    android:clearTaskOnLaunch="true"
-    android:launchMode="singleTask">
-    <GridLayout
-        android:id="@+id/grid"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:columnCount="2" >
+    android:layout_height="wrap_content"
+    android:columnCount="2">
 
-        <TextView
-            android:id="@+id/tvName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_column="0"
-            android:layout_row="0"
-            android:text="@string/name"
-            android:labelFor="@+id/etName"/>
+    <TextView
+      android:id="@+id/tvName"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_column="0"
+      android:layout_row="0"
+      android:text="@string/name"
+      android:labelFor="@+id/etName" />
 
-        <EditText
-            android:id="@+id/etName"
-            android:layout_width="@dimen/activity_public_holiday_etName_layout_width"
-            android:layout_height="wrap_content"
-            android:layout_column="1"
-            android:layout_gravity="fill_horizontal"
-            android:layout_row="0"
-            android:layout_marginStart="@dimen/activity_public_holiday_etName_layout_marginStart"
-            android:inputType="textCapWords" >
-        </EditText>
+    <EditText
+      android:id="@+id/etName"
+      android:layout_width="@dimen/activity_public_holiday_etName_layout_width"
+      android:layout_height="wrap_content"
+      android:layout_column="1"
+      android:layout_gravity="fill_horizontal"
+      android:layout_row="0"
+      android:layout_marginStart="@dimen/activity_public_holiday_etName_layout_marginStart"
+      android:inputType="textCapWords"></EditText>
 
-        <TextView
-            android:id="@+id/tvDate"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_column="0"
-            android:layout_row="1"
-            android:text="@string/date"
-            android:labelFor="@+id/txtName"/>
+    <TextView
+      android:id="@+id/tvDate"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_column="0"
+      android:layout_row="1"
+      android:text="@string/date"
+      android:labelFor="@+id/txtName" />
 
-        <DatePicker
-            android:id="@+id/dpDate"
-            android:layout_width="@dimen/activity_public_holiday_dpDate_layout_width"
-            android:layout_height="wrap_content"
-            android:layout_column="1"
-            android:layout_gravity="fill_horizontal"
-            android:layout_row="1"
-            android:layout_marginStart="@dimen/activity_public_holiday_dpDate_layout_marginStart"
-            style="@style/date_picker_theme">
-        </DatePicker>
+    <DatePicker
+      android:id="@+id/dpDate"
+      android:layout_width="@dimen/activity_public_holiday_dpDate_layout_width"
+      android:layout_height="wrap_content"
+      android:layout_column="1"
+      android:layout_gravity="fill_horizontal"
+      android:layout_row="1"
+      android:layout_marginStart="@dimen/activity_public_holiday_dpDate_layout_marginStart"
+      style="@style/date_picker_theme"></DatePicker>
 
-        <TextView
-            android:id="@+id/tvRecurrence"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_column="0"
-            android:layout_row="2"
-            android:text="@string/recurrence"
-            android:labelFor="@+id/ckRecurrence"/>
+    <TextView
+      android:id="@+id/tvRecurrence"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_column="0"
+      android:layout_row="2"
+      android:text="@string/recurrence"
+      android:labelFor="@+id/ckRecurrence" />
 
-        <CheckBox
-            android:id="@+id/ckRecurrence"
-            android:layout_width="@dimen/activity_public_holiday_ckRecurrence_layout_width"
-            android:layout_height="wrap_content"
-            android:layout_gravity="fill_horizontal"
-            android:layout_row="2"
-            android:layout_column="1"/>
+    <CheckBox
+      android:id="@+id/ckRecurrence"
+      android:layout_width="@dimen/activity_public_holiday_ckRecurrence_layout_width"
+      android:layout_height="wrap_content"
+      android:layout_gravity="fill_horizontal"
+      android:layout_row="2"
+      android:layout_column="1" />
 
-    </GridLayout>
+  </GridLayout>
 </ScrollView>

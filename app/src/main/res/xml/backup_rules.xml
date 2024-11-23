@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <full-backup-content>
-    <include domain="sharedpref" path="."/>
-    <include domain="database" path="work_time.sqlite3"/>
+  <include
+    domain="sharedpref"
+    path="." />
+  <include
+    domain="database"
+    path="work_time.sqlite3" />
 </full-backup-content>

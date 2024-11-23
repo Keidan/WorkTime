@@ -1,12 +1,8 @@
 package fr.ralala.worktime.ui.activities;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.Location;
-import android.support.annotation.NonNull;
-import android.support.design.widget.TextInputEditText;
-import android.support.v4.app.Fragment;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,7 +10,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -23,37 +18,43 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import androidx.activity.OnBackPressedCallback;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.android.material.textfield.TextInputEditText;
+
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 import fr.ralala.worktime.MainApplication;
+import fr.ralala.worktime.R;
+import fr.ralala.worktime.launchers.LauncherDayActivity;
 import fr.ralala.worktime.models.DayEntry;
 import fr.ralala.worktime.models.DayType;
 import fr.ralala.worktime.models.ProfileEntry;
 import fr.ralala.worktime.models.WorkTimeDay;
-import fr.ralala.worktime.services.DropboxAutoExportService;
-import fr.ralala.worktime.services.QuickAccessService;
-import fr.ralala.worktime.utils.AndroidHelper;
-
-
-import fr.ralala.worktime.R;
+import fr.ralala.worktime.services.AutoExportService;
 import fr.ralala.worktime.ui.utils.UIHelper;
 import fr.ralala.worktime.ui.widgets.DayWidgetProvider1x1;
 import fr.ralala.worktime.ui.widgets.DayWidgetProvider4x1;
+import fr.ralala.worktime.utils.AndroidHelper;
 
 /**
- *******************************************************************************
+ * ******************************************************************************
  * <p><b>Project WorkTime</b><br/>
  * Manage the activity containing the day entries used for the profiles and the classic insertions
  * </p>
- * @author Keidan
  *
- *******************************************************************************
+ * @author Keidan
+ * <p>
+ * ******************************************************************************
  */
-public class DayActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemSelectedListener{
-  public static final int REQUEST_START_ACTIVITY = 100;
-  public static final String DAY_ACTIVITY_EXTRA_DATE = "DAY_ACTIVITY_EXTRA_DATE_date";
-  public static final String DAY_ACTIVITY_EXTRA_PROFILE = "DAY_ACTIVITY_EXTRA_DATE_profile";
+public class DayActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemSelectedListener {
+  public static final String ZERO_TIME = "00:00";
   private Spinner mSpProfile = null;
   private Spinner mSpTypeMorning = null;
   private Spinner mSpTypeAfternoon = null;
@@ -83,40 +84,15 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
   private boolean mFromClear = false;
   private boolean mFromWidget = false;
   private Location mLocation = null;
-  private final ViewGroup mNullParent = null;
-
-  /**
-   * Starts an activity.
-   * @param fragment The Android fragment.
-   * @param date The date used for the extra part.
-   * @param profile True from a profile.
-   */
-  public static void startActivity(final Fragment fragment, final String date, final boolean profile) {
-    Intent intent = new Intent(fragment.getContext(), DayActivity.class);
-    intent.putExtra(DAY_ACTIVITY_EXTRA_DATE, date);
-    intent.putExtra(DAY_ACTIVITY_EXTRA_PROFILE, profile);
-    fragment.startActivityForResult(intent, REQUEST_START_ACTIVITY);
-  }
-
-  /**
-   * Called to handle the click on the back button.
-   */
-  @Override
-  public void onBackPressed() {
-    setResult(RESULT_CANCELED);
-    super.onBackPressed();
-    UIHelper.closeAnimation(this);
-    clearFromWidget();
-  }
 
   /**
    * Clear is required from a widget.
    */
   private void clearFromWidget() {
-    if(mFromWidget) {
+    if (mFromWidget) {
       mApp.setLastWidgetOpen(System.currentTimeMillis());
-      if(mApp.isExportAutoSave())
-        startService(new Intent(this, DropboxAutoExportService.class));
+      if (mApp.isExportAutoSave())
+        startService(new Intent(this, AutoExportService.class));
       else
         finish();
     }
@@ -133,44 +109,45 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
 
   /**
    * Called when the activity is created.
+   *
    * @param savedInstanceState The saved instance state.
    */
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     UIHelper.openAnimation(this);
     super.onCreate(savedInstanceState);
-    mApp = MainApplication.getInstance();
+    mApp = (MainApplication) getApplication();
     setContentView(R.layout.activity_day);
-    String date =  null;
+    String date = null;
     boolean show = false;
-    if(getIntent().getAction() == null || (!getIntent().getAction().equals(DayWidgetProvider1x1.ACTION_FROM_WIDGET) && !getIntent().getAction().equals(DayWidgetProvider4x1.ACTION_FROM_WIDGET))) {
-      if(getIntent().getExtras() != null) {
+    if (getIntent().getAction() == null || (!getIntent().getAction().equals(DayWidgetProvider1x1.ACTION_FROM_WIDGET) && !getIntent().getAction().equals(DayWidgetProvider4x1.ACTION_FROM_WIDGET))) {
+      if (getIntent().getExtras() != null) {
         Bundle extras = getIntent().getExtras();
-        date = extras.getString(DAY_ACTIVITY_EXTRA_DATE);
-        mDisplayProfile = extras.getBoolean(DAY_ACTIVITY_EXTRA_PROFILE);
-        if(date == null || date.equals("null")) date = "";
+        date = extras.getString(LauncherDayActivity.DAY_ACTIVITY_EXTRA_DATE);
+        mDisplayProfile = extras.getBoolean(LauncherDayActivity.DAY_ACTIVITY_EXTRA_PROFILE);
+        if (date == null || date.equals("null")) date = "";
       }
       show = true;
-    } else if(getIntent().getAction().equals(DayWidgetProvider1x1.ACTION_FROM_WIDGET) || getIntent().getAction().equals(DayWidgetProvider4x1.ACTION_FROM_WIDGET)) {
+    } else if (getIntent().getAction().equals(DayWidgetProvider1x1.ACTION_FROM_WIDGET) || getIntent().getAction().equals(DayWidgetProvider4x1.ACTION_FROM_WIDGET)) {
       /* If the main activity is not started, all contexts are reset, so we need to reload the required contexts */
-      if(!mApp.openSql(this)) {
+      if (!mApp.openSql(this)) {
         UIHelper.toast(this, R.string.error_widget_sql);
-        Log.e(getClass().getSimpleName(), "Widger error SQL");
+        Log.e(getClass().getSimpleName(), "Widget error SQL");
         finish();
-        return ;
+        return;
       }
-      date = mApp.getDaysFactory().getCurrentDay().getDay().dateString();
+      date = mApp.getDaysFactory().getCurrentDay(mApp).getDay().dateString();
       mDisplayProfile = true;
       mFromWidget = true;
     }
 
-    android.support.v7.app.ActionBar actionBar = getDelegate().getSupportActionBar();
-    if(actionBar != null) {
+    ActionBar actionBar = getDelegate().getSupportActionBar();
+    if (actionBar != null) {
       actionBar.setDisplayShowHomeEnabled(show);
       actionBar.setDisplayHomeAsUpEnabled(show);
     }
     List<ProfileEntry> profiles = mApp.getProfilesFactory().list();
-    if(mDisplayProfile) {
+    if (mDisplayProfile) {
       DayEntry de = mApp.getDaysFactory().getDay(date);
       if (de != null) {
         if (mFromWidget && !de.getWorkTime().isValidTime())
@@ -189,16 +166,18 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
         }
       }
     }
-    if(mDe == null) {
+    if (mDe == null) {
       mOpenForAdd = true;
-      mDe = mDisplayProfile ? new DayEntry(WorkTimeDay.now(), DayType.ERROR, DayType.ERROR)
-            : new ProfileEntry(WorkTimeDay.now(), DayType.ERROR, DayType.ERROR);
-      if(date != null && !date.isEmpty() && date.contains("/"))
+      if(mDisplayProfile)
+        mDe = new DayEntry(this, mFromWidget ? WorkTimeDay.now() : WorkTimeDay.fromDate(date), DayType.ERROR, DayType.ERROR);
+      else
+        mDe = new ProfileEntry(this, WorkTimeDay.now(), DayType.ERROR, DayType.ERROR);
+      if (date != null && !date.contains("/"))
         mDe.setDay(date);
     }
     refreshStartEndPause(mDe);
 
-    if(mDisplayProfile)
+    if (mDisplayProfile)
       setTitle(date);
     TextView tvProfile = findViewById(R.id.tvProfile);
     mSpProfile = findViewById(R.id.spProfile);
@@ -219,7 +198,7 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
     boolean hw = mApp.isHideWage();
     mEtAmount.setVisibility(hw ? View.INVISIBLE : View.VISIBLE);
     View tvLblAmount = findViewById(R.id.tvLblAmount);
-    if(tvLblAmount != null)
+    if (tvLblAmount != null)
       tvLblAmount.setVisibility(hw ? View.INVISIBLE : View.VISIBLE);
     /* add click listener for the time picker */
     mTvStartMorning.setOnClickListener(this);
@@ -231,29 +210,29 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
     mTvLegalWorktime.setOnClickListener(this);
     /* manage view for the call from the profile view */
     int v;
-    if(mDisplayProfile) {
+    if (mDisplayProfile) {
       v = View.VISIBLE;
       mSpProfile.setVisibility(v);
-      if(tvProfile != null)
+      if (tvProfile != null)
         tvProfile.setVisibility(v);
       v = View.GONE;
-      if(profiles.isEmpty()) {
+      if (profiles.isEmpty()) {
         mSpProfile.setVisibility(View.GONE);
-        if(tvProfile != null)
+        if (tvProfile != null)
           tvProfile.setVisibility(View.GONE);
       }
     } else {
       v = View.GONE;
       mSpProfile.setVisibility(v);
-      if(tvProfile != null)
+      if (tvProfile != null)
         tvProfile.setVisibility(v);
       v = View.VISIBLE;
-      if(ProfileEntry.class.isInstance(mDe)) {
+      if (mDe instanceof ProfileEntry) {
         mEtName.setText(((ProfileEntry) mDe).getName());
       }
       mIvGeoloc.setOnClickListener(this);
     }
-    if(tvName != null)
+    if (tvName != null)
       tvName.setVisibility(v);
     mEtName.setVisibility(v);
     mIvGeoloc.setVisibility(v);
@@ -282,8 +261,8 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
     selectSpinner(mSpTypeMorning, mDe.getTypeMorning());
     selectSpinner(mSpTypeAfternoon, mDe.getTypeAfternoon());
 
-    if(mDisplayProfile) {
-    /* build profiles spinner */
+    if (mDisplayProfile) {
+      /* build profiles spinner */
       mSpProfilesAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item);
       mSpProfilesAdapter.setDropDownViewResource(R.layout.simple_spinner_dropdown_item);
       mSpProfile.setAdapter(mSpProfilesAdapter);
@@ -299,24 +278,37 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
     mTvEndAfternoon.setText(mDe.getEndAfternoon().timeString());
     mTvAdditionalBreak.setText(mDe.getAdditionalBreak().timeString());
     mTvRecoveryTime.setText(mDe.getRecoveryTime().timeString());
-    mTvLegalWorktime.setText(mDe.getLegalWorktime().timeString());
+    mTvLegalWorktime.setText(mDe.getLegalWorkTime().timeString());
 
-    if(!mApp.isHideWage()) {
+    if (!mApp.isHideWage()) {
       mEtAmount.setTypeface(mTvStartAfternoon.getTypeface());
       mEtAmount.setTextSize(14);
       mEtAmount.setTextColor(mTvStartAfternoon.getTextColors());
       mEtAmount.setText(String.format(Locale.US, "%.02f",
-        mDe.getAmountByHour() != 0 ? mDe.getAmountByHour() : mApp.getAmountByHour()).replaceAll(",", "."));
+        mDe.getAmountByHour() != 0 ? mDe.getAmountByHour() : mApp.getAmountByHour()).replace(",", "."));
     }
+    getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+      @Override
+      public void handleOnBackPressed() {
+        back();
+      }
+    });
+  }
+
+  private void back() {
+    setResult(RESULT_CANCELED);
+    finish();
+    UIHelper.closeAnimation(this);
+    clearFromWidget();
   }
 
   private void selectSpinner(Spinner sp, final DayType type) {
-    if(type == DayType.ERROR) {
+    if (type == DayType.ERROR) {
       sp.setSelection(0);
     } else {
-      for(int i = 0; i < sp.getAdapter().getCount(); i++) {
+      for (int i = 0; i < sp.getAdapter().getCount(); i++) {
         DayType dt = DayType.compute(this, sp.getAdapter().getItem(i).toString());
-        if(dt == type) {
+        if (dt == type) {
           sp.setSelection(i);
           break;
         }
@@ -332,14 +324,14 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
     super.onResume();
     mFromClear = false;
     mSelectedProfile = null;
-    if(mTvLegalWorktime.getText().equals(getString(R.string.default_time))) {
+    if (mTvLegalWorktime.getText().equals(getString(R.string.default_time))) {
       String t = mApp.getLegalWorkTimeByDay().timeString();
       mTvLegalWorktime.setText(t);
-      mDe.setLegalWorktime(t);
+      mDe.setLegalWorkTime(t);
     }
-    if(mDisplayProfile && mOpenForAdd) {
+    if (mDisplayProfile && mOpenForAdd) {
       ProfileEntry de = mApp.getProfilesFactory().getHighestLearningWeight();
-      if(de == null)
+      if (de == null)
         mSpProfile.setSelection(0);
       else {
         for (int i = 0; i < mSpProfilesAdapter.getCount(); ++i) {
@@ -356,6 +348,7 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
 
   /**
    * Called when the options menu is clicked.
+   *
    * @param menu The selected menu.
    * @return boolean
    */
@@ -366,128 +359,139 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
     return true;
   }
 
+  private boolean canZeroLegalWorkTime() {
+    return mTvStartMorning.getText().toString().equals(ZERO_TIME) &&
+      mTvEndMorning.getText().toString().equals(ZERO_TIME) &&
+      mTvStartAfternoon.getText().toString().equals(ZERO_TIME) &&
+      mTvEndAfternoon.getText().toString().equals(ZERO_TIME);
+  }
+
   /**
    * Called when the options item is clicked (home and cancel).
+   *
    * @param item The selected menu.
    * @return boolean
    */
   @Override
   public boolean onOptionsItemSelected(final MenuItem item) {
-    switch (item.getItemId()) {
-      case android.R.id.home:
-        onBackPressed();
-        return true;
-      case R.id.action_cancel:
-        if(mDisplayProfile) {
-          setResult(RESULT_OK);
-          mFromClear = true;
-          mTvStartMorning.setText((mWtdStartMorning = new WorkTimeDay()).timeString());
-          mTvEndMorning.setText((mWtdEndMorning = new WorkTimeDay()).timeString());
-          mTvStartAfternoon.setText((mWtdStartAfternoon = new WorkTimeDay()).timeString());
-          mTvEndAfternoon.setText((mWtdEndAfternoon = new WorkTimeDay()).timeString());
-          mTvAdditionalBreak.setText((mWtdAdditionalBreak = new WorkTimeDay()).timeString());
-          mTvRecoveryTime.setText((mWtdRecoveryTime = new WorkTimeDay()).timeString());
-          mTvLegalWorktime.setText((mWtdLegalWorktime = mApp.getLegalWorkTimeByDay()).timeString());
-          mEtAmount.setText(getString(R.string.zero));
-          mSpTypeMorning.setSelection(DayType.AT_WORK.value());
-          mSpTypeAfternoon.setSelection(DayType.AT_WORK.value());
-          mEtName.setText("");
-          mLocation = new Location("");
-          setTitle(mDe.getDay().dateString());
-          mSpProfile.setSelection(0);
-        } else
-          onBackPressed();
-        return true;
-      case R.id.action_done: {
-        DayEntry newEntry = mDisplayProfile ? new DayEntry(mDe.getDay().toCalendar(),
-            DayType.compute(this, mSpTypeMorning.getSelectedItem().toString()),
-            DayType.compute(this, mSpTypeAfternoon.getSelectedItem().toString()))
-            : new ProfileEntry(mDe.getDay().toCalendar(),
-              DayType.compute(this, mSpTypeMorning.getSelectedItem().toString()),
-              DayType.compute(this, mSpTypeAfternoon.getSelectedItem().toString()));
-        String s = mEtAmount.getText().toString().trim();
-        if (s.equals(getString(R.string.zero))) s = "";
-        newEntry.setAmountByHour(s.isEmpty() ? mApp.getAmountByHour() : Double.parseDouble(s));
-        if(ProfileEntry.class.isInstance(newEntry))
-          ((ProfileEntry)newEntry).setName(mEtName.getText().toString());
-        newEntry.setID(mDe.getID());
-        newEntry.setEndMorning(mTvEndMorning.getText().toString());
-        newEntry.setStartMorning(mTvStartMorning.getText().toString());
-        newEntry.setEndAfternoon(mTvEndAfternoon.getText().toString());
-        newEntry.setAdditionalBreak(mTvAdditionalBreak.getText().toString());
-        newEntry.setRecoveryTime(mTvRecoveryTime.getText().toString());
-        newEntry.setStartAfternoon(mTvStartAfternoon.getText().toString());
-        newEntry.setLegalWorktime(mTvLegalWorktime.getText().toString());
-        if(newEntry.getTypeMorning() != DayType.ERROR) {
-          if(checkMorning(newEntry))
-            return true;
-        } else if(newEntry.getTypeAfternoon() != DayType.ERROR) {
-          if(checkAfternoon(newEntry))
-            return true;
-        }
-
-        if (mTvLegalWorktime.getText().toString().equals(getString(R.string.default_time))) {
-          UIHelper.shakeError(mTvLegalWorktime, getString(R.string.error_invalid_legal_worktime));
-          return true;
-        }
-        if(mDisplayProfile) {
-          boolean match = mDe.match(newEntry, false);
-          if (!match) {
-            mApp.getProfilesFactory().updateProfilesLearningWeight(mSelectedProfile, mApp.getProfilesWeightDepth(), mFromClear);
-            mFromClear = false;
-            if (newEntry.getTypeMorning() == DayType.RECOVERY || newEntry.getTypeAfternoon() == DayType.RECOVERY || newEntry.getStartMorning().isValidTime() || newEntry.getEndAfternoon().isValidTime()) {
-              mApp.getDaysFactory().add(newEntry);
-            } else
-              mApp.getDaysFactory().remove(mDe);
-            if(AndroidHelper.isServiceRunning(this, QuickAccessService.class))
-              stopService(new Intent(this, QuickAccessService.class));
-            AndroidHelper.updateWidget(this, DayWidgetProvider1x1.class);
-            AndroidHelper.updateWidget(this, DayWidgetProvider4x1.class);
-          }
-        } else {
-          if (mEtName.getText().toString().isEmpty()) {
-            UIHelper.shakeError(mEtName, getString(R.string.error_no_name));
-            return true;
-          }
-          if(newEntry.getTypeMorning() == DayType.ERROR) {
-            UIHelper.shakeError(mSpTypeMorning);
-            return true;
-          }
-          if(newEntry.getTypeAfternoon() == DayType.ERROR) {
-            UIHelper.shakeError(mSpTypeAfternoon);
-            return true;
-          }
-          if(checkMorning(newEntry) || checkAfternoon(newEntry))
-            return true;
-
-          if(ProfileEntry.class.isInstance(mDe)) {
-            ProfileEntry peGlobal = (ProfileEntry)mDe;
-            ProfileEntry peNew = (ProfileEntry)newEntry;
-            if(mLocation != null) {
-              peNew.setLongitude(mLocation.getLongitude());
-              peNew.setLatitude(mLocation.getLatitude());
-            }
-            if(peGlobal.getName().isEmpty() || !peGlobal.match(peNew, true)) {
-              if (peNew.getTypeMorning() == DayType.RECOVERY || peNew.getTypeAfternoon() == DayType.RECOVERY || peNew.getStartMorning().isValidTime() || peNew.getEndAfternoon().isValidTime()) {
-                peNew.setLearningWeight(peGlobal.getLearningWeight());
-                mApp.getProfilesFactory().add(peNew);
-              } else
-                mApp.getProfilesFactory().remove(peGlobal);
-            }
-          }
-        }
+    if (item.getItemId() == android.R.id.home) {
+      back();
+      return true;
+    } else if (item.getItemId() == R.id.action_cancel) {
+      if (mDisplayProfile) {
         setResult(RESULT_OK);
-        finish();
-        UIHelper.closeAnimation(this);
-        clearFromWidget();
+        mFromClear = true;
+        mWtdStartMorning = new WorkTimeDay();
+        mTvStartMorning.setText(mWtdStartMorning.timeString());
+        mWtdEndMorning = new WorkTimeDay();
+        mTvEndMorning.setText(mWtdEndMorning.timeString());
+        mWtdStartAfternoon = new WorkTimeDay();
+        mTvStartAfternoon.setText(mWtdStartAfternoon.timeString());
+        mWtdEndAfternoon = new WorkTimeDay();
+        mTvEndAfternoon.setText(mWtdEndAfternoon.timeString());
+        mWtdAdditionalBreak = new WorkTimeDay();
+        mTvAdditionalBreak.setText(mWtdAdditionalBreak.timeString());
+        mWtdRecoveryTime = new WorkTimeDay();
+        mTvRecoveryTime.setText(mWtdRecoveryTime.timeString());
+        mWtdLegalWorktime = mApp.getLegalWorkTimeByDay();
+        mTvLegalWorktime.setText(mWtdLegalWorktime.timeString());
+        mEtAmount.setText(getString(R.string.zero));
+        mSpTypeMorning.setSelection(DayType.AT_WORK.value());
+        mSpTypeAfternoon.setSelection(DayType.AT_WORK.value());
+        mEtName.setText("");
+        mLocation = new Location("");
+        setTitle(mDe.getDay().dateString());
+        mSpProfile.setSelection(0);
+      } else
+        back();
+      return true;
+    } else if (item.getItemId() == R.id.action_done) {
+      DayEntry newEntry = mDisplayProfile ? new DayEntry(this, mDe.getDay().toCalendar(),
+        DayType.compute(this, mSpTypeMorning.getSelectedItem().toString()),
+        DayType.compute(this, mSpTypeAfternoon.getSelectedItem().toString()))
+        : new ProfileEntry(this, mDe.getDay().toCalendar(),
+        DayType.compute(this, mSpTypeMorning.getSelectedItem().toString()),
+        DayType.compute(this, mSpTypeAfternoon.getSelectedItem().toString()));
+      String s = mEtAmount.getText().toString().trim();
+      if (s.equals(getString(R.string.zero))) s = "";
+      newEntry.setAmountByHour(s.isEmpty() ? mApp.getAmountByHour() : Double.parseDouble(s));
+      if (newEntry instanceof ProfileEntry)
+        ((ProfileEntry) newEntry).setName(mEtName.getText().toString());
+      newEntry.setID(mDe.getID());
+      newEntry.setEndMorning(mTvEndMorning.getText().toString());
+      newEntry.setStartMorning(mTvStartMorning.getText().toString());
+      newEntry.setEndAfternoon(mTvEndAfternoon.getText().toString());
+      newEntry.setAdditionalBreak(mTvAdditionalBreak.getText().toString());
+      newEntry.setRecoveryTime(mTvRecoveryTime.getText().toString());
+      newEntry.setStartAfternoon(mTvStartAfternoon.getText().toString());
+      newEntry.setLegalWorkTime(mTvLegalWorktime.getText().toString());
+      if (newEntry.getTypeMorning() != DayType.ERROR) {
+        if (checkMorning(newEntry))
+          return true;
+      } else if (newEntry.getTypeAfternoon() != DayType.ERROR && (checkAfternoon(newEntry))) {
         return true;
       }
+
+      if (!canZeroLegalWorkTime() && mTvLegalWorktime.getText().toString().equals(getString(R.string.default_time))) {
+        UIHelper.shakeError(mTvLegalWorktime, getString(R.string.error_invalid_legal_worktime));
+        return true;
+      }
+      if (mDisplayProfile) {
+        boolean match = mDe.match(newEntry, false);
+        if (!match) {
+          mApp.getProfilesFactory().updateProfilesLearningWeight(mSelectedProfile, mApp.getProfilesWeightDepth(), mFromClear);
+          mFromClear = false;
+          if (newEntry.getTypeMorning() == DayType.RECOVERY || newEntry.getTypeAfternoon() == DayType.RECOVERY || newEntry.getStartMorning().isValidTime() || newEntry.getEndAfternoon().isValidTime()) {
+            mApp.getDaysFactory().add(newEntry);
+          } else
+            mApp.getDaysFactory().remove(mDe);
+          AndroidHelper.updateWidget(this, DayWidgetProvider1x1.class);
+          AndroidHelper.updateWidget(this, DayWidgetProvider4x1.class);
+        }
+      } else {
+        if (mEtName.getText().toString().isEmpty()) {
+          UIHelper.shakeError(mEtName, getString(R.string.error_no_name));
+          return true;
+        }
+        if (newEntry.getTypeMorning() == DayType.ERROR) {
+          UIHelper.shakeError(mSpTypeMorning);
+          return true;
+        }
+        if (newEntry.getTypeAfternoon() == DayType.ERROR) {
+          UIHelper.shakeError(mSpTypeAfternoon);
+          return true;
+        }
+        if (checkMorning(newEntry) || checkAfternoon(newEntry))
+          return true;
+
+        if (mDe instanceof ProfileEntry && newEntry instanceof ProfileEntry) {
+          ProfileEntry peGlobal = (ProfileEntry) mDe;
+          ProfileEntry peNew = (ProfileEntry) newEntry;
+          if (mLocation != null) {
+            peNew.setLongitude(mLocation.getLongitude());
+            peNew.setLatitude(mLocation.getLatitude());
+          }
+          if (peGlobal.getName().isEmpty() || !peGlobal.match(peNew, true)) {
+            if (peNew.getTypeMorning() == DayType.RECOVERY || peNew.getTypeAfternoon() == DayType.RECOVERY || peNew.getStartMorning().isValidTime() || peNew.getEndAfternoon().isValidTime()) {
+              peNew.setLearningWeight(peGlobal.getLearningWeight());
+              mApp.getProfilesFactory().add(peNew);
+            } else
+              mApp.getProfilesFactory().remove(peGlobal);
+          }
+        }
+      }
+      setResult(RESULT_OK);
+      finish();
+      UIHelper.closeAnimation(this);
+      clearFromWidget();
+      return true;
     }
     return false;
   }
 
   /**
    * Checks whether the morning entries is valid
+   *
    * @param newEntry The entry to check.
    * @return true on error.
    */
@@ -508,6 +512,7 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
 
   /**
    * Checks whether the morning entries is valid
+   *
    * @param newEntry The entry to check.
    * @return true on error.
    */
@@ -528,45 +533,46 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
 
   /**
    * Called when a button is clicked (mFab, mTvStartMorning, mTvEndMorning, mTvStartAfternoon, mTvEndAfternoon, mTvAdditionalBreak, mTvRecoveryTime and mTvLegalWorktime).
+   *
    * @param v The view clicked.
    */
   public void onClick(final View v) {
-    if(v.equals(mTvStartMorning))
+    if (v.equals(mTvStartMorning))
       UIHelper.openTimePicker(this, mWtdStartMorning, mTvStartMorning);
-    else if(v.equals(mTvEndMorning))
+    else if (v.equals(mTvEndMorning))
       UIHelper.openTimePicker(this, mWtdEndMorning, mTvEndMorning);
-    else if(v.equals(mTvStartAfternoon))
+    else if (v.equals(mTvStartAfternoon))
       UIHelper.openTimePicker(this, mWtdStartAfternoon, mTvStartAfternoon);
-    else if(v.equals(mTvEndAfternoon))
+    else if (v.equals(mTvEndAfternoon))
       UIHelper.openTimePicker(this, mWtdEndAfternoon, mTvEndAfternoon);
-    else if(v.equals(mTvAdditionalBreak))
+    else if (v.equals(mTvAdditionalBreak))
       UIHelper.openTimePicker(this, mWtdAdditionalBreak, mTvAdditionalBreak);
-    else if(v.equals(mTvRecoveryTime))
+    else if (v.equals(mTvRecoveryTime))
       UIHelper.openTimePicker(this, mWtdRecoveryTime, mTvRecoveryTime);
-    else if(v.equals(mTvLegalWorktime))
+    else if (v.equals(mTvLegalWorktime))
       UIHelper.openTimePicker(this, mWtdLegalWorktime, mTvLegalWorktime);
-    else if(v.equals(mIvGeoloc)) {
-      Location loc = ((ProfileEntry)mDe).getLocation();
-      if((Double.isNaN(loc.getLatitude()) || loc.getLatitude() == 0.0) &&
-          (Double.isNaN(loc.getLongitude()) || loc.getLongitude() == 0.0) && mLocation != null &&
-          !Double.isNaN(mLocation.getLatitude()) && mLocation.getLatitude() != 0.0 &&
-          !Double.isNaN(mLocation.getLongitude()) && mLocation.getLongitude() != 0.0)
+    else if (v.equals(mIvGeoloc)) {
+      Location loc = ((ProfileEntry) mDe).getLocation();
+      if ((Double.isNaN(loc.getLatitude()) || loc.getLatitude() == 0.0) &&
+        (Double.isNaN(loc.getLongitude()) || loc.getLongitude() == 0.0) && mLocation != null &&
+        !Double.isNaN(mLocation.getLatitude()) && mLocation.getLatitude() != 0.0 &&
+        !Double.isNaN(mLocation.getLongitude()) && mLocation.getLongitude() != 0.0)
         loc = mLocation;
       createGeolocateDialog(getString(R.string.geolocation), R.layout.content_dialog_add_geoloc, loc, (dialog, latitude, longitude) -> {
-        final String slatitude = latitude.getText().toString();
-        final String slongitude = longitude.getText().toString();
+        final String slatitude = Objects.requireNonNull(latitude.getText()).toString();
+        final String slongitude = Objects.requireNonNull(longitude.getText()).toString();
         final Location location = new Location("");
-        if(!slatitude.trim().isEmpty())
+        if (!slatitude.trim().isEmpty())
           try {
             location.setLatitude(Double.parseDouble(slatitude));
-          } catch(Exception e) {
+          } catch (Exception e) {
             UIHelper.shakeError(latitude, getString(R.string.error_invalid_latitude));
             return;
           }
-        if(!slongitude.trim().isEmpty())
+        if (!slongitude.trim().isEmpty())
           try {
             location.setLongitude(Double.parseDouble(slongitude));
-          } catch(Exception e) {
+          } catch (Exception e) {
             UIHelper.shakeError(longitude, getString(R.string.error_invalid_longitude));
             return;
           }
@@ -578,10 +584,11 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
 
   /**
    * Called when an item is selected.
+   *
    * @param adapterView The adapter view.
-   * @param view The selected view.
-   * @param i The view index in the adapter.
-   * @param l Not used.
+   * @param view        The selected view.
+   * @param i           The view index in the adapter.
+   * @param l           Not used.
    */
   @Override
   public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
@@ -590,12 +597,13 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
 
   /**
    * Called when a profile is selected.
+   *
    * @param indexInAdapter The index in the adapter.
    */
   private void selectProfile(int indexInAdapter) {
-    if(mSpProfilesAdapter != null) {
+    if (mSpProfilesAdapter != null) {
       String name = mSpProfilesAdapter.getItem(indexInAdapter);
-      if(name != null && !name.isEmpty()) {
+      if (name != null && !name.isEmpty()) {
         ProfileEntry pe = mApp.getProfilesFactory().getByName(name);
         if (pe != null) {
           mTvStartMorning.setText(pe.getStartMorning().timeString());
@@ -604,8 +612,8 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
           mTvEndAfternoon.setText(pe.getEndAfternoon().timeString());
           mTvAdditionalBreak.setText(pe.getAdditionalBreak().timeString());
           mTvRecoveryTime.setText(pe.getRecoveryTime().timeString());
-          mTvLegalWorktime.setText(pe.getLegalWorktime().timeString());
-          mEtAmount.setText(String.format(Locale.US, "%.02f", pe.getAmountByHour()).replaceAll(",", "."));
+          mTvLegalWorktime.setText(pe.getLegalWorkTime().timeString());
+          mEtAmount.setText(String.format(Locale.US, "%.02f", pe.getAmountByHour()).replace(",", "."));
           selectSpinner(mSpTypeMorning, pe.getTypeMorning());
           selectSpinner(mSpTypeAfternoon, pe.getTypeAfternoon());
           mEtName.setText(pe.getName());
@@ -620,27 +628,29 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
 
   /**
    * Refresh the internal components.
+   *
    * @param de The current day entry.
    */
   private void refreshStartEndPause(DayEntry de) {
-    mWtdStartMorning = de.getStartMorning().clone();
-    mWtdEndMorning = de.getEndMorning().clone();
-    mWtdStartAfternoon = de.getStartAfternoon().clone();
-    mWtdEndAfternoon = de.getEndAfternoon().clone();
-    mWtdAdditionalBreak = de.getAdditionalBreak().clone();
-    mWtdRecoveryTime = de.getRecoveryTime().clone();
-    if(de.getLegalWorktime().timeString().equals(getString(R.string.default_time)))
-      de.setLegalWorktime(mApp.getLegalWorkTimeByDay().timeString());
-    mWtdLegalWorktime = de.getLegalWorktime().clone();
+    mWtdStartMorning = de.getStartMorning().copy();
+    mWtdEndMorning = de.getEndMorning().copy();
+    mWtdStartAfternoon = de.getStartAfternoon().copy();
+    mWtdEndAfternoon = de.getEndAfternoon().copy();
+    mWtdAdditionalBreak = de.getAdditionalBreak().copy();
+    mWtdRecoveryTime = de.getRecoveryTime().copy();
+    if (de.getLegalWorkTime().timeString().equals(getString(R.string.default_time)))
+      de.setLegalWorkTime(mApp.getLegalWorkTimeByDay().timeString());
+    mWtdLegalWorktime = de.getLegalWorkTime().copy();
   }
 
   /**
    * See official javadoc.
+   *
    * @param adapterView See official javadoc.
    */
   @Override
   public void onNothingSelected(AdapterView<?> adapterView) {
-
+    /* Nothing */
   }
 
 
@@ -651,34 +661,36 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
   private void createGeolocateDialog(String title, int contentId, Location defaultLocation, DialogPositiveClick positiveClick) {
     AlertDialog.Builder builder = new AlertDialog.Builder(this);
     builder.setCancelable(false)
-        .setTitle(title)
-        .setPositiveButton(android.R.string.yes, null)
-        .setNegativeButton(android.R.string.no, (dialog, whichButton) -> { });
+      .setTitle(title)
+      .setPositiveButton(android.R.string.yes, null)
+      .setNegativeButton(android.R.string.no, (dialog, whichButton) -> {
+      });
     LayoutInflater factory = LayoutInflater.from(this);
-    builder.setView(factory.inflate(contentId, mNullParent));
+    builder.setView(factory.inflate(contentId, null));
     final AlertDialog dialog = builder.create();
     dialog.show();
     TextInputEditText etLatitude = dialog.findViewById(R.id.tieLatitude);
-    if(etLatitude != null)
+    if (etLatitude != null)
       etLatitude.setText((defaultLocation == null || Double.isNaN(defaultLocation.getLatitude()) ||
-          defaultLocation.getLatitude() == 0.0) ? "" : String.valueOf(defaultLocation.getLatitude()));
+        defaultLocation.getLatitude() == 0.0) ? "" : String.valueOf(defaultLocation.getLatitude()));
     TextInputEditText etLongitude = dialog.findViewById(R.id.tieLongitude);
-    if(etLongitude != null)
+    if (etLongitude != null)
       etLongitude.setText(String.valueOf((defaultLocation == null || Double.isNaN(defaultLocation.getLongitude()) ||
-          defaultLocation.getLongitude() == 0.0) ? "" : defaultLocation.getLongitude()));
+        defaultLocation.getLongitude() == 0.0) ? "" : defaultLocation.getLongitude()));
     Button btGeolocateMe = dialog.findViewById(R.id.btGeolocateMe);
-    if(btGeolocateMe != null)
-      btGeolocateMe.setOnClickListener((v) -> {
-        if(!AndroidHelper.getLastLocationNewMethod(this, new AndroidHelper.LocationListener() {
+    if (btGeolocateMe != null)
+      btGeolocateMe.setOnClickListener(v -> {
+        if (!AndroidHelper.getLastLocationNewMethod(this, new AndroidHelper.LocationListener() {
           public void onLocationSuccess(Location location) {
-            if(location != null) {
-              if(etLatitude != null)
+            if (location != null) {
+              if (etLatitude != null)
                 etLatitude.setText(String.valueOf(location.getLatitude()));
-              if(etLongitude != null)
+              if (etLongitude != null)
                 etLongitude.setText(String.valueOf(location.getLongitude()));
             }
             Log.i("DayActivity", "Location: " + location);
           }
+
           public void onLocationError(@NonNull Exception e) {
             Log.e("DayActivity", "Exception: " + e.getMessage(), e);
             UIHelper.toast(DayActivity.this, e.getMessage());
@@ -686,6 +698,6 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
         }))
           UIHelper.toast(this, R.string.error_gps_permissions);
       });
-    dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener((v) -> positiveClick.onClick(dialog, etLatitude, etLongitude));
+    dialog.getButton(DialogInterface.BUTTON_POSITIVE).setOnClickListener(v -> positiveClick.onClick(dialog, etLatitude, etLongitude));
   }
 }

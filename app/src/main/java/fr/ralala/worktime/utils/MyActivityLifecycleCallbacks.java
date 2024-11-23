@@ -8,21 +8,23 @@ import android.os.Bundle;
 import java.util.List;
 
 /**
- *******************************************************************************
+ * ******************************************************************************
  * <p><b>Project WorkTime</b><br/>
  * Manage activity state changes notifications
  * </p>
- * @author Keidan
  *
- *******************************************************************************
+ * @author Keidan
+ * <p>
+ * ******************************************************************************
  */
 public class MyActivityLifecycleCallbacks implements Application.ActivityLifecycleCallbacks {
 
-  private List<Class<?>> mClasses;
+  private final List<Class<?>> mClasses;
   private boolean mIsActivityVisible = false;
 
   /**
    * Creates the LifecycleCallbacks object for a list of activities.
+   *
    * @param classes The list of activities to monitor.
    */
   public MyActivityLifecycleCallbacks(List<Class<?>> classes) {
@@ -32,6 +34,7 @@ public class MyActivityLifecycleCallbacks implements Application.ActivityLifecyc
 
   /**
    * Tests if the activity is visible.
+   *
    * @return boolean.
    */
   public boolean isActivityVisible() {
@@ -41,12 +44,13 @@ public class MyActivityLifecycleCallbacks implements Application.ActivityLifecyc
   /**
    * Called when the activity is resumed.
    * See official javadoc.
+   *
    * @param activity See official javadoc.
    */
   @Override
   public void onActivityResumed(Activity activity) {
-    for(Class<?> c : mClasses)
-      if(c.isInstance(activity)) {
+    for (Class<?> c : mClasses)
+      if (c.isInstance(activity)) {
         mIsActivityVisible = true;
         break;
       }
@@ -55,12 +59,13 @@ public class MyActivityLifecycleCallbacks implements Application.ActivityLifecyc
   /**
    * Called when the activity is stopped.
    * See official javadoc.
+   *
    * @param activity See official javadoc.
    */
   @Override
   public void onActivityStopped(Activity activity) {
-    for(Class<?> c : mClasses)
-      if(c.isInstance(activity)) {
+    for (Class<?> c : mClasses)
+      if (c.isInstance(activity)) {
         mIsActivityVisible = false;
         break;
       }
@@ -68,48 +73,53 @@ public class MyActivityLifecycleCallbacks implements Application.ActivityLifecyc
 
   /**
    * See official javadoc.
-   * @param activity See official javadoc.
+   *
+   * @param activity           See official javadoc.
    * @param savedInstanceState See official javadoc.
    */
   @Override
   public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
-
+    // Nothing to do
   }
 
   /**
    * See official javadoc.
+   *
    * @param activity See official javadoc.
    */
   @Override
   public void onActivityStarted(Activity activity) {
-
+    // Nothing to do
   }
 
   /**
    * See official javadoc.
+   *
    * @param activity See official javadoc.
    */
   @Override
   public void onActivityPaused(Activity activity) {
-
+    // Nothing to do
   }
 
   /**
    * See official javadoc.
-   * @param activity See official javadoc.
+   *
+   * @param activity           See official javadoc.
    * @param savedInstanceState See official javadoc.
    */
   @Override
   public void onActivitySaveInstanceState(Activity activity, Bundle savedInstanceState) {
-
+    // Nothing to do
   }
 
   /**
    * See official javadoc.
+   *
    * @param activity See official javadoc.
    */
   @Override
   public void onActivityDestroyed(Activity activity) {
-
+    // Nothing to do
   }
 }

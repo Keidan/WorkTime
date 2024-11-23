@@ -1,7 +1,6 @@
 package fr.ralala.worktime.ui.adapters;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +9,8 @@ import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,17 +24,17 @@ import fr.ralala.worktime.R;
  * </p>
  *
  * @author Keidan
- *         <p>
- *******************************************************************************
+ * <p>
+ * ******************************************************************************
  */
-public class ExportListViewArrayAdapter extends ArrayAdapter<ExportListViewArrayAdapter.ExportEntry>  {
+public class ExportListViewArrayAdapter extends ArrayAdapter<ExportListViewArrayAdapter.ExportEntry> {
 
-  private Context mContext;
-  private int mId;
-  private List<ExportEntry> mItems;
-  private SparseBooleanArray mSparseBooleanArray;
+  private final Context mContext;
+  private final int mId;
+  private final List<ExportEntry> mItems;
+  private final SparseBooleanArray mSparseBooleanArray;
 
-  private class ViewHolder {
+  private static class ViewHolder {
     TextView text;
     TextView info;
     CheckBox chkItem;
@@ -42,9 +43,10 @@ public class ExportListViewArrayAdapter extends ArrayAdapter<ExportListViewArray
 
   /**
    * Creates the array adapter.
-   * @param context The Android context.
+   *
+   * @param context            The Android context.
    * @param textViewResourceId The resource id of the container.
-   * @param objects The objects list.
+   * @param objects            The objects list.
    */
   public ExportListViewArrayAdapter(final Context context, final int textViewResourceId,
                                     final List<ExportEntry> objects) {
@@ -58,12 +60,13 @@ public class ExportListViewArrayAdapter extends ArrayAdapter<ExportListViewArray
 
   /**
    * Returns the checked items.
+   *
    * @return <code>List<ExportEntry></code>
    */
   public List<ExportEntry> getCheckedItems() {
     List<ExportEntry> array = new ArrayList<>();
-    for(int i=0;i<mItems.size();i++) {
-      if(mSparseBooleanArray.get(i)) {
+    for (int i = 0; i < mItems.size(); i++) {
+      if (mSparseBooleanArray.get(i)) {
         array.add(mItems.get(i));
       }
     }
@@ -72,6 +75,7 @@ public class ExportListViewArrayAdapter extends ArrayAdapter<ExportListViewArray
 
   /**
    * Returns an items at a specific position.
+   *
    * @param i The item index.
    * @return The item.
    */
@@ -82,9 +86,10 @@ public class ExportListViewArrayAdapter extends ArrayAdapter<ExportListViewArray
 
   /**
    * Returns the current view.
-   * @param position The view position.
+   *
+   * @param position    The view position.
    * @param convertView The view to convert.
-   * @param parent The parent.
+   * @param parent      The parent.
    * @return The new view.
    */
   @Override
@@ -105,15 +110,15 @@ public class ExportListViewArrayAdapter extends ArrayAdapter<ExportListViewArray
       holder.rl = v.findViewById(R.id.rl);
       holder.chkItem.setOnCheckedChangeListener((buttonView, isChecked) -> {
         mSparseBooleanArray.put((Integer) buttonView.getTag(), isChecked);
-        if(vh.rl != null) {
+        if (vh.rl != null) {
           vh.rl.setBackgroundColor(vh.chkItem.isChecked() ?
-              mContext.getResources().getColor(R.color.blue_1, null) :
-              mContext.getResources().getColor(android.R.color.transparent, null));
+            mContext.getResources().getColor(R.color.blue_1, null) :
+            mContext.getResources().getColor(android.R.color.transparent, null));
         }
       });
       v.setTag(holder);
     } else {
-        /* We recycle a View that already exists */
+      /* We recycle a View that already exists */
       holder = (ViewHolder) v.getTag();
     }
     final ExportEntry ee = mItems.get(position);
@@ -122,7 +127,7 @@ public class ExportListViewArrayAdapter extends ArrayAdapter<ExportListViewArray
         holder.text.setText(ee.text);
       if (holder.info != null)
         holder.info.setText(ee.info);
-      if(holder.chkItem != null) {
+      if (holder.chkItem != null) {
         holder.chkItem.setTag(position);
         holder.chkItem.setChecked(mSparseBooleanArray.get(position));
       }

@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
-                    android:initialLayout="@layout/widget_day1x1"
-                    android:previewImage="@mipmap/ic_launcher"
-                    android:minHeight="40dp"
-                    android:minWidth="40dp"
-                    android:resizeMode="vertical|horizontal"
-                    android:updatePeriodMillis="1800000" >
+  android:initialLayout="@layout/widget_day1x1"
+  android:previewImage="@mipmap/ic_launcher"
+  android:minHeight="40dp"
+  android:minWidth="40dp"
+  android:resizeMode="vertical|horizontal"
+  android:updatePeriodMillis="1800000">
 
-    <!-- minHeight/minWidth == 72dp / 1x1 -->
+  <!-- minHeight/minWidth == 72dp / 1x1 -->
 </appwidget-provider>

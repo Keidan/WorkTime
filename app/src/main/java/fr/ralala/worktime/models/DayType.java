@@ -5,13 +5,14 @@ import android.content.Context;
 import fr.ralala.worktime.R;
 
 /**
- *******************************************************************************
+ * ******************************************************************************
  * <p><b>Project WorkTime</b><br/>
  * Type of day
  * </p>
- * @author Keidan
  *
- *******************************************************************************
+ * @author Keidan
+ * <p>
+ * ******************************************************************************
  */
 public enum DayType {
   AT_WORK(0),
@@ -24,6 +25,7 @@ public enum DayType {
 
   /**
    * Creates an enum entry.
+   *
    * @param value The int value.
    */
   DayType(final int value) {
@@ -34,6 +36,7 @@ public enum DayType {
 
   /**
    * Returns the associated value.
+   *
    * @return int
    */
   public int value() {
@@ -43,38 +46,47 @@ public enum DayType {
 
   /**
    * Converts an integer value to enum value.
+   *
    * @param value The integer value.
    * @return DayType
    */
   public static DayType compute(int value) {
     switch (value) {
-      case 0: return DayType.AT_WORK;
-      case 1: return DayType.HOLIDAY;
-      case 2: return DayType.PUBLIC_HOLIDAY;
-      case 3: return DayType.SICKNESS;
-      case 4: return DayType.UNPAID;
-      case 5: return DayType.RECOVERY;
-      default: return DayType.ERROR;
+      case 0:
+        return DayType.AT_WORK;
+      case 1:
+        return DayType.HOLIDAY;
+      case 2:
+        return DayType.PUBLIC_HOLIDAY;
+      case 3:
+        return DayType.SICKNESS;
+      case 4:
+        return DayType.UNPAID;
+      case 5:
+        return DayType.RECOVERY;
+      default:
+        return DayType.ERROR;
     }
   }
 
   /**
    * Converts a String value to enum value.
+   *
    * @param value The String value.
    * @return DayType
    */
   public static DayType compute(final Context c, String value) {
-    if(value.equals(c.getString(R.string.at_work)))
+    if (value.equals(c.getString(R.string.at_work)))
       return DayType.AT_WORK;
-    else if(value.equals(c.getString(R.string.holidays)))
+    else if (value.equals(c.getString(R.string.holidays)))
       return DayType.HOLIDAY;
-    else if(value.equals(c.getString(R.string.public_holidays)))
+    else if (value.equals(c.getString(R.string.public_holidays)))
       return DayType.PUBLIC_HOLIDAY;
-    else if(value.equals(c.getString(R.string.sickness)))
+    else if (value.equals(c.getString(R.string.sickness)))
       return DayType.SICKNESS;
-    else if(value.equals(c.getString(R.string.unpaid)))
+    else if (value.equals(c.getString(R.string.unpaid)))
       return DayType.UNPAID;
-    else if(value.equals(c.getString(R.string.recovery)))
+    else if (value.equals(c.getString(R.string.recovery)))
       return DayType.RECOVERY;
     else
       return DayType.ERROR;
@@ -82,24 +94,34 @@ public enum DayType {
 
   /**
    * Converts the enum to a String value.
+   *
    * @param c Android context.
    * @return String
    */
   public String string(final Context c) {
     switch (this) {
-      case AT_WORK: return c.getString(R.string.at_work);
-      case HOLIDAY: return c.getString(R.string.holidays);
-      case PUBLIC_HOLIDAY: return c.getString(R.string.public_holidays);
-      case SICKNESS: return c.getString(R.string.sickness);
-      case UNPAID: return c.getString(R.string.unpaid);
-      case RECOVERY: return c.getString(R.string.recovery);
+      case AT_WORK:
+        return c.getString(R.string.at_work);
+      case HOLIDAY:
+        return c.getString(R.string.holidays);
+      case PUBLIC_HOLIDAY:
+        return c.getString(R.string.public_holidays);
+      case SICKNESS:
+        return c.getString(R.string.sickness);
+      case UNPAID:
+        return c.getString(R.string.unpaid);
+      case RECOVERY:
+        return c.getString(R.string.recovery);
+      default:
+        break;
     }
     return c.getString(R.string.error);
   }
 
   /**
    * Returns the String value of the specified enum.
-   * @param c The Android context.
+   *
+   * @param c  The Android context.
    * @param dt The day type to convert.
    * @return String.
    */

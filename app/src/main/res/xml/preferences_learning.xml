@@ -1,24 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" android:key="prefScreenLearning">
-    <PreferenceCategory android:title="@string/pref_title_learning" android:key="prefCatWeight" >
-        <Preference
-            android:key="prefCatWeightLabel"
-            android:title="@null"
-            android:summary="@string/pref_summary_learning"
-            android:selectable="false"/>
-        <EditTextPreference
-            android:key="prefWeightDepth"
-            android:defaultValue="5"
-            android:summary="@string/pref_summary_learning_threshold"
-            android:title="@string/pref_title_learning_threshold"
-            android:inputType="numberDecimal" />
-        <Preference
-            android:key="prefWeightList"
-            android:title="@string/pref_title_learning_list"
-            android:summary="@string/pref_summary_learning_list"/>
-        <Preference
-            android:key="prefWeightClear"
-            android:title="@string/pref_title_learning_clear"
-            android:summary="@string/pref_summary_learning_clear"/>
-    </PreferenceCategory>
-</PreferenceScreen>
+<androidx.preference.PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:key="prefScreenLearning">
+  <androidx.preference.PreferenceCategory
+    android:title="@string/pref_title_learning"
+    android:key="prefCatWeight"
+    app:iconSpaceReserved="false">
+    <androidx.preference.Preference
+      app:iconSpaceReserved="false"
+      android:key="prefCatWeightLabel"
+      android:title="@null"
+      android:summary="@string/pref_summary_learning"
+      android:selectable="false" />
+    <androidx.preference.EditTextPreference
+      app:iconSpaceReserved="false"
+      android:key="prefWeightDepth"
+      android:defaultValue="5"
+      android:summary="@string/pref_summary_learning_threshold"
+      android:title="@string/pref_title_learning_threshold"
+      android:inputType="numberDecimal" />
+    <androidx.preference.Preference
+      app:iconSpaceReserved="false"
+      android:key="prefWeightList"
+      android:title="@string/pref_title_learning_list"
+      android:summary="@string/pref_summary_learning_list" />
+    <androidx.preference.Preference
+      app:iconSpaceReserved="false"
+      android:key="prefWeightClear"
+      android:title="@string/pref_title_learning_clear"
+      android:summary="@string/pref_summary_learning_clear" />
+  </androidx.preference.PreferenceCategory>
+</androidx.preference.PreferenceScreen>

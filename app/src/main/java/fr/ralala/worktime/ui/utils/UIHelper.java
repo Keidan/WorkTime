@@ -3,22 +3,16 @@ package fr.ralala.worktime.ui.utils;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.Context;
-import android.graphics.Bitmap;
+import android.content.DialogInterface;
 import android.graphics.LinearGradient;
 import android.graphics.Shader;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.graphics.drawable.PaintDrawable;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.RectShape;
-import android.support.design.widget.Snackbar;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AlertDialog;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.animation.CycleInterpolator;
 import android.view.animation.TranslateAnimation;
 import android.widget.Button;
@@ -27,6 +21,11 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
+
+import com.google.android.material.snackbar.BaseTransientBottomBar;
+import com.google.android.material.snackbar.Snackbar;
+
 import java.util.Calendar;
 import java.util.Locale;
 
@@ -34,25 +33,28 @@ import fr.ralala.worktime.R;
 import fr.ralala.worktime.models.WorkTimeDay;
 
 /**
- *******************************************************************************
+ * ******************************************************************************
  * <p><b>Project WorkTime</b><br/>
  * UI Helper functions
  * </p>
- * @author Keidan
  *
- *******************************************************************************
+ * @author Keidan
+ * <p>
+ * ******************************************************************************
  */
 public class UIHelper {
+  private UIHelper() {
+  }
 
   /**
    * Displays a circular progress dialog.
+   *
    * @param context The Android context.
    * @return AlertDialog
    */
   public static AlertDialog showCircularProgressDialog(Context context) {
     LayoutInflater layoutInflater = LayoutInflater.from(context);
-    final ViewGroup nullParent = null;
-    View view = layoutInflater.inflate(R.layout.circular_progress, nullParent);
+    View view = layoutInflater.inflate(R.layout.circular_progress, null);
     AlertDialog progress = new AlertDialog.Builder(context).create();
     progress.setCancelable(false);
     progress.setView(view);
@@ -60,29 +62,15 @@ public class UIHelper {
   }
 
   /**
-   * Returns the res ID from the attrivutes.
-   * @param activity The context Activity.
-   * @param attr The attribute ID.
-   * @return int
-   */
-  public static int getResIdFromAttribute(final Activity activity, final int attr) {
-    if(attr==0)
-      return 0;
-    final TypedValue typedvalueattr = new TypedValue();
-    activity.getTheme().resolveAttribute(attr,typedvalueattr,true);
-    return typedvalueattr.resourceId;
-  }
-
-  /**
    * Displays a progress dialog.
+   *
    * @param context The Android context.
    * @param message The progress message.
    * @return AlertDialog
    */
   public static AlertDialog showProgressDialog(Context context, int message) {
     LayoutInflater layoutInflater = LayoutInflater.from(context);
-    final ViewGroup nullParent = null;
-    View view = layoutInflater.inflate(R.layout.progress_dialog, nullParent);
+    View view = layoutInflater.inflate(R.layout.progress_dialog, null);
     AlertDialog progress = new AlertDialog.Builder(context).create();
     TextView tv = view.findViewById(R.id.text);
     tv.setText(message);
@@ -93,15 +81,16 @@ public class UIHelper {
 
   /**
    * Shake a view on error.
-   * @param owner The owner view.
+   *
+   * @param owner   The owner view.
    * @param errText The error text.
    */
   public static void shakeError(TextView owner, String errText) {
     TranslateAnimation shake = new TranslateAnimation(0, 10, 0, 0);
     shake.setDuration(500);
     shake.setInterpolator(new CycleInterpolator(5));
-    if(owner != null) {
-      if(errText != null)
+    if (owner != null) {
+      if (errText != null)
         owner.setError(errText);
       owner.clearAnimation();
       owner.startAnimation(shake);
@@ -110,13 +99,14 @@ public class UIHelper {
 
   /**
    * Shake a view on error.
+   *
    * @param owner The owner view.
    */
   public static void shakeError(Spinner owner) {
     TranslateAnimation shake = new TranslateAnimation(0, 10, 0, 0);
     shake.setDuration(500);
     shake.setInterpolator(new CycleInterpolator(5));
-    if(owner != null) {
+    if (owner != null) {
       owner.clearAnimation();
       owner.startAnimation(shake);
     }
@@ -124,23 +114,24 @@ public class UIHelper {
 
   /**
    * Changes the view background with a gradient effect.
-   * @param view The output view.
+   *
+   * @param view   The output view.
    * @param colors The gradient colors.
    */
-  public static void applyLinearGradient(final View view, final int ...colors) {
+  public static void applyLinearGradient(final View view, final int... colors) {
     Drawable[] layers = new Drawable[1];
 
     ShapeDrawable.ShaderFactory sf = new ShapeDrawable.ShaderFactory() {
       @Override
       public Shader resize(int width, int height) {
         return new LinearGradient(
-            view.getWidth(),
-            0,
-            0,
-            0,
-            colors,
-            new float[] { 0, 1 },
-            Shader.TileMode.CLAMP);
+          view.getWidth(),
+          0,
+          0,
+          0,
+          colors,
+          new float[]{0, 1},
+          Shader.TileMode.CLAMP);
       }
     };
     PaintDrawable p = new PaintDrawable();
@@ -154,8 +145,9 @@ public class UIHelper {
 
   /**
    * Opens a snack.
+   *
    * @param activity The associated activity.
-   * @param msg The snack message.
+   * @param msg      The snack message.
    */
   public static void snack(final Activity activity, String msg) {
     snack(activity, msg, null, null);
@@ -163,67 +155,71 @@ public class UIHelper {
 
   /**
    * Opens a snack.
-   * @param activity The associated activity.
-   * @param msg The snack message.
-   * @param actionLabel null for default label (Hide), the label.
+   *
+   * @param activity      The associated activity.
+   * @param msg           The snack message.
+   * @param actionLabel   null for default label (Hide), the label.
    * @param clickListener Click listener (view = null ; snackbar.dismiss() is called after the event).
    */
   public static void snack(final Activity activity, String msg, String actionLabel, View.OnClickListener clickListener) {
     final View cl = activity.findViewById(R.id.coordinatorLayout);
     final Snackbar snackbar = Snackbar
-        .make(cl, msg, Snackbar.LENGTH_LONG);
+      .make(cl, msg, BaseTransientBottomBar.LENGTH_LONG);
     snackbar.setAction(
-        actionLabel == null ? activity.getString(R.string.snack_hide) : actionLabel, (view) -> {
-          if(clickListener != null)
-            clickListener.onClick(null);
-          snackbar.dismiss();
-        });
+      actionLabel == null ? activity.getString(R.string.snack_hide) : actionLabel, view -> {
+        if (clickListener != null)
+          clickListener.onClick(null);
+        snackbar.dismiss();
+      });
     snackbar.show();
   }
 
   /**
    * Displays a confirm dialog.
-   * @param c The Android context.
+   *
+   * @param c       The Android context.
    * @param message The dialog message.
-   * @param yes Listener used when the 'yes' button is clicked.
+   * @param yes     Listener used when the 'yes' button is clicked.
    */
   public static void showConfirmDialog(final Context c,
                                        String message, final android.view.View.OnClickListener yes) {
     new AlertDialog.Builder(c)
-        .setCancelable(false)
-        .setMessage(message)
-        .setPositiveButton(android.R.string.yes, (dialog, whichButton) -> {
-          if(yes != null) yes.onClick(null);
-        })
-        .setNegativeButton(android.R.string.no, (dialog, whichButton) -> {
-        }).show();
+      .setCancelable(false)
+      .setMessage(message)
+      .setPositiveButton(R.string.ok, (dialog, whichButton) -> {
+        if (yes != null) yes.onClick(null);
+      })
+      .setNegativeButton(android.R.string.cancel, (dialog, whichButton) -> {
+      }).show();
   }
 
   /**
    * Displays a confirm dialog.
-   * @param c The Android context.
-   * @param title The dialog title.
+   *
+   * @param c       The Android context.
+   * @param title   The dialog title.
    * @param message The dialog message.
-   * @param yes Listener used when the 'yes' button is clicked.
+   * @param yes     Listener used when the 'yes' button is clicked.
    */
   public static void showConfirmDialog(final Context c, final String title,
                                        String message, final android.view.View.OnClickListener yes) {
     new AlertDialog.Builder(c)
-        .setTitle(title)
-        .setMessage(message)
-        .setIcon(android.R.drawable.ic_dialog_alert)
-        .setPositiveButton(android.R.string.yes, (dialog, whichButton) -> {
-          if(yes != null) yes.onClick(null);
-        })
-        .setNegativeButton(android.R.string.no, (dialog, whichButton) -> {
-        }).show();
+      .setTitle(title)
+      .setMessage(message)
+      .setIcon(android.R.drawable.ic_dialog_alert)
+      .setPositiveButton(android.R.string.ok, (dialog, whichButton) -> {
+        if (yes != null) yes.onClick(null);
+      })
+      .setNegativeButton(android.R.string.cancel, (dialog, whichButton) -> {
+      }).show();
   }
 
   /**
    * Opens a date picker dialog.
-   * @param c The Android context.
+   *
+   * @param c       The Android context.
    * @param current The current date.
-   * @param li The listener used when the date is selected.
+   * @param li      The listener used when the date is selected.
    */
   public static void openDatePicker(final Context c, final Calendar current, DatePickerDialog.OnDateSetListener li) {
     DatePickerDialog dpd = new DatePickerDialog(c, li, current.get(Calendar.YEAR), current.get(Calendar.MONTH), current.get(Calendar.DAY_OF_MONTH));
@@ -232,9 +228,10 @@ public class UIHelper {
 
   /**
    * Opens a time picker dialog.
-   * @param c The Android context.
+   *
+   * @param c       The Android context.
    * @param current The current time.
-   * @param tv The output text view.
+   * @param tv      The output text view.
    */
   public static void openTimePicker(final Context c, final WorkTimeDay current, final TextView tv) {
     tv.setText(current.timeString());
@@ -246,21 +243,21 @@ public class UIHelper {
     builder.setNeutralButton(c.getString(R.string.current_time), null);
     final AlertDialog mAlertDialog = builder.create();
 
-    mAlertDialog.setOnShowListener((dialog) -> {
-      Button b = mAlertDialog.getButton(AlertDialog.BUTTON_POSITIVE);
-      b.setOnClickListener((view) -> {
+    mAlertDialog.setOnShowListener(dialog -> {
+      Button b = mAlertDialog.getButton(DialogInterface.BUTTON_POSITIVE);
+      b.setOnClickListener(view -> {
         final TimePicker timePicker = mAlertDialog.findViewById(R.id.timepicker);
-        if(timePicker != null) {
+        if (timePicker != null) {
           tv.setText(String.format(Locale.US, "%02d:%02d", timePicker.getHour(), timePicker.getMinute()));
           current.setHours(timePicker.getHour());
           current.setMinutes(timePicker.getMinute());
         }
         mAlertDialog.dismiss();
       });
-      b = mAlertDialog.getButton(AlertDialog.BUTTON_NEUTRAL);
-      b.setOnClickListener((view) -> {
+      b = mAlertDialog.getButton(DialogInterface.BUTTON_NEUTRAL);
+      b.setOnClickListener(view -> {
         final TimePicker timePicker = mAlertDialog.findViewById(R.id.timepicker);
-        if(timePicker != null) {
+        if (timePicker != null) {
           WorkTimeDay time = WorkTimeDay.now();
           timePicker.setHour(time.getHours());
           timePicker.setMinute(time.getMinutes());
@@ -269,7 +266,7 @@ public class UIHelper {
     });
     mAlertDialog.show();
     final TimePicker timePicker = mAlertDialog.findViewById(R.id.timepicker);
-    if(timePicker != null) {
+    if (timePicker != null) {
       timePicker.setIs24HourView(true);
       timePicker.setHour(current.getHours());
       timePicker.setMinute(current.getMinutes());
@@ -278,43 +275,36 @@ public class UIHelper {
 
   /**
    * Displays an alert dialog.
-   * @param c The Android context.
-   * @param title The alert dialog title.
+   *
+   * @param c       The Android context.
+   * @param title   The alert dialog title.
    * @param message The alert dialog message.
    */
   public static void showAlertDialog(final Context c, final int title, final String message) {
     AlertDialog alertDialog = new AlertDialog.Builder(c).create();
     alertDialog.setTitle(c.getResources().getString(title));
     alertDialog.setMessage(message);
-    alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, c.getResources().getString(R.string.ok), (dialog, which) -> dialog.dismiss());
+    alertDialog.setButton(DialogInterface.BUTTON_NEUTRAL, c.getResources().getString(R.string.ok), (dialog, which) -> dialog.dismiss());
     alertDialog.show();
   }
 
   /**
    * Displays a toast.
-   * @param c The Android context.
+   *
+   * @param c       The Android context.
    * @param message The toast message.
-   * @param timer The toast duration.
+   * @param timer   The toast duration.
    */
   public static void toast(final Context c, final String message, final int timer) {
     /* Create a toast with the launcher icon */
     Toast toast = Toast.makeText(c, message, timer);
-    TextView tv = toast.getView().findViewById(android.R.id.message);
-    if (null!=tv) {
-      Drawable drawable = ContextCompat.getDrawable(c, R.mipmap.ic_launcher);
-      if(drawable != null) {
-        final Bitmap b = ((BitmapDrawable) drawable).getBitmap();
-        final Bitmap bitmapResized = Bitmap.createScaledBitmap(b, 32, 32, false);
-        tv.setCompoundDrawablesWithIntrinsicBounds(new BitmapDrawable(c.getResources(), bitmapResized), null, null, null);
-        tv.setCompoundDrawablePadding(5);
-      }
-    }
     toast.show();
   }
 
   /**
    * Displays a long toast.
-   * @param c The Android context.
+   *
+   * @param c       The Android context.
    * @param message The toast message.
    */
   public static void toastLong(final Context c, final String message) {
@@ -323,7 +313,8 @@ public class UIHelper {
 
   /**
    * Displays a short toast.
-   * @param c The Android context.
+   *
+   * @param c       The Android context.
    * @param message The toast message.
    */
   public static void toast(final Context c, final String message) {
@@ -332,7 +323,8 @@ public class UIHelper {
 
   /**
    * Displays a short toast.
-   * @param c The Android context.
+   *
+   * @param c       The Android context.
    * @param message The toast message.
    */
   public static void toast(final Context c, final int message) {
@@ -341,6 +333,7 @@ public class UIHelper {
 
   /**
    * Starts a transition effect (slide) when the activity is opened.
+   *
    * @param a The activity to animate.
    */
   public static void openAnimation(final Activity a) {
@@ -349,6 +342,7 @@ public class UIHelper {
 
   /**
    * Starts a transition effect (slide) when the activity is closed.
+   *
    * @param a The activity to animate.
    */
   public static void closeAnimation(final Activity a) {
