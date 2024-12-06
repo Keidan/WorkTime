@@ -137,23 +137,21 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
   }
 
   private void back() {
-    if (!mFragmentsFactory.consumeBackPressed()) {
-      if (mViewIsAtHome)
-        mDrawer.openDrawer(GravityCompat.START);
-      else { //if the current view is not the News fragment
-        displayView(mFragmentsFactory.getDefaultHomeId()); //display the home fragment
-        mNavigationView.getMenu().getItem(mFragmentsFactory.getDefaultHomeIndex()).setChecked(true); /* select home title */
-        return;
-      }
-      if (mLastBackPressed + BACK_TIME_DELAY > System.currentTimeMillis()) {
-        cleanup();
-        finish();
-        return;
-      } else {
-        UIHelper.toast(this, R.string.on_double_back_exit_text);
-      }
-      updateLastBackPressed();
+    if (mViewIsAtHome)
+      mDrawer.openDrawer(GravityCompat.START);
+    else { //if the current view is not the News fragment
+      displayView(mFragmentsFactory.getDefaultHomeId()); //display the home fragment
+      mNavigationView.getMenu().getItem(mFragmentsFactory.getDefaultHomeIndex()).setChecked(true); /* select home title */
+      return;
     }
+    if (mLastBackPressed + BACK_TIME_DELAY > System.currentTimeMillis()) {
+      cleanup();
+      finish();
+      return;
+    } else {
+      UIHelper.toast(this, R.string.on_double_back_exit_text);
+    }
+    updateLastBackPressed();
   }
 
   private static void updateLastBackPressed() {

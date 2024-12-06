@@ -143,16 +143,6 @@ public class AppFragmentsFactory {
   }
 
   /**
-   * Called when the backPressed event is caught in the main activity.
-   *
-   * @return true if the backPressed is consumed by a fragment.
-   */
-  public boolean consumeBackPressed() {
-    Fragment fragment = mCurrentFragment;
-    return fragment instanceof StatisticsFragment && ((StatisticsFragment) fragment).consumeBackPressed();
-  }
-
-  /**
    * Called when the activity is resumed.
    *
    * @param aca The main activity.

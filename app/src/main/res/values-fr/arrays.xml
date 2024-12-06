@@ -16,46 +16,6 @@
     <item>D\u00E9cembre</item>
   </string-array>
 
-  <string-array name="month_short">
-    <item>Janv</item>
-    <item>F\u00E9vr</item>
-    <item>Mars</item>
-    <item>Avr</item>
-    <item>Mai</item>
-    <item>Juin</item>
-    <item>Juil</item>
-    <item>Ao\u00FBt</item>
-    <item>Sept</item>
-    <item>Oct</item>
-    <item>Nov</item>
-    <item>D\u00E9c</item>
-  </string-array>
-
-  <string-array name="month_letter">
-    <item>J</item>
-    <item>F</item>
-    <item>M</item>
-    <item>A</item>
-    <item>M</item>
-    <item>J</item>
-    <item>J</item>
-    <item>A</item>
-    <item>S</item>
-    <item>O</item>
-    <item>N</item>
-    <item>D</item>
-  </string-array>
-
-  <string-array name="days_letter">
-    <item>L</item>
-    <item>M</item>
-    <item>M</item>
-    <item>J</item>
-    <item>V</item>
-    <item>S</item>
-    <item>D</item>
-  </string-array>
-
   <string-array name="entries_fragments">
     <item>Temps de travail</item>
     <item>Profils</item>

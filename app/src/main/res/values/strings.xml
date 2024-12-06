@@ -163,12 +163,7 @@
   <string name="legal_work_time_by_day">Legal work time</string>
   <string name="error_editing_public_holiday">Public holiday edition is not supported.</string>
   <string name="error_duplicate_public_holiday">The public holiday is already inserted.</string>
-  <string name="statistics_morning">Morning</string>
-  <string name="statistics_break">Break</string>
-  <string name="statistics_afternoon">Afternoon</string>
-  <string name="statistics_summary">Summary</string>
   <string name="statistics_summary_empty">No information on summaries</string>
-  <string name="statistics_reload">Reload</string>
   <string name="tv_morning_widget">Morning: </string>
   <string name="tv_break_widget">Break: </string>
   <string name="tv_afternoon_widget">Afternoon: </string>

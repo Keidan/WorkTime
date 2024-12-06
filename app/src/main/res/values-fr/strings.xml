@@ -153,11 +153,6 @@
   <string name="legal_work_time_by_day">Temps de travail légal</string>
   <string name="error_editing_public_holiday">L\'édition du jour férié n\'est pas prise en charge.</string>
   <string name="error_duplicate_public_holiday">Le jour férié est déjà inséré.</string>
-  <string name="statistics_morning">Matin</string>
-  <string name="statistics_break">Midi</string>
-  <string name="statistics_afternoon">Après-midi</string>
-  <string name="statistics_reload">Recharger</string>
-  <string name="statistics_summary">Récapitulatif</string>
   <string name="statistics_summary_empty">Aucune information sur les résumés</string>
   <string name="tv_morning_widget">Matin: </string>
   <string name="tv_break_widget">Pause: </string>
