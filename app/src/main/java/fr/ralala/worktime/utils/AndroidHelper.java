@@ -3,8 +3,6 @@ package fr.ralala.worktime.utils;
 import android.Manifest;
 import android.app.Activity;
 import android.app.ActivityManager;
-import android.app.AlarmManager;
-import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
 import android.content.Context;
@@ -19,7 +17,6 @@ import android.util.SparseArray;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -158,21 +155,13 @@ public class AndroidHelper {
    * @param string The string to display before the restart.
    */
   public static void restartApplication(final Context c, final int string) {
-    Intent startActivity = c.getApplicationContext().getPackageManager()
-      .getLaunchIntentForPackage(c.getApplicationContext().getPackageName());
-    assert startActivity != null;
-    startActivity.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-    startActivity.putExtra(EXTRA_RESTART, c.getString(string));
-    int mPendingIntentId = 123456;
-    PendingIntent mPendingIntent = PendingIntent.getActivity(c, mPendingIntentId, startActivity,
-      PendingIntent.FLAG_ONE_SHOT | PendingIntent.FLAG_IMMUTABLE);
-    AlarmManager mgr = (AlarmManager) c.getSystemService(Context.ALARM_SERVICE);
-    if (mgr != null) {
-      mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 100, mPendingIntent);
-      if (c instanceof Activity)
-        ActivityCompat.finishAffinity(((Activity) c));
-      Process.killProcess(Process.myPid());
-    }
+    Context ctx = c.getApplicationContext();
+    PackageManager pm = ctx.getPackageManager();
+    Intent intent = pm.getLaunchIntentForPackage(ctx.getPackageName());
+    Intent mainIntent = Intent.makeRestartActivityTask(intent.getComponent());
+    mainIntent.putExtra(EXTRA_RESTART, c.getString(string));
+    ctx.startActivity(mainIntent);
+    Process.killProcess(Process.myPid());
   }
 
   /**
