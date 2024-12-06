@@ -24,8 +24,8 @@ android {
         applicationId "fr.ralala.worktime"
         minSdk 31
         targetSdk 34
-        versionCode 215
-        versionName "2.15"
+        versionCode 216
+        versionName "2.16"
         vectorDrawables {
             useSupportLibrary true
         }
