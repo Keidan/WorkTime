@@ -25,6 +25,7 @@ import androidx.core.content.ContextCompat;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 
+import java.io.File;
 import java.text.DateFormatSymbols;
 
 import fr.ralala.worktime.MainApplication;
@@ -41,8 +42,11 @@ import fr.ralala.worktime.services.AutoExportService;
  * ******************************************************************************
  */
 public class AndroidHelper {
-
   public static final String EXTRA_RESTART = "EXTRA_RESTART";
+
+  public static File getAppPath(Context c) {
+    return c.getFilesDir();
+  }
 
   /**
    * Opens the default navigation apps using latitude and longitude.

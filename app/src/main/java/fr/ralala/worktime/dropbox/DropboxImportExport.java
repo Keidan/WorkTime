@@ -109,7 +109,7 @@ public class DropboxImportExport implements DropboxListener {
       if (mDialog != null)
         mDialog.show();
       try {
-        File path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+        File path = AndroidHelper.getAppPath(c);
         mFile = new File(SqlHelper.copyDatabase(c, SqlConstants.DB_NAME, path.getAbsolutePath()));
         new UploadFileTask(c, mHelper.getClient(), this).execute(Arrays.asList(Uri.fromFile(mFile).toString(), PATH));
         return true;

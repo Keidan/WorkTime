@@ -16,6 +16,7 @@ import java.io.OutputStream;
 import java.nio.file.Files;
 
 import fr.ralala.worktime.tasks.TaskRunner;
+import fr.ralala.worktime.utils.AndroidHelper;
 
 /**
  * ******************************************************************************
@@ -91,8 +92,8 @@ public class DownloadFileTask extends TaskRunner<DownloadFileTask.Config, FileMe
   public Result doInBackground(Config cfg, FileMetadata metadata) {
     Result res = new Result();
     try {
-      File path = Environment.getExternalStoragePublicDirectory(
-        Environment.DIRECTORY_DOWNLOADS);
+
+      File path = AndroidHelper.getAppPath(cfg.context);
       if (metadata == null)
         throw new NullPointerException("Null metadata");
 

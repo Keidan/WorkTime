@@ -115,7 +115,7 @@ public class ExportFragment extends Fragment implements AdapterView.OnItemSelect
       return;
     }
 
-    final File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS),
+    final File file = new File(AndroidHelper.getAppPath(mActivity),
       getString(R.string.app_name) + "_" + entries.get(0).year + ".xls");
     if (file.exists()) {
       UIHelper.showConfirmDialog(mActivity, getString(R.string.confirm),
