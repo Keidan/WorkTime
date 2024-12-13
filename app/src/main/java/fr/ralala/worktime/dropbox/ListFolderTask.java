@@ -1,6 +1,8 @@
 package fr.ralala.worktime.dropbox;
 
 
+import android.content.Context;
+
 import com.dropbox.core.DbxException;
 import com.dropbox.core.v2.DbxClientV2;
 import com.dropbox.core.v2.files.DbxUserFilesRequests;
@@ -25,18 +27,17 @@ public class ListFolderTask extends TaskRunner<DbxClientV2, String, Void, ListFo
     private ListFolderResult file = null;
     private Exception exception = null;
   }
-
   private final DropboxListener mCallback;
-  private final DbxClientV2 mDbxClient;
+  private final DbxClientV2 mClient;
 
   /**
    * Creates a task.
    *
    * @param dbxClient Dropbox client.
-   * @param callback  Dropbox client.
+   * @param callback  Dropbox callback.
    */
   ListFolderTask(DbxClientV2 dbxClient, DropboxListener callback) {
-    mDbxClient = dbxClient;
+    mClient = dbxClient;
     mCallback = callback;
   }
 
@@ -47,7 +48,7 @@ public class ListFolderTask extends TaskRunner<DbxClientV2, String, Void, ListFo
    */
   @Override
   public DbxClientV2 onPreExecute() {
-    return mDbxClient;
+    return mClient;
   }
 
   /**

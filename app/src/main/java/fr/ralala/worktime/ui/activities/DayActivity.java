@@ -54,6 +54,7 @@ import fr.ralala.worktime.utils.AndroidHelper;
  * ******************************************************************************
  */
 public class DayActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemSelectedListener {
+  private static final String TAG = "DayActivity";
   public static final String ZERO_TIME = "00:00";
   private Spinner mSpProfile = null;
   private Spinner mSpTypeMorning = null;
@@ -132,7 +133,9 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
       /* If the main activity is not started, all contexts are reset, so we need to reload the required contexts */
       if (!mApp.openSql(this)) {
         UIHelper.toast(this, R.string.error_widget_sql);
-        Log.e(getClass().getSimpleName(), "Widget error SQL");
+        String text = "Widget error SQL";
+        MainApplication.addLog(this, TAG, text);
+        Log.e(getClass().getSimpleName(), text);
         finish();
         return;
       }
@@ -688,11 +691,15 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
               if (etLongitude != null)
                 etLongitude.setText(String.valueOf(location.getLongitude()));
             }
-            Log.i("DayActivity", "Location: " + location);
+            String text = "Location: " + location;
+            MainApplication.addLog(DayActivity.this, TAG, text);
+            Log.i(getClass().getSimpleName(), text);
           }
 
           public void onLocationError(@NonNull Exception e) {
-            Log.e("DayActivity", "Exception: " + e.getMessage(), e);
+            String text = "Exception: " + e.getMessage();
+            MainApplication.addLog(DayActivity.this, TAG, text);
+            Log.e(getClass().getSimpleName(), text, e);
             UIHelper.toast(DayActivity.this, e.getMessage());
           }
         }))

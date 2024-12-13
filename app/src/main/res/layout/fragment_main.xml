@@ -20,7 +20,7 @@
     android:layout_alignParentStart="true"
     android:paddingBottom="@dimen/fragment_main_llTitle_paddingBottom">
 
-    <ImageButton
+    <androidx.appcompat.widget.AppCompatImageButton
       android:contentDescription="@null"
       android:src="@mipmap/ic_previous"
       android:layout_width="@dimen/fragment_main_btPreviousMonth_layout_width"
@@ -53,7 +53,7 @@
         android:layout_weight="@dimen/fragment_main_tvYear_layout_weight" />
     </LinearLayout>
 
-    <ImageButton
+    <androidx.appcompat.widget.AppCompatImageButton
       android:contentDescription="@null"
       android:src="@mipmap/ic_next"
       android:layout_width="@dimen/fragment_main_btNextMonth_layout_width"
@@ -69,14 +69,14 @@
     android:layout_below="@+id/llTitle"
     android:layout_alignParentStart="true">
 
-    <ImageView
+    <androidx.appcompat.widget.AppCompatImageView
       android:id="@+id/ic_public_holidays"
       android:contentDescription="@null"
       android:layout_centerVertical="true"
       android:layout_alignParentStart="true"
       android:layout_width="@dimen/fragment_main_ic_public_holidays_layout_width"
       android:layout_height="wrap_content"
-      android:src="@mipmap/ic_public_holidays" />
+      android:src="@drawable/ic_public_holidays" />
 
     <LinearLayout
       android:id="@+id/ll_sub_details"
@@ -100,13 +100,13 @@
         android:layout_weight="@dimen/fragment_main_tvMonthlyHours_layout_weight" />
     </LinearLayout>
 
-    <ImageView
-      android:id="@+id/ivExpand"
+    <androidx.appcompat.widget.AppCompatImageView
+      android:id="@+id/ivInfo"
       android:layout_alignParentEnd="true"
       android:contentDescription="@null"
-      android:layout_width="@dimen/fragment_main_ivExpand_layout_width"
+      android:layout_width="@dimen/fragment_main_ivInfo_layout_width"
       android:layout_height="wrap_content"
-      android:src="@mipmap/ic_expand" />
+      android:src="@drawable/ic_info" />
   </RelativeLayout>
 
 
@@ -120,7 +120,7 @@
     android:background="@color/fragment_main_llHeader"
     android:layout_alignParentStart="true">
 
-    <ImageView
+    <androidx.appcompat.widget.AppCompatImageView
       android:id="@+id/ivSun"
       android:contentDescription="@null"
       android:layout_marginBottom="@dimen/fragment_main_ivSun_layout_marginBottom"
@@ -128,10 +128,10 @@
       android:layout_width="@dimen/fragment_main_ivSun_layout_width"
       android:layout_gravity="center"
       android:layout_height="wrap_content"
-      android:src="@mipmap/ic_sun"
+      android:src="@drawable/ic_sun"
       android:layout_weight="@dimen/fragment_main_ivSun_layout_weight" />
 
-    <ImageView
+    <androidx.appcompat.widget.AppCompatImageView
       android:id="@+id/ivDown"
       android:contentDescription="@null"
       android:layout_marginBottom="@dimen/fragment_main_ivDown_layout_marginBottom"
@@ -142,7 +142,7 @@
       android:src="@mipmap/ic_down"
       android:layout_weight="@dimen/fragment_main_ivDown_layout_weight" />
 
-    <ImageView
+    <androidx.appcompat.widget.AppCompatImageView
       android:id="@+id/ivUp"
       android:contentDescription="@null"
       android:layout_marginBottom="@dimen/fragment_main_ivUp_layout_marginBottom"
@@ -153,7 +153,7 @@
       android:src="@mipmap/ic_up"
       android:layout_weight="@dimen/fragment_main_ivUp_layout_weight" />
 
-    <ImageView
+    <androidx.appcompat.widget.AppCompatImageView
       android:id="@+id/ivLunch"
       android:contentDescription="@null"
       android:layout_marginBottom="@dimen/fragment_main_ivLunch_layout_marginBottom"
@@ -161,10 +161,10 @@
       android:layout_width="@dimen/fragment_main_ivLunch_layout_width"
       android:layout_gravity="center"
       android:layout_height="wrap_content"
-      android:src="@mipmap/ic_lunch"
+      android:src="@drawable/ic_lunch"
       android:layout_weight="@dimen/fragment_main_ivLunch_layout_weight" />
 
-    <ImageView
+    <androidx.appcompat.widget.AppCompatImageView
       android:id="@+id/ivClockWhite"
       android:contentDescription="@null"
       android:layout_marginBottom="@dimen/fragment_main_ivClockWhite_layout_marginBottom"
@@ -172,10 +172,10 @@
       android:layout_width="@dimen/fragment_main_ivClockWhite_layout_width"
       android:layout_gravity="center"
       android:layout_height="wrap_content"
-      android:src="@mipmap/ic_clock_white"
+      android:src="@drawable/ic_clock"
       android:layout_weight="@dimen/fragment_main_ivClockWhite_layout_weight" />
 
-    <ImageView
+    <androidx.appcompat.widget.AppCompatImageView
       android:id="@+id/ivClockRed"
       android:contentDescription="@null"
       android:layout_marginBottom="@dimen/fragment_main_ivClockRed_layout_marginBottom"
@@ -183,7 +183,7 @@
       android:layout_width="@dimen/fragment_main_ivClockRed_layout_width"
       android:layout_gravity="center"
       android:layout_height="wrap_content"
-      android:src="@mipmap/ic_clock_red"
+      android:src="@drawable/ic_clock_red"
       android:layout_weight="@dimen/fragment_main_ivClockRed_layout_weight" />
   </LinearLayout>
 

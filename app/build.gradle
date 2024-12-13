@@ -12,6 +12,7 @@ dependencies {
     implementation "com.squareup.okhttp:okhttp:2.7.5"
     implementation "com.squareup.okhttp3:okhttp:3.10.0"
     implementation 'com.dropbox.core:dropbox-core-sdk:5.2.0'
+    implementation 'org.apache.commons:commons-collections4:4.0'
     implementation files('libs/poi-3.15.jar')
 }
 

@@ -46,23 +46,31 @@ public class AutoExportService extends Service implements DropboxImportExport.Dr
 
   private void tableNotChanged() {
     boolean export = isExportable();
+    String text = "";
     SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mApp);
     boolean needUpdate = prefs.getBoolean(KEY_NEED_UPDATE, DEF_VAL_NEED_UPDATE);
     if (export && needUpdate) {
-      Log.e(getClass().getSimpleName(), "No changes have been detected but the day is valid for pending export.");
+      text = "No changes have been detected but the day is valid for pending export.";
+      MainApplication.addLog(this, "tableNotChanged", text);
+      Log.e(getClass().getSimpleName(), text);
       exportDatabase();
       return;
     }
     if (!needUpdate)
-      Log.e(getClass().getSimpleName(), "No change detected.");
+      text = "No change detected.";
     if ((!export && needUpdate))
-      Log.e(getClass().getSimpleName(), "Changes detected but the current day does not allow export.");
+      text = "Changes detected but the current day does not allow export.";
+
+    MainApplication.addLog(this, "tableNotChanged", text);
+    Log.e(getClass().getSimpleName(), text);
     stopSelf();
   }
 
   private void tableChanged() {
     boolean export = isExportable();
-    Log.e(getClass().getSimpleName(), "Exportation required and the day" + (export ? " " : " not") + " match.");
+    String text = "Exportation required and the day" + (export ? " " : " not") + " match.";
+    MainApplication.addLog(this, "tableChanged", text);
+    Log.e(getClass().getSimpleName(), text);
     if (export) {
       exportDatabase();
     } else {
@@ -78,7 +86,9 @@ public class AutoExportService extends Service implements DropboxImportExport.Dr
     setNeedUpdate(mApp, false);
     if (mApp.getLastExportType().equals(MainApplication.PREFS_VAL_LAST_EXPORT_DROPBOX)) {
       if (!mApp.getDropboxImportExport().exportDatabase(this, false, this)) {
-        Log.e(getClass().getSimpleName(), "Export failed.");
+        String text = "Export failed.";
+        MainApplication.addLog(this, "exportDatabase", text);
+        Log.e(getClass().getSimpleName(), text);
         setNeedUpdate(mApp, true);
         stopSelf();
       }
@@ -130,7 +140,9 @@ public class AutoExportService extends Service implements DropboxImportExport.Dr
     super.onDestroy();
     if (cond)
       return;
-    Log.e(getClass().getSimpleName(), "killProcess");
+    String text = "killProcess";
+    MainApplication.addLog(this, "Service.onDestroy", text);
+    Log.e(getClass().getSimpleName(), text);
     Process.killProcess(android.os.Process.myPid());
   }
 

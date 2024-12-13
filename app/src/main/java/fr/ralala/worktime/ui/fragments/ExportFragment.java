@@ -198,7 +198,9 @@ public class ExportFragment extends Fragment implements AdapterView.OnItemSelect
       } else
         UIHelper.snack(mActivity, getString(R.string.email_sent_to_without_mail));
     } catch (Exception e) {
-      Log.e(getClass().getSimpleName(), "Exception: " + e.getMessage(), e);
+      String text = getString(R.string.error) + ": " + e.getMessage();
+      MainApplication.addLog(mActivity, "ExportFragment", text);
+      Log.e(getClass().getSimpleName(), text, e);
       UIHelper.snack(mActivity, getString(R.string.error) + ": " + e.getMessage());
     }
   }

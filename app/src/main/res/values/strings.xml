@@ -1,6 +1,7 @@
 <resources>
   <string name="app_name" translatable="false">WorkTime</string>
   <string name="app_key" translatable="false">YOUR_APP_KEY_HERE</string>
+  <string name="dev_access_token" translatable="false">YOUR_GENERATED_TOKEN_HERE</string>
 
   <string name="changelog_full_title">Change Log</string>
   <string name="changelog_title">What\'s New</string>
@@ -182,4 +183,6 @@
   <string name="no_location_p1">The location for \'</string>
   <string name="no_location_p2">\' is not indicated.</string>
   <string name="current_time">Current</string>
+  <string name="settings_pref_title_logs">Logs</string>
+  <string name="settings_pref_summary_logs">Application logs.</string>
 </resources>

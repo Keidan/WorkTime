@@ -3,6 +3,7 @@ package fr.ralala.worktime.ui.fragments;
 import android.content.res.Configuration;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -85,13 +86,17 @@ public class StatisticsFragment extends Fragment {
     new Thread(() -> {
       redrawChart();
       mActivity.runOnUiThread(() -> {
-        rebuildTable();
-        mActivity.progressDismiss();
+        try {
+          rebuildTable();
+          mActivity.progressDismiss();
+        } catch(IllegalStateException ex) {
+          Log.e(StatisticsFragment.class.getSimpleName(), "Exception: " + ex.getMessage(), ex);
+        }
       });
     }).start();
   }
 
-  private void rebuildTable() {
+  private void rebuildTable() throws IllegalStateException {
     mTable.removeAllViews();
     SortedSet<Integer> years = toSortedSet(mSummaries);
     WorkTimeDay wtd = WorkTimeDay.now();

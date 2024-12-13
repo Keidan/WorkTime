@@ -2,7 +2,6 @@ package fr.ralala.worktime.dropbox;
 
 import android.content.Context;
 import android.net.Uri;
-import android.util.Log;
 
 import com.dropbox.core.DbxException;
 import com.dropbox.core.v2.DbxClientV2;
@@ -16,6 +15,7 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.util.List;
 
+import fr.ralala.worktime.MainApplication;
 import fr.ralala.worktime.tasks.TaskRunner;
 import fr.ralala.worktime.utils.UriHelpers;
 
@@ -107,8 +107,8 @@ public class UploadFileTask extends TaskRunner<UploadFileTask.Config, List<Strin
 
         // Note - this is not ensuring the name is a valid dropbox file name
         String remoteFileName = localFile.getName();
-        Log.d(getClass().getSimpleName(), "remoteFolderPath: '" + remoteFolderPath + "'");
-        Log.d(getClass().getSimpleName(), "localFile: '" + localFile + "'");
+        MainApplication.addLog(cfg.context, "UploadFileTask", "remoteFolderPath: '" + remoteFolderPath + "'");
+        MainApplication.addLog(cfg.context, "UploadFileTask", "localFile: '" + localFile + "'");
 
         if (cfg.client == null)
           throw new NullPointerException("Null client");

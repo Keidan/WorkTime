@@ -40,8 +40,10 @@ public class DayWidgetProvider1x1 extends AppWidgetProvider {
   public void onUpdate(final Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
     MainApplication app = (MainApplication) context.getApplicationContext();
     if (!app.openSql(context)) {
-      UIHelper.toast(context, R.string.error_widget_sql);
-      Log.e(getClass().getSimpleName(), "Widget error SQL");
+      String text = context.getString(R.string.error_widget_sql);
+      UIHelper.toast(context, text);
+      MainApplication.addLog(context, "ExportFragment", text);
+      Log.e(getClass().getSimpleName(), text);
       return;
     }
 

@@ -54,15 +54,20 @@
     app:iconSpaceReserved="false">
     <androidx.preference.Preference
       app:iconSpaceReserved="false"
+      android:key="prefLogs"
+      android:title="@string/settings_pref_title_logs"
+      android:summary="@string/settings_pref_summary_logs" />
+    <androidx.preference.Preference
+      app:iconSpaceReserved="false"
       android:key="prefChangelog"
       android:title="@string/pref_changelog_title"
-      android:summary="@string/pref_changelog_summary"></androidx.preference.Preference>
+      android:summary="@string/pref_changelog_summary"/>
     <androidx.preference.Preference
       app:iconSpaceReserved="false"
       android:key="prefVersion"
       android:enabled="false"
       android:selectable="false"
       android:persistent="false"
-      android:shouldDisableView="false"></androidx.preference.Preference>
+      android:shouldDisableView="false"/>
   </androidx.preference.PreferenceCategory>
 </androidx.preference.PreferenceScreen>

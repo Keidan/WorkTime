@@ -9,13 +9,14 @@ import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceScreen;
 
+import fr.ralala.worktime.MainApplication;
 import fr.ralala.worktime.R;
+import fr.ralala.worktime.ui.activities.LogsActivity;
 import fr.ralala.worktime.ui.activities.settings.SettingsDatabaseActivity;
 import fr.ralala.worktime.ui.activities.settings.SettingsDisplayActivity;
 import fr.ralala.worktime.ui.activities.settings.SettingsExcelExportActivity;
 import fr.ralala.worktime.ui.activities.settings.SettingsLearningActivity;
 import fr.ralala.worktime.ui.changelog.ChangeLog;
-import fr.ralala.worktime.ui.changelog.ChangeLogIds;
 
 /**
  * ******************************************************************************
@@ -40,6 +41,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
   public static final String PREFS_KEY_SELECT_EXCEL_EXPORT = "prefSelectExcelExport";
   public static final String PREFS_KEY_SELECT_LEARNING = "prefSelectLearning";
   public static final String PREFS_KEY_SELECT_DATABASE = "prefSelectDatabaseExport";
+  public static final String PREFS_KEY_LOGS = "prefLogs";
 
   private ChangeLog mChangeLog = null;
   private final AppCompatActivity mActivity;
@@ -49,6 +51,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
   private Preference mPrefSelectExcelExport;
   private Preference mPrefSelectLearning;
   private Preference mPrefSelectDatabaseExport;
+  private Preference mLogs;
 
   public SettingsFragment(AppCompatActivity owner) {
     mActivity = owner;
@@ -68,25 +71,20 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
   public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
     setPreferencesFromResource(R.xml.preferences, rootKey);
 
-    mChangeLog = new ChangeLog(
-      new ChangeLogIds(
-        R.raw.changelog,
-        R.string.changelog_ok_button,
-        R.string.background_color,
-        R.string.changelog_title,
-        R.string.changelog_full_title,
-        R.string.changelog_show_full), mActivity);
+    mChangeLog = ((MainApplication) mActivity.getApplication()).getChangeLog();
     mPrefChangelog = findPreference(PREFS_KEY_CHANGELOG);
     mPrefSelectDisplay = findPreference(PREFS_KEY_SELECT_DISPLAY);
     mPrefSelectExcelExport = findPreference(PREFS_KEY_SELECT_EXCEL_EXPORT);
     mPrefSelectLearning = findPreference(PREFS_KEY_SELECT_LEARNING);
     mPrefSelectDatabaseExport = findPreference(PREFS_KEY_SELECT_DATABASE);
+    mLogs = findPreference(PREFS_KEY_LOGS);
 
     mPrefChangelog.setOnPreferenceClickListener(this);
     mPrefSelectDisplay.setOnPreferenceClickListener(this);
     mPrefSelectExcelExport.setOnPreferenceClickListener(this);
     mPrefSelectLearning.setOnPreferenceClickListener(this);
     mPrefSelectDatabaseExport.setOnPreferenceClickListener(this);
+    mLogs.setOnPreferenceClickListener(this);
   }
 
   @Override
@@ -115,7 +113,9 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
     } else if (preference.equals(mPrefSelectLearning)) {
       startActivity(new Intent(mActivity, SettingsLearningActivity.class));
     } else if (preference.equals(mPrefChangelog)) {
-      mChangeLog.getFullLogDialog().show();
+      mChangeLog.getFullLogDialog(mActivity).show();
+    } else if (preference.equals(mLogs)) {
+      LogsActivity.startActivity(mActivity);
     }
     return false;
   }

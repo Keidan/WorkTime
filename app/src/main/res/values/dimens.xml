@@ -125,7 +125,7 @@
   <dimen name="fragment_main_ic_public_holidays_layout_width">25dp</dimen>
   <dimen name="fragment_main_tvWorkDays_layout_weight">1</dimen>
   <dimen name="fragment_main_tvMonthlyHours_layout_weight">1</dimen>
-  <dimen name="fragment_main_ivExpand_layout_width">25dp</dimen>
+  <dimen name="fragment_main_ivInfo_layout_width">25dp</dimen>
   <dimen name="fragment_main_llHeader_layout_marginTop">5dp</dimen>
   <dimen name="fragment_main_llHeader_layout_height">24dp</dimen>
   <dimen name="fragment_main_ivSun_layout_marginBottom">5dp</dimen>
@@ -206,4 +206,6 @@
   <dimen name="progress_dialog_layout_marginStart">10dp</dimen>
   <dimen name="progress_dialog_layout_marginEnd">10dp</dimen>
   <dimen name="progress_dialog_layout_marginBottom">10dp</dimen>
+  <!-- listview_simple_row.xml -->
+  <dimen name="listview_simple_row_textSize">12sp</dimen>
 </resources>

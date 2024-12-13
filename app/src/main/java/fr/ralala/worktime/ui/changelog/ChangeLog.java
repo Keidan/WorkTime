@@ -15,6 +15,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
+import fr.ralala.worktime.MainApplication;
+
 /**
  * Copyright (C) 2011-2013, Karsten Priegnitz
  * Permission to use, copy, modify, and distribute this piece of software
@@ -27,8 +29,7 @@ import java.io.InputStreamReader;
  * see: <a href="http://code.google.com/p/android-change-log/">...</a>
  */
 public class ChangeLog {
-  private ChangeLogIds mIds;
-  private final Context mContext;
+  private final ChangeLogIds mIds;
   private final String mLastVersion;
   private String mThisVersion;
 
@@ -56,21 +57,27 @@ public class ChangeLog {
    */
   private ChangeLog(final ChangeLogIds ids, final Context context,
                     final SharedPreferences sp) {
-    mContext = context;
     mIds = ids;
 
     // get version numbers
     mLastVersion = sp.getString(VERSION_KEY, NO_VERSION);
-    Log.d(TAG, "lastVersion: " + mLastVersion);
+
+    String text = "lastVersion: " + mLastVersion;
+    MainApplication.addLog(context, "ChangeLog", text);
+    Log.d(TAG, text);
     try {
       mThisVersion = context.getPackageManager().getPackageInfo(
         context.getPackageName(), 0).versionName;
     } catch (final NameNotFoundException e) {
       mThisVersion = NO_VERSION;
-      Log.e(TAG, "could not get version name from manifest!");
+      text = "Could not get version name from manifest!";
+      MainApplication.addLog(context, "ChangeLog", text);
+      Log.e(TAG, text);
       e.printStackTrace();
     }
-    Log.d(TAG, "appVersion: " + mThisVersion);
+    text = "appVersion: " + mThisVersion;
+    MainApplication.addLog(context, "ChangeLog", text);
+    Log.d(TAG, text);
   }
 
   /**
@@ -95,50 +102,50 @@ public class ChangeLog {
    * version of your app (what's new). But when this is the first run of
    * your app including ChangeLog then the full log dialog is show.
    */
-  public AlertDialog getLogDialog() {
-    return this.getDialog(this.firstRunEver());
+  public AlertDialog getLogDialog(final Context context) {
+    return this.getDialog(context, this.firstRunEver());
   }
 
   /**
    * @return an AlertDialog with a full change log displayed
    */
-  public AlertDialog getFullLogDialog() {
-    return this.getDialog(true);
+  public AlertDialog getFullLogDialog(final Context context) {
+    return this.getDialog(context, true);
   }
 
-  private AlertDialog getDialog(final boolean full) {
-    final WebView wv = new WebView(mContext);
+  private AlertDialog getDialog(final Context context, final boolean full) {
+    final WebView wv = new WebView(context);
 
-    wv.setBackgroundColor(Color.parseColor(mContext.getResources().getString(
+    wv.setBackgroundColor(Color.parseColor(context.getResources().getString(
       mIds.getStringBackgroundColor())));
-    wv.loadDataWithBaseURL(null, this.getLog(full), "text/html", "UTF-8", null);
+    wv.loadDataWithBaseURL(null, this.getLog(context, full), "text/html", "UTF-8", null);
 
-    final AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+    final AlertDialog.Builder builder = new AlertDialog.Builder(context);
     builder
       .setTitle(
-        mContext.getResources().getString(
+        context.getResources().getString(
           full ? mIds.getStringChangelogFullTitle() : mIds
             .getStringChangelogTitle()))
       .setView(wv)
       .setCancelable(false)
       // OK button
       .setPositiveButton(
-        mContext.getResources().getString(mIds.getStringChangelogOkButton()),
-        (dialog, which) -> updateVersionInPreferences());
+        context.getResources().getString(mIds.getStringChangelogOkButton()),
+        (dialog, which) -> updateVersionInPreferences(context));
 
     if (!full) {
       // "more ..." button
       builder.setNegativeButton(mIds.getStringChangelogShowFull(),
-        (dialog, which) -> getFullLogDialog().show());
+        (dialog, which) -> getFullLogDialog(context).show());
     }
 
     return builder.create();
   }
 
-  private void updateVersionInPreferences() {
+  private void updateVersionInPreferences(final Context context) {
     // save new version number to preferences
     final SharedPreferences sp = PreferenceManager
-      .getDefaultSharedPreferences(mContext);
+      .getDefaultSharedPreferences(context);
     final SharedPreferences.Editor editor = sp.edit();
     editor.putString(VERSION_KEY, mThisVersion);
     editor.apply();
@@ -148,8 +155,8 @@ public class ChangeLog {
    * @return HTML displaying the changes since the previous installed version of
    * your app (what's new)
    */
-  public String getLog() {
-    return this.getLog(false);
+  public String getLog(final Context context) {
+    return this.getLog(context, false);
   }
 
   /**
@@ -163,11 +170,11 @@ public class ChangeLog {
   private StringBuilder sb = null;
   private static final String EOCL = "END_OF_CHANGE_LOG";
 
-  private String getLog(final boolean full) {
+  private String getLog(final Context context, final boolean full) {
     // read changelog.txt file
     sb = new StringBuilder();
     try {
-      final InputStream ins = mContext.getResources().openRawResource(
+      final InputStream ins = context.getResources().openRawResource(
         mIds.getRawChangelog());
       try (final BufferedReader br = new BufferedReader(new InputStreamReader(ins))) {
 

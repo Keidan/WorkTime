@@ -51,7 +51,7 @@
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toEndOf="@+id/etName"
       app:layout_constraintBottom_toBottomOf="@+id/tvName"
-      app:srcCompat="@mipmap/ic_location" />
+      app:srcCompat="@drawable/ic_location" />
 
     <!-- profile -->
     <TextView

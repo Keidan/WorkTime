@@ -32,6 +32,7 @@ import fr.ralala.worktime.MainApplication;
  * ******************************************************************************
  */
 public class SqlHelper extends SQLiteOpenHelper implements SqlConstants {
+  private static final String UPDATE_TAG = "SQL.onUpgrade";
   private static final String EXCEPTION = "Exception: ";
   private static final String CREATE_TABLE = "CREATE TABLE IF NOT EXISTS";
   private static final String INTEGER_PRIMARY_KEY = "INTEGER PRIMARY KEY AUTOINCREMENT";
@@ -43,6 +44,7 @@ public class SqlHelper extends SQLiteOpenHelper implements SqlConstants {
   private static final String INSERT_INTO = "INSERT INTO";
   private boolean mUpdated = false;
   private boolean mUnsupported = false;
+  private final Context mContext;
 
   private static final String CREATE_BDD_PROFILES = CREATE_TABLE + " "
     + TABLE_PROFILES
@@ -147,6 +149,7 @@ public class SqlHelper extends SQLiteOpenHelper implements SqlConstants {
   SqlHelper(final Context context, final String name,
             final SQLiteDatabase.CursorFactory factory, final int version) {
     super(context, name, factory, version);
+    mContext = context;
   }
 
 
@@ -183,9 +186,12 @@ public class SqlHelper extends SQLiteOpenHelper implements SqlConstants {
   @Override
   public void onUpgrade(final SQLiteDatabase db, final int oldVersion,
                         final int newVersion) {
+    String text ;
     if (oldVersion < 5) {
       mUnsupported = true;
-      Log.e(getClass().getSimpleName(), "Version not supported");
+      text = "Version not supported";
+      MainApplication.addLog(mContext, UPDATE_TAG, text);
+      Log.e(getClass().getSimpleName(), text);
       Process.killProcess(0);
     } else if (oldVersion == 5 && newVersion == 6) {
       mUpdated = true;
@@ -200,7 +206,9 @@ public class SqlHelper extends SQLiteOpenHelper implements SqlConstants {
       /* days */
       db.execSQL(ALTER_TABLE + " " + TABLE_DAYS + " " + ADD_COLUMN + " " + COL_DAYS_RECOVERY_TIME + " " + TEXT_DEFAULT_00_00_NOT_NULL);
     } else if (oldVersion == 7 && newVersion == 8) {
-      Log.i(getClass().getSimpleName(), "Ready to migrate from v7 to v8");
+      text = "Ready to migrate from v7 to v8";
+      MainApplication.addLog(mContext, UPDATE_TAG, text);
+      Log.i(getClass().getSimpleName(), text);
       /*
        * The date columns of the previous databases (d_current, p_current and ph_date) are
        * divided into 3 dedicated columns ([prev_column_name]_year, [prev_column_name]_month, [prev_column_name]_day)
@@ -215,7 +223,9 @@ public class SqlHelper extends SQLiteOpenHelper implements SqlConstants {
         + ") SELECT SUBSTR(d_current,7,4),SUBSTR(d_current,4,2), SUBSTR(d_current,1,2), d_start_morning, d_end_morning, d_start_afternoon, d_end_afternoon, "
         + "d_type, d_amount,  d_legal_worktime, d_add_break,  d_rec_time FROM " + oldTable);
       db.execSQL(DROP_TABLE + " " + oldTable);
-      Log.i(getClass().getSimpleName(), "Days database, migrated");
+      text = "Days database, migrated";
+      MainApplication.addLog(mContext, UPDATE_TAG, text);
+      Log.i(getClass().getSimpleName(), text);
       /* Profiles */
       oldTable = TABLE_PROFILES + "_v" + oldVersion;
       db.execSQL(ALTER_TABLE + " profiles RENAME TO " + oldTable);
@@ -239,7 +249,10 @@ public class SqlHelper extends SQLiteOpenHelper implements SqlConstants {
         + ", " + COL_PUBLIC_HOLIDAYS_DATE_DAY + ", " + COL_PUBLIC_HOLIDAYS_RECURRENCE
         + ") SELECT ph_name, SUBSTR(ph_date,7,4),SUBSTR(ph_date,4,2), SUBSTR(ph_date,1,2), ph_recurrence FROM " + oldTable);
       db.execSQL(DROP_TABLE + " " + oldTable);
-      Log.i(getClass().getSimpleName(), "Public holidays database, migrated");
+
+      text = "Public holidays database, migrated";
+      MainApplication.addLog(mContext, UPDATE_TAG, text);
+      Log.i(getClass().getSimpleName(), text);
       /* Settings */
       oldTable = TABLE_SETTINGS + "_v" + oldVersion;
       db.execSQL(ALTER_TABLE + " settings RENAME TO " + oldTable);
@@ -247,7 +260,9 @@ public class SqlHelper extends SQLiteOpenHelper implements SqlConstants {
       db.execSQL(INSERT_INTO + " " + TABLE_SETTINGS + "(" + COL_SETTINGS_NAME + ", " + COL_SETTINGS_VALUE
         + ") SELECT s_name, s_value FROM " + oldTable);
       db.execSQL(DROP_TABLE + " " + oldTable);
-      Log.i(getClass().getSimpleName(), "Settings database, migrated");
+      text = "Settings database, migrated";
+      MainApplication.addLog(mContext, UPDATE_TAG, text);
+      Log.i(getClass().getSimpleName(), text);
     }
   }
 

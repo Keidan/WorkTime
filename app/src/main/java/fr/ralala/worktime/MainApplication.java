@@ -7,12 +7,20 @@ import android.util.Log;
 
 import androidx.preference.PreferenceManager;
 
+import org.apache.commons.collections4.queue.CircularFifoQueue;
+
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
+import java.util.Queue;
 import java.util.TimeZone;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
+import fr.ralala.worktime.dropbox.DropboxHelper;
 import fr.ralala.worktime.dropbox.DropboxImportExport;
 import fr.ralala.worktime.factories.DaysFactory;
 import fr.ralala.worktime.factories.ProfilesFactory;
@@ -23,6 +31,8 @@ import fr.ralala.worktime.sql.SqlFactory;
 import fr.ralala.worktime.sql.SqlHelper;
 import fr.ralala.worktime.ui.activities.DayActivity;
 import fr.ralala.worktime.ui.activities.MainActivity;
+import fr.ralala.worktime.ui.changelog.ChangeLog;
+import fr.ralala.worktime.ui.changelog.ChangeLogIds;
 import fr.ralala.worktime.ui.fragments.settings.SettingsDatabaseFragment;
 import fr.ralala.worktime.ui.fragments.settings.SettingsDisplayFragment;
 import fr.ralala.worktime.ui.fragments.settings.SettingsExcelExportFragment;
@@ -42,6 +52,7 @@ import fr.ralala.worktime.utils.MyActivityLifecycleCallbacks;
  * ******************************************************************************
  */
 public class MainApplication extends Application {
+  private static final int CIRCULAR_BUFFER_DEPTH = 2000;
   private static final String PREFS_KEY_LAST_EXPORT = "pKeyLastExportType";
   public static final String PREFS_VAL_LAST_EXPORT_DROPBOX = "dropbox";
   private PublicHolidaysFactory mPublicHolidaysFactory;
@@ -55,6 +66,9 @@ public class MainApplication extends Application {
   private MyActivityLifecycleCallbacks mLifeCycle;
   private static int mResumedCounter = 0;
   private String mDbMD5 = null;
+  private Queue<String> mLogs = null;
+  private final Lock mLock = new ReentrantLock();
+  private ChangeLog mChangeLog;
 
   /**
    * Called by Android to create the application context.
@@ -62,6 +76,13 @@ public class MainApplication extends Application {
   @Override
   public void onCreate() {
     super.onCreate();
+    mChangeLog = new ChangeLog(new ChangeLogIds(
+      R.raw.changelog,
+      R.string.changelog_ok_button,
+      R.string.background_color,
+      R.string.changelog_title,
+      R.string.changelog_full_title,
+      R.string.changelog_show_full), this);
     mPublicHolidaysFactory = new PublicHolidaysFactory();
     mProfilesFactory = new ProfilesFactory();
     mDaysFactory = new DaysFactory();
@@ -71,6 +92,38 @@ public class MainApplication extends Application {
     mLifeCycle = new MyActivityLifecycleCallbacks(Arrays.asList(classes));
     registerActivityLifecycleCallbacks(mLifeCycle);
     reloadDatabaseMD5();
+  }
+
+  public ChangeLog getChangeLog() {
+    return mChangeLog;
+  }
+
+  public Queue<String> getLogBuffer() {
+    if (mLogs == null)
+      mLogs = new CircularFifoQueue<>(CIRCULAR_BUFFER_DEPTH);
+    return mLogs;
+  }
+
+  /**
+   * Adds a new entry to the logs.
+   *
+   * @param c   Android context.
+   * @param tag Log tag (can be null).
+   * @param msg Log message.
+   */
+  public static void addLog(final Context c, final String tag, final String msg) {
+    MainApplication ctx;
+    if (c instanceof MainApplication)
+      ctx = (MainApplication) c;
+    else
+      ctx = (MainApplication) c.getApplicationContext();
+    ctx.mLock.lock();
+    String head = new SimpleDateFormat("yyyyMMdd [hhmmssa]:\n",
+      Locale.US).format(new Date());
+    if (tag != null)
+      head += "(" + tag + ") -> ";
+    ctx.getLogBuffer().add(head + msg);
+    ctx.mLock.unlock();
   }
 
   /**
@@ -381,7 +434,7 @@ public class MainApplication extends Application {
    */
   public boolean isTablesChanges() {
     String md5 = SqlHelper.getDatabaseMD5(this);
-    Log.i(getClass().getSimpleName(), "isTablesChanges -> Database MD5: " + md5);
+    MainApplication.addLog(this, "isTablesChanges", "Database MD5: " + md5);
     return md5 != null && mDbMD5 != null && !mDbMD5.equals(md5);
   }
 
@@ -391,7 +444,7 @@ public class MainApplication extends Application {
   public void reloadDatabaseMD5() {
     if (isExportAutoSave()) {
       mDbMD5 = SqlHelper.getDatabaseMD5(this);
-      Log.i(getClass().getSimpleName(), "reloadDatabaseMD5 -> Database MD5: " + mDbMD5);
+      MainApplication.addLog(this, "reloadDatabaseMD5", "Database MD5: " + mDbMD5);
     }
   }
 
@@ -411,6 +464,7 @@ public class MainApplication extends Application {
       mProfilesFactory.setSqlFactory(mSql);
       return true;
     } catch (final Exception e) {
+      MainApplication.addLog(this, "openSql", "Error: " + e.getMessage());
       Log.e(getClass().getSimpleName(), "Error: " + e.getMessage(), e);
       UIHelper.showAlertDialog(this, R.string.error, getString(R.string.error) + ": " + e.getMessage());
     }

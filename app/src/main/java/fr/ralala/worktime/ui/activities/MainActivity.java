@@ -34,7 +34,6 @@ import fr.ralala.worktime.launchers.LauncherPublicHolidayActivity;
 import fr.ralala.worktime.services.AutoExportService;
 import fr.ralala.worktime.ui.activities.settings.SettingsActivity;
 import fr.ralala.worktime.ui.changelog.ChangeLog;
-import fr.ralala.worktime.ui.changelog.ChangeLogIds;
 import fr.ralala.worktime.ui.fragments.AppFragmentsFactory;
 import fr.ralala.worktime.ui.fragments.WorkTimeFragment;
 import fr.ralala.worktime.ui.utils.SwipeDetector;
@@ -115,16 +114,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
       perms &= ContextCompat.checkSelfPermission(this, perm) == PackageManager.PERMISSION_GRANTED;
     if (!perms)
       ActivityCompat.requestPermissions(this, permissions, 1);
-    ChangeLog changeLog = new ChangeLog(
-      new ChangeLogIds(
-        R.raw.changelog,
-        R.string.changelog_ok_button,
-        R.string.background_color,
-        R.string.changelog_title,
-        R.string.changelog_full_title,
-        R.string.changelog_show_full), this);
+    ChangeLog changeLog = mApp.getChangeLog();
     if (changeLog.firstRun())
-      changeLog.getLogDialog().show();
+      changeLog.getLogDialog(this).show();
 
     mLauncherDayActivity = new LauncherDayActivity(this);
     mLauncherPublicHolidayActivity = new LauncherPublicHolidayActivity(this);

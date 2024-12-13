@@ -172,4 +172,6 @@
   <string name="no_location_p1">L\'emplacement pour \'</string>
   <string name="no_location_p2">\' n\'est pas indiqué.</string>
   <string name="current_time">Actuelle</string>
+  <string name="settings_pref_title_logs">Journaux</string>
+  <string name="settings_pref_summary_logs">Journeaux de l\'application.</string>
 </resources>

@@ -6,7 +6,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
-import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
@@ -14,6 +13,7 @@ import android.widget.TextView;
 
 import androidx.activity.result.ActivityResult;
 import androidx.annotation.NonNull;
+import androidx.appcompat.widget.AppCompatImageButton;
 import androidx.fragment.app.Fragment;
 
 import java.util.ArrayList;
@@ -47,8 +47,8 @@ import fr.ralala.worktime.utils.AndroidHelper;
  */
 public class WorkTimeFragment extends Fragment implements View.OnClickListener, AdapterView.OnItemClickListener, SwipeDetector.SwipeDetectorListener, LauncherCallback {
 
-  private ImageButton mBtPreviousMonth = null;
-  private ImageButton mBtNextMonth = null;
+  private AppCompatImageButton mBtPreviousMonth = null;
+  private AppCompatImageButton mBtNextMonth = null;
   private RelativeLayout mRlDetails = null;
   private TextView mTvMonth = null;
   private TextView mTvYear = null;

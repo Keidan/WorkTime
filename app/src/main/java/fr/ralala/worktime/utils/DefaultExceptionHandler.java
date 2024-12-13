@@ -13,7 +13,9 @@ import androidx.annotation.NonNull;
 import java.lang.Thread.UncaughtExceptionHandler;
 
 import fr.ralala.worktime.MainApplication;
+import fr.ralala.worktime.R;
 import fr.ralala.worktime.ui.activities.MainActivity;
+import fr.ralala.worktime.ui.utils.UIHelper;
 
 /**
  * ******************************************************************************
@@ -34,7 +36,9 @@ public class DefaultExceptionHandler implements UncaughtExceptionHandler {
 
   @Override
   public void uncaughtException(@NonNull Thread thread, @NonNull Throwable ex) {
-    Log.e(getClass().getSimpleName(), "uncaughtException: " + ex.getMessage(), ex);
+    String text = mActivity.getString(R.string.error) + ex.getMessage();
+    MainApplication.addLog(mActivity, "uncaughtException", text);
+    Log.e(getClass().getSimpleName(), text, ex);
     MainApplication app = (MainApplication) mActivity.getApplication();
     try {
       Intent intent = new Intent(mActivity, MainActivity.class);
@@ -56,7 +60,9 @@ public class DefaultExceptionHandler implements UncaughtExceptionHandler {
       //This will stop your application and take out from it.
       Process.killProcess(Process.myPid());
     } catch (Exception e) {
-      Log.e(getClass().getSimpleName(), "Exception: " + e.getMessage(), e);
+      text = mActivity.getString(R.string.error) + e.getMessage();
+      MainApplication.addLog(mActivity, "uncaughtException", text);
+      Log.e(getClass().getSimpleName(), text, e);
     }
   }
 

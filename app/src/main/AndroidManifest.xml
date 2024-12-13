@@ -113,6 +113,13 @@
         android:name="android.support.PARENT_ACTIVITY"
         android:value=".ui.activities.MainActivity" />
     </activity>
+    <activity
+      android:name=".ui.activities.LogsActivity"
+      android:parentActivityName=".ui.activities.settings.SettingsActivity">
+      <meta-data
+        android:name="android.support.PARENT_ACTIVITY"
+        android:value=".ui.activities.settings.SettingsActivity" />
+    </activity>
 
     <service android:name=".services.AutoExportService" />
 

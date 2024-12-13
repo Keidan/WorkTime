@@ -44,8 +44,8 @@ public class SwipeEditDeleteRecyclerViewItem extends ItemTouchHelper.SimpleCallb
     mListener = listener;
     mColorEdit = ResourcesCompat.getColor(activity.getResources(), R.color.item_edit, activity.getTheme());
     mColorDelete = ResourcesCompat.getColor(activity.getResources(), R.color.item_delete, activity.getTheme());
-    mIconEdit = BitmapFactory.decodeResource(activity.getResources(), R.mipmap.ic_edit);
-    mIconDelete = BitmapFactory.decodeResource(activity.getResources(), R.mipmap.ic_delete);
+    mIconEdit = UIHelper.getBitmap(activity, R.drawable.ic_edit);
+    mIconDelete = UIHelper.getBitmap(activity, R.drawable.ic_delete);
     ItemTouchHelper itemTouchHelper = new ItemTouchHelper(this);
     itemTouchHelper.attachToRecyclerView(recyclerView);
     recyclerView.addOnItemTouchListener(this);

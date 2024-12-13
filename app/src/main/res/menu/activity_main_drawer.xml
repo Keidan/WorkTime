@@ -3,32 +3,32 @@
   <group android:checkableBehavior="single">
     <item
       android:id="@+id/nav_worktime"
-      android:icon="@mipmap/ic_worktime"
+      android:icon="@drawable/ic_worktime"
       android:title="@string/work_time" />
     <item
       android:id="@+id/nav_profile"
-      android:icon="@mipmap/ic_profile"
+      android:icon="@drawable/ic_profile"
       android:title="@string/profile" />
     <item
       android:id="@+id/nav_public_holidays"
-      android:icon="@mipmap/ic_public_holidays"
+      android:icon="@drawable/ic_public_holidays"
       android:title="@string/public_holidays" />
     <item
       android:id="@+id/nav_export"
-      android:icon="@mipmap/ic_export"
+      android:icon="@drawable/ic_export"
       android:title="@string/export" />
 
     <item
       android:id="@+id/nav_statistics"
-      android:icon="@mipmap/ic_statistics"
+      android:icon="@drawable/ic_statistics"
       android:title="@string/statistics" />
     <item
       android:id="@+id/nav_settings"
-      android:icon="@mipmap/ic_settings"
+      android:icon="@drawable/ic_settings"
       android:title="@string/settings" />
     <item
       android:id="@+id/nav_exit"
-      android:icon="@mipmap/ic_exit"
+      android:icon="@drawable/ic_exit"
       android:title="@string/exit" />
   </group>
 </menu>
