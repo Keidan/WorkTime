@@ -3,22 +3,15 @@ package fr.ralala.worktime;
 import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.util.Log;
 
 import androidx.preference.PreferenceManager;
 
-import org.apache.commons.collections4.queue.CircularFifoQueue;
 
-import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
-import java.util.Queue;
 import java.util.TimeZone;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 import fr.ralala.worktime.dropbox.DropboxHelper;
 import fr.ralala.worktime.dropbox.DropboxImportExport;
@@ -39,6 +32,7 @@ import fr.ralala.worktime.ui.fragments.settings.SettingsExcelExportFragment;
 import fr.ralala.worktime.ui.fragments.settings.SettingsFragment;
 import fr.ralala.worktime.ui.fragments.settings.SettingsLearningFragment;
 import fr.ralala.worktime.ui.utils.UIHelper;
+import fr.ralala.worktime.utils.Log;
 import fr.ralala.worktime.utils.MyActivityLifecycleCallbacks;
 
 /**
@@ -52,7 +46,6 @@ import fr.ralala.worktime.utils.MyActivityLifecycleCallbacks;
  * ******************************************************************************
  */
 public class ApplicationCtx extends Application {
-  private static final int CIRCULAR_BUFFER_DEPTH = 2000;
   private static final String PREFS_KEY_LAST_EXPORT = "pKeyLastExportType";
   public static final String PREFS_VAL_LAST_EXPORT_DROPBOX = "dropbox";
   private PublicHolidaysFactory mPublicHolidaysFactory;
@@ -66,11 +59,10 @@ public class ApplicationCtx extends Application {
   private MyActivityLifecycleCallbacks mLifeCycle;
   private static int mResumedCounter = 0;
   private String mDbMD5 = null;
-  private Queue<String> mLogs = null;
-  private final Lock mLock = new ReentrantLock();
   private ChangeLog mChangeLog;
 
   private DropboxHelper mDropboxHelper;
+  private final Log mLog = new Log();
 
   /**
    * Called by Android to create the application context.
@@ -105,32 +97,8 @@ public class ApplicationCtx extends Application {
     return mChangeLog;
   }
 
-  public Queue<String> getLogBuffer() {
-    if (mLogs == null)
-      mLogs = new CircularFifoQueue<>(CIRCULAR_BUFFER_DEPTH);
-    return mLogs;
-  }
-
-  /**
-   * Adds a new entry to the logs.
-   *
-   * @param c   Android context.
-   * @param tag Log tag (can be null).
-   * @param msg Log message.
-   */
-  public static void addLog(final Context c, final String tag, final String msg) {
-    ApplicationCtx ctx;
-    if (c instanceof ApplicationCtx)
-      ctx = (ApplicationCtx) c;
-    else
-      ctx = (ApplicationCtx) c.getApplicationContext();
-    ctx.mLock.lock();
-    String head = new SimpleDateFormat("yyyyMMdd [hhmmssa]:\n",
-      Locale.US).format(new Date());
-    if (tag != null)
-      head += "(" + tag + ") -> ";
-    ctx.getLogBuffer().add(head + msg);
-    ctx.mLock.unlock();
+  public Log getLog() {
+    return mLog;
   }
 
   /**
@@ -441,7 +409,7 @@ public class ApplicationCtx extends Application {
    */
   public boolean isTablesChanges() {
     String md5 = SqlHelper.getDatabaseMD5(this);
-    ApplicationCtx.addLog(this, "isTablesChanges", "Database MD5: " + md5);
+    Log.info(this, "isTablesChanges", "Database MD5: " + md5);
     return md5 != null && mDbMD5 != null && !mDbMD5.equals(md5);
   }
 
@@ -451,7 +419,7 @@ public class ApplicationCtx extends Application {
   public void reloadDatabaseMD5() {
     if (isExportAutoSave()) {
       mDbMD5 = SqlHelper.getDatabaseMD5(this);
-      ApplicationCtx.addLog(this, "reloadDatabaseMD5", "Database MD5: " + mDbMD5);
+      Log.info(this, "reloadDatabaseMD5", "Database MD5: " + mDbMD5);
     }
   }
 
@@ -471,8 +439,7 @@ public class ApplicationCtx extends Application {
       mProfilesFactory.setSqlFactory(mSql);
       return true;
     } catch (final Exception e) {
-      ApplicationCtx.addLog(this, "openSql", "Error: " + e.getMessage());
-      Log.e(getClass().getSimpleName(), "Error: " + e.getMessage(), e);
+      Log.error(this, "openSql", "Error: " + e.getMessage(), e);
       UIHelper.showAlertDialog(this, R.string.error, getString(R.string.error) + ": " + e.getMessage());
     }
     return false;

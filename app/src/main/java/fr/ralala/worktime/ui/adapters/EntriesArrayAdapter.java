@@ -1,7 +1,6 @@
 package fr.ralala.worktime.ui.adapters;
 
 import android.annotation.SuppressLint;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +14,7 @@ import java.util.List;
 
 import fr.ralala.worktime.ApplicationCtx;
 import fr.ralala.worktime.R;
+import fr.ralala.worktime.utils.Log;
 
 /**
  * ******************************************************************************
@@ -156,9 +156,7 @@ public abstract class EntriesArrayAdapter<T> extends RecyclerView.Adapter<Entrie
     try {
       notifyDataSetChanged();
     } catch (Exception e) {
-      String text = "Exception: " + e.getMessage();
-      ApplicationCtx.addLog(mRecyclerView.getContext(), "safeNotifyDataSetChanged", text);
-      Log.e(getClass().getSimpleName(), text, e);
+      Log.error(mRecyclerView.getContext(), "safeNotifyDataSetChanged", "Exception: " + e.getMessage(), e);
     }
   }
 

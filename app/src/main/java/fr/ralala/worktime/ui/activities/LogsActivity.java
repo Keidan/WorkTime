@@ -65,7 +65,7 @@ public class LogsActivity extends AppCompatActivity {
 
     mLogs = findViewById(R.id.logs);
 
-    mCfq = (CircularFifoQueue<String>) app.getLogBuffer();
+    mCfq = (CircularFifoQueue<String>) app.getLog().getQueue();
     final String[] lines = mCfq.toArray(new String[]{});
     final StringBuilder sb = new StringBuilder();
     for (final String s : lines)

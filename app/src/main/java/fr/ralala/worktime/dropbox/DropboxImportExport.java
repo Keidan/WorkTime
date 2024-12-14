@@ -4,7 +4,6 @@ package fr.ralala.worktime.dropbox;
 import android.app.Service;
 import android.content.Context;
 import android.net.Uri;
-import android.util.Log;
 import android.widget.ArrayAdapter;
 
 import androidx.annotation.NonNull;
@@ -32,6 +31,7 @@ import fr.ralala.worktime.sql.SqlConstants;
 import fr.ralala.worktime.sql.SqlHelper;
 import fr.ralala.worktime.ui.utils.UIHelper;
 import fr.ralala.worktime.utils.AndroidHelper;
+import fr.ralala.worktime.utils.Log;
 
 /**
  * ******************************************************************************
@@ -103,10 +103,9 @@ public class DropboxImportExport implements DropboxListener {
     } catch (Exception e) {
       safeRemove();
       closeDialog();
-      UIHelper.toastLong(c, c.getString(R.string.error) + ": " + e.getMessage());
       String err = c.getString(R.string.error) + e.getMessage();
-      ApplicationCtx.addLog(c, "exportDatabase", err);
-      Log.e(getClass().getSimpleName(), err, e);
+      UIHelper.toastLong(c, err);
+      Log.error(c, "exportDatabase", err, e);
     }
     return false;
   }
@@ -119,9 +118,7 @@ public class DropboxImportExport implements DropboxListener {
       try {
         Files.delete(mFile.toPath());
       } catch (IOException e) {
-        String err = mContext.getString(R.string.error) + e.getMessage();
-        ApplicationCtx.addLog(mContext, "safeRemove", err);
-        Log.e(getClass().getSimpleName(), err, e);
+        Log.error(mContext, "safeRemove", mContext.getString(R.string.error) + e.getMessage(), e);
       }
       mFile = null;
     }
@@ -149,9 +146,7 @@ public class DropboxImportExport implements DropboxListener {
   @Override
   public void onDropboxUploadError(Exception e) {
     closeDialog();
-    String err = "Failed to upload file: " + e.getMessage();
-    ApplicationCtx.addLog(mContext, "onDropboxUploadError", err);
-    Log.e(getClass().getSimpleName(), err, e);
+    Log.error(mContext, "onDropboxUploadError", "Failed to upload file: " + e.getMessage(), e);
     UIHelper.toast(mContext, mContext.getString(R.string.error_dropbox_upload));
     safeRemove();
     if (mDropboxUploaded != null)
@@ -170,9 +165,8 @@ public class DropboxImportExport implements DropboxListener {
       loadDb(mContext, result);
     } catch (Exception e) {
       String err = mContext.getString(R.string.error) + ": " + e.getMessage();
-      ApplicationCtx.addLog(mContext, "onDropboxDownloadComplete", err);
+      Log.error(mContext, "onDropboxDownloadComplete", err, e);
       UIHelper.toastLong(mContext, err);
-      Log.e(getClass().getSimpleName(), err, e);
     }
     safeRemove();
     if (mDropboxDownloaded != null)
@@ -187,9 +181,7 @@ public class DropboxImportExport implements DropboxListener {
   @Override
   public void onDropboxDownloadError(Exception e) {
     closeDialog();
-    String err = "Failed to download file: " + e.getMessage();
-    ApplicationCtx.addLog(mContext, "onDropboxDownloadError", err);
-    Log.e(getClass().getSimpleName(), err, e);
+    Log.error(mContext, "onDropboxDownloadError", "Failed to download file: " + e.getMessage(), e);
     UIHelper.toast(mContext, mContext.getString(R.string.error_dropbox_download));
     safeRemove();
     if (mDropboxDownloaded != null)
@@ -219,8 +211,7 @@ public class DropboxImportExport implements DropboxListener {
             new DownloadFileTask(mContext, app.getDropboxHelper(), DropboxImportExport.this).execute((FileMetadata) m);
           } catch (Exception e) {
             String err = mContext.getString(R.string.error) + ": " + e.getMessage();
-            ApplicationCtx.addLog(mContext, "onDropboxListFolderDataLoaded", err);
-            Log.e(getClass().getSimpleName(), err, e);
+            Log.error(mContext, "onDropboxListFolderDataLoaded", err, e);
             UIHelper.toastLong(mContext, err);
           }
         }
@@ -236,9 +227,7 @@ public class DropboxImportExport implements DropboxListener {
   @Override
   public void onDropboxListFolderError(Exception e) {
     closeDialog();
-    String err = mContext.getString(R.string.error_dropbox_list_directory) + ": " + e.getMessage();
-    ApplicationCtx.addLog(mContext, "onDropboxListFolderError", err);
-    Log.e(getClass().getSimpleName(), err, e);
+    Log.error(mContext, "onDropboxListFolderError", mContext.getString(R.string.error_dropbox_list_directory) + ": " + e.getMessage(), e);
     UIHelper.toast(mContext, mContext.getString(R.string.error_dropbox_list_directory));
     if (mDropboxDownloaded != null)
       mDropboxDownloaded.dropboxDownloaded(true);

@@ -1,7 +1,6 @@
 package fr.ralala.worktime.dropbox;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.dropbox.core.DbxException;
 import com.dropbox.core.DbxRequestConfig;
@@ -15,6 +14,7 @@ import java.util.List;
 
 import fr.ralala.worktime.ApplicationCtx;
 import fr.ralala.worktime.R;
+import fr.ralala.worktime.utils.Log;
 
 /**
  * ******************************************************************************
@@ -50,9 +50,7 @@ public class DropboxOAuthUtil {
         mDropboxCredentialUtil.storeCredentialLocally(authDbxCredential);
         mIsAwaitingResult = true;
       } catch (DbxException e) {
-        String text = "Exception: " + e.getMessage();
-        ApplicationCtx.addLog(context, "refreshToken", text);
-        Log.e(getClass().getSimpleName(), text, e);
+        Log.error(context, "refreshToken", "Exception: " + e.getMessage(), e);
       }
     }).start();
   }

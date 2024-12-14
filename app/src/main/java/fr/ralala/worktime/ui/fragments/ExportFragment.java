@@ -3,7 +3,6 @@ package fr.ralala.worktime.ui.fragments;
 
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,6 +35,7 @@ import fr.ralala.worktime.ui.adapters.ExportListViewArrayAdapter;
 import fr.ralala.worktime.ui.utils.UIHelper;
 import fr.ralala.worktime.utils.AndroidHelper;
 import fr.ralala.worktime.utils.ExcelHelper;
+import fr.ralala.worktime.utils.Log;
 
 /**
  * ******************************************************************************
@@ -198,9 +198,8 @@ public class ExportFragment extends Fragment implements AdapterView.OnItemSelect
         UIHelper.snack(mActivity, getString(R.string.email_sent_to_without_mail));
     } catch (Exception e) {
       String text = getString(R.string.error) + ": " + e.getMessage();
-      ApplicationCtx.addLog(mActivity, "ExportFragment", text);
-      Log.e(getClass().getSimpleName(), text, e);
-      UIHelper.snack(mActivity, getString(R.string.error) + ": " + e.getMessage());
+      Log.error(mActivity, "ExportFragment", text, e);
+      UIHelper.snack(mActivity, text);
     }
   }
 

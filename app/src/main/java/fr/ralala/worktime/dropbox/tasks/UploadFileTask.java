@@ -16,6 +16,7 @@ import fr.ralala.worktime.ApplicationCtx;
 import fr.ralala.worktime.dropbox.DropboxHelper;
 import fr.ralala.worktime.dropbox.DropboxListener;
 import fr.ralala.worktime.tasks.TaskRunner;
+import fr.ralala.worktime.utils.Log;
 import fr.ralala.worktime.utils.UriHelpers;
 
 /**
@@ -106,8 +107,8 @@ public class UploadFileTask extends TaskRunner<UploadFileTask.Config, List<Strin
 
         // Note - this is not ensuring the name is a valid dropbox file name
         String remoteFileName = localFile.getName();
-        ApplicationCtx.addLog(cfg.context, "UploadFileTask", "remoteFolderPath: '" + remoteFolderPath + "'");
-        ApplicationCtx.addLog(cfg.context, "UploadFileTask", "localFile: '" + localFile + "'");
+        Log.info(cfg.context, "UploadFileTask", "remoteFolderPath: '" + remoteFolderPath + "'");
+        Log.info(cfg.context, "UploadFileTask", "localFile: '" + localFile + "'");
 
         if (cfg.helper == null)
           throw new NullPointerException("Null dropbox helper");

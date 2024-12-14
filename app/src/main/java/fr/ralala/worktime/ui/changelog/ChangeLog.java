@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.graphics.Color;
-import android.util.Log;
 import android.webkit.WebView;
 
 import androidx.appcompat.app.AlertDialog;
@@ -16,6 +15,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 import fr.ralala.worktime.ApplicationCtx;
+import fr.ralala.worktime.utils.Log;
 
 /**
  * Copyright (C) 2011-2013, Karsten Priegnitz
@@ -29,6 +29,7 @@ import fr.ralala.worktime.ApplicationCtx;
  * see: <a href="http://code.google.com/p/android-change-log/">...</a>
  */
 public class ChangeLog {
+  private static final String TAG = "ChangeLog";
   private final ChangeLogIds mIds;
   private final String mLastVersion;
   private String mThisVersion;
@@ -62,22 +63,15 @@ public class ChangeLog {
     // get version numbers
     mLastVersion = sp.getString(VERSION_KEY, NO_VERSION);
 
-    String text = "lastVersion: " + mLastVersion;
-    ApplicationCtx.addLog(context, "ChangeLog", text);
-    Log.d(TAG, text);
+    Log.info(context, TAG, "lastVersion: " + mLastVersion);
     try {
       mThisVersion = context.getPackageManager().getPackageInfo(
         context.getPackageName(), 0).versionName;
     } catch (final NameNotFoundException e) {
       mThisVersion = NO_VERSION;
-      text = "Could not get version name from manifest!";
-      ApplicationCtx.addLog(context, "ChangeLog", text);
-      Log.e(TAG, text);
-      e.printStackTrace();
+      Log.error(context, TAG, "Could not get version name from manifest!", e);
     }
-    text = "appVersion: " + mThisVersion;
-    ApplicationCtx.addLog(context, "ChangeLog", text);
-    Log.d(TAG, text);
+    Log.info(context, TAG, "appVersion: " + mThisVersion);
   }
 
   /**
@@ -259,6 +253,4 @@ public class ChangeLog {
     }
     this.listMode = Listmode.NONE;
   }
-
-  private static final String TAG = "ChangeLog";
 }

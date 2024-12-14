@@ -5,7 +5,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -43,6 +42,7 @@ import fr.ralala.worktime.ui.utils.UIHelper;
 import fr.ralala.worktime.ui.widgets.DayWidgetProvider1x1;
 import fr.ralala.worktime.ui.widgets.DayWidgetProvider4x1;
 import fr.ralala.worktime.utils.AndroidHelper;
+import fr.ralala.worktime.utils.Log;
 
 /**
  * ******************************************************************************
@@ -134,9 +134,7 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
       /* If the main activity is not started, all contexts are reset, so we need to reload the required contexts */
       if (!mApp.openSql(this)) {
         UIHelper.toast(this, R.string.error_widget_sql);
-        String text = "Widget error SQL";
-        ApplicationCtx.addLog(this, TAG, text);
-        Log.e(getClass().getSimpleName(), text);
+        Log.error(this, TAG, "Widget error SQL");
         finish();
         return;
       }
@@ -725,16 +723,13 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
           if (etLongitude != null)
             etLongitude.setText(String.valueOf(location.getLongitude()));
         }
-        String text = "Location: " + location;
-        ApplicationCtx.addLog(DayActivity.this, TAG, text);
-        Log.i(getClass().getSimpleName(), text);
+        Log.info(DayActivity.this, TAG, "Location: " + location);
       }
 
       public void onLocationError(@NonNull Exception e) {
         String text = "Exception: " + e.getMessage();
-        ApplicationCtx.addLog(DayActivity.this, TAG, text);
-        Log.e(getClass().getSimpleName(), text, e);
-        UIHelper.toast(DayActivity.this, e.getMessage());
+        Log.error(DayActivity.this, TAG, text, e);
+        UIHelper.toast(DayActivity.this, text);
       }
     }))
       UIHelper.toast(this, R.string.error_gps_permissions);

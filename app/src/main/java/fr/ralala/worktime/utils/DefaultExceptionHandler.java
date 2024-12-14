@@ -6,7 +6,6 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Process;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 
@@ -35,9 +34,7 @@ public class DefaultExceptionHandler implements UncaughtExceptionHandler {
 
   @Override
   public void uncaughtException(@NonNull Thread thread, @NonNull Throwable ex) {
-    String text = mActivity.getString(R.string.error) + ex.getMessage();
-    ApplicationCtx.addLog(mActivity, "uncaughtException", text);
-    Log.e(getClass().getSimpleName(), text, ex);
+    Log.error(mActivity, "uncaughtException", mActivity.getString(R.string.error) + ex.getMessage(), ex);
     ApplicationCtx app = (ApplicationCtx) mActivity.getApplication();
     try {
       Intent intent = new Intent(mActivity, MainActivity.class);
@@ -59,9 +56,7 @@ public class DefaultExceptionHandler implements UncaughtExceptionHandler {
       //This will stop your application and take out from it.
       Process.killProcess(Process.myPid());
     } catch (Exception e) {
-      text = mActivity.getString(R.string.error) + e.getMessage();
-      ApplicationCtx.addLog(mActivity, "uncaughtException", text);
-      Log.e(getClass().getSimpleName(), text, e);
+      Log.error(mActivity, "uncaughtException", mActivity.getString(R.string.error) + e.getMessage(), e);
     }
   }
 
