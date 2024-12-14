@@ -7,6 +7,9 @@
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/WorkTime.app.androidTest.iml" filepath="$PROJECT_DIR$/.idea/modules/app/WorkTime.app.androidTest.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/WorkTime.app.main.iml" filepath="$PROJECT_DIR$/.idea/modules/app/WorkTime.app.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/WorkTime.app.unitTest.iml" filepath="$PROJECT_DIR$/.idea/modules/app/WorkTime.app.unitTest.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/android.WorkTime.app.androidTest.iml" filepath="$PROJECT_DIR$/.idea/modules/app/android.WorkTime.app.androidTest.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/dev.src.android.WorkTime.app.androidTest.iml" filepath="$PROJECT_DIR$/.idea/modules/app/dev.src.android.WorkTime.app.androidTest.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/src.android.WorkTime.app.androidTest.iml" filepath="$PROJECT_DIR$/.idea/modules/app/src.android.WorkTime.app.androidTest.iml" />
     </modules>
   </component>
 </project>
