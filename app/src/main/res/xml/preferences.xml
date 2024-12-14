@@ -61,13 +61,13 @@
       app:iconSpaceReserved="false"
       android:key="prefChangelog"
       android:title="@string/pref_changelog_title"
-      android:summary="@string/pref_changelog_summary"/>
+      android:summary="@string/pref_changelog_summary" />
     <androidx.preference.Preference
       app:iconSpaceReserved="false"
       android:key="prefVersion"
       android:enabled="false"
       android:selectable="false"
       android:persistent="false"
-      android:shouldDisableView="false"/>
+      android:shouldDisableView="false" />
   </androidx.preference.PreferenceCategory>
 </androidx.preference.PreferenceScreen>

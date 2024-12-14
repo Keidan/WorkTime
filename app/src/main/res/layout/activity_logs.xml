@@ -2,13 +2,13 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
   android:layout_width="fill_parent"
   android:layout_height="fill_parent"
-  android:padding="1dp" >
+  android:padding="1dp">
 
   <ListView
     android:id="@+id/logs"
     android:typeface="monospace"
     android:textSize="12sp"
     android:layout_width="fill_parent"
-    android:layout_height="wrap_content"/>
+    android:layout_height="wrap_content" />
 
 </FrameLayout>
