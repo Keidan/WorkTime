@@ -1,5 +1,6 @@
 package fr.ralala.worktime.ui.activities;
 
+import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.Location;
@@ -171,7 +172,7 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
     }
     if (mDe == null) {
       mOpenForAdd = true;
-      if(mDisplayProfile)
+      if (mDisplayProfile)
         mDe = new DayEntry(this, mFromWidget ? WorkTimeDay.now() : WorkTimeDay.fromDate(date), DayType.ERROR, DayType.ERROR);
       else
         mDe = new ProfileEntry(this, WorkTimeDay.now(), DayType.ERROR, DayType.ERROR);
@@ -369,6 +370,132 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
       mTvEndAfternoon.getText().toString().equals(ZERO_TIME);
   }
 
+  private void cancel() {
+    if (mDisplayProfile) {
+      setResult(RESULT_OK);
+      mFromClear = true;
+      mWtdStartMorning = new WorkTimeDay();
+      mTvStartMorning.setText(mWtdStartMorning.timeString());
+      mWtdEndMorning = new WorkTimeDay();
+      mTvEndMorning.setText(mWtdEndMorning.timeString());
+      mWtdStartAfternoon = new WorkTimeDay();
+      mTvStartAfternoon.setText(mWtdStartAfternoon.timeString());
+      mWtdEndAfternoon = new WorkTimeDay();
+      mTvEndAfternoon.setText(mWtdEndAfternoon.timeString());
+      mWtdAdditionalBreak = new WorkTimeDay();
+      mTvAdditionalBreak.setText(mWtdAdditionalBreak.timeString());
+      mWtdRecoveryTime = new WorkTimeDay();
+      mTvRecoveryTime.setText(mWtdRecoveryTime.timeString());
+      mWtdLegalWorktime = mApp.getLegalWorkTimeByDay();
+      mTvLegalWorktime.setText(mWtdLegalWorktime.timeString());
+      mEtAmount.setText(getString(R.string.zero));
+      mSpTypeMorning.setSelection(DayType.AT_WORK.value());
+      mSpTypeAfternoon.setSelection(DayType.AT_WORK.value());
+      mEtName.setText("");
+      mLocation = new Location("");
+      setTitle(mDe.getDay().dateString());
+      mSpProfile.setSelection(0);
+    } else
+      back();
+  }
+
+  private void doneProfile(DayEntry newEntry) {
+    boolean match = mDe.match(newEntry, false);
+    if (!match) {
+      mApp.getProfilesFactory().updateProfilesLearningWeight(mSelectedProfile, mApp.getProfilesWeightDepth(), mFromClear);
+      mFromClear = false;
+      if (newEntry.getTypeMorning() == DayType.RECOVERY || newEntry.getTypeAfternoon() == DayType.RECOVERY || newEntry.getStartMorning().isValidTime() || newEntry.getEndAfternoon().isValidTime()) {
+        mApp.getDaysFactory().add(newEntry);
+      } else
+        mApp.getDaysFactory().remove(mDe);
+      AndroidHelper.updateWidget(this, DayWidgetProvider1x1.class);
+      AndroidHelper.updateWidget(this, DayWidgetProvider4x1.class);
+    }
+  }
+
+  private boolean validateDoneDay(DayEntry newEntry) {
+    boolean error = false;
+    if (mEtName.getText().toString().isEmpty()) {
+      UIHelper.shakeError(mEtName, getString(R.string.error_no_name));
+      error = true;
+    }
+    if (newEntry.getTypeMorning() == DayType.ERROR) {
+      UIHelper.shakeError(mSpTypeMorning);
+      error = true;
+    }
+    if (newEntry.getTypeAfternoon() == DayType.ERROR) {
+      UIHelper.shakeError(mSpTypeAfternoon);
+      error = true;
+    }
+    if (checkMorning(newEntry) || checkAfternoon(newEntry))
+      error = true;
+    return error;
+  }
+
+  private boolean doneDay(DayEntry newEntry) {
+    if (validateDoneDay(newEntry))
+      return true;
+    if (mDe instanceof ProfileEntry && newEntry instanceof ProfileEntry) {
+      ProfileEntry peGlobal = (ProfileEntry) mDe;
+      ProfileEntry peNew = (ProfileEntry) newEntry;
+      if (mLocation != null) {
+        peNew.setLongitude(mLocation.getLongitude());
+        peNew.setLatitude(mLocation.getLatitude());
+      }
+      if (peGlobal.getName().isEmpty() || !peGlobal.match(peNew, true)) {
+        if (peNew.getTypeMorning() == DayType.RECOVERY || peNew.getTypeAfternoon() == DayType.RECOVERY || peNew.getStartMorning().isValidTime() || peNew.getEndAfternoon().isValidTime()) {
+          peNew.setLearningWeight(peGlobal.getLearningWeight());
+          mApp.getProfilesFactory().add(peNew);
+        } else
+          mApp.getProfilesFactory().remove(peGlobal);
+      }
+    }
+    return false;
+  }
+
+  private void done() {
+    DayEntry newEntry = mDisplayProfile ? new DayEntry(this, mDe.getDay().toCalendar(),
+      DayType.compute(this, mSpTypeMorning.getSelectedItem().toString()),
+      DayType.compute(this, mSpTypeAfternoon.getSelectedItem().toString()))
+      : new ProfileEntry(this, mDe.getDay().toCalendar(),
+      DayType.compute(this, mSpTypeMorning.getSelectedItem().toString()),
+      DayType.compute(this, mSpTypeAfternoon.getSelectedItem().toString()));
+    String s = mEtAmount.getText().toString().trim();
+    if (s.equals(getString(R.string.zero))) s = "";
+    newEntry.setAmountByHour(s.isEmpty() ? mApp.getAmountByHour() : Double.parseDouble(s));
+    if (newEntry instanceof ProfileEntry)
+      ((ProfileEntry) newEntry).setName(mEtName.getText().toString());
+    newEntry.setID(mDe.getID());
+    newEntry.setEndMorning(mTvEndMorning.getText().toString());
+    newEntry.setStartMorning(mTvStartMorning.getText().toString());
+    newEntry.setEndAfternoon(mTvEndAfternoon.getText().toString());
+    newEntry.setAdditionalBreak(mTvAdditionalBreak.getText().toString());
+    newEntry.setRecoveryTime(mTvRecoveryTime.getText().toString());
+    newEntry.setStartAfternoon(mTvStartAfternoon.getText().toString());
+    newEntry.setLegalWorkTime(mTvLegalWorktime.getText().toString());
+    if (newEntry.getTypeMorning() != DayType.ERROR) {
+      if (checkMorning(newEntry))
+        return;
+    } else if (newEntry.getTypeAfternoon() != DayType.ERROR && (checkAfternoon(newEntry))) {
+      return;
+    }
+
+    if (!canZeroLegalWorkTime() && mTvLegalWorktime.getText().toString().equals(getString(R.string.default_time))) {
+      UIHelper.shakeError(mTvLegalWorktime, getString(R.string.error_invalid_legal_worktime));
+      return;
+    }
+    if (mDisplayProfile) {
+      doneProfile(newEntry);
+    } else {
+      if (doneDay(newEntry))
+        return;
+    }
+    setResult(RESULT_OK);
+    finish();
+    UIHelper.closeAnimation(this);
+    clearFromWidget();
+  }
+
   /**
    * Called when the options item is clicked (home and cancel).
    *
@@ -381,112 +508,10 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
       back();
       return true;
     } else if (item.getItemId() == R.id.action_cancel) {
-      if (mDisplayProfile) {
-        setResult(RESULT_OK);
-        mFromClear = true;
-        mWtdStartMorning = new WorkTimeDay();
-        mTvStartMorning.setText(mWtdStartMorning.timeString());
-        mWtdEndMorning = new WorkTimeDay();
-        mTvEndMorning.setText(mWtdEndMorning.timeString());
-        mWtdStartAfternoon = new WorkTimeDay();
-        mTvStartAfternoon.setText(mWtdStartAfternoon.timeString());
-        mWtdEndAfternoon = new WorkTimeDay();
-        mTvEndAfternoon.setText(mWtdEndAfternoon.timeString());
-        mWtdAdditionalBreak = new WorkTimeDay();
-        mTvAdditionalBreak.setText(mWtdAdditionalBreak.timeString());
-        mWtdRecoveryTime = new WorkTimeDay();
-        mTvRecoveryTime.setText(mWtdRecoveryTime.timeString());
-        mWtdLegalWorktime = mApp.getLegalWorkTimeByDay();
-        mTvLegalWorktime.setText(mWtdLegalWorktime.timeString());
-        mEtAmount.setText(getString(R.string.zero));
-        mSpTypeMorning.setSelection(DayType.AT_WORK.value());
-        mSpTypeAfternoon.setSelection(DayType.AT_WORK.value());
-        mEtName.setText("");
-        mLocation = new Location("");
-        setTitle(mDe.getDay().dateString());
-        mSpProfile.setSelection(0);
-      } else
-        back();
+      cancel();
       return true;
     } else if (item.getItemId() == R.id.action_done) {
-      DayEntry newEntry = mDisplayProfile ? new DayEntry(this, mDe.getDay().toCalendar(),
-        DayType.compute(this, mSpTypeMorning.getSelectedItem().toString()),
-        DayType.compute(this, mSpTypeAfternoon.getSelectedItem().toString()))
-        : new ProfileEntry(this, mDe.getDay().toCalendar(),
-        DayType.compute(this, mSpTypeMorning.getSelectedItem().toString()),
-        DayType.compute(this, mSpTypeAfternoon.getSelectedItem().toString()));
-      String s = mEtAmount.getText().toString().trim();
-      if (s.equals(getString(R.string.zero))) s = "";
-      newEntry.setAmountByHour(s.isEmpty() ? mApp.getAmountByHour() : Double.parseDouble(s));
-      if (newEntry instanceof ProfileEntry)
-        ((ProfileEntry) newEntry).setName(mEtName.getText().toString());
-      newEntry.setID(mDe.getID());
-      newEntry.setEndMorning(mTvEndMorning.getText().toString());
-      newEntry.setStartMorning(mTvStartMorning.getText().toString());
-      newEntry.setEndAfternoon(mTvEndAfternoon.getText().toString());
-      newEntry.setAdditionalBreak(mTvAdditionalBreak.getText().toString());
-      newEntry.setRecoveryTime(mTvRecoveryTime.getText().toString());
-      newEntry.setStartAfternoon(mTvStartAfternoon.getText().toString());
-      newEntry.setLegalWorkTime(mTvLegalWorktime.getText().toString());
-      if (newEntry.getTypeMorning() != DayType.ERROR) {
-        if (checkMorning(newEntry))
-          return true;
-      } else if (newEntry.getTypeAfternoon() != DayType.ERROR && (checkAfternoon(newEntry))) {
-        return true;
-      }
-
-      if (!canZeroLegalWorkTime() && mTvLegalWorktime.getText().toString().equals(getString(R.string.default_time))) {
-        UIHelper.shakeError(mTvLegalWorktime, getString(R.string.error_invalid_legal_worktime));
-        return true;
-      }
-      if (mDisplayProfile) {
-        boolean match = mDe.match(newEntry, false);
-        if (!match) {
-          mApp.getProfilesFactory().updateProfilesLearningWeight(mSelectedProfile, mApp.getProfilesWeightDepth(), mFromClear);
-          mFromClear = false;
-          if (newEntry.getTypeMorning() == DayType.RECOVERY || newEntry.getTypeAfternoon() == DayType.RECOVERY || newEntry.getStartMorning().isValidTime() || newEntry.getEndAfternoon().isValidTime()) {
-            mApp.getDaysFactory().add(newEntry);
-          } else
-            mApp.getDaysFactory().remove(mDe);
-          AndroidHelper.updateWidget(this, DayWidgetProvider1x1.class);
-          AndroidHelper.updateWidget(this, DayWidgetProvider4x1.class);
-        }
-      } else {
-        if (mEtName.getText().toString().isEmpty()) {
-          UIHelper.shakeError(mEtName, getString(R.string.error_no_name));
-          return true;
-        }
-        if (newEntry.getTypeMorning() == DayType.ERROR) {
-          UIHelper.shakeError(mSpTypeMorning);
-          return true;
-        }
-        if (newEntry.getTypeAfternoon() == DayType.ERROR) {
-          UIHelper.shakeError(mSpTypeAfternoon);
-          return true;
-        }
-        if (checkMorning(newEntry) || checkAfternoon(newEntry))
-          return true;
-
-        if (mDe instanceof ProfileEntry && newEntry instanceof ProfileEntry) {
-          ProfileEntry peGlobal = (ProfileEntry) mDe;
-          ProfileEntry peNew = (ProfileEntry) newEntry;
-          if (mLocation != null) {
-            peNew.setLongitude(mLocation.getLongitude());
-            peNew.setLatitude(mLocation.getLatitude());
-          }
-          if (peGlobal.getName().isEmpty() || !peGlobal.match(peNew, true)) {
-            if (peNew.getTypeMorning() == DayType.RECOVERY || peNew.getTypeAfternoon() == DayType.RECOVERY || peNew.getStartMorning().isValidTime() || peNew.getEndAfternoon().isValidTime()) {
-              peNew.setLearningWeight(peGlobal.getLearningWeight());
-              mApp.getProfilesFactory().add(peNew);
-            } else
-              mApp.getProfilesFactory().remove(peGlobal);
-          }
-        }
-      }
-      setResult(RESULT_OK);
-      finish();
-      UIHelper.closeAnimation(this);
-      clearFromWidget();
+      done();
       return true;
     }
     return false;
@@ -555,34 +580,38 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
     else if (v.equals(mTvLegalWorktime))
       UIHelper.openTimePicker(this, mWtdLegalWorktime, mTvLegalWorktime);
     else if (v.equals(mIvGeoloc)) {
-      Location loc = ((ProfileEntry) mDe).getLocation();
-      if ((Double.isNaN(loc.getLatitude()) || loc.getLatitude() == 0.0) &&
-        (Double.isNaN(loc.getLongitude()) || loc.getLongitude() == 0.0) && mLocation != null &&
-        !Double.isNaN(mLocation.getLatitude()) && mLocation.getLatitude() != 0.0 &&
-        !Double.isNaN(mLocation.getLongitude()) && mLocation.getLongitude() != 0.0)
-        loc = mLocation;
-      createGeolocateDialog(getString(R.string.geolocation), R.layout.content_dialog_add_geoloc, loc, (dialog, latitude, longitude) -> {
-        final String slatitude = Objects.requireNonNull(latitude.getText()).toString();
-        final String slongitude = Objects.requireNonNull(longitude.getText()).toString();
-        final Location location = new Location("");
-        if (!slatitude.trim().isEmpty())
-          try {
-            location.setLatitude(Double.parseDouble(slatitude));
-          } catch (Exception e) {
-            UIHelper.shakeError(latitude, getString(R.string.error_invalid_latitude));
-            return;
-          }
-        if (!slongitude.trim().isEmpty())
-          try {
-            location.setLongitude(Double.parseDouble(slongitude));
-          } catch (Exception e) {
-            UIHelper.shakeError(longitude, getString(R.string.error_invalid_longitude));
-            return;
-          }
-        mLocation = location;
-        dialog.dismiss();
-      });
+      locateClick();
     }
+  }
+
+  private void locateClick() {
+    Location loc = ((ProfileEntry) mDe).getLocation();
+    if ((Double.isNaN(loc.getLatitude()) || loc.getLatitude() == 0.0) &&
+      (Double.isNaN(loc.getLongitude()) || loc.getLongitude() == 0.0) && mLocation != null &&
+      !Double.isNaN(mLocation.getLatitude()) && mLocation.getLatitude() != 0.0 &&
+      !Double.isNaN(mLocation.getLongitude()) && mLocation.getLongitude() != 0.0)
+      loc = mLocation;
+    createGeolocateDialog(getString(R.string.geolocation), loc, (dialog, latitude, longitude) -> {
+      final String slatitude = Objects.requireNonNull(latitude.getText()).toString();
+      final String slongitude = Objects.requireNonNull(longitude.getText()).toString();
+      final Location location = new Location("");
+      if (!slatitude.trim().isEmpty())
+        try {
+          location.setLatitude(Double.parseDouble(slatitude));
+        } catch (Exception e) {
+          UIHelper.shakeError(latitude, getString(R.string.error_invalid_latitude));
+          return;
+        }
+      if (!slongitude.trim().isEmpty())
+        try {
+          location.setLongitude(Double.parseDouble(slongitude));
+        } catch (Exception e) {
+          UIHelper.shakeError(longitude, getString(R.string.error_invalid_longitude));
+          return;
+        }
+      mLocation = location;
+      dialog.dismiss();
+    });
   }
 
   /**
@@ -661,15 +690,16 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
     void onClick(AlertDialog dialog, TextInputEditText etLatitude, TextInputEditText etLongitude);
   }
 
-  private void createGeolocateDialog(String title, int contentId, Location defaultLocation, DialogPositiveClick positiveClick) {
+  @SuppressLint("InflateParams")
+  private void createGeolocateDialog(String title, Location defaultLocation, DialogPositiveClick positiveClick) {
     AlertDialog.Builder builder = new AlertDialog.Builder(this);
     builder.setCancelable(false)
       .setTitle(title)
-      .setPositiveButton(android.R.string.yes, null)
-      .setNegativeButton(android.R.string.no, (dialog, whichButton) -> {
+      .setPositiveButton(android.R.string.ok, null)
+      .setNegativeButton(android.R.string.cancel, (dialog, whichButton) -> {
       });
     LayoutInflater factory = LayoutInflater.from(this);
-    builder.setView(factory.inflate(contentId, null));
+    builder.setView(factory.inflate(R.layout.content_dialog_add_geoloc, null));
     final AlertDialog dialog = builder.create();
     dialog.show();
     TextInputEditText etLatitude = dialog.findViewById(R.id.tieLatitude);
@@ -682,29 +712,31 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
         defaultLocation.getLongitude() == 0.0) ? "" : defaultLocation.getLongitude()));
     Button btGeolocateMe = dialog.findViewById(R.id.btGeolocateMe);
     if (btGeolocateMe != null)
-      btGeolocateMe.setOnClickListener(v -> {
-        if (!AndroidHelper.getLastLocationNewMethod(this, new AndroidHelper.LocationListener() {
-          public void onLocationSuccess(Location location) {
-            if (location != null) {
-              if (etLatitude != null)
-                etLatitude.setText(String.valueOf(location.getLatitude()));
-              if (etLongitude != null)
-                etLongitude.setText(String.valueOf(location.getLongitude()));
-            }
-            String text = "Location: " + location;
-            ApplicationCtx.addLog(DayActivity.this, TAG, text);
-            Log.i(getClass().getSimpleName(), text);
-          }
-
-          public void onLocationError(@NonNull Exception e) {
-            String text = "Exception: " + e.getMessage();
-            ApplicationCtx.addLog(DayActivity.this, TAG, text);
-            Log.e(getClass().getSimpleName(), text, e);
-            UIHelper.toast(DayActivity.this, e.getMessage());
-          }
-        }))
-          UIHelper.toast(this, R.string.error_gps_permissions);
-      });
+      btGeolocateMe.setOnClickListener(v -> locateMeClick(etLatitude, etLongitude));
     dialog.getButton(DialogInterface.BUTTON_POSITIVE).setOnClickListener(v -> positiveClick.onClick(dialog, etLatitude, etLongitude));
+  }
+
+  private void locateMeClick(TextInputEditText etLatitude, TextInputEditText etLongitude) {
+    if (!AndroidHelper.getLastLocationNewMethod(this, new AndroidHelper.LocationListener() {
+      public void onLocationSuccess(Location location) {
+        if (location != null) {
+          if (etLatitude != null)
+            etLatitude.setText(String.valueOf(location.getLatitude()));
+          if (etLongitude != null)
+            etLongitude.setText(String.valueOf(location.getLongitude()));
+        }
+        String text = "Location: " + location;
+        ApplicationCtx.addLog(DayActivity.this, TAG, text);
+        Log.i(getClass().getSimpleName(), text);
+      }
+
+      public void onLocationError(@NonNull Exception e) {
+        String text = "Exception: " + e.getMessage();
+        ApplicationCtx.addLog(DayActivity.this, TAG, text);
+        Log.e(getClass().getSimpleName(), text, e);
+        UIHelper.toast(DayActivity.this, e.getMessage());
+      }
+    }))
+      UIHelper.toast(this, R.string.error_gps_permissions);
   }
 }

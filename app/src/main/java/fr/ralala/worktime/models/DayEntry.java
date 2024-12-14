@@ -313,8 +313,13 @@ public class DayEntry {
    * @return WorkTimeDay
    */
   private WorkTimeDay parseDate(String date) {
+    String d = date;
     WorkTimeDay wtd = new WorkTimeDay();
-    String[] split = date.split("/");
+    String[] split = d.split("/");
+    if (split.length != 3) {
+      d = "01/01/1970";
+      split = d.split("/");
+    }
     wtd.setDay(Integer.parseInt(split[0]));
     wtd.setMonth(Integer.parseInt(split[1]));
     wtd.setYear(Integer.parseInt(split[2]));
