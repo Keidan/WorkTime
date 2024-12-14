@@ -24,5 +24,6 @@
     android:layout_marginStart="@dimen/fab_margin_start"
     android:layout_marginEnd="@dimen/fab_margin_end"
     android:layout_marginBottom="@dimen/fab_margin_bottom"
-    app:srcCompat="@drawable/ic_plus" />
+    app:srcCompat="@drawable/ic_plus"
+    android:contentDescription="@null" />
 </FrameLayout>

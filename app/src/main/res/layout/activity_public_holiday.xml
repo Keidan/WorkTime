@@ -16,7 +16,7 @@
     android:layout_height="wrap_content"
     android:columnCount="2">
 
-    <TextView
+    <androidx.appcompat.widget.AppCompatTextView
       android:id="@+id/tvName"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
@@ -25,7 +25,7 @@
       android:text="@string/name"
       android:labelFor="@+id/etName" />
 
-    <EditText
+    <androidx.appcompat.widget.AppCompatEditText
       android:id="@+id/etName"
       android:layout_width="@dimen/activity_public_holiday_etName_layout_width"
       android:layout_height="wrap_content"
@@ -33,9 +33,9 @@
       android:layout_gravity="fill_horizontal"
       android:layout_row="0"
       android:layout_marginStart="@dimen/activity_public_holiday_etName_layout_marginStart"
-      android:inputType="textCapWords"></EditText>
+      android:inputType="textCapWords"/>
 
-    <TextView
+    <androidx.appcompat.widget.AppCompatTextView
       android:id="@+id/tvDate"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
@@ -52,9 +52,9 @@
       android:layout_gravity="fill_horizontal"
       android:layout_row="1"
       android:layout_marginStart="@dimen/activity_public_holiday_dpDate_layout_marginStart"
-      style="@style/date_picker_theme"></DatePicker>
+      style="@style/date_picker_theme"/>
 
-    <TextView
+    <androidx.appcompat.widget.AppCompatTextView
       android:id="@+id/tvRecurrence"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
@@ -63,7 +63,7 @@
       android:text="@string/recurrence"
       android:labelFor="@+id/ckRecurrence" />
 
-    <CheckBox
+    <androidx.appcompat.widget.AppCompatCheckBox
       android:id="@+id/ckRecurrence"
       android:layout_width="@dimen/activity_public_holiday_ckRecurrence_layout_width"
       android:layout_height="wrap_content"

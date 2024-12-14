@@ -7,7 +7,7 @@
   android:background="?attr/colorPrimaryContainer"
   android:theme="@style/Theme.Material3.DynamicColors.DayNight">
 
-  <TextView
+  <androidx.appcompat.widget.AppCompatTextView
     android:id="@+id/tvMonth"
     android:layout_alignParentTop="true"
     android:textColor="?attr/colorOnPrimaryContainer"
@@ -18,7 +18,7 @@
     android:text="@null"
     android:textSize="@dimen/widget_text_size_month" />
 
-  <TextView
+  <androidx.appcompat.widget.AppCompatTextView
     android:id="@+id/tvDay"
     android:layout_below="@id/tvMonth"
     android:textColor="?attr/colorOnPrimaryContainer"
@@ -31,7 +31,7 @@
     android:layout_marginEnd="@dimen/widget_day1x1_tvDay_layout_marginEnd"
     android:textSize="@dimen/widget_text_size_day" />
 
-  <TextView
+  <androidx.appcompat.widget.AppCompatTextView
     android:id="@+id/tvWorkTime"
     android:layout_below="@id/tvDay"
     android:layout_alignParentBottom="true"

@@ -15,7 +15,7 @@
     android:timePickerMode="clock"
     tools:ignore="MissingConstraints" />
 
-  <Button
+  <androidx.appcompat.widget.AppCompatButton
     android:id="@+id/btCancel"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
@@ -24,7 +24,7 @@
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintTop_toBottomOf="@+id/time_picker" />
 
-  <Button
+  <androidx.appcompat.widget.AppCompatButton
     android:id="@+id/btOk"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"

@@ -5,7 +5,7 @@
   android:layout_width="fill_parent"
   android:padding="@dimen/listview_item_rl_padding">
 
-  <TextView
+  <androidx.appcompat.widget.AppCompatTextView
     android:id="@+id/name"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
@@ -14,7 +14,7 @@
     android:textStyle="bold"
     android:textIsSelectable="false" />
 
-  <TextView
+  <androidx.appcompat.widget.AppCompatTextView
     android:id="@+id/info"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"

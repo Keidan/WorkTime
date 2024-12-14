@@ -35,7 +35,7 @@
       android:layout_weight="@dimen/fragment_main_llYearMonth_layout_weight"
       tools:ignore="InefficientWeight">
 
-      <TextView
+      <androidx.appcompat.widget.AppCompatTextView
         android:text="@null"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -44,7 +44,7 @@
         android:layout_marginBottom="@dimen/fragment_main_tvMonth_layout_marginBottom"
         tools:ignore="NestedWeights" />
 
-      <TextView
+      <androidx.appcompat.widget.AppCompatTextView
         android:text="@null"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -85,14 +85,14 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content">
 
-      <TextView
+      <androidx.appcompat.widget.AppCompatTextView
         android:text="@string/work_days"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/tvWorkDays"
         android:layout_weight="@dimen/fragment_main_tvWorkDays_layout_weight" />
 
-      <TextView
+      <androidx.appcompat.widget.AppCompatTextView
         android:text="@string/monthly_hours"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

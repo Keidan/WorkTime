@@ -5,7 +5,7 @@
   android:layout_height="fill_parent"
   android:orientation="horizontal">
 
-  <TextView
+  <androidx.appcompat.widget.AppCompatTextView
     android:id="@+id/tvWeek"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -15,7 +15,7 @@
     android:typeface="monospace"
     android:visibility="gone" />
 
-  <TextView
+  <androidx.appcompat.widget.AppCompatTextView
     android:id="@+id/tvDay"
     android:layout_width="@dimen/days_listview_item_tvDay_layout_width"
     android:layout_height="wrap_content"
@@ -24,7 +24,7 @@
     android:textSize="@dimen/main_list_text_size"
     android:typeface="monospace" />
 
-  <TextView
+  <androidx.appcompat.widget.AppCompatTextView
     android:id="@+id/tvStart"
     android:layout_width="@dimen/days_listview_item_tvStart_layout_width"
     android:layout_height="wrap_content"
@@ -33,7 +33,7 @@
     android:textSize="@dimen/main_list_text_size"
     android:typeface="monospace" />
 
-  <TextView
+  <androidx.appcompat.widget.AppCompatTextView
     android:id="@+id/tvEnd"
     android:layout_width="@dimen/days_listview_item_tvEnd_layout_width"
     android:layout_height="wrap_content"
@@ -42,7 +42,7 @@
     android:textSize="@dimen/main_list_text_size"
     android:typeface="monospace" />
 
-  <TextView
+  <androidx.appcompat.widget.AppCompatTextView
     android:id="@+id/tvPause"
     android:layout_width="@dimen/days_listview_item_tvPause_layout_width"
     android:layout_height="wrap_content"
@@ -51,7 +51,7 @@
     android:textSize="@dimen/main_list_text_size"
     android:typeface="monospace" />
 
-  <TextView
+  <androidx.appcompat.widget.AppCompatTextView
     android:id="@+id/tvTotal"
     android:layout_width="@dimen/days_listview_item_tvTotal_layout_width"
     android:layout_height="wrap_content"
@@ -60,7 +60,7 @@
     android:textSize="@dimen/main_list_text_size"
     android:typeface="monospace" />
 
-  <TextView
+  <androidx.appcompat.widget.AppCompatTextView
     android:id="@+id/tvOver"
     android:layout_width="@dimen/days_listview_item_tvOver_layout_width"
     android:layout_height="wrap_content"

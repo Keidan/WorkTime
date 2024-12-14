@@ -18,7 +18,7 @@
     android:layout_marginStart="@dimen/progress_dialog_layout_marginStart"
     android:layout_marginEnd="@dimen/progress_dialog_layout_marginEnd" />
 
-  <TextView
+  <androidx.appcompat.widget.AppCompatTextView
     android:id="@+id/text"
     android:layout_centerHorizontal="true"
     android:layout_below="@id/progressbar"

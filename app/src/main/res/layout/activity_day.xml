@@ -20,7 +20,7 @@
 
 
     <!-- Name -->
-    <TextView
+    <androidx.appcompat.widget.AppCompatTextView
       android:id="@+id/tvName"
       android:layout_marginTop="@dimen/activity_day_tvName_layout_marginTop"
       android:layout_marginBottom="@dimen/activity_day_tvName_layout_marginBottom"
@@ -32,7 +32,7 @@
       app:layout_constraintLeft_toLeftOf="parent"
       app:layout_constraintTop_toTopOf="@+id/etName" />
 
-    <EditText
+    <androidx.appcompat.widget.AppCompatEditText
       android:id="@+id/etName"
       android:inputType="textCapSentences"
       app:layout_constraintTop_toTopOf="parent"
@@ -43,7 +43,7 @@
       app:layout_constraintEnd_toStartOf="@+id/ivGeoloc"
       app:layout_constraintStart_toEndOf="@+id/tvName" />
 
-    <ImageView
+    <androidx.appcompat.widget.AppCompatImageView
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:id="@+id/ivGeoloc"
@@ -54,7 +54,7 @@
       app:srcCompat="@drawable/ic_location" />
 
     <!-- profile -->
-    <TextView
+    <androidx.appcompat.widget.AppCompatTextView
       android:id="@+id/tvProfile"
       android:layout_marginTop="@dimen/activity_day_tvProfile_layout_marginTop"
       android:layout_marginBottom="@dimen/activity_day_tvProfile_layout_marginBottom"
@@ -66,7 +66,7 @@
       app:layout_constraintTop_toBottomOf="@id/tvName"
       app:layout_constraintTop_toTopOf="@+id/spProfile" />
 
-    <Spinner
+    <androidx.appcompat.widget.AppCompatSpinner
       android:id="@+id/spProfile"
       android:layout_width="@dimen/activity_day_spProfile_layout_width"
       android:layout_marginTop="@dimen/activity_day_spProfile_layout_marginTop"
@@ -76,7 +76,7 @@
       app:layout_constraintStart_toEndOf="@+id/tvProfile"
       app:layout_constraintTop_toBottomOf="@id/etName" />
     <!-- type morning -->
-    <TextView
+    <androidx.appcompat.widget.AppCompatTextView
       android:id="@+id/tvTypeMorning"
       android:layout_marginTop="@dimen/activity_day_tvTypeMorning_layout_marginTop"
       android:layout_marginBottom="@dimen/activity_day_tvTypeMorning_layout_marginBottom"
@@ -88,7 +88,7 @@
       app:layout_constraintTop_toBottomOf="@id/tvProfile"
       app:layout_constraintTop_toTopOf="@+id/spTypeMorning" />
 
-    <Spinner
+    <androidx.appcompat.widget.AppCompatSpinner
       android:id="@+id/spTypeMorning"
       android:layout_marginTop="@dimen/activity_day_spTypeMorning_layout_marginTop"
       android:layout_marginBottom="@dimen/activity_day_spTypeMorning_layout_marginBottom"
@@ -98,7 +98,7 @@
       app:layout_constraintStart_toEndOf="@+id/tvTypeMorning"
       app:layout_constraintTop_toBottomOf="@id/spProfile" />
     <!-- type afternoon -->
-    <TextView
+    <androidx.appcompat.widget.AppCompatTextView
       android:id="@+id/tvTypeAfternoon"
       android:layout_marginTop="@dimen/activity_day_tvTypeAfternoon_layout_marginTop"
       android:layout_marginBottom="@dimen/activity_day_tvTypeAfternoon_layout_marginBottom"
@@ -110,7 +110,7 @@
       app:layout_constraintTop_toBottomOf="@id/tvTypeMorning"
       app:layout_constraintTop_toTopOf="@+id/spTypeAfternoon" />
 
-    <Spinner
+    <androidx.appcompat.widget.AppCompatSpinner
       android:id="@+id/spTypeAfternoon"
       android:layout_marginTop="@dimen/activity_day_spTypeAfternoon_layout_marginTop"
       android:layout_marginBottom="@dimen/activity_day_spTypeAfternoon_layout_marginBottom"
@@ -120,7 +120,7 @@
       app:layout_constraintStart_toEndOf="@+id/tvTypeAfternoon"
       app:layout_constraintTop_toBottomOf="@id/spTypeMorning" />
     <!-- start/end morning labels -->
-    <TextView
+    <androidx.appcompat.widget.AppCompatTextView
       android:id="@+id/tvLblStartMorning"
       android:layout_marginTop="@dimen/activity_day_tvLblStartMorning_layout_marginTop"
       android:text="@string/start_morning"
@@ -136,7 +136,7 @@
       android:orientation="vertical"
       app:layout_constraintGuide_percent="@dimen/activity_day_guidelineLbl55_layout_constraintGuide_percent" />
 
-    <TextView
+    <androidx.appcompat.widget.AppCompatTextView
       android:id="@+id/tvLblEndMorning"
       android:layout_marginTop="@dimen/activity_day_tvLblEndMorning_layout_marginTop"
       android:text="@string/end_morning"
@@ -145,7 +145,7 @@
       app:layout_constraintStart_toEndOf="@+id/guidelineLbl55"
       app:layout_constraintTop_toBottomOf="@+id/tvTypeAfternoon" />
     <!-- start/end morning tv -->
-    <TextView
+    <androidx.appcompat.widget.AppCompatTextView
       android:id="@+id/tvStartMorning"
       android:layout_marginTop="@dimen/activity_day_tvStartMorning_layout_marginTop"
       android:layout_marginBottom="@dimen/activity_day_tvStartMorning_layout_marginBottom"
@@ -170,7 +170,7 @@
       android:orientation="vertical"
       app:layout_constraintGuide_percent="@dimen/activity_day_guidelineTv45_layout_constraintGuide_percent" />
 
-    <TextView
+    <androidx.appcompat.widget.AppCompatTextView
       android:id="@+id/tvEndMorning"
       android:layout_marginTop="@dimen/activity_day_tvEndMorning_layout_marginTop"
       android:layout_marginBottom="@dimen/activity_day_tvEndMorning_layout_marginBottom"
@@ -187,7 +187,7 @@
       app:layout_constraintStart_toStartOf="@+id/tvLblEndMorning"
       app:layout_constraintTop_toBottomOf="@+id/tvLblEndMorning" />
     <!-- start/end afternoon labels -->
-    <TextView
+    <androidx.appcompat.widget.AppCompatTextView
       android:id="@+id/tvLblStartAfternoon"
       android:layout_marginTop="@dimen/activity_day_tvLblStartAfternoon_layout_marginTop"
       android:text="@string/start_afternoon"
@@ -196,7 +196,7 @@
       app:layout_constraintLeft_toLeftOf="parent"
       app:layout_constraintTop_toBottomOf="@+id/tvStartMorning" />
 
-    <TextView
+    <androidx.appcompat.widget.AppCompatTextView
       android:id="@+id/tvLblEndAfternoon"
       android:layout_marginTop="@dimen/activity_day_tvLblEndAfternoon_layout_marginTop"
       android:text="@string/end_afternoon"
@@ -205,7 +205,7 @@
       app:layout_constraintStart_toEndOf="@+id/guidelineLbl55"
       app:layout_constraintTop_toBottomOf="@+id/tvEndMorning" />
     <!-- start/end afternoon tv -->
-    <TextView
+    <androidx.appcompat.widget.AppCompatTextView
       android:id="@+id/tvStartAfternoon"
       android:layout_marginTop="@dimen/activity_day_tvStartAfternoon_layout_marginTop"
       android:layout_marginBottom="@dimen/activity_day_tvStartAfternoon_layout_marginBottom"
@@ -223,7 +223,7 @@
       app:layout_constraintEnd_toStartOf="@+id/guidelineTv45"
       app:layout_constraintTop_toBottomOf="@+id/tvLblStartAfternoon" />
 
-    <TextView
+    <androidx.appcompat.widget.AppCompatTextView
       android:id="@+id/tvEndAfternoon"
       android:layout_marginTop="@dimen/activity_day_tvEndAfternoon_layout_marginTop"
       android:layout_marginBottom="@dimen/activity_day_tvEndAfternoon_layout_marginBottom"
@@ -240,7 +240,7 @@
       app:layout_constraintStart_toStartOf="@+id/tvLblEndAfternoon"
       app:layout_constraintTop_toBottomOf="@+id/tvLblEndAfternoon" />
     <!-- AdditionalBreak/LegalWorktime labels -->
-    <TextView
+    <androidx.appcompat.widget.AppCompatTextView
       android:id="@+id/tvLblAdditionalBreak"
       android:layout_marginTop="@dimen/activity_day_tvLblAdditionalBreak_layout_marginTop"
       android:text="@string/additional_break"
@@ -249,7 +249,7 @@
       app:layout_constraintLeft_toLeftOf="parent"
       app:layout_constraintTop_toBottomOf="@+id/tvStartAfternoon" />
 
-    <TextView
+    <androidx.appcompat.widget.AppCompatTextView
       android:id="@+id/tvLblLegalWorktime"
       android:layout_marginTop="@dimen/activity_day_tvLblLegalWorktime_layout_marginTop"
       android:text="@string/legal_work_time_by_day"
@@ -258,7 +258,7 @@
       app:layout_constraintStart_toEndOf="@+id/guidelineLbl55"
       app:layout_constraintTop_toBottomOf="@+id/tvEndAfternoon" />
     <!-- AdditionalBreak/LegalWorktime tv -->
-    <TextView
+    <androidx.appcompat.widget.AppCompatTextView
       android:id="@+id/tvAdditionalBreak"
       android:layout_marginTop="@dimen/activity_day_tvAdditionalBreak_layout_marginTop"
       android:layout_marginBottom="@dimen/activity_day_tvAdditionalBreak_layout_marginBottom"
@@ -276,7 +276,7 @@
       app:layout_constraintEnd_toStartOf="@+id/guidelineTv45"
       app:layout_constraintTop_toBottomOf="@+id/tvLblAdditionalBreak" />
 
-    <TextView
+    <androidx.appcompat.widget.AppCompatTextView
       android:id="@+id/tvLegalWorktime"
       android:layout_marginTop="@dimen/activity_day_tvLegalWorktime_layout_marginTop"
       android:layout_marginBottom="@dimen/activity_day_tvLegalWorktime_layout_marginBottom"
@@ -293,7 +293,7 @@
       app:layout_constraintStart_toStartOf="@+id/tvLblLegalWorktime"
       app:layout_constraintTop_toBottomOf="@+id/tvLblLegalWorktime" />
     <!-- Recovery Time / Amount labels -->
-    <TextView
+    <androidx.appcompat.widget.AppCompatTextView
       android:id="@+id/tvLblRecoveryTime"
       android:layout_marginTop="@dimen/activity_day_tvLblRecoveryTime_layout_marginTop"
       android:text="@string/recovery"
@@ -302,7 +302,7 @@
       app:layout_constraintLeft_toLeftOf="parent"
       app:layout_constraintTop_toBottomOf="@+id/tvAdditionalBreak" />
 
-    <TextView
+    <androidx.appcompat.widget.AppCompatTextView
       android:id="@+id/tvLblAmount"
       android:labelFor="@+id/etAmount"
       android:layout_marginTop="@dimen/activity_day_tvLblAmount_layout_marginTop"
@@ -314,7 +314,7 @@
 
 
     <!-- Recovery Time / Amount tv -->
-    <TextView
+    <androidx.appcompat.widget.AppCompatTextView
       android:id="@+id/tvRecoveryTime"
       android:layout_marginTop="@dimen/activity_day_tvRecoveryTime_layout_marginTop"
       android:layout_marginBottom="@dimen/activity_day_tvRecoveryTime_layout_marginBottom"
@@ -332,7 +332,7 @@
       app:layout_constraintEnd_toStartOf="@+id/guidelineTv45"
       app:layout_constraintTop_toBottomOf="@+id/tvLblRecoveryTime" />
 
-    <EditText
+    <androidx.appcompat.widget.AppCompatEditText
       android:id="@+id/etAmount"
       android:layout_marginTop="@dimen/activity_day_etAmount_layout_marginTop"
       android:layout_marginBottom="@dimen/activity_day_etAmount_layout_marginBottom"
