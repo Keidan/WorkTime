@@ -36,9 +36,10 @@ public class DropboxCredentialUtil {
     if (credential == null)
       return true;
     long expired = mPref.getLong(KEY_EXPIRES, 0);
-    Log.e("TAG", "expired: " + expired);
-    Log.e("TAG", "credential.getExpiresAt(): " + credential.getExpiresAt());
-
+    long expiresAt = credential.getExpiresAt();
+    String text = "Expired: " + expired + ", expires at: " + expiresAt;
+    ApplicationCtx.addLog(mContext, "isExpired", text);
+    Log.d(getClass().getSimpleName(), text);
     return (credential.getExpiresAt() >= expired);
   }
 
