@@ -27,7 +27,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.material.navigation.NavigationView;
 
-import fr.ralala.worktime.MainApplication;
+import fr.ralala.worktime.ApplicationCtx;
 import fr.ralala.worktime.R;
 import fr.ralala.worktime.launchers.LauncherDayActivity;
 import fr.ralala.worktime.launchers.LauncherPublicHolidayActivity;
@@ -55,7 +55,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
   private static final int BACK_TIME_DELAY = 2000;
   private static long mLastBackPressed = -1;
   private boolean mViewIsAtHome = false;
-  private MainApplication mApp = null;
+  private ApplicationCtx mApp = null;
   private NavigationView mNavigationView = null;
   private SwipeDetector mSwipeDetector = null;
   private DrawerLayout mDrawer = null;
@@ -97,7 +97,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
       mNavigationView.setNavigationItemSelectedListener(this);
       mNavigationView.getMenu().getItem(0).setChecked(true);
     }
-    mApp = (MainApplication) getApplication();
+    mApp = (ApplicationCtx) getApplication();
     mFragmentsFactory = new AppFragmentsFactory(mApp, mNavigationView);
 
     /* permissions */
@@ -182,7 +182,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
   public boolean onOptionsItemSelected(final MenuItem item) {
     final int id = item.getItemId();
     if (id == R.id.action_last_export) {
-      if (mApp.getLastExportType().equals(MainApplication.PREFS_VAL_LAST_EXPORT_DROPBOX)) {
+      if (mApp.getLastExportType().equals(ApplicationCtx.PREFS_VAL_LAST_EXPORT_DROPBOX)) {
         AndroidHelper.exportDropbox(mApp, this);
       }
       return true;
@@ -231,8 +231,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
   @Override
   public void onResume() {
     super.onResume();
-    MainApplication.incResumedCounter();
-    if (mFragmentsFactory.isRequiresProgress() && !mResumeFromActivity && MainApplication.getResumedCounter() == 1)
+    ApplicationCtx.incResumedCounter();
+    if (mFragmentsFactory.isRequiresProgress() && !mResumeFromActivity && ApplicationCtx.getResumedCounter() == 1)
       progressShow(true);
     new Thread(() -> {
       /* load SQL */

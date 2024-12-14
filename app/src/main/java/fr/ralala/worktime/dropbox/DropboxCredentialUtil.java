@@ -7,7 +7,7 @@ import android.util.Log;
 import com.dropbox.core.json.JsonReadException;
 import com.dropbox.core.oauth.DbxCredential;
 
-import fr.ralala.worktime.MainApplication;
+import fr.ralala.worktime.ApplicationCtx;
 
 /**
  * ******************************************************************************
@@ -45,7 +45,7 @@ public class DropboxCredentialUtil {
   public DbxCredential readCredentialLocally() {
     String serializedCredentialJson = mPref.getString(KEY_CREDENTIAL, null);
     String text = "Local Credential Value from Shared Preferences: " + serializedCredentialJson;
-    MainApplication.addLog(mContext, "readCredentialLocally", text);
+    ApplicationCtx.addLog(mContext, "readCredentialLocally", text);
     Log.d(getClass().getSimpleName(), text);
     if (serializedCredentialJson == null)
       return null;
@@ -53,7 +53,7 @@ public class DropboxCredentialUtil {
       return DbxCredential.Reader.readFully(serializedCredentialJson);
     } catch (JsonReadException e) {
       text = "Something went wrong parsing the credential, clearing it: " + e.getMessage();
-      MainApplication.addLog(mContext, "readCredentialLocally", text);
+      ApplicationCtx.addLog(mContext, "readCredentialLocally", text);
       Log.e(getClass().getSimpleName(), text, e);
       removeCredentialLocally();
       return null;
@@ -64,7 +64,7 @@ public class DropboxCredentialUtil {
   public void storeCredentialLocally(DbxCredential dbxCredential) {
     Long expiresAt = dbxCredential.getExpiresAt();
     String text = "Storing credential in Shared Preferences expires at " + expiresAt;
-    MainApplication.addLog(mContext, "storeCredentialLocally", text);
+    ApplicationCtx.addLog(mContext, "storeCredentialLocally", text);
     Log.d(getClass().getSimpleName(), text);
     SharedPreferences.Editor edit = mPref.edit();
     edit.putString(KEY_CREDENTIAL, DbxCredential.Writer.writeToString(dbxCredential));
@@ -74,7 +74,7 @@ public class DropboxCredentialUtil {
 
   public void removeCredentialLocally() {
     String text = "Clearing credential from Shared Preferences";
-    MainApplication.addLog(mContext, "removeCredentialLocally", text);
+    ApplicationCtx.addLog(mContext, "removeCredentialLocally", text);
     Log.d(getClass().getSimpleName(), text);
     SharedPreferences.Editor edit = mPref.edit();
     edit.remove(KEY_CREDENTIAL);

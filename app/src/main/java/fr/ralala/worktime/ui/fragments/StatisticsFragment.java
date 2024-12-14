@@ -22,7 +22,7 @@ import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import fr.ralala.worktime.MainApplication;
+import fr.ralala.worktime.ApplicationCtx;
 import fr.ralala.worktime.R;
 import fr.ralala.worktime.models.DayEntry;
 import fr.ralala.worktime.models.DayType;
@@ -42,7 +42,7 @@ import fr.ralala.worktime.utils.AndroidHelper;
  * ******************************************************************************
  */
 public class StatisticsFragment extends Fragment {
-  private MainApplication mApp = null;
+  private ApplicationCtx mApp = null;
   private MainActivity mActivity;
   private SparseArray<SummaryEntry> mSummaries;
   private TableLayout mTable;
@@ -71,7 +71,7 @@ public class StatisticsFragment extends Fragment {
     final ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_statistics, container, false);
     mActivity = (MainActivity) getActivity();
     assert mActivity != null;
-    mApp = (MainApplication) mActivity.getApplication();
+    mApp = (ApplicationCtx) mActivity.getApplication();
     mTable = rootView.findViewById(R.id.table);
     return rootView;
   }

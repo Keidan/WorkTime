@@ -11,7 +11,7 @@ import androidx.preference.PreferenceManager;
 
 import java.util.Calendar;
 
-import fr.ralala.worktime.MainApplication;
+import fr.ralala.worktime.ApplicationCtx;
 import fr.ralala.worktime.dropbox.DropboxImportExport;
 import fr.ralala.worktime.models.WorkTimeDay;
 
@@ -27,7 +27,7 @@ import fr.ralala.worktime.models.WorkTimeDay;
  */
 public class AutoExportService extends Service implements DropboxImportExport.DropboxUploaded, DropboxImportExport.DropboxDownloaded {
   public static final boolean DEF_VAL_NEED_UPDATE = false;
-  private MainApplication mApp = null;
+  private ApplicationCtx mApp = null;
   public static final String KEY_NEED_UPDATE = "dropboxKeyNeedUpdate";
 
   /**
@@ -35,7 +35,7 @@ public class AutoExportService extends Service implements DropboxImportExport.Dr
    */
   @Override
   public void onCreate() {
-    mApp = (MainApplication) getApplication();
+    mApp = (ApplicationCtx) getApplication();
     if (!mApp.openSql(this))
       stopSelf();
     if (mApp.isTablesChanges())
@@ -51,7 +51,7 @@ public class AutoExportService extends Service implements DropboxImportExport.Dr
     boolean needUpdate = prefs.getBoolean(KEY_NEED_UPDATE, DEF_VAL_NEED_UPDATE);
     if (export && needUpdate) {
       text = "No changes have been detected but the day is valid for pending export.";
-      MainApplication.addLog(this, "tableNotChanged", text);
+      ApplicationCtx.addLog(this, "tableNotChanged", text);
       Log.e(getClass().getSimpleName(), text);
       exportDatabase();
       return;
@@ -61,7 +61,7 @@ public class AutoExportService extends Service implements DropboxImportExport.Dr
     if ((!export && needUpdate))
       text = "Changes detected but the current day does not allow export.";
 
-    MainApplication.addLog(this, "tableNotChanged", text);
+    ApplicationCtx.addLog(this, "tableNotChanged", text);
     Log.e(getClass().getSimpleName(), text);
     stopSelf();
   }
@@ -69,7 +69,7 @@ public class AutoExportService extends Service implements DropboxImportExport.Dr
   private void tableChanged() {
     boolean export = isExportable();
     String text = "Exportation required and the day" + (export ? " " : " not") + " match.";
-    MainApplication.addLog(this, "tableChanged", text);
+    ApplicationCtx.addLog(this, "tableChanged", text);
     Log.e(getClass().getSimpleName(), text);
     if (export) {
       exportDatabase();
@@ -84,10 +84,10 @@ public class AutoExportService extends Service implements DropboxImportExport.Dr
    */
   private void exportDatabase() {
     setNeedUpdate(mApp, false);
-    if (mApp.getLastExportType().equals(MainApplication.PREFS_VAL_LAST_EXPORT_DROPBOX)) {
+    if (mApp.getLastExportType().equals(ApplicationCtx.PREFS_VAL_LAST_EXPORT_DROPBOX)) {
       if (!mApp.getDropboxImportExport().exportDatabase(this, false, this)) {
         String text = "Export failed.";
-        MainApplication.addLog(this, "exportDatabase", text);
+        ApplicationCtx.addLog(this, "exportDatabase", text);
         Log.e(getClass().getSimpleName(), text);
         setNeedUpdate(mApp, true);
         stopSelf();
@@ -101,7 +101,7 @@ public class AutoExportService extends Service implements DropboxImportExport.Dr
    * @param app Application context.
    * @param b   needUpdate state.
    */
-  public static void setNeedUpdate(MainApplication app, boolean b) {
+  public static void setNeedUpdate(ApplicationCtx app, boolean b) {
     SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(app);
     SharedPreferences.Editor ed = prefs.edit();
     ed.putBoolean(KEY_NEED_UPDATE, b);
@@ -141,7 +141,7 @@ public class AutoExportService extends Service implements DropboxImportExport.Dr
     if (cond)
       return;
     String text = "killProcess";
-    MainApplication.addLog(this, "Service.onDestroy", text);
+    ApplicationCtx.addLog(this, "Service.onDestroy", text);
     Log.e(getClass().getSimpleName(), text);
     Process.killProcess(android.os.Process.myPid());
   }

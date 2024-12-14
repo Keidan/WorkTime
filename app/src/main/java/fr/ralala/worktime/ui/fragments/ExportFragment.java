@@ -3,7 +3,6 @@ package fr.ralala.worktime.ui.fragments;
 
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,7 +26,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
 
-import fr.ralala.worktime.MainApplication;
+import fr.ralala.worktime.ApplicationCtx;
 import fr.ralala.worktime.R;
 import fr.ralala.worktime.models.DayEntry;
 import fr.ralala.worktime.models.DayType;
@@ -52,7 +51,7 @@ public class ExportFragment extends Fragment implements AdapterView.OnItemSelect
 
   private ExportListViewArrayAdapter mLvAdapter = null;
   private Spinner mSpinner = null;
-  private MainApplication mApp = null;
+  private ApplicationCtx mApp = null;
   private MainActivity mActivity;
 
   /**
@@ -69,7 +68,7 @@ public class ExportFragment extends Fragment implements AdapterView.OnItemSelect
     final ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_export, container, false);
     mActivity = (MainActivity) getActivity();
     assert mActivity != null;
-    mApp = (MainApplication) mActivity.getApplication();
+    mApp = (ApplicationCtx) mActivity.getApplication();
     Button export = rootView.findViewById(R.id.btExport);
     export.setOnClickListener(this);
 
@@ -199,7 +198,7 @@ public class ExportFragment extends Fragment implements AdapterView.OnItemSelect
         UIHelper.snack(mActivity, getString(R.string.email_sent_to_without_mail));
     } catch (Exception e) {
       String text = getString(R.string.error) + ": " + e.getMessage();
-      MainApplication.addLog(mActivity, "ExportFragment", text);
+      ApplicationCtx.addLog(mActivity, "ExportFragment", text);
       Log.e(getClass().getSimpleName(), text, e);
       UIHelper.snack(mActivity, getString(R.string.error) + ": " + e.getMessage());
     }

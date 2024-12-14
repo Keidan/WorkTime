@@ -24,7 +24,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.List;
 
-import fr.ralala.worktime.MainApplication;
+import fr.ralala.worktime.ApplicationCtx;
 import fr.ralala.worktime.R;
 import fr.ralala.worktime.launchers.LauncherCallback;
 import fr.ralala.worktime.models.PublicHolidayEntry;
@@ -45,7 +45,7 @@ import fr.ralala.worktime.ui.utils.UIHelper;
  */
 public class PublicHolidaysFragment extends Fragment implements View.OnClickListener, SwipeEditDeleteRecyclerViewItem.SwipeEditDeleteRecyclerViewItemListener, LauncherCallback {
   private PublicHolidaysEntriesArrayAdapter mAdapter = null;
-  private MainApplication mApp = null;
+  private ApplicationCtx mApp = null;
   private MainActivity mActivity;
   private RecyclerView mRecyclerView;
 
@@ -66,7 +66,7 @@ public class PublicHolidaysFragment extends Fragment implements View.OnClickList
     FloatingActionButton fab = rootView.findViewById(R.id.fab);
     fab.setOnClickListener(this);
 
-    mApp = (MainApplication) mActivity.getApplication();
+    mApp = (ApplicationCtx) mActivity.getApplication();
 
     mRecyclerView = rootView.findViewById(R.id.public_holidays);
     mRecyclerView.setHasFixedSize(true);

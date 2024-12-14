@@ -6,7 +6,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.material.navigation.NavigationView;
 
-import fr.ralala.worktime.MainApplication;
+import fr.ralala.worktime.ApplicationCtx;
 import fr.ralala.worktime.R;
 
 /**
@@ -32,7 +32,7 @@ public class AppFragmentsFactory {
   private Fragment mWorkTimeFragment = null;
   private Fragment mStatisticsFragment = null;
   private Fragment mCurrentFragment;
-  private final MainApplication mApp;
+  private final ApplicationCtx mApp;
   private final NavigationView mNavigationView;
 
   /**
@@ -41,7 +41,7 @@ public class AppFragmentsFactory {
    * @param app            The application context.
    * @param navigationView The application navigation view.
    */
-  public AppFragmentsFactory(final MainApplication app, final NavigationView navigationView) {
+  public AppFragmentsFactory(final ApplicationCtx app, final NavigationView navigationView) {
     mApp = app;
     mNavigationView = navigationView;
     if (mProfileFragment == null)

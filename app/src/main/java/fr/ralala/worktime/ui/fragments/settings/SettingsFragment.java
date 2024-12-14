@@ -9,7 +9,7 @@ import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceScreen;
 
-import fr.ralala.worktime.MainApplication;
+import fr.ralala.worktime.ApplicationCtx;
 import fr.ralala.worktime.R;
 import fr.ralala.worktime.ui.activities.LogsActivity;
 import fr.ralala.worktime.ui.activities.settings.SettingsDatabaseActivity;
@@ -71,7 +71,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
   public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
     setPreferencesFromResource(R.xml.preferences, rootKey);
 
-    mChangeLog = ((MainApplication) mActivity.getApplication()).getChangeLog();
+    mChangeLog = ((ApplicationCtx) mActivity.getApplication()).getChangeLog();
     mPrefChangelog = findPreference(PREFS_KEY_CHANGELOG);
     mPrefSelectDisplay = findPreference(PREFS_KEY_SELECT_DISPLAY);
     mPrefSelectExcelExport = findPreference(PREFS_KEY_SELECT_EXCEL_EXPORT);

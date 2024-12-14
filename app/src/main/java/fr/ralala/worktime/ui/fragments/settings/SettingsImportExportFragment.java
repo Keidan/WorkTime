@@ -6,7 +6,7 @@ import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceScreen;
 
-import fr.ralala.worktime.MainApplication;
+import fr.ralala.worktime.ApplicationCtx;
 import fr.ralala.worktime.R;
 import fr.ralala.worktime.ui.activities.settings.SettingsImportExportActivity;
 import fr.ralala.worktime.utils.AndroidHelper;
@@ -27,12 +27,12 @@ public class SettingsImportExportFragment extends PreferenceFragmentCompat imple
 
   private Preference mPrefExportToDropbox;
   private Preference mPrefImportFromDropbox;
-  private final MainApplication mApp;
+  private final ApplicationCtx mApp;
   private final SettingsImportExportActivity mActivity;
 
   public SettingsImportExportFragment(SettingsImportExportActivity act) {
     mActivity = act;
-    mApp = (MainApplication) act.getApplication();
+    mApp = (ApplicationCtx) act.getApplication();
   }
 
   /**
@@ -65,7 +65,7 @@ public class SettingsImportExportFragment extends PreferenceFragmentCompat imple
   @Override
   public boolean onPreferenceClick(Preference preference) {
     if (preference.equals(mPrefExportToDropbox)) {
-      mApp.setLastExportType(MainApplication.PREFS_VAL_LAST_EXPORT_DROPBOX);
+      mApp.setLastExportType(ApplicationCtx.PREFS_VAL_LAST_EXPORT_DROPBOX);
       AndroidHelper.exportDropbox(mApp, mActivity);
     } else if (preference.equals(mPrefImportFromDropbox)) {
       mApp.getDropboxImportExport().importDatabase(mActivity);

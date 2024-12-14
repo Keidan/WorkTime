@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
-import fr.ralala.worktime.MainApplication;
+import fr.ralala.worktime.ApplicationCtx;
 import fr.ralala.worktime.R;
 
 /**
@@ -157,7 +157,7 @@ public abstract class EntriesArrayAdapter<T> extends RecyclerView.Adapter<Entrie
       notifyDataSetChanged();
     } catch (Exception e) {
       String text = "Exception: " + e.getMessage();
-      MainApplication.addLog(mRecyclerView.getContext(), "safeNotifyDataSetChanged", text);
+      ApplicationCtx.addLog(mRecyclerView.getContext(), "safeNotifyDataSetChanged", text);
       Log.e(getClass().getSimpleName(), text, e);
     }
   }

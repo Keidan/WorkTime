@@ -6,7 +6,7 @@ import android.view.MenuItem;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
-import fr.ralala.worktime.MainApplication;
+import fr.ralala.worktime.ApplicationCtx;
 import fr.ralala.worktime.R;
 import fr.ralala.worktime.ui.fragments.settings.SettingsImportExportFragment;
 import fr.ralala.worktime.ui.utils.UIHelper;
@@ -70,7 +70,7 @@ public class SettingsImportExportActivity extends AppCompatActivity {
   @Override
   public void onResume() {
     super.onResume();
-    ((MainApplication) getApplication()).getSql().settingsLoad(null);
+    ((ApplicationCtx) getApplication()).getSql().settingsLoad(null);
   }
 
   /**
@@ -79,6 +79,6 @@ public class SettingsImportExportActivity extends AppCompatActivity {
   @Override
   public void onPause() {
     super.onPause();
-    ((MainApplication) getApplication()).getSql().settingsSave();
+    ((ApplicationCtx) getApplication()).getSql().settingsSave();
   }
 }

@@ -8,7 +8,7 @@ import android.content.Intent;
 import android.util.Log;
 import android.widget.RemoteViews;
 
-import fr.ralala.worktime.MainApplication;
+import fr.ralala.worktime.ApplicationCtx;
 import fr.ralala.worktime.R;
 import fr.ralala.worktime.models.DayEntry;
 import fr.ralala.worktime.ui.activities.DayActivity;
@@ -37,11 +37,11 @@ public class DayWidgetProvider4x1 extends AppWidgetProvider {
    */
   @Override
   public void onUpdate(final Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
-    MainApplication app = (MainApplication) context.getApplicationContext();
+    ApplicationCtx app = (ApplicationCtx) context.getApplicationContext();
     if (!app.openSql(context)) {
       String text = context.getString(R.string.error_widget_sql);
       UIHelper.toast(context, text);
-      MainApplication.addLog(context, "ExportFragment", text);
+      ApplicationCtx.addLog(context, "ExportFragment", text);
       Log.e(getClass().getSimpleName(), text);
       return;
     }

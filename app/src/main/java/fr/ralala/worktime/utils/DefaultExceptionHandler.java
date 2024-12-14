@@ -12,10 +12,9 @@ import androidx.annotation.NonNull;
 
 import java.lang.Thread.UncaughtExceptionHandler;
 
-import fr.ralala.worktime.MainApplication;
+import fr.ralala.worktime.ApplicationCtx;
 import fr.ralala.worktime.R;
 import fr.ralala.worktime.ui.activities.MainActivity;
-import fr.ralala.worktime.ui.utils.UIHelper;
 
 /**
  * ******************************************************************************
@@ -37,9 +36,9 @@ public class DefaultExceptionHandler implements UncaughtExceptionHandler {
   @Override
   public void uncaughtException(@NonNull Thread thread, @NonNull Throwable ex) {
     String text = mActivity.getString(R.string.error) + ex.getMessage();
-    MainApplication.addLog(mActivity, "uncaughtException", text);
+    ApplicationCtx.addLog(mActivity, "uncaughtException", text);
     Log.e(getClass().getSimpleName(), text, ex);
-    MainApplication app = (MainApplication) mActivity.getApplication();
+    ApplicationCtx app = (ApplicationCtx) mActivity.getApplication();
     try {
       Intent intent = new Intent(mActivity, MainActivity.class);
       intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
@@ -61,7 +60,7 @@ public class DefaultExceptionHandler implements UncaughtExceptionHandler {
       Process.killProcess(Process.myPid());
     } catch (Exception e) {
       text = mActivity.getString(R.string.error) + e.getMessage();
-      MainApplication.addLog(mActivity, "uncaughtException", text);
+      ApplicationCtx.addLog(mActivity, "uncaughtException", text);
       Log.e(getClass().getSimpleName(), text, e);
     }
   }

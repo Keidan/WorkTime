@@ -24,7 +24,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.List;
 
-import fr.ralala.worktime.MainApplication;
+import fr.ralala.worktime.ApplicationCtx;
 import fr.ralala.worktime.R;
 import fr.ralala.worktime.launchers.LauncherCallback;
 import fr.ralala.worktime.models.ProfileEntry;
@@ -51,7 +51,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
   EntriesArrayAdapter.OnLongPressListener<ProfileEntry>, LauncherCallback {
 
   private ProfilesEntriesArrayAdapter mAdapter = null;
-  private MainApplication mApp = null;
+  private ApplicationCtx mApp = null;
   private MainActivity mActivity;
   private RecyclerView mRecyclerView;
 
@@ -71,7 +71,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
     assert mActivity != null;
     FloatingActionButton fab = rootView.findViewById(R.id.fab);
     fab.setOnClickListener(this);
-    mApp = (MainApplication) mActivity.getApplication();
+    mApp = (ApplicationCtx) mActivity.getApplication();
 
     mRecyclerView = rootView.findViewById(R.id.profiles);
     mRecyclerView.setHasFixedSize(true);

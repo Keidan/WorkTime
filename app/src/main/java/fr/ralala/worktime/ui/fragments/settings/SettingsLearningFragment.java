@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import fr.ralala.worktime.MainApplication;
+import fr.ralala.worktime.ApplicationCtx;
 import fr.ralala.worktime.R;
 import fr.ralala.worktime.models.ProfileEntry;
 import fr.ralala.worktime.ui.utils.UIHelper;
@@ -33,14 +33,14 @@ public class SettingsLearningFragment extends PreferenceFragmentCompat implement
   public static final String PREFS_KEY_PROFILES_WEIGHT_CLEAR = "prefWeightClear";
   public static final String PREFS_KEY_PROFILES_WEIGHT_DEPTH = "prefWeightDepth";
   public static final String PREFS_KEY_PROFILES_LIST = "prefWeightList";
-  private final MainApplication mApp;
+  private final ApplicationCtx mApp;
   private Preference mPrefWeightClear;
   private Preference mPrefWeightList;
   private final AppCompatActivity mActivity;
 
   public SettingsLearningFragment(AppCompatActivity act) {
     mActivity = act;
-    mApp = (MainApplication) act.getApplication();
+    mApp = (ApplicationCtx) act.getApplication();
   }
 
   /**

@@ -15,7 +15,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
-import fr.ralala.worktime.MainApplication;
+import fr.ralala.worktime.ApplicationCtx;
 
 /**
  * Copyright (C) 2011-2013, Karsten Priegnitz
@@ -63,7 +63,7 @@ public class ChangeLog {
     mLastVersion = sp.getString(VERSION_KEY, NO_VERSION);
 
     String text = "lastVersion: " + mLastVersion;
-    MainApplication.addLog(context, "ChangeLog", text);
+    ApplicationCtx.addLog(context, "ChangeLog", text);
     Log.d(TAG, text);
     try {
       mThisVersion = context.getPackageManager().getPackageInfo(
@@ -71,12 +71,12 @@ public class ChangeLog {
     } catch (final NameNotFoundException e) {
       mThisVersion = NO_VERSION;
       text = "Could not get version name from manifest!";
-      MainApplication.addLog(context, "ChangeLog", text);
+      ApplicationCtx.addLog(context, "ChangeLog", text);
       Log.e(TAG, text);
       e.printStackTrace();
     }
     text = "appVersion: " + mThisVersion;
-    MainApplication.addLog(context, "ChangeLog", text);
+    ApplicationCtx.addLog(context, "ChangeLog", text);
     Log.d(TAG, text);
   }
 

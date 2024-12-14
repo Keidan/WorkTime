@@ -6,7 +6,7 @@ import android.content.Context;
 import java.util.Calendar;
 import java.util.Objects;
 
-import fr.ralala.worktime.MainApplication;
+import fr.ralala.worktime.ApplicationCtx;
 import fr.ralala.worktime.R;
 import fr.ralala.worktime.sql.SqlConstants;
 
@@ -34,7 +34,7 @@ public class DayEntry {
   private DayType mTypeAfternoon;
   private double mAmountByHour = 0.0;
   private WorkTimeDay mLegalWorktime;
-  private final MainApplication mApp;
+  private final ApplicationCtx mApp;
   private long mId = SqlConstants.INVALID_ID;
   private int mWeekNumber = INVALID_WEEK;
 
@@ -79,7 +79,7 @@ public class DayEntry {
     mEndAfternoon = new WorkTimeDay();
     mTypeMorning = typeMorning;
     mTypeAfternoon = typeAfternoon;
-    mApp = (MainApplication) ctx.getApplicationContext();
+    mApp = (ApplicationCtx) ctx.getApplicationContext();
     mLegalWorktime = mApp.getLegalWorkTimeByDay();
     mDay.copy(day);
   }

@@ -12,7 +12,7 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.util.List;
 
-import fr.ralala.worktime.MainApplication;
+import fr.ralala.worktime.ApplicationCtx;
 import fr.ralala.worktime.dropbox.DropboxHelper;
 import fr.ralala.worktime.dropbox.DropboxListener;
 import fr.ralala.worktime.tasks.TaskRunner;
@@ -106,8 +106,8 @@ public class UploadFileTask extends TaskRunner<UploadFileTask.Config, List<Strin
 
         // Note - this is not ensuring the name is a valid dropbox file name
         String remoteFileName = localFile.getName();
-        MainApplication.addLog(cfg.context, "UploadFileTask", "remoteFolderPath: '" + remoteFolderPath + "'");
-        MainApplication.addLog(cfg.context, "UploadFileTask", "localFile: '" + localFile + "'");
+        ApplicationCtx.addLog(cfg.context, "UploadFileTask", "remoteFolderPath: '" + remoteFolderPath + "'");
+        ApplicationCtx.addLog(cfg.context, "UploadFileTask", "localFile: '" + localFile + "'");
 
         if (cfg.helper == null)
           throw new NullPointerException("Null dropbox helper");

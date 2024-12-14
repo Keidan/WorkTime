@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 import java.util.Locale;
 
-import fr.ralala.worktime.MainApplication;
+import fr.ralala.worktime.ApplicationCtx;
 import fr.ralala.worktime.R;
 import fr.ralala.worktime.models.ProfileEntry;
 
@@ -51,7 +51,7 @@ public class ProfilesEntriesArrayAdapter extends EntriesArrayAdapter<ProfileEntr
       if (viewHolder.name != null)
         viewHolder.name.setText(pe.getName());
       if (viewHolder.info != null) {
-        MainApplication app = (MainApplication) mContext.getApplicationContext();
+        ApplicationCtx app = (ApplicationCtx) mContext.getApplicationContext();
         viewHolder.info.setText(!app.isHideWage() ?
           String.format(Locale.US,
             "%s %s %s -> %s %s %.02f%s/h %s %s %s",

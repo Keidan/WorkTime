@@ -21,7 +21,7 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
-import fr.ralala.worktime.MainApplication;
+import fr.ralala.worktime.ApplicationCtx;
 import fr.ralala.worktime.R;
 import fr.ralala.worktime.launchers.LauncherCallback;
 import fr.ralala.worktime.models.DayEntry;
@@ -56,7 +56,7 @@ public class WorkTimeFragment extends Fragment implements View.OnClickListener, 
   private TextView mTvMonthlyHours = null;
   private DaysEntriesArrayAdapter mLvAdapter = null;
   private ListView mDays = null;
-  private MainApplication mApp = null;
+  private ApplicationCtx mApp = null;
   private MonthDetailsDialog mMonthDetailsDialog = null;
   private MainActivity mActivity;
 
@@ -75,7 +75,7 @@ public class WorkTimeFragment extends Fragment implements View.OnClickListener, 
     mActivity = (MainActivity) getActivity();
     assert mActivity != null;
     mActivity.getSwipeDetector().setSwipeDetectorListener(this);
-    mApp = (MainApplication) mActivity.getApplication();
+    mApp = (ApplicationCtx) mActivity.getApplication();
 
     mMonthDetailsDialog = new MonthDetailsDialog(getActivity(), mApp);
 

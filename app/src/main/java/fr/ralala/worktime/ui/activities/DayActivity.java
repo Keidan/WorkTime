@@ -30,7 +30,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 
-import fr.ralala.worktime.MainApplication;
+import fr.ralala.worktime.ApplicationCtx;
 import fr.ralala.worktime.R;
 import fr.ralala.worktime.launchers.LauncherDayActivity;
 import fr.ralala.worktime.models.DayEntry;
@@ -79,7 +79,7 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
   private WorkTimeDay mWtdAdditionalBreak = null;
   private WorkTimeDay mWtdRecoveryTime = null;
   private WorkTimeDay mWtdLegalWorktime = null;
-  private MainApplication mApp = null;
+  private ApplicationCtx mApp = null;
   private ProfileEntry mSelectedProfile = null;
   private boolean mOpenForAdd = false;
   private boolean mFromClear = false;
@@ -117,7 +117,7 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
   protected void onCreate(Bundle savedInstanceState) {
     UIHelper.openAnimation(this);
     super.onCreate(savedInstanceState);
-    mApp = (MainApplication) getApplication();
+    mApp = (ApplicationCtx) getApplication();
     setContentView(R.layout.activity_day);
     String date = null;
     boolean show = false;
@@ -134,7 +134,7 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
       if (!mApp.openSql(this)) {
         UIHelper.toast(this, R.string.error_widget_sql);
         String text = "Widget error SQL";
-        MainApplication.addLog(this, TAG, text);
+        ApplicationCtx.addLog(this, TAG, text);
         Log.e(getClass().getSimpleName(), text);
         finish();
         return;
@@ -692,13 +692,13 @@ public class DayActivity extends AppCompatActivity implements View.OnClickListen
                 etLongitude.setText(String.valueOf(location.getLongitude()));
             }
             String text = "Location: " + location;
-            MainApplication.addLog(DayActivity.this, TAG, text);
+            ApplicationCtx.addLog(DayActivity.this, TAG, text);
             Log.i(getClass().getSimpleName(), text);
           }
 
           public void onLocationError(@NonNull Exception e) {
             String text = "Exception: " + e.getMessage();
-            MainApplication.addLog(DayActivity.this, TAG, text);
+            ApplicationCtx.addLog(DayActivity.this, TAG, text);
             Log.e(getClass().getSimpleName(), text, e);
             UIHelper.toast(DayActivity.this, e.getMessage());
           }

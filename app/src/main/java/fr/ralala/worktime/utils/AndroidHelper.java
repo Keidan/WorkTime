@@ -25,7 +25,7 @@ import com.google.android.gms.location.LocationServices;
 import java.io.File;
 import java.text.DateFormatSymbols;
 
-import fr.ralala.worktime.MainApplication;
+import fr.ralala.worktime.ApplicationCtx;
 import fr.ralala.worktime.services.AutoExportService;
 
 /**
@@ -222,7 +222,7 @@ public class AndroidHelper {
    * @param app Main application
    * @param c   Android context.
    */
-  public static void exportDropbox(MainApplication app, AppCompatActivity c) {
+  public static void exportDropbox(ApplicationCtx app, AppCompatActivity c) {
     AutoExportService.setNeedUpdate(app, false);
     app.reloadDatabaseMD5();
     app.getDropboxImportExport().exportDatabase(c, true, null);

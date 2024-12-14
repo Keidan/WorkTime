@@ -19,7 +19,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-import fr.ralala.worktime.MainApplication;
+import fr.ralala.worktime.ApplicationCtx;
 
 /**
  * ******************************************************************************
@@ -190,7 +190,7 @@ public class SqlHelper extends SQLiteOpenHelper implements SqlConstants {
     if (oldVersion < 5) {
       mUnsupported = true;
       text = "Version not supported";
-      MainApplication.addLog(mContext, UPDATE_TAG, text);
+      ApplicationCtx.addLog(mContext, UPDATE_TAG, text);
       Log.e(getClass().getSimpleName(), text);
       Process.killProcess(0);
     } else if (oldVersion == 5 && newVersion == 6) {
@@ -207,7 +207,7 @@ public class SqlHelper extends SQLiteOpenHelper implements SqlConstants {
       db.execSQL(ALTER_TABLE + " " + TABLE_DAYS + " " + ADD_COLUMN + " " + COL_DAYS_RECOVERY_TIME + " " + TEXT_DEFAULT_00_00_NOT_NULL);
     } else if (oldVersion == 7 && newVersion == 8) {
       text = "Ready to migrate from v7 to v8";
-      MainApplication.addLog(mContext, UPDATE_TAG, text);
+      ApplicationCtx.addLog(mContext, UPDATE_TAG, text);
       Log.i(getClass().getSimpleName(), text);
       /*
        * The date columns of the previous databases (d_current, p_current and ph_date) are
@@ -224,7 +224,7 @@ public class SqlHelper extends SQLiteOpenHelper implements SqlConstants {
         + "d_type, d_amount,  d_legal_worktime, d_add_break,  d_rec_time FROM " + oldTable);
       db.execSQL(DROP_TABLE + " " + oldTable);
       text = "Days database, migrated";
-      MainApplication.addLog(mContext, UPDATE_TAG, text);
+      ApplicationCtx.addLog(mContext, UPDATE_TAG, text);
       Log.i(getClass().getSimpleName(), text);
       /* Profiles */
       oldTable = TABLE_PROFILES + "_v" + oldVersion;
@@ -251,7 +251,7 @@ public class SqlHelper extends SQLiteOpenHelper implements SqlConstants {
       db.execSQL(DROP_TABLE + " " + oldTable);
 
       text = "Public holidays database, migrated";
-      MainApplication.addLog(mContext, UPDATE_TAG, text);
+      ApplicationCtx.addLog(mContext, UPDATE_TAG, text);
       Log.i(getClass().getSimpleName(), text);
       /* Settings */
       oldTable = TABLE_SETTINGS + "_v" + oldVersion;
@@ -261,7 +261,7 @@ public class SqlHelper extends SQLiteOpenHelper implements SqlConstants {
         + ") SELECT s_name, s_value FROM " + oldTable);
       db.execSQL(DROP_TABLE + " " + oldTable);
       text = "Settings database, migrated";
-      MainApplication.addLog(mContext, UPDATE_TAG, text);
+      ApplicationCtx.addLog(mContext, UPDATE_TAG, text);
       Log.i(getClass().getSimpleName(), text);
     }
   }
@@ -325,7 +325,7 @@ public class SqlHelper extends SQLiteOpenHelper implements SqlConstants {
    */
   public static String copyDatabase(final Context c, final String name,
                                     final String folder) throws IOException {
-    ((MainApplication) c.getApplicationContext()).getSql().settingsSave();
+    ((ApplicationCtx) c.getApplicationContext()).getSql().settingsSave();
     final String databasePath = c.getDatabasePath(name).getPath();
     final File f = new File(databasePath);
     OutputStream myOutput = null;
@@ -375,7 +375,7 @@ public class SqlHelper extends SQLiteOpenHelper implements SqlConstants {
    * @throws IOException If an exception is reached.
    */
   public static void loadDatabase(Context c, final String name, File in) throws IOException {
-    ((MainApplication) c.getApplicationContext()).getSql().settingsLoad(null);
+    ((ApplicationCtx) c.getApplicationContext()).getSql().settingsLoad(null);
     final String databasePath = c.getDatabasePath(name).getPath();
     final File f = new File(databasePath);
     OutputStream myOutput = null;

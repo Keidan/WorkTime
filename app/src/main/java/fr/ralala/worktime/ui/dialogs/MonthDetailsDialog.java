@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
 
-import fr.ralala.worktime.MainApplication;
+import fr.ralala.worktime.ApplicationCtx;
 import fr.ralala.worktime.R;
 import fr.ralala.worktime.models.DayEntry;
 import fr.ralala.worktime.models.DayType;
@@ -39,7 +39,7 @@ import fr.ralala.worktime.utils.AndroidHelper;
 public class MonthDetailsDialog implements DialogInterface.OnClickListener {
 
   private final Activity mActivity;
-  private final MainApplication mApp;
+  private final ApplicationCtx mApp;
   private AlertDialog mAlertDialog = null;
 
   private static class Item {
@@ -56,7 +56,7 @@ public class MonthDetailsDialog implements DialogInterface.OnClickListener {
    * @param activity The main activity.
    * @param app      The main application.
    */
-  public MonthDetailsDialog(final Activity activity, final MainApplication app) {
+  public MonthDetailsDialog(final Activity activity, final ApplicationCtx app) {
     mActivity = activity;
     mApp = app;
   }

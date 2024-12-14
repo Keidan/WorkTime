@@ -17,7 +17,7 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
-import fr.ralala.worktime.MainApplication;
+import fr.ralala.worktime.ApplicationCtx;
 import fr.ralala.worktime.R;
 import fr.ralala.worktime.models.DayEntry;
 import fr.ralala.worktime.models.DayType;
@@ -114,7 +114,7 @@ public class DaysEntriesArrayAdapter extends ArrayAdapter<DayEntry> {
 
     WorkTimeDay today = WorkTimeDay.now();
     if (t != null) {
-      MainApplication app = (MainApplication) mContext.getApplicationContext();
+      ApplicationCtx app = (ApplicationCtx) mContext.getApplicationContext();
       if (t.getWeekNumber() != DayEntry.INVALID_WEEK && app.isDisplayWeek()) {
         holder.tvWeek.setMinHeight(0); // Min Height
         holder.tvWeek.setMinimumHeight(0); // Min Height
@@ -301,7 +301,7 @@ public class DaysEntriesArrayAdapter extends ArrayAdapter<DayEntry> {
   private void setRowHeight(TextView v) {
     v.setMinHeight(0); // Min Height
     v.setMinimumHeight(0); // Min Height
-    v.setHeight(((MainApplication) mContext.getApplicationContext()).getDayRowsHeight()); // Height
+    v.setHeight(((ApplicationCtx) mContext.getApplicationContext()).getDayRowsHeight()); // Height
   }
 
   /**

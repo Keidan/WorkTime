@@ -17,7 +17,7 @@
 
   <application
     android:testOnly="false"
-    android:name=".MainApplication"
+    android:name=".ApplicationCtx"
     android:allowBackup="true"
     android:fullBackupContent="@xml/backup_rules"
     android:icon="@mipmap/ic_launcher"

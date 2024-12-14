@@ -12,7 +12,7 @@ import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
-import fr.ralala.worktime.MainApplication;
+import fr.ralala.worktime.ApplicationCtx;
 import fr.ralala.worktime.R;
 import fr.ralala.worktime.launchers.LauncherPublicHolidayActivity;
 import fr.ralala.worktime.models.DayType;
@@ -31,7 +31,7 @@ import fr.ralala.worktime.ui.utils.UIHelper;
  * ******************************************************************************
  */
 public class PublicHolidayActivity extends AppCompatActivity {
-  private MainApplication mApp = null;
+  private ApplicationCtx mApp = null;
   private PublicHolidayEntry mPhe = null;
   private EditText mTname = null;
   private DatePicker mTdate = null;
@@ -46,7 +46,7 @@ public class PublicHolidayActivity extends AppCompatActivity {
   protected void onCreate(Bundle savedInstanceState) {
     UIHelper.openAnimation(this);
     super.onCreate(savedInstanceState);
-    mApp = (MainApplication) getApplication();
+    mApp = (ApplicationCtx) getApplication();
     setContentView(R.layout.activity_public_holiday);
     ActionBar actionBar = getDelegate().getSupportActionBar();
     if (actionBar != null) {

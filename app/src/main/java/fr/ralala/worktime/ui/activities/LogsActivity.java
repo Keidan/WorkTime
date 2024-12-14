@@ -18,7 +18,7 @@ import java.util.Date;
 import java.util.Locale;
 
 import fr.ralala.worktime.BuildConfig;
-import fr.ralala.worktime.MainApplication;
+import fr.ralala.worktime.ApplicationCtx;
 import fr.ralala.worktime.R;
 
 /**
@@ -55,7 +55,7 @@ public class LogsActivity extends AppCompatActivity {
   public void onCreate(final Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_logs);
-    MainApplication app = (MainApplication) getApplicationContext();
+    ApplicationCtx app = (ApplicationCtx) getApplicationContext();
 
     ActionBar actionBar = getSupportActionBar();
     if (actionBar != null) {

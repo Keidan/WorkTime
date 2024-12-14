@@ -13,7 +13,7 @@ import com.dropbox.core.v2.DbxClientV2;
 import java.util.Arrays;
 import java.util.List;
 
-import fr.ralala.worktime.MainApplication;
+import fr.ralala.worktime.ApplicationCtx;
 import fr.ralala.worktime.R;
 
 /**
@@ -51,7 +51,7 @@ public class DropboxOAuthUtil {
         mIsAwaitingResult = true;
       } catch (DbxException e) {
         String text = "Exception: " + e.getMessage();
-        MainApplication.addLog(context, "refreshToken", text);
+        ApplicationCtx.addLog(context, "refreshToken", text);
         Log.e(getClass().getSimpleName(), text, e);
       }
     }).start();
