@@ -14,7 +14,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
-import fr.ralala.worktime.ApplicationCtx;
 import fr.ralala.worktime.utils.Log;
 
 /**

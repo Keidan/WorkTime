@@ -6,7 +6,6 @@ import android.content.SharedPreferences;
 import com.dropbox.core.json.JsonReadException;
 import com.dropbox.core.oauth.DbxCredential;
 
-import fr.ralala.worktime.ApplicationCtx;
 import fr.ralala.worktime.utils.Log;
 
 /**

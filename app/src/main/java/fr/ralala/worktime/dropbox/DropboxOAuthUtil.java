@@ -12,7 +12,6 @@ import com.dropbox.core.v2.DbxClientV2;
 import java.util.Arrays;
 import java.util.List;
 
-import fr.ralala.worktime.ApplicationCtx;
 import fr.ralala.worktime.R;
 import fr.ralala.worktime.utils.Log;
 

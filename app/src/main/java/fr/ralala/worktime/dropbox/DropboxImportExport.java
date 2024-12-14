@@ -322,9 +322,9 @@ public class DropboxImportExport implements DropboxListener {
   /**
    * Displays an alert dialog with the files list retrieved from dropbox.
    *
-   * @param c     The Android context.
-   * @param list  The list to display.
-   * @param yes   Yes listener (dialog box)
+   * @param c    The Android context.
+   * @param list The list to display.
+   * @param yes  Yes listener (dialog box)
    */
   private static void showAlertDialog(final Context c, List<Metadata> list, final AlertDialogListListener yes) {
     AlertDialog.Builder builder = new AlertDialog.Builder(c);

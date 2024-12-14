@@ -6,7 +6,6 @@ import android.content.SharedPreferences;
 
 import androidx.preference.PreferenceManager;
 
-
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;

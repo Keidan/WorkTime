@@ -25,10 +25,12 @@ import fr.ralala.worktime.ApplicationCtx;
  */
 public class Log {
   private static final int CIRCULAR_BUFFER_DEPTH = 2000;
+
   public enum Type {
     INFO,
     ERROR
   }
+
   private final Queue<String> mQueue;
   private final Lock mLock = new ReentrantLock();
 
@@ -46,11 +48,12 @@ public class Log {
    * @param c   Android context.
    * @param tag Log tag (can be null).
    * @param msg Log message.
-   * @param ex Exception.
+   * @param ex  Exception.
    */
   public static void error(final Context c, final String tag, final String msg, Throwable ex) {
     add(c, tag, msg, Type.ERROR, ex);
   }
+
   /**
    * Adds a new entry to the logs.
    *
@@ -61,6 +64,7 @@ public class Log {
   public static void error(final Context c, final String tag, final String msg) {
     error(c, tag, msg, null);
   }
+
   /**
    * Adds a new entry to the logs.
    *
@@ -75,13 +79,13 @@ public class Log {
   /**
    * Adds a new entry to the logs.
    *
-   * @param c   Android context.
-   * @param tag Log tag (can be null).
-   * @param msg Log message.
+   * @param c    Android context.
+   * @param tag  Log tag (can be null).
+   * @param msg  Log message.
    * @param type Log type.
-   * @param ex Exception.
+   * @param ex   Exception.
    */
-  private static void add(final Context c, final String tag, final String msg,Type type, Throwable ex) {
+  private static void add(final Context c, final String tag, final String msg, Type type, Throwable ex) {
     ApplicationCtx ctx;
     if (c instanceof ApplicationCtx)
       ctx = (ApplicationCtx) c;
@@ -94,10 +98,10 @@ public class Log {
       head += "(" + tag + ") -> ";
     ctx.getLog().mQueue.add(head + msg);
     ctx.getLog().mLock.unlock();
-    if(type == Type.INFO) {
+    if (type == Type.INFO) {
       android.util.Log.i(tag, msg);
-    } else if(type == Type.ERROR) {
-      if(ex == null)
+    } else if (type == Type.ERROR) {
+      if (ex == null)
         android.util.Log.e(tag, msg);
       else
         android.util.Log.e(tag, msg, ex);

@@ -17,8 +17,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-import fr.ralala.worktime.BuildConfig;
 import fr.ralala.worktime.ApplicationCtx;
+import fr.ralala.worktime.BuildConfig;
 import fr.ralala.worktime.R;
 
 /**

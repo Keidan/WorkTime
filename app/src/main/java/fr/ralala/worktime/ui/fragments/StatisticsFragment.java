@@ -89,7 +89,7 @@ public class StatisticsFragment extends Fragment {
         try {
           rebuildTable();
           mActivity.progressDismiss();
-        } catch(IllegalStateException ex) {
+        } catch (IllegalStateException ex) {
           Log.e(StatisticsFragment.class.getSimpleName(), "Exception: " + ex.getMessage(), ex);
         }
       });
@@ -306,7 +306,7 @@ public class StatisticsFragment extends Fragment {
     processType(se, de.getTypeMorning());
     processType(se, de.getTypeAfternoon());
     se.hWork += de.getWorkTime().getTimeMs();
-    if(de.getTypeMorning() == DayType.AT_WORK || de.getTypeAfternoon() == DayType.AT_WORK)
+    if (de.getTypeMorning() == DayType.AT_WORK || de.getTypeAfternoon() == DayType.AT_WORK)
       se.hWorkOver += de.getOverTime().getTimeMs();
   }
 

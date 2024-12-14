@@ -12,7 +12,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
-import fr.ralala.worktime.ApplicationCtx;
 import fr.ralala.worktime.R;
 import fr.ralala.worktime.utils.Log;
 

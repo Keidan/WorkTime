@@ -132,7 +132,7 @@ public class WorkTimeDay {
    */
   public static WorkTimeDay fromDate(@Nullable final String d) {
     WorkTimeDay wtd = new WorkTimeDay();
-    if(d == null)
+    if (d == null)
       return now();
     String[] split = d.split("/");
     wtd.mYear = Integer.parseInt(split[2]);

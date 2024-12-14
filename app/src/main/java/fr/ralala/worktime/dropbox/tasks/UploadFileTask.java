@@ -12,7 +12,6 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.util.List;
 
-import fr.ralala.worktime.ApplicationCtx;
 import fr.ralala.worktime.dropbox.DropboxHelper;
 import fr.ralala.worktime.dropbox.DropboxListener;
 import fr.ralala.worktime.tasks.TaskRunner;
