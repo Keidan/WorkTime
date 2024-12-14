@@ -24,6 +24,9 @@ import java.util.List;
 
 import fr.ralala.worktime.MainApplication;
 import fr.ralala.worktime.R;
+import fr.ralala.worktime.dropbox.tasks.DownloadFileTask;
+import fr.ralala.worktime.dropbox.tasks.ListFolderTask;
+import fr.ralala.worktime.dropbox.tasks.UploadFileTask;
 import fr.ralala.worktime.sql.SqlConstants;
 import fr.ralala.worktime.sql.SqlHelper;
 import fr.ralala.worktime.ui.utils.UIHelper;
@@ -41,20 +44,12 @@ import fr.ralala.worktime.utils.AndroidHelper;
  */
 public class DropboxImportExport implements DropboxListener {
   private static final String PATH = "";
-  private final DropboxHelper mHelper;
   private AlertDialog mDialog = null;
   private File mFile = null;
   private Context mContext = null;
   private DropboxUploaded mDropboxUploaded = null;
   private DropboxDownloaded mDropboxDownloaded = null;
 
-
-  /**
-   * Creates the import/export instance.
-   */
-  public DropboxImportExport() {
-    mHelper = DropboxHelper.helper();
-  }
 
   public interface DropboxUploaded {
     /**
@@ -82,12 +77,11 @@ public class DropboxImportExport implements DropboxListener {
   public void importDatabase(final AppCompatActivity c) {
     mContext = c;
     mDropboxDownloaded = null;
-    if (mHelper.connect(c)) {
-      if (mDialog == null)
-        mDialog = UIHelper.showProgressDialog(c, R.string.data_transfer);
-      mDialog.show();
-      new ListFolderTask(mHelper.getClient(), this).execute(PATH);
-    }
+    MainApplication app = ((MainApplication) mContext.getApplicationContext());
+    if (mDialog == null)
+      mDialog = UIHelper.showProgressDialog(c, R.string.data_transfer);
+    mDialog.show();
+    new ListFolderTask(app.getDropboxHelper(), this).execute(PATH);
   }
 
   /**
@@ -103,23 +97,22 @@ public class DropboxImportExport implements DropboxListener {
     mDropboxUploaded = dropboxUploaded;
     if (mDialog == null && displayDialog)
       mDialog = UIHelper.showProgressDialog(c, R.string.data_transfer);
-    if (mHelper.connect(c)) {
+    MainApplication app = ((MainApplication) mContext.getApplicationContext());
+    if (mDialog != null)
+      mDialog.show();
+    try {
+      File path = AndroidHelper.getAppPath(c);
+      mFile = new File(SqlHelper.copyDatabase(c, SqlConstants.DB_NAME, path.getAbsolutePath()));
+      new UploadFileTask(c, app.getDropboxHelper(), this).execute(Arrays.asList(Uri.fromFile(mFile).toString(), PATH));
+      return true;
+    } catch (Exception e) {
+      safeRemove();
       if (mDialog != null)
-        mDialog.show();
-      try {
-        File path = AndroidHelper.getAppPath(c);
-        mFile = new File(SqlHelper.copyDatabase(c, SqlConstants.DB_NAME, path.getAbsolutePath()));
-        new UploadFileTask(c, mHelper.getClient(), this).execute(Arrays.asList(Uri.fromFile(mFile).toString(), PATH));
-        return true;
-      } catch (Exception e) {
-        safeRemove();
-        if (mDialog != null)
-          mDialog.dismiss();
-        UIHelper.toastLong(c, c.getString(R.string.error) + ": " + e.getMessage());
-        String err = c.getString(R.string.error) + e.getMessage();
+        mDialog.dismiss();
+      UIHelper.toastLong(c, c.getString(R.string.error) + ": " + e.getMessage());
+      String err = c.getString(R.string.error) + e.getMessage();
       MainApplication.addLog(c, "exportDatabase", err);
       Log.e(getClass().getSimpleName(), err, e);
-      }
     }
     return false;
   }
@@ -234,7 +227,8 @@ public class DropboxImportExport implements DropboxListener {
           try {
             if (mDialog != null)
               mDialog.show();
-            new DownloadFileTask(mContext, mHelper.getClient(), DropboxImportExport.this).execute((FileMetadata) m);
+            MainApplication app = ((MainApplication) mContext.getApplicationContext());
+            new DownloadFileTask(mContext, app.getDropboxHelper(), DropboxImportExport.this).execute((FileMetadata) m);
           } catch (Exception e) {
             String err = mContext.getString(R.string.error) + ": " + e.getMessage();
             MainApplication.addLog(mContext, "onDropboxListFolderDataLoaded", err);
@@ -292,7 +286,7 @@ public class DropboxImportExport implements DropboxListener {
     if (files.isEmpty())
       UIHelper.toastLong(c, c.getString(R.string.error_no_files));
     else {
-      showAlertDialog(c, R.string.box_select_db_file, files, yes);
+      showAlertDialog(c, files, yes);
     }
   }
 
@@ -302,7 +296,6 @@ public class DropboxImportExport implements DropboxListener {
    * @param list The output list.
    * @return List<String>
    */
-  @SuppressWarnings("unchecked")
   private static List<Metadata> compute(final List<Metadata> list) {
     List<Metadata> files = new ArrayList<>();
     for (Metadata t : list) {
@@ -346,10 +339,9 @@ public class DropboxImportExport implements DropboxListener {
    * @param list  The list to display.
    * @param yes   Yes listener (dialog box)
    */
-  @SuppressWarnings("unchecked")
-  private static void showAlertDialog(final Context c, final int title, List<Metadata> list, final AlertDialogListListener yes) {
+  private static void showAlertDialog(final Context c, List<Metadata> list, final AlertDialogListListener yes) {
     AlertDialog.Builder builder = new AlertDialog.Builder(c);
-    builder.setTitle(c.getResources().getString(title));
+    builder.setTitle(c.getResources().getString(R.string.box_select_db_file));
     builder.setIcon(android.R.drawable.ic_dialog_alert);
     List<ListItem> items = new ArrayList<>();
     for (Metadata s : list) {

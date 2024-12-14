@@ -1,13 +1,20 @@
 package fr.ralala.worktime.dropbox;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 
-import com.dropbox.core.DbxRequestConfig;
-import com.dropbox.core.android.Auth;
+import com.dropbox.core.DbxDownloader;
+import com.dropbox.core.DbxException;
 import com.dropbox.core.v2.DbxClientV2;
+import com.dropbox.core.v2.files.DbxUserFilesRequests;
+import com.dropbox.core.v2.files.FileMetadata;
+import com.dropbox.core.v2.files.ListFolderResult;
+import com.dropbox.core.v2.files.WriteMode;
 
-import fr.ralala.worktime.R;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.file.Files;
 
 /**
  * ******************************************************************************
@@ -21,94 +28,32 @@ import fr.ralala.worktime.R;
  */
 @SuppressWarnings("WeakerAccess")
 public class DropboxHelper {
-  private static final String LABEL = "dropbox-sample";
-  private static final String KEY = "accessToken";
   private DbxClientV2 mDbxClient;
-  private static DropboxHelper mHelper = null;
-  private String mDevAccessToken = null;
+  private final DropboxCredentialUtil mCredentialUtil;
+  private final DropboxOAuthUtil mOAuthUtil;
+  private Context mContext;
 
-  private DropboxHelper() {
+  public DropboxHelper(Context context) {
+    mContext = context;
+    mCredentialUtil = new DropboxCredentialUtil(context);
+    mOAuthUtil = new DropboxOAuthUtil(mCredentialUtil);
   }
 
-  private String getDevAccessToken(Context ctx) {
-    if(mDevAccessToken == null) {
-      mDevAccessToken = ctx.getString(R.string.dev_access_token);
-    }
-    return mDevAccessToken;
+  public void startDropboxAuthorization() {
+    if (mCredentialUtil.isAuthenticated()) {
+      if (mCredentialUtil.isExpired())
+        mOAuthUtil.refreshToken(mContext, getClient(), mCredentialUtil.readCredentialLocally());
+      mDbxClient = null;
+    } else
+      mOAuthUtil.startDropboxAuthorization2PKCE(mContext);
   }
 
-  /**
-   * Returns the helper instance.
-   *
-   * @return DropboxHelper
-   */
-  static DropboxHelper helper() {
-    if (mHelper == null) mHelper = new DropboxHelper();
-    return mHelper;
-  }
-
-  /**
-   * Established the connection with dropbox
-   *
-   * @param ctx    The Android context.
-   * @return boolean
-   */
-  boolean connect(final Context ctx) {
-    Context c = ctx.getApplicationContext();
-    mHelper.loadToken(c);
-    if (!mHelper.hasToken(c)) {
-      Auth.startOAuth2Authentication(c, c.getString(R.string.app_key));
-      mHelper.loadToken(c);
-      return mHelper.hasToken(c);
-    }
-    return true;
-  }
-
-  /**
-   * Tests if the configuration has the required token.
-   *
-   * @param ctx The Android context.
-   * @return boolean
-   */
-  private boolean hasToken(final Context ctx) {
-    Context c = ctx.getApplicationContext();
-    SharedPreferences prefs = c.getSharedPreferences(LABEL, Context.MODE_PRIVATE);
-    String accessToken = prefs.getString(KEY, getDevAccessToken(ctx));
-    return accessToken != null;
-  }
-
-  /**
-   * Loads the dropbox token.
-   *
-   * @param ctx The Android context.
-   */
-  private void loadToken(final Context ctx) {
-    Context c = ctx.getApplicationContext();
-    SharedPreferences prefs = c.getSharedPreferences(LABEL, Context.MODE_PRIVATE);
-    String accessToken = prefs.getString(KEY, getDevAccessToken(ctx));
-    if (accessToken == null) {
-      accessToken = Auth.getOAuth2Token();
-      if (accessToken != null) {
-        prefs.edit().putString(KEY, accessToken).apply();
-        initDropBox(accessToken);
-      }
-    } else {
-      initDropBox(accessToken);
-    }
-  }
-
-  /**
-   * Initializes the dropbox contexts.
-   *
-   * @param accessToken The access token to use.
-   */
-  private void initDropBox(String accessToken) {
-    final Package p = getClass().getPackage();
-    if (mDbxClient == null && p != null) {
-      DbxRequestConfig.Builder b = DbxRequestConfig.newBuilder(p.getName());
-      DbxRequestConfig requestConfig = b.build();
-      mDbxClient = new DbxClientV2(requestConfig, accessToken);
-    }
+  private void createClient() {
+    mOAuthUtil.onResume();
+    mDbxClient = new DbxClientV2(
+      mOAuthUtil.getDbxRequestConfig(mContext),
+      mCredentialUtil.readCredentialLocally()
+    );
   }
 
   /**
@@ -118,8 +63,35 @@ public class DropboxHelper {
    */
   DbxClientV2 getClient() {
     if (mDbxClient == null) {
-      throw new IllegalStateException("Client not initialized.");
+      createClient();
     }
     return mDbxClient;
+  }
+
+  public ListFolderResult listFolder(String path) throws DbxException, NullPointerException {
+    DbxUserFilesRequests files = getClient().files();
+    if (files == null)
+      throw new NullPointerException("Null client files");
+    return files.listFolder(path);
+  }
+
+  public FileMetadata uploadFile(InputStream inputStream, String remoteFolderPath, String remoteFileName) throws IOException, DbxException, NullPointerException {
+    DbxUserFilesRequests files = getClient().files();
+    if (files == null)
+      throw new NullPointerException("Null client files");
+
+    return files.uploadBuilder(remoteFolderPath + "/" + remoteFileName)
+      .withMode(WriteMode.OVERWRITE)
+      .uploadAndFinish(inputStream);
+  }
+
+  public void download(File file, FileMetadata metadata) throws IOException, DbxException {
+    // Download the file.
+    try (OutputStream outputStream = Files.newOutputStream(file.toPath())) {
+      DbxUserFilesRequests files = getClient().files();
+      DbxDownloader<FileMetadata> downloader = files.download(metadata.getPathLower(), metadata.getRev());
+      downloader.download(outputStream);
+      downloader.close();
+    }
   }
 }

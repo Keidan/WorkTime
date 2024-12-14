@@ -70,12 +70,15 @@ public class MainApplication extends Application {
   private final Lock mLock = new ReentrantLock();
   private ChangeLog mChangeLog;
 
+  private DropboxHelper mDropboxHelper;
+
   /**
    * Called by Android to create the application context.
    */
   @Override
   public void onCreate() {
     super.onCreate();
+    mDropboxHelper = new DropboxHelper(this);
     mChangeLog = new ChangeLog(new ChangeLogIds(
       R.raw.changelog,
       R.string.changelog_ok_button,
@@ -92,6 +95,10 @@ public class MainApplication extends Application {
     mLifeCycle = new MyActivityLifecycleCallbacks(Arrays.asList(classes));
     registerActivityLifecycleCallbacks(mLifeCycle);
     reloadDatabaseMD5();
+  }
+
+  public DropboxHelper getDropboxHelper() {
+    return mDropboxHelper;
   }
 
   public ChangeLog getChangeLog() {
