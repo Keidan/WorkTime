@@ -22,7 +22,7 @@ import fr.ralala.worktime.ApplicationCtx;
 public class DropboxCredentialUtil {
   private static final String LABEL = "dropbox-app";
   private static final String KEY_CREDENTIAL = "credential-json";
-  private static final String KEY_EXPIRES = "credential-expires";
+  private static final String KEY_EXPIRES_AT = "credential-expires-at";
   private final Context mContext;
   private final SharedPreferences mPref;
 
@@ -32,28 +32,31 @@ public class DropboxCredentialUtil {
   }
 
   public boolean isExpired() {
-    DbxCredential credential = readCredentialLocally();
-    if (credential == null)
-      return true;
-    long expired = mPref.getLong(KEY_EXPIRES, 0);
-    long expiresAt = credential.getExpiresAt();
-    String text = "Expired: " + expired + ", expires at: " + expiresAt;
+    long expiresAt = mPref.getLong(KEY_EXPIRES_AT, 0);
+    long time = System.currentTimeMillis();
+    String text = "Time: " + time + ", expires at: " + expiresAt;
     ApplicationCtx.addLog(mContext, "isExpired", text);
     Log.d(getClass().getSimpleName(), text);
-    return (credential.getExpiresAt() >= expired);
+    boolean expired = (time >= expiresAt);
+    text = "Expired: " + (expired ? "YES" : "NO");
+    ApplicationCtx.addLog(mContext, "isExpired", text);
+    Log.d(getClass().getSimpleName(), text);
+    return expired;
   }
 
-  public DbxCredential readCredentialLocally() {
+  public DbxCredential readCredentialLocally(boolean log) {
     String serializedCredentialJson = mPref.getString(KEY_CREDENTIAL, null);
-    String text = "Local Credential Value from Shared Preferences: " + serializedCredentialJson;
-    ApplicationCtx.addLog(mContext, "readCredentialLocally", text);
-    Log.d(getClass().getSimpleName(), text);
+    if (log) {
+      String text = "Local Credential Value from Shared Preferences: " + serializedCredentialJson;
+      ApplicationCtx.addLog(mContext, "readCredentialLocally", text);
+      Log.d(getClass().getSimpleName(), text);
+    }
     if (serializedCredentialJson == null)
       return null;
     try {
       return DbxCredential.Reader.readFully(serializedCredentialJson);
     } catch (JsonReadException e) {
-      text = "Something went wrong parsing the credential, clearing it: " + e.getMessage();
+      String text = "Something went wrong parsing the credential, clearing it: " + e.getMessage();
       ApplicationCtx.addLog(mContext, "readCredentialLocally", text);
       Log.e(getClass().getSimpleName(), text, e);
       removeCredentialLocally();
@@ -69,7 +72,7 @@ public class DropboxCredentialUtil {
     Log.d(getClass().getSimpleName(), text);
     SharedPreferences.Editor edit = mPref.edit();
     edit.putString(KEY_CREDENTIAL, DbxCredential.Writer.writeToString(dbxCredential));
-    edit.putLong(KEY_EXPIRES, expiresAt);
+    edit.putLong(KEY_EXPIRES_AT, expiresAt);
     edit.apply();
   }
 
@@ -79,11 +82,11 @@ public class DropboxCredentialUtil {
     Log.d(getClass().getSimpleName(), text);
     SharedPreferences.Editor edit = mPref.edit();
     edit.remove(KEY_CREDENTIAL);
-    edit.remove(KEY_EXPIRES);
+    edit.remove(KEY_EXPIRES_AT);
     edit.apply();
   }
 
   public boolean isAuthenticated() {
-    return readCredentialLocally() != null;
+    return readCredentialLocally(false) != null;
   }
 }

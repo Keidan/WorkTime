@@ -95,6 +95,7 @@
   <string name="pref_summary_excel_export">This section allows you to manage the excel export configuration</string>
   <string name="pref_title_export">Export</string>
   <string name="pref_title_import">Import</string>
+  <string name="pref_title_invalidate">Invalidate</string>
   <string name="pref_summary_export_mail">Email address used to send the exported file.</string>
   <string name="pref_title_export_mail">Email address</string>
   <string name="pref_summary_export_mail_enable">Send a mail after the file export.</string>
@@ -103,6 +104,7 @@
   <string name="pref_title_hide_wage">Hide wage</string>
   <string name="pref_summary_export_to_dropbox">Export the database to dropbox.</string>
   <string name="pref_summary_import_from_dropbox">Import the database from dropbox.</string>
+  <string name="pref_summary_invalidate_dropbox">Invalidates dropbox contexts.</string>
   <string name="pref_summary_day_display_week">Displays the row of the week number in the work time view (the application will need to be restarted).</string>
   <string name="pref_title_day_display_week">Week number</string>
   <string name="pref_summary_day_row_height">Height of the rows for the days list in the work time view (the application will need to be restarted).</string>
@@ -184,4 +186,5 @@
   <string name="current_time">Current</string>
   <string name="settings_pref_title_logs">Logs</string>
   <string name="settings_pref_summary_logs">Application logs.</string>
+  <string name="dropbox_invalidated">Dropbox contexts are reinitialized.</string>
 </resources>

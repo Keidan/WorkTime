@@ -80,6 +80,7 @@
   <string name="pref_summary_excel_export">Cette section vous permet de gérer la configuration de l\'exportation Excel</string>
   <string name="pref_title_export">Exportation</string>
   <string name="pref_title_import">Importation</string>
+  <string name="pref_title_invalidate">Invalidation</string>
   <string name="pref_title_import_export_auto_save">Exportation automatique</string>
   <string name="pref_summary_import_export_auto_save">Lorsqu\'une modification est effectuée, la base de données sera exportée automatiquement à l\'aide du service dropbox (à la sortie de l\'application).</string>
   <string name="pref_fragments_title_periodicity">Périodicité</string>
@@ -94,6 +95,7 @@
   <string name="pref_title_hide_wage">Masquer le salaire</string>
   <string name="pref_summary_export_to_dropbox">Exporter la base de données vers dropbox.</string>
   <string name="pref_summary_import_from_dropbox">Importer la base de données depuis dropbox.</string>
+  <string name="pref_summary_invalidate_dropbox">Invalide les contextes dropbox.</string>
   <string name="pref_summary_day_display_week">Affiche la ligne du numéro de semaine dans la vue du temps de travail (l\'application devra être redémarrée).</string>
   <string name="pref_title_day_display_week">Numéro de la semaine</string>
   <string name="pref_summary_day_row_height">Hauteur des rangées de la liste des jours dans la vue de temps de travail (l\'application devra être redémarrée).</string>
@@ -174,4 +176,5 @@
   <string name="current_time">Actuelle</string>
   <string name="settings_pref_title_logs">Journaux</string>
   <string name="settings_pref_summary_logs">Journeaux de l\'application.</string>
+  <string name="dropbox_invalidated">Les contextes dropbox sont réinitialisés.</string>
 </resources>

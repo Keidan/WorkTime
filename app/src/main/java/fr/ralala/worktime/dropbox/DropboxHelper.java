@@ -31,7 +31,7 @@ public class DropboxHelper {
   private DbxClientV2 mDbxClient;
   private final DropboxCredentialUtil mCredentialUtil;
   private final DropboxOAuthUtil mOAuthUtil;
-  private Context mContext;
+  private final Context mContext;
 
   public DropboxHelper(Context context) {
     mContext = context;
@@ -39,10 +39,14 @@ public class DropboxHelper {
     mOAuthUtil = new DropboxOAuthUtil(mCredentialUtil);
   }
 
+  public void invalidate() {
+    mCredentialUtil.removeCredentialLocally();
+  }
+
   public void startDropboxAuthorization() {
     if (mCredentialUtil.isAuthenticated()) {
       if (mCredentialUtil.isExpired())
-        mOAuthUtil.refreshToken(mContext, getClient(), mCredentialUtil.readCredentialLocally());
+        mOAuthUtil.refreshToken(mContext, getClient(), mCredentialUtil.readCredentialLocally(true));
       mDbxClient = null;
     } else
       mOAuthUtil.startDropboxAuthorization2PKCE(mContext);
@@ -52,7 +56,7 @@ public class DropboxHelper {
     mOAuthUtil.onResume();
     mDbxClient = new DbxClientV2(
       mOAuthUtil.getDbxRequestConfig(mContext),
-      mCredentialUtil.readCredentialLocally()
+      mCredentialUtil.readCredentialLocally(true)
     );
   }
 

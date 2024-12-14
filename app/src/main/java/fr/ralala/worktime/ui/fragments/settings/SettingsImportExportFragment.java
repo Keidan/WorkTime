@@ -24,9 +24,12 @@ import fr.ralala.worktime.utils.AndroidHelper;
 public class SettingsImportExportFragment extends PreferenceFragmentCompat implements Preference.OnPreferenceClickListener {
   public static final String PREFS_KEY_EXPORT_TO_DROPBOX = "prefExportToDropbox";
   public static final String PREFS_KEY_IMPORT_FROM_DROPBOX = "prefImportFromDropbox";
+  public static final String PREFS_KEY_INVALIDATE_DROPBOX = "prefInvalidateDropbox";
+
 
   private Preference mPrefExportToDropbox;
   private Preference mPrefImportFromDropbox;
+  private Preference mPrefInvalidateDropbox;
   private final ApplicationCtx mApp;
   private final SettingsImportExportActivity mActivity;
 
@@ -50,10 +53,11 @@ public class SettingsImportExportFragment extends PreferenceFragmentCompat imple
     setPreferencesFromResource(R.xml.preferences_import_export, rootKey);
     mPrefExportToDropbox = findPreference(PREFS_KEY_EXPORT_TO_DROPBOX);
     mPrefImportFromDropbox = findPreference(PREFS_KEY_IMPORT_FROM_DROPBOX);
+    mPrefInvalidateDropbox = findPreference(PREFS_KEY_INVALIDATE_DROPBOX);
 
     mPrefExportToDropbox.setOnPreferenceClickListener(this);
     mPrefImportFromDropbox.setOnPreferenceClickListener(this);
-
+    mPrefInvalidateDropbox.setOnPreferenceClickListener(this);
   }
 
   /**
@@ -69,6 +73,9 @@ public class SettingsImportExportFragment extends PreferenceFragmentCompat imple
       AndroidHelper.exportDropbox(mApp, mActivity);
     } else if (preference.equals(mPrefImportFromDropbox)) {
       mApp.getDropboxImportExport().importDatabase(mActivity);
+    } else if (preference.equals(mPrefInvalidateDropbox)) {
+      mApp.getDropboxHelper().invalidate();
+      AndroidHelper.restartApplication(mApp, R.string.dropbox_invalidated);
     }
     return false;
   }
