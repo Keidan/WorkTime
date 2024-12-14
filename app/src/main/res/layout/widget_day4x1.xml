@@ -8,7 +8,7 @@
   android:background="?attr/colorPrimaryContainer"
   android:theme="@style/Theme.Material3.DynamicColors.DayNight">
 
-  <androidx.appcompat.widget.AppCompatTextView
+  <TextView
     android:text="@null"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -24,7 +24,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <androidx.appcompat.widget.AppCompatTextView
+    <TextView
       android:text="@string/tv_morning_widget"
       android:layout_weight="@dimen/widget_day4x1_tvLblMorning_layout_weight"
       android:layout_width="@dimen/widget_day4x1_tvLblMorning_layout_width"
@@ -34,7 +34,7 @@
       android:layout_margin="@dimen/widget_day4x1_tvLblMorning_layout_margin"
       android:textSize="@dimen/widget_text_size_4x1" />
 
-    <androidx.appcompat.widget.AppCompatTextView
+    <TextView
       android:text="@null"
       android:layout_weight="@dimen/widget_day4x1_tvMorning_layout_weight"
       android:layout_width="@dimen/widget_day4x1_tvMorning_layout_width"
@@ -45,7 +45,7 @@
       android:textSize="@dimen/widget_text_size_4x1" />
 
 
-    <androidx.appcompat.widget.AppCompatTextView
+    <TextView
       android:text="@string/tv_break_widget"
       android:layout_weight="@dimen/widget_day4x1_tvLblBreak_layout_weight"
       android:layout_width="@dimen/widget_day4x1_tvLblBreak_layout_width"
@@ -55,7 +55,7 @@
       android:layout_margin="@dimen/widget_day4x1_tvLblBreak_layout_margin"
       android:textSize="@dimen/widget_text_size_4x1" />
 
-    <androidx.appcompat.widget.AppCompatTextView
+    <TextView
       android:text="@null"
       android:layout_weight="@dimen/widget_day4x1_tvBreak_layout_weight"
       android:layout_width="@dimen/widget_day4x1_tvBreak_layout_width"
@@ -73,7 +73,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <androidx.appcompat.widget.AppCompatTextView
+    <TextView
       android:text="@string/tv_afternoon_widget"
       android:layout_weight="@dimen/widget_day4x1_tvLblAfternoon_layout_weight"
       android:layout_width="@dimen/widget_day4x1_tvLblAfternoon_layout_width"
@@ -83,7 +83,7 @@
       android:layout_margin="@dimen/widget_day4x1_tvLblAfternoon_layout_margin"
       android:textSize="@dimen/widget_text_size_4x1" />
 
-    <androidx.appcompat.widget.AppCompatTextView
+    <TextView
       android:text="@null"
       android:layout_weight="@dimen/widget_day4x1_tvAfternoon_layout_weight"
       android:layout_width="@dimen/widget_day4x1_tvAfternoon_layout_width"
@@ -93,7 +93,7 @@
       android:layout_margin="@dimen/widget_day4x1_tvAfternoon_layout_margin"
       android:textSize="@dimen/widget_text_size_4x1" />
 
-    <androidx.appcompat.widget.AppCompatTextView
+    <TextView
       android:text="@string/tv_work_time_widget"
       android:layout_weight="@dimen/widget_day4x1_tvLblWorkTime_layout_weight"
       android:layout_width="@dimen/widget_day4x1_tvLblWorkTime_layout_width"
@@ -103,7 +103,7 @@
       android:layout_margin="@dimen/widget_day4x1_tvLblWorkTime_layout_margin"
       android:textSize="@dimen/widget_text_size_4x1" />
 
-    <androidx.appcompat.widget.AppCompatTextView
+    <TextView
       android:text="@null"
       android:layout_weight="@dimen/widget_day4x1_tvWorkTime_layout_weight"
       android:layout_width="@dimen/widget_day4x1_tvWorkTime_layout_width"
