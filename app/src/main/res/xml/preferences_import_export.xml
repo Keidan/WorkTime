@@ -3,6 +3,16 @@
   xmlns:android="http://schemas.android.com/apk/res/android"
   android:key="prefScreenImportExport">
   <androidx.preference.PreferenceCategory
+    android:title="@string/pref_title_invalidate"
+    android:key="prefCatDatabaseInvalidate"
+    app:iconSpaceReserved="false">
+    <androidx.preference.Preference
+      app:iconSpaceReserved="false"
+      android:key="prefInvalidateDropbox"
+      android:summary="@string/pref_summary_invalidate_dropbox"
+      android:title="@string/pref_title_dropbox" />
+  </androidx.preference.PreferenceCategory>
+  <androidx.preference.PreferenceCategory
     android:title="@string/pref_title_export"
     android:key="prefCatDatabaseExport"
     app:iconSpaceReserved="false">
@@ -20,16 +30,6 @@
       app:iconSpaceReserved="false"
       android:key="prefImportFromDropbox"
       android:summary="@string/pref_summary_import_from_dropbox"
-      android:title="@string/pref_title_dropbox" />
-  </androidx.preference.PreferenceCategory>
-  <androidx.preference.PreferenceCategory
-    android:title="@string/pref_title_invalidate"
-    android:key="prefCatDatabaseInvalidate"
-    app:iconSpaceReserved="false">
-    <androidx.preference.Preference
-      app:iconSpaceReserved="false"
-      android:key="prefInvalidateDropbox"
-      android:summary="@string/pref_summary_invalidate_dropbox"
       android:title="@string/pref_title_dropbox" />
   </androidx.preference.PreferenceCategory>
 
