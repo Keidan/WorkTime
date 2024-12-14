@@ -225,6 +225,6 @@ public class AndroidHelper {
   public static void exportDropbox(ApplicationCtx app, AppCompatActivity c) {
     AutoExportService.setNeedUpdate(app, false);
     app.reloadDatabaseMD5();
-    app.getDropboxImportExport().exportDatabase(c, true, null);
+    app.getDropboxImportExport().exportDatabase(c, null);
   }
 }

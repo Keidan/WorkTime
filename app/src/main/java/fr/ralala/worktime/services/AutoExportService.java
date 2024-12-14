@@ -84,14 +84,13 @@ public class AutoExportService extends Service implements DropboxImportExport.Dr
    */
   private void exportDatabase() {
     setNeedUpdate(mApp, false);
-    if (mApp.getLastExportType().equals(ApplicationCtx.PREFS_VAL_LAST_EXPORT_DROPBOX)) {
-      if (!mApp.getDropboxImportExport().exportDatabase(this, false, this)) {
-        String text = "Export failed.";
-        ApplicationCtx.addLog(this, "exportDatabase", text);
-        Log.e(getClass().getSimpleName(), text);
-        setNeedUpdate(mApp, true);
-        stopSelf();
-      }
+    if (mApp.getLastExportType().equals(ApplicationCtx.PREFS_VAL_LAST_EXPORT_DROPBOX) &&
+      !mApp.getDropboxImportExport().exportDatabase(this, this)) {
+      String text = "Export failed.";
+      ApplicationCtx.addLog(this, "exportDatabase", text);
+      Log.e(getClass().getSimpleName(), text);
+      setNeedUpdate(mApp, true);
+      stopSelf();
     }
   }
 
