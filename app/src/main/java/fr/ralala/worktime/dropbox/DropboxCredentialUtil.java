@@ -35,14 +35,14 @@ public class DropboxCredentialUtil {
     long time = System.currentTimeMillis();
     Log.info(mContext, "isExpired", "Time: " + time + ", expires at: " + expiresAt);
     boolean expired = (time >= expiresAt);
-    Log.info(mContext, "isExpired", "Expired: " + (expired ? "YES" : "NO"));
+    Log.info(mContext, "isExpired", "Credential expired: " + (expired ? "YES" : "NO"));
     return expired;
   }
 
   public DbxCredential readCredentialLocally(boolean log) {
     String serializedCredentialJson = mPref.getString(KEY_CREDENTIAL, null);
     if (log) {
-      Log.info(mContext, "readCredentialLocally", "Local Credential Value from Shared Preferences: " + serializedCredentialJson);
+      Log.info(mContext, "readCredentialLocally", "Reading credential from local preferences, valid: " + (serializedCredentialJson == null ? "NO" : "YES"));
     }
     if (serializedCredentialJson == null)
       return null;
@@ -58,7 +58,7 @@ public class DropboxCredentialUtil {
   //serialize the credential and store in SharedPreferences
   public void storeCredentialLocally(DbxCredential dbxCredential) {
     Long expiresAt = dbxCredential.getExpiresAt();
-    Log.info(mContext, "storeCredentialLocally", "Storing credential in Shared Preferences expires at " + expiresAt);
+    Log.info(mContext, "storeCredentialLocally", "Storing credential in local preferences, expires at " + expiresAt);
     SharedPreferences.Editor edit = mPref.edit();
     edit.putString(KEY_CREDENTIAL, DbxCredential.Writer.writeToString(dbxCredential));
     edit.putLong(KEY_EXPIRES_AT, expiresAt);
@@ -66,7 +66,7 @@ public class DropboxCredentialUtil {
   }
 
   public void removeCredentialLocally() {
-    Log.info(mContext, "removeCredentialLocally", "Clearing credential from Shared Preferences");
+    Log.info(mContext, "removeCredentialLocally", "Clearing credential from local preferences");
     SharedPreferences.Editor edit = mPref.edit();
     edit.remove(KEY_CREDENTIAL);
     edit.remove(KEY_EXPIRES_AT);

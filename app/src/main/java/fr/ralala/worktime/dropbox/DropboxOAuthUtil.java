@@ -38,6 +38,7 @@ public class DropboxOAuthUtil {
   }
 
   public void refreshToken(Context context, DbxClientV2 client, DbxCredential credential) {
+    Log.info(context, "refreshToken", "Refresh the Dropbox token");
     new Thread(() -> {
       try {
         DbxRefreshResult result = client.refreshAccessToken();
@@ -72,6 +73,7 @@ public class DropboxOAuthUtil {
       "files.content.read",
       "sharing.read"
     );
+    Log.info(context, "startDropboxAuthorization2PKCE", "Starts the Dropbox OAuth process");
     Auth.startOAuth2PKCE(context, context.getString(R.string.app_key), requestConfig, scopes);
     mIsAwaitingResult = true;
   }
@@ -84,6 +86,7 @@ public class DropboxOAuthUtil {
    * Read more about this here: <a href="https://dropbox.tech/developers/pkce--what-and-why-">...</a>
    **/
   public void startDropboxAuthorizationOAuth2(Context context) {
+    Log.info(context, "startDropboxAuthorizationOAuth2", "Starts the Dropbox OAuth process");
     Auth.startOAuth2Authentication(context, context.getString(R.string.app_key));
     mIsAwaitingResult = true;
   }
