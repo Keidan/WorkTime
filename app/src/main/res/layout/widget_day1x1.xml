@@ -1,46 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-  android:orientation="vertical"
-  android:layout_width="match_parent"
-  android:layout_height="match_parent"
-  android:padding="@dimen/widget_margin"
-  android:background="?attr/colorPrimaryContainer"
-  android:theme="@style/Theme.Material3.DynamicColors.DayNight">
-
-  <TextView
-    android:id="@+id/tvMonth"
-    android:layout_alignParentTop="true"
-    android:textColor="?attr/colorOnPrimaryContainer"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:gravity="center"
-    android:layout_margin="@dimen/widget_day1x1_tvMonth_layout_margin"
-    android:text="@null"
-    android:textSize="@dimen/widget_text_size_month" />
+    android:padding="@dimen/widget_margin"
+    android:background="?attr/colorPrimaryContainer"
+    android:theme="@style/Theme.Material3.DynamicColors.DayNight">
 
   <TextView
-    android:id="@+id/tvDay"
-    android:layout_below="@id/tvMonth"
-    android:textColor="?attr/colorOnPrimaryContainer"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_gravity="center"
-    android:gravity="center_horizontal|center_vertical"
-    android:text="@null"
-    android:layout_marginStart="@dimen/widget_day1x1_tvDay_layout_marginStart"
-    android:layout_marginEnd="@dimen/widget_day1x1_tvDay_layout_marginEnd"
-    android:textSize="@dimen/widget_text_size_day" />
+      android:id="@+id/tvMonth"
+      android:layout_width="match_parent"
+      android:layout_height="0dp"
+      android:layout_weight="2"
+      android:fontFamily="@font/jetbrains_mono"
+      android:gravity="center"
+      android:includeFontPadding="false"
+      android:maxLines="1"
+      android:textColor="?attr/colorOnPrimaryContainer"
+      android:autoSizeTextType="uniform"
+      android:autoSizeMinTextSize="6dp"
+      android:autoSizeMaxTextSize="12dp"
+      android:autoSizeStepGranularity="1dp"
+      android:text="@null" />
 
   <TextView
-    android:id="@+id/tvWorkTime"
-    android:layout_below="@id/tvDay"
-    android:layout_alignParentBottom="true"
-    android:textColor="?attr/colorOnPrimaryContainer"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:gravity="center"
-    android:text="@null"
-    android:textSize="@dimen/widget_text_size_work_time"
-    android:layout_margin="@dimen/widget_day1x1_tvWorkTime_layout_margin" />
+      android:id="@+id/tvDay"
+      android:layout_width="match_parent"
+      android:layout_height="0dp"
+      android:layout_weight="4"
+      android:layout_marginHorizontal="@dimen/widget_day1x1_tvDay_layout_marginStart"
+      android:fontFamily="@font/jetbrains_mono"
+      android:gravity="center"
+      android:includeFontPadding="false"
+      android:maxLines="1"
+      android:textColor="?attr/colorOnPrimaryContainer"
+      android:autoSizeTextType="uniform"
+      android:autoSizeMinTextSize="10dp"
+      android:autoSizeMaxTextSize="23dp"
+      android:autoSizeStepGranularity="1dp"
+      android:text="@null" />
 
-</RelativeLayout>
+  <TextView
+      android:id="@+id/tvWorkTime"
+      android:layout_width="match_parent"
+      android:layout_height="0dp"
+      android:layout_weight="2"
+      android:fontFamily="@font/jetbrains_mono"
+      android:gravity="center"
+      android:includeFontPadding="false"
+      android:maxLines="1"
+      android:textColor="?attr/colorOnPrimaryContainer"
+      android:autoSizeTextType="uniform"
+      android:autoSizeMinTextSize="6dp"
+      android:autoSizeMaxTextSize="10dp"
+      android:autoSizeStepGranularity="1dp"
+      android:text="@null" />
+
+</LinearLayout>

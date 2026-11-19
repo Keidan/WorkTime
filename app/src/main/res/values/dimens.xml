@@ -169,36 +169,7 @@
   <dimen name="listview_item_rl_padding">10dp</dimen>
   <dimen name="listview_item_info_textSize">12sp</dimen>
   <!-- widget_day1x1.xml -->
-  <dimen name="widget_day1x1_tvMonth_layout_margin">4dp</dimen>
   <dimen name="widget_day1x1_tvDay_layout_marginStart">4dp</dimen>
-  <dimen name="widget_day1x1_tvDay_layout_marginEnd">4dp</dimen>
-  <dimen name="widget_day1x1_tvWorkTime_layout_margin">4dp</dimen>
-  <!-- widget_day4x1.xml -->
-  <dimen name="widget_day4x1_tvDate_layout_margin">4dp</dimen>
-  <dimen name="widget_day4x1_tvLblMorning_layout_weight">1</dimen>
-  <dimen name="widget_day4x1_tvLblMorning_layout_width">0px</dimen>
-  <dimen name="widget_day4x1_tvLblMorning_layout_margin">4dp</dimen>
-  <dimen name="widget_day4x1_tvMorning_layout_weight">1</dimen>
-  <dimen name="widget_day4x1_tvMorning_layout_width">0px</dimen>
-  <dimen name="widget_day4x1_tvMorning_layout_margin">4dp</dimen>
-  <dimen name="widget_day4x1_tvLblBreak_layout_weight">1</dimen>
-  <dimen name="widget_day4x1_tvLblBreak_layout_width">0px</dimen>
-  <dimen name="widget_day4x1_tvLblBreak_layout_margin">4dp</dimen>
-  <dimen name="widget_day4x1_tvBreak_layout_weight">1</dimen>
-  <dimen name="widget_day4x1_tvBreak_layout_width">0px</dimen>
-  <dimen name="widget_day4x1_tvBreak_layout_margin">4dp</dimen>
-  <dimen name="widget_day4x1_tvLblAfternoon_layout_weight">1</dimen>
-  <dimen name="widget_day4x1_tvLblAfternoon_layout_width">0px</dimen>
-  <dimen name="widget_day4x1_tvLblAfternoon_layout_margin">4dp</dimen>
-  <dimen name="widget_day4x1_tvAfternoon_layout_weight">1</dimen>
-  <dimen name="widget_day4x1_tvAfternoon_layout_width">0px</dimen>
-  <dimen name="widget_day4x1_tvAfternoon_layout_margin">4dp</dimen>
-  <dimen name="widget_day4x1_tvLblWorkTime_layout_weight">1</dimen>
-  <dimen name="widget_day4x1_tvLblWorkTime_layout_width">0px</dimen>
-  <dimen name="widget_day4x1_tvLblWorkTime_layout_margin">4dp</dimen>
-  <dimen name="widget_day4x1_tvWorkTime_layout_weight">1</dimen>
-  <dimen name="widget_day4x1_tvWorkTime_layout_width">0px</dimen>
-  <dimen name="widget_day4x1_tvWorkTime_layout_margin">4dp</dimen>
   <!-- progress_dialog -->
   <dimen name="progress_dialog_textSize">18sp</dimen>
   <dimen name="progress_dialog_layout_marginTop">20dp</dimen>
